@@ -11,12 +11,26 @@
                 <div class="panel-body">
                     <dt>
                         <dt>Batch Summary:</dt>
-                        <dd><strong>Batch ID:</strong> ${batchDetails.utBatchName}</dd>
+                        <dd><strong>Batch ID:</strong>
+                        <c:choose>
+                        <c:when test="${batchDetails.transportMethodId == 1 ||batchDetails.transportMethodId == 3 || batchDetails.transportMethodId == 5}">
+                                                <c:set var="text" value="${fn:split(batchDetails.originalFileName,'.')}" />
+                                                <c:set var="ext" value="${text[fn:length(text)-1]}" />
+                                                    <a href="/FileDownload/downloadFile.do?filename=${batchDetails.utBatchName}.${ext}&foldername=archivesIn" title="View Original File">
+                                                        ${batchDetails.originalFileName}
+                                                    </a>
+                         </c:when>
+                         <c:otherwise>
+                         ${batchDetails.utBatchName}
+                         </c:otherwise>
+                         </c:choose>
+                                                
+                                                </dd>
                         <dd><strong>Source Organization:</strong> ${batchDetails.orgName}</dd>
                         <dd><strong>Date Submitted:</strong> <fmt:formatDate value="${batchDetails.dateSubmitted}" type="date" pattern="M/dd/yyyy" />&nbsp;&nbsp;<fmt:formatDate value="${batchDetails.dateSubmitted}" type="time" pattern="h:mm:ss a" /></dd>
                     	<dd><strong>Total Transactions:</strong> ${batchDetails.totalRecordCount}</dd>
                     	<dd><strong>Transactions with errors:</strong> ${batchDetails.errorRecordCount}</dd>
-                    	<dd><strong>Batch Status:</strong><a href="#statusModal" data-toggle="modal" class="btn btn-link viewStatus" rel="${batchDetails.statusId}" title="View this Status">${batchDetails.statusValue}</a></dd>
+                    	<dd><strong>Batch Status:</strong><a href="#statusModal" data-toggle="modal" class="btn btn-link viewStatus" rel="${batchDetails.statusId}" title="View this Status">${batchDetails.statusValue}</a></dd>             	
                     </dt>
                 </div>
             </section>
