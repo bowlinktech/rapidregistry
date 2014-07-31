@@ -66,3 +66,8 @@ DELIMITER ;
 INSERT INTO `universaltranslator`.`macro_names` (`ID`, `CategoryId`, `Macro_Name`, `Macro_Short_Name`, `Formula`, `FieldA_Question`, `populateFieldA`) VALUES ('84', '1', 'YYYY-MM-DD HH:MMSS .MS  To YYYYMMDDHHMMSS', 'YYYYMMDDHHMMSSMSToYYYYMMDDHHMMSS', 'YYYYMMDDHHMMSSMSToYYYYMMDDHHMMSS', 'Please enter field to convert', 1);
 
 
+/** 07.31.2014 02:09PM Grace applied to test and prod **/
+ALTER TABLE `universaltranslator`.`movefileslog` 
+DROP INDEX `pathMethodInd` ,
+ADD INDEX `pathMethodInd` (`transportMethodId` ASC, `folderPath` ASC, `method` ASC, `statusId` ASC);
+
