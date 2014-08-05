@@ -99,7 +99,7 @@ public class mainController {
      * @return	the home page view
      * @throws Exception
      */
-    @RequestMapping(value = "/", method = RequestMethod.GET)
+    @RequestMapping(value = "/", method = {RequestMethod.GET, RequestMethod.HEAD})
     public ModelAndView welcome(HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttr, HttpSession session) throws Exception {
         
         /** If the user is logged in and clicks to go home send to the account home page, otherwise the login page**/

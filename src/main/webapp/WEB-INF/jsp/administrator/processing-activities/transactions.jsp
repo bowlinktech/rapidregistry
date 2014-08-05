@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="s" uri="http://www.springframework.org/tags" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
 <div class="main clearfix" role="main">
     <div class="row-fluid">
@@ -10,7 +11,19 @@
                 <div class="panel-body">
                     <dt>
                         <dt>Batch Summary:</dt>
-                        <dd><strong>Batch ID:</strong> ${batchDetails.utBatchName}</dd>
+                        <dd><strong>Batch ID:</strong>
+                        <c:choose>
+                        <c:when test="${batchDetails.transportMethodId == 1 ||batchDetails.transportMethodId == 3 || batchDetails.transportMethodId == 5}">
+                                                <c:set var="text" value="${fn:split(batchDetails.originalFileName,'.')}" />
+                                                <c:set var="ext" value="${text[fn:length(text)-1]}" />
+                                                    <a href="/FileDownload/downloadFile.do?filename=${batchDetails.utBatchName}.${ext}&foldername=archivesIn" title="View Original File">
+                                                        ${batchDetails.originalFileName}
+                                                    </a>
+                         </c:when>
+                         <c:otherwise>
+                         ${batchDetails.utBatchName}
+                         </c:otherwise>
+                         </c:choose></dd>
                         <dd><strong>Source Organization:</strong> ${batchDetails.orgName}</dd>
                         <dd><strong>Date Submitted:</strong> <fmt:formatDate value="${batchDetails.dateSubmitted}" type="date" pattern="M/dd/yyyy" />&nbsp@&nbsp;<fmt:formatDate value="${batchDetails.dateSubmitted}" type="time" pattern="h:mm:ss a" /></dd>
                     </dt>
