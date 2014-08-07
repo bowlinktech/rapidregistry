@@ -2,7 +2,7 @@
 <web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
-    <display-name>Universal Translator</display-name>
+    <display-name>Rapid Registry</display-name>
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
@@ -19,7 +19,7 @@
     
     <context-param>
         <param-name>contextInitializerClasses</param-name>
-        <param-value>com.ut.dph.security.ContextProfileInitializer</param-value>
+        <param-value>com.bowlink.rr.security.ContextProfileInitializer</param-value>
     </context-param>
 	
     <!--  Set the default timeout setting for a logged in user/admin -->
@@ -54,7 +54,7 @@
    
     <filter>
         <filter-name>XSS</filter-name>
-        <filter-class>com.ut.dph.filter.CrossScriptingFilter</filter-class>
+        <filter-class>com.bowlink.rr.filter.CrossScriptingFilter</filter-class>
     </filter>
 
     <filter-mapping>
