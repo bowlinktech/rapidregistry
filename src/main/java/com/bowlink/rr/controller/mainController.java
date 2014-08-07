@@ -2,12 +2,8 @@ package com.bowlink.rr.controller;
 
 import com.bowlink.rr.model.User;
 import com.bowlink.rr.model.mailMessage;
-import com.bowlink.rr.model.userAccess;
 import com.bowlink.rr.service.emailMessageManager;
 import com.bowlink.rr.service.userManager;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -102,109 +98,9 @@ public class mainController {
     @RequestMapping(value = "/", method = {RequestMethod.GET, RequestMethod.HEAD})
     public ModelAndView welcome(HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttr, HttpSession session) throws Exception {
         
-        /** If the user is logged in and clicks to go home send to the account home page, otherwise the login page**/
-        User userInfo = (User)session.getAttribute("userDetails");
-        
-        if(userInfo == null) {
-           ModelAndView mav = new ModelAndView(new RedirectView("/login"));
-            return mav; 
-        }
-        else {
-            ModelAndView mav = new ModelAndView(new RedirectView("/profile"));
-            return mav;
-        }
-        
-        /*return new ModelAndView("/home");*/
-    }
-
-    /**
-     * The '/product-suite' request will display the product suite information page.
-     */
-    @RequestMapping(value = "/product-suite", method = RequestMethod.GET)
-    public ModelAndView productSuite() throws Exception {
-
-        ModelAndView mav = new ModelAndView();
-        mav.setViewName("/productSuite");
-        mav.addObject("pageTitle", "Product Suite");
-        return mav;
-    }
-
-    /**
-     * The '/about' GET request will display the about page.
-     */
-    @RequestMapping(value = "/about", method = RequestMethod.GET)
-    public ModelAndView aboutPage() throws Exception {
-
-        ModelAndView mav = new ModelAndView();
-        mav.setViewName("/about");
-        mav.addObject("pageTitle", "About Us");
-        return mav;
-    }
-
-    /**
-     * The '/contact' GEt request will display the contact page.
-     */
-    @RequestMapping(value = "/contact", method = RequestMethod.GET)
-    public ModelAndView contactPage() throws Exception {
-
-        ModelAndView mav = new ModelAndView();
-        mav.setViewName("/contact");
-        mav.addObject("pageTitle", "Contact Us");
-        return mav;
-    }
-    
-    /**
-     * The '/contact' POST request will display the contact page.
-     */
-    @RequestMapping(value = "/contact", method = RequestMethod.POST)
-    public ModelAndView contactPageSend(@RequestParam String name, @RequestParam String company, @RequestParam String address, @RequestParam String city, 
-            @RequestParam String state, @RequestParam String zip, @RequestParam String phone, @RequestParam String ext, @RequestParam String fax, @RequestParam String email, 
-            @RequestParam String comments) throws Exception {
-        
-       StringBuilder sb = new StringBuilder();
+       ModelAndView mav = new ModelAndView(new RedirectView("/login"));
+       return mav; 
        
-       mailMessage messageDetails = new mailMessage();
-        
-       messageDetails.settoEmailAddress("e-Referral@state.ma.us");
-       messageDetails.setfromEmailAddress("dphuniversaltranslator@gmail.com");
-       messageDetails.setmessageSubject("e-Referral Contact Form Submission");
-       
-       
-        sb.append("Name: "+ name);
-        sb.append("<br /><br />");
-        sb.append("Company / Organization: " + company);
-        sb.append("<br /><br />");
-        sb.append("Address: " + address);
-        sb.append("<br /><br />");
-        sb.append("City: " + city);
-        sb.append("<br /><br />");
-        sb.append("State: " + state);
-        sb.append("<br /><br />");
-        sb.append("Zip: " + zip);
-        sb.append("<br /><br />");
-        sb.append("Phone: " + phone);
-        sb.append("<br /><br />");
-        sb.append("Ext: " + ext);
-        sb.append("<br /><br />");
-        sb.append("Fax: " + fax);
-        sb.append("<br /><br />");
-        sb.append("Email: " + email);
-        sb.append("<br /><br />");
-        sb.append("Comments: " + comments);
-        sb.append("<br /><br />");
-        
-        messageDetails.setmessageBody(sb.toString());
-        
-        emailMessageManager.sendEmail(messageDetails); 
-
-        ModelAndView mav = new ModelAndView();
-        
-        mav.setViewName("/contact");
-        mav.addObject("pageTitle", "Contact Us");
-        mav.addObject("sent","sent");
-        
-        
-        return mav;
     }
 
     /**
@@ -257,34 +153,24 @@ public class mainController {
         User userDetails = usermanager.getUserById(userId);
         userDetails.setresetCode(randomCode);
 
-        //Return the sections for the clicked user
-        List<userAccess> userSections = usermanager.getuserSections(userId);
-        List<Integer> userSectionList = new ArrayList<Integer>();
-
-        for (int i = 0; i < userSections.size(); i++) {
-            userSectionList.add(userSections.get(i).getFeatureId());
-        }
-
-        userDetails.setsectionList(userSectionList);
-
         usermanager.updateUser(userDetails);
 
         /* Sent Reset Email */
         mailMessage messageDetails = new mailMessage();
 
         messageDetails.settoEmailAddress(userDetails.getEmail());
-        messageDetails.setmessageSubject("Universal Translator Reset Password");
+        messageDetails.setmessageSubject("***INSERT PROGRAM NAME HERE*** Reset Password");
         
         String resetURL = request.getRequestURL().toString().replace("sendPassword.do", "resetPassword?b=");
         
         StringBuilder sb = new StringBuilder();
 
         sb.append("Dear " + userDetails.getFirstName() + ",<br />");
-        sb.append("You have recently asked to reset your Universal Translator password.<br /><br />");
+        sb.append("You have recently asked to reset your ***INSERT PROGRAM NAME HERE*** password.<br /><br />");
         sb.append("<a href='" + resetURL + randomCode + "'>Click here to reset your password.</a>");
 
         messageDetails.setmessageBody(sb.toString());
-        messageDetails.setfromEmailAddress("dphuniversaltranslator@gmail.com");
+        //messageDetails.setfromEmailAddress("dphuniversaltranslator@gmail.com");
 
         emailMessageManager.sendEmail(messageDetails);
 
@@ -328,16 +214,6 @@ public class mainController {
         } else {
             userDetails.setresetCode(null);
             userDetails.setPassword(newPassword);
-
-            //Return the sections for the clicked user
-            List<userAccess> userSections = usermanager.getuserSections(userDetails.getId());
-            List<Integer> userSectionList = new ArrayList<Integer>();
-
-            for (int i = 0; i < userSections.size(); i++) {
-                userSectionList.add(userSections.get(i).getFeatureId());
-            }
-
-            userDetails.setsectionList(userSectionList);
 
             usermanager.updateUser(userDetails);
 

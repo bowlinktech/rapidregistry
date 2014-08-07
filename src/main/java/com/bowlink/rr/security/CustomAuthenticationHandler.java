@@ -1,10 +1,6 @@
 package com.bowlink.rr.security;
 
-import com.bowlink.rr.model.Organization;
 import com.bowlink.rr.model.User;
-import com.bowlink.rr.model.custom.searchParameters;
-import com.bowlink.rr.model.userAccess;
-import com.bowlink.rr.service.organizationManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.core.Authentication;
@@ -18,7 +14,6 @@ import java.io.IOException;
 import java.util.Set;
 
 import com.bowlink.rr.service.userManager;
-import java.util.List;
 import javax.servlet.http.HttpSession;
 
 public class CustomAuthenticationHandler extends SimpleUrlAuthenticationSuccessHandler {
@@ -26,25 +21,17 @@ public class CustomAuthenticationHandler extends SimpleUrlAuthenticationSuccessH
     @Autowired
     private userManager usermanager;
     
-    @Autowired
-    private organizationManager organizationManager;
-
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
-        String userTargetUrl = "/profile";
-        String adminTargetUrl = "/administrator";
+        String programAdminTargetUrl = "/programAdmin";
+        String sysAdminTargetUrl = "/sysAdmin/programs/";
         Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
 
         usermanager.setLastLogin(authentication.getName());
+        
+        HttpSession session = request.getSession();
 
-        if (roles.contains("ROLE_ADMIN") || roles.contains("ROLE_PROCESSINGADMIN")) {
-            
-            HttpSession session = request.getSession();
-             
-            searchParameters searchParameters = new searchParameters();
-            
-            /* Need to store the search session object */
-            session.setAttribute("searchParameters", searchParameters);
+        if (roles.contains("ROLE_SYSTEMADMIN")) {
             
             /* Need to get the userId */
             User userDetails = usermanager.getUserByUserName(authentication.getName());
@@ -52,33 +39,30 @@ public class CustomAuthenticationHandler extends SimpleUrlAuthenticationSuccessH
             /* Need to store the user object in session */
             session.setAttribute("userDetails", userDetails);
             
-            getRedirectStrategy().sendRedirect(request, response, adminTargetUrl);
+            getRedirectStrategy().sendRedirect(request, response, sysAdminTargetUrl);
         } 
         
+        else if (roles.contains("ROLE_PROGRAMADMIN")) {
+            /* Need to get the userId */
+            User userDetails = usermanager.getUserByUserName(authentication.getName());
+            
+            /* Need to store the user object in session */
+            session.setAttribute("userDetails", userDetails);
+            
+            
+            getRedirectStrategy().sendRedirect(request, response, programAdminTargetUrl);
+        } 
         else if (roles.contains("ROLE_USER")) {
             /* Need to get the userId */
             User userDetails = usermanager.getUserByUserName(authentication.getName());
             
-            Organization orgDetails = organizationManager.getOrganizationById(userDetails.getOrgId());
-            
-            searchParameters searchParameters = new searchParameters();
-            
-            userDetails.setdateOrgWasCreated(orgDetails.getDateCreated());
-            
-            /* Need to set some session variables to hold information about the user */
-            List<userAccess> userAccess = usermanager.getuserSections(userDetails.getId());
-            
-            HttpSession session = request.getSession();
-            session.setAttribute("userAccess" , userAccess);
-            
             /* Need to store the user object in session */
             session.setAttribute("userDetails", userDetails);
             
-            /* Need to store the search session object */
-            session.setAttribute("searchParameters", searchParameters);
             
-            getRedirectStrategy().sendRedirect(request, response, userTargetUrl);
-        } else {
+            getRedirectStrategy().sendRedirect(request, response, "***PROGRAM NAME***/patients");
+        }
+        else {
             super.onAuthenticationSuccess(request, response, authentication);
             return;
         }

@@ -35,7 +35,7 @@
                 <prop key="hibernate.show_sql">${jdbc.hibernate.show_sql}</prop>
             </props>
         </property>
-        <property name="packagesToScan" value="com.bowlink.rr.model, com.bowlink.rr.model.custom, com.bowlink.rr.model.lutables" />
+        <property name="packagesToScan" value="com.bowlink.rr.model" />
     </bean>
 
     <tx:annotation-driven transaction-manager="transactionManager"/>

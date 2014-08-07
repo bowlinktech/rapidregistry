@@ -11,8 +11,9 @@
     
 
     <http auto-config="true" use-expressions="true" disable-url-rewriting="false" >
-        <intercept-url access="hasAnyRole('ROLE_ADMIN','ROLE_PROCESSINGADMIN')" pattern="/administrator/**"></intercept-url>
-        <intercept-url access="hasRole('ROLE_USER')" pattern="/profile/**"></intercept-url>
+        <intercept-url access="hasRole('ROLE_SYSTEMADMIN')" pattern="/sysAdmin/**"></intercept-url>
+        <intercept-url access="hasRole('ROLE_PROGRAMADMIN')" pattern="/programAdmin/**"></intercept-url>
+        <intercept-url access="hasRole('ROLE_USER')" pattern="/**/patients"></intercept-url>
         <intercept-url access="permitAll" pattern="/scheduleTask/**"></intercept-url>
         <intercept-url access="permitAll" pattern="/login/*"></intercept-url>
         <intercept-url access="permitAll" pattern="/logout"></intercept-url>
@@ -26,6 +27,7 @@
             <frame-options policy="SAMEORIGIN" />
             <xss-protection />
         </headers>
+        <csrf />
     </http>
     
     

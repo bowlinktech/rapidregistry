@@ -58,7 +58,6 @@ public class ExceptionControllerAdvice {
             if (userInfo != null) {	
             	sb.append("Logged in User: " + userInfo.getFirstName() + " " + userInfo.getLastName() + " (ID: "+ userInfo.getId() + ")");
                 sb.append(System.getProperty("line.separator"));
-                sb.append("User OrgId: " + userInfo.getOrgId());
                 sb.append(System.getProperty("line.separator"));
             }
         }

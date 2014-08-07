@@ -36,6 +36,7 @@
             </c:choose>
         </c:if> 
         <form role="form" id="form-admin-login" name='f' action="<c:url value='j_spring_security_check' />" method='POST'>
+            <input type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
             <fieldset name="login-fields" form="form-admin-login" class="basic-clearfix">
                 <div class="form-group ${not empty error ? 'has-error' : '' }">
                     <label class="control-label" for="username">Username</label>
