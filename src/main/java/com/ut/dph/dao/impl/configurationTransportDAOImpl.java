@@ -1,6 +1,7 @@
 package com.ut.dph.dao.impl;
 
 import java.util.List;
+
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
@@ -17,6 +18,7 @@ import com.ut.dph.model.configurationMessageSpecs;
 import com.ut.dph.model.configurationRhapsodyFields;
 import com.ut.dph.model.configurationTransport;
 import com.ut.dph.model.configurationTransportMessageTypes;
+import com.ut.dph.model.configurationWebServiceFields;
 
 import java.util.Iterator;
 
@@ -734,12 +736,12 @@ public class configurationTransportDAOImpl implements configurationTransportDAO 
      */
     @Override
     @Transactional
-    public void saveTransportRhapsody(configurationRhapsodyFields rhapsodyFields) {
+    public void saveTransportRhapsody(configurationRhapsodyFields rhapsodyFields) throws Exception {
         try {
             sessionFactory.getCurrentSession().saveOrUpdate(rhapsodyFields);
         } catch (Exception ex) {
             ex.printStackTrace();
-            System.err.println("saveTransportFTP " + ex.getCause());
+            System.err.println("saveTransportRhapsody " + ex.getCause());
         }
     }
 
@@ -905,6 +907,24 @@ public class configurationTransportDAOImpl implements configurationTransportDAO 
          }
 	}
     
-    
+	@Override
+    @Transactional
+    public List<configurationWebServiceFields> getTransWSDetails(int transportDetailId) throws Exception {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(configurationWebServiceFields.class)
+                .add(Restrictions.eq("transportId", transportDetailId));
 
+        return criteria.list();
+    }   
+
+    @Override
+    @Transactional
+    public void saveTransportWebService(configurationWebServiceFields wsFields) throws Exception {
+        try {
+            sessionFactory.getCurrentSession().saveOrUpdate(wsFields);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            System.err.println("saveTransportWebService " + ex.getCause());
+        }
+    }
+    
 }

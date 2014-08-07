@@ -11,6 +11,7 @@ import com.ut.dph.model.configurationRhapsodyFields;
 import com.ut.dph.model.configurationTransport;
 import com.ut.dph.model.configurationTransportMessageTypes;
 import org.springframework.stereotype.Repository;
+import com.ut.dph.model.configurationWebServiceFields;
 
 @Repository
 public interface configurationTransportDAO {
@@ -80,7 +81,7 @@ public interface configurationTransportDAO {
     
     List<configurationTransport> getDistinctDelimCharForFileExt(String fileExt, Integer transportMethodId);
     
-    void saveTransportRhapsody(configurationRhapsodyFields rhapsodyFields);
+    void saveTransportRhapsody(configurationRhapsodyFields rhapsodyFields) throws Exception;
     
     List<configurationRhapsodyFields> getTransRhapsodyDetails(int transportDetailId) throws Exception;
     
@@ -95,5 +96,8 @@ public interface configurationTransportDAO {
     List <TransportMethod> getTransportMethods(List <Integer> statusIds);
     
     List <configurationTransport> getConfigurationTransportFileExtByFileType(Integer orgId, Integer transportMethodId, List<Integer> fileTypeIds, List <Integer> statusIds, boolean distinctOnly, boolean foroutboundProcessing);
-
+    
+    List<configurationWebServiceFields> getTransWSDetails(int transportDetailId) throws Exception;
+    
+    void saveTransportWebService(configurationWebServiceFields wsFields) throws Exception;
 }

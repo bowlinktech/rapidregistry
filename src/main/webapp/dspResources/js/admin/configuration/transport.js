@@ -7,16 +7,20 @@ require(['./main'], function () {
     
         var selMethodId = $('#transportMethod').val() 
         //Show file/download/FTP fields
-        if(selMethodId === "1" || selMethodId === "3" || selMethodId === "5") {
+        if(selMethodId == "1" || selMethodId == "3" || selMethodId == "5" || selMethodId == "6") {
             $('#upload-downloadDiv').show();
         }
 
-        if(selMethodId === "3") {
+        if(selMethodId == "3") {
             $('#additionalFTPDiv').show();
         }
         
-        if(selMethodId === "5") {
+        if(selMethodId == "5") {
         	$('#rhapsodyDiv').show();
+        }
+        
+        if(selMethodId == "6") {
+        	$('#wsDiv').show();
         }
 
         if(selMethodId !== "2" && selMethodId !== "") {
@@ -35,16 +39,20 @@ require(['./main'], function () {
            $('.methodDiv').hide();
 
            //Show file/download/FTP fields
-           if(methodId === "1" || methodId === "3" || methodId === "5") {
+           if(methodId == "1" || methodId == "3" || methodId == "5" || methodId == "6") {
                $('#upload-downloadDiv').show();
            }
 
-           if(methodId === "3") {
+           if(methodId == "3") {
                $('#additionalFTPDiv').show();
            }
           
-           if(methodId === "5") {
+           if(methodId == "5") {
         	   $('#rhapsodyDiv').show();
+           }
+           
+           if(methodId == "6") {
+        	   $('#wsDiv').show();
            }
            
            if(methodId !== "2" && methodId !== "") {
@@ -223,7 +231,7 @@ function checkFormFields() {
        hasErrors = 1;
     }
     
-    if (selMethodId === "1" || selMethodId === "3" || selMethodId === "5") {
+    if (selMethodId === "1" || selMethodId === "3" || selMethodId === "5" || selMethodId === "6") {
        
        //Make sure the file size is numeric and greate than 0
        if($('#maxFileSize').val() <= 0 || !$.isNumeric($('#maxFileSize').val())) {
@@ -232,7 +240,6 @@ function checkFormFields() {
            $('#maxFileSizeMsg').html('The max file size is a required field and must be a numeric value.');
            hasErrors = 1;
        }
-       
        //Make sure the file type is selected
        if($('#fileType').val() === "") {
            $('#fileTypeDiv').addClass("has-error");
@@ -382,10 +389,9 @@ function checkFormFields() {
      
        }
        
-       
-       if(selMethodId === "5") {
+       if(selMethodId == "5") {
     		//Check rhapsody get Fields
-    	          if($('#rDirectory1').val() === "") {
+    	          if($('#rDirectory1').val() == "") {
     	                $('#rDirectory1Div').addClass("has-error");
     	                $('#rDirectory1Msg').addClass("has-error");
     	                $('#rDirectory1Msg').html('The directory is a required field.');
@@ -394,7 +400,7 @@ function checkFormFields() {
 
     	        //Check rhapsody push Fields
     	           
-    	            if($('#rDirectory2').val() === "") {
+    	            if($('#rDirectory2').val() == "") {
     	                $('#rDirectory2Div').addClass("has-error");
     	                $('#rDirectory2Msg').addClass("has-error");
     	                $('#rDirectory2Msg').html('The directory is a required field.');
@@ -406,7 +412,31 @@ function checkFormFields() {
     	            hasErrors = 1;
     	        }
     	     
-    	       }
+    	 }
+       
+       if(selMethodId == "6") {
+      		//Check ws get Fields
+      	          if($('#domain1').val() == "") {
+      	                $('#wsDomain1Div').addClass("has-error");
+      	                $('#wsDomain1Msg').addClass("has-error");
+      	                $('#wsDomain1Msg').html('The domain is a required field.');
+      	                hasErrors = 1;
+      	            }
+      	         
+      	        //Check ws push Fields
+      	           
+      	            if($('#domain2').val() == "") {
+      	                $('#wsDomain2Div').addClass("has-error");
+      	                $('#wsDomain2Msg').addClass("has-error");
+      	                $('#wsDomain2Msg').html('The domain is a required field.');
+      	                hasErrors = 1;
+      	            }
+
+      	        if(hasErrors == 1) {
+      	            $('#wsDanger').show();
+      	            hasErrors = 1;
+      	        }
+      	 }
        
     }
     
@@ -418,7 +448,6 @@ function checkFormFields() {
         hasErrors = 1;
     }
  
-
     return hasErrors;
 }
 

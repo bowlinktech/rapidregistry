@@ -65,6 +65,8 @@ import org.apache.commons.net.ftp.FTPReply;
 import org.apache.commons.net.ftp.FTPSClient;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
+import com.ut.dph.model.configurationWebServiceFields;
+
 
 @Controller
 @RequestMapping("/administrator/configurations")
@@ -524,6 +526,30 @@ public class adminConfigController {
             transportDetails.setRhapsodyFields(rhapsodyFields);
         }
         
+      //get WS fields
+        List<configurationWebServiceFields> wsFields = configurationTransportManager.getTransWSDetails(transportDetails.getId());
+        
+        
+        if(wsFields.isEmpty()) {
+        	
+            List<configurationWebServiceFields> emptyWSFields = new ArrayList<configurationWebServiceFields>();
+            configurationWebServiceFields inboundWSFields = new configurationWebServiceFields();
+            inboundWSFields.setMethod(1);
+            inboundWSFields.setDomain("");
+            
+            configurationWebServiceFields outboundWSFields = new configurationWebServiceFields();
+            outboundWSFields.setMethod(2);
+            outboundWSFields.setDomain(""); 
+            
+            emptyWSFields.add(inboundWSFields);
+            emptyWSFields.add(outboundWSFields);
+            
+            transportDetails.setWebServiceFields(emptyWSFields);
+        }
+        else {
+            transportDetails.setWebServiceFields(wsFields);
+        }
+        
         
         //Need to get a list of all configurations for the current organization
         List<configuration> configurations = configurationmanager.getConfigurationsByOrgId(configurationDetails.getorgId(),"");
@@ -656,6 +682,14 @@ public class adminConfigController {
             for(configurationRhapsodyFields rhapsodyFields : transportDetails.getRhapsodyFields()) {
             	rhapsodyFields.setTransportId(transportId);
                 configurationTransportManager.saveTransportRhapsody(rhapsodyFields);
+            }
+        }
+        
+        
+        if(transportDetails.gettransportMethodId() == 6 && !transportDetails.getWebServiceFields().isEmpty()) {
+            for(configurationWebServiceFields wsFields : transportDetails.getWebServiceFields()) {
+            	wsFields.setTransportId(transportId);
+                configurationTransportManager.saveTransportWebService(wsFields);
             }
         }
         

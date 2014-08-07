@@ -71,3 +71,16 @@ ALTER TABLE `universaltranslator`.`movefileslog`
 DROP INDEX `pathMethodInd` ,
 ADD INDEX `pathMethodInd` (`transportMethodId` ASC, `folderPath` ASC, `method` ASC, `statusId` ASC);
 
+/** 08.06.2014 Grace 08:46PM applied to all dph machines **/
+INSERT INTO `universaltranslator`.`ref_transportmethods` (`transportMethod`, `active`) VALUES ('Web Service', 1);
+
+CREATE TABLE `universaltranslator`.`rel_transportWebServiceDetails` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `transportId` int(11) NOT NULL,
+  `domain` varchar(255) DEFAULT NULL,
+  `method` int(11) DEFAULT NULL COMMENT '1 = toUT\n2 = fromUT',
+  PRIMARY KEY (`id`),
+  KEY `wsTransportId_idx` (`transportId`),
+  CONSTRAINT `wsTransportId_idx` FOREIGN KEY (`transportId`) REFERENCES `configurationtransportdetails` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=latin1;
+

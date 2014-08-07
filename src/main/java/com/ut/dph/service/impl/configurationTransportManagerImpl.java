@@ -4,11 +4,13 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.ut.dph.model.TransportMethod;
 import com.ut.dph.model.configurationFormFields;
 import com.ut.dph.model.configurationMessageSpecs;
 import com.ut.dph.model.configurationRhapsodyFields;
 import com.ut.dph.model.configurationTransport;
+import com.ut.dph.model.configurationWebServiceFields;
 import com.ut.dph.dao.configurationTransportDAO;
 import com.ut.dph.model.Organization;
 import com.ut.dph.model.configurationFTPFields;
@@ -266,7 +268,7 @@ public class configurationTransportManagerImpl implements configurationTransport
 	}
 
 	@Override
-	public void saveTransportRhapsody(configurationRhapsodyFields rhapsodyFields) {
+	public void saveTransportRhapsody(configurationRhapsodyFields rhapsodyFields) throws Exception {
 		configurationTransportDAO.saveTransportRhapsody(rhapsodyFields);	
 	}
 	
@@ -310,5 +312,16 @@ public class configurationTransportManagerImpl implements configurationTransport
 			Integer orgId, Integer transportMethodId,
 			List<Integer> fileTypeIds, List<Integer> statusIds, boolean distinctOnly, boolean foroutboundProcessing) {
 		 return configurationTransportDAO.getConfigurationTransportFileExtByFileType(orgId,transportMethodId, fileTypeIds, statusIds, distinctOnly, foroutboundProcessing);
+	}
+	
+    @Override
+    @Transactional
+    public List<configurationWebServiceFields> getTransWSDetails(int transportDetailId) throws Exception {
+        return configurationTransportDAO.getTransWSDetails(transportDetailId);
+    }
+    
+    @Override
+	public void saveTransportWebService(configurationWebServiceFields wsFields) throws Exception{
+		configurationTransportDAO.saveTransportWebService(wsFields);	
 	}
 }

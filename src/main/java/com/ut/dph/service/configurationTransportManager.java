@@ -3,12 +3,14 @@ package com.ut.dph.service;
 import com.ut.dph.model.configurationFTPFields;
 
 import java.util.List;
+
 import com.ut.dph.model.TransportMethod;
 import com.ut.dph.model.configurationFormFields;
 import com.ut.dph.model.configurationMessageSpecs;
 import com.ut.dph.model.configurationRhapsodyFields;
 import com.ut.dph.model.configurationTransport;
 import com.ut.dph.model.configurationTransportMessageTypes;
+import com.ut.dph.model.configurationWebServiceFields;
 
 public interface configurationTransportManager {
 
@@ -77,7 +79,7 @@ public interface configurationTransportManager {
     
     List<configurationTransport> getDistinctDelimCharForFileExt(String fileExt, Integer transportMethodId);
     
-    void saveTransportRhapsody(configurationRhapsodyFields rhapsodyFields);
+    void saveTransportRhapsody(configurationRhapsodyFields rhapsodyFields) throws Exception;
     
     List<configurationRhapsodyFields> getTransRhapsodyDetails(int transportDetailId) throws Exception;
     
@@ -93,4 +95,7 @@ public interface configurationTransportManager {
     
     List <configurationTransport> getConfigurationTransportFileExtByFileType(Integer orgId, Integer transportMethodId, List<Integer> fileTypeIds, List <Integer> statusIds, boolean distinctOnly, boolean foroutboundProcessing);
 
+    List<configurationWebServiceFields> getTransWSDetails(int transportDetailId) throws Exception;
+    
+    void saveTransportWebService(configurationWebServiceFields wsFields) throws Exception;
 }
