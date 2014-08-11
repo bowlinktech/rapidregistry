@@ -27,7 +27,7 @@ define(['jquery', 'moment', 'bootstrap', 'responsive-tables', 'mediaModal', 'ove
     $.ajaxSetup({
         cache: false
     });
-    
+
     var token = $("meta[name='_csrf']").attr("content");
     var header = $("meta[name='_csrf_header']").attr("content");
     $(document).ajaxSend(function(e, xhr, options) {
@@ -116,13 +116,13 @@ define(['jquery', 'moment', 'bootstrap', 'responsive-tables', 'mediaModal', 'ove
     $.fn.dataTableExt.oApi.fnPagingInfo = function(oSettings)
     {
         return {
-            "iStart":oSettings._iDisplayStart,
-            "iEnd":oSettings.fnDisplayEnd(),
-            "iLength":oSettings._iDisplayLength,
-            "iTotal":oSettings.fnRecordsTotal(),
+            "iStart": oSettings._iDisplayStart,
+            "iEnd": oSettings.fnDisplayEnd(),
+            "iLength": oSettings._iDisplayLength,
+            "iTotal": oSettings.fnRecordsTotal(),
             "iFilteredTotal": oSettings.fnRecordsDisplay(),
-            "iPage":Math.ceil(oSettings._iDisplayStart / oSettings._iDisplayLength),
-            "iTotalPages":Math.ceil(oSettings.fnRecordsDisplay() / oSettings._iDisplayLength)
+            "iPage": Math.ceil(oSettings._iDisplayStart / oSettings._iDisplayLength),
+            "iTotalPages": Math.ceil(oSettings.fnRecordsDisplay() / oSettings._iDisplayLength)
         };
     }
 
@@ -208,14 +208,14 @@ define(['jquery', 'moment', 'bootstrap', 'responsive-tables', 'mediaModal', 'ove
             "sPaginationType": "bootstrap",
             "oLanguage": {
                 "sSearch": "_INPUT_",
-                "sLengthMenu": '<select class="form-control" style="width:150px">'+
-                      '<option value="10">10 Records</option>'+
-                      '<option value="20">20 Records</option>'+
-                      '<option value="30">30 Records</option>'+
-                      '<option value="40">40 Records</option>'+
-                      '<option value="50">50 Records</option>'+
-                      '<option value="-1">All</option>'+
-                      '</select>'
+                "sLengthMenu": '<select class="form-control" style="width:150px">' +
+                        '<option value="10">10 Records</option>' +
+                        '<option value="20">20 Records</option>' +
+                        '<option value="30">30 Records</option>' +
+                        '<option value="40">40 Records</option>' +
+                        '<option value="50">50 Records</option>' +
+                        '<option value="-1">All</option>' +
+                        '</select>'
             }
         });
     });
