@@ -8,6 +8,9 @@ package com.bowlink.rr.dao;
 
 import com.bowlink.rr.model.patientSharing;
 import com.bowlink.rr.model.program;
+import com.bowlink.rr.model.programActivityCodes;
+import com.bowlink.rr.model.programDemoDataElements;
+import com.bowlink.rr.model.programHealthDataElements;
 import com.bowlink.rr.model.programModules;
 import java.util.List;
 import org.springframework.stereotype.Repository;
@@ -44,5 +47,19 @@ public interface programDAO {
     void saveProgramModules(programModules module) throws Exception;
     
     void deleteProgramModules(Integer programId) throws Exception;
+    
+    List<programDemoDataElements> getProgramDemoFields(Integer programId) throws Exception;
+    
+    void deleteDemoFields(Integer programId) throws Exception;
+    
+    void saveDemoFields(programDemoDataElements field) throws Exception;
+    
+    List<programHealthDataElements> getProgramHealthFields(Integer programId) throws Exception;
+    
+    void deleteHealthFields(Integer programId) throws Exception;
+    
+    void saveHealthFields(programHealthDataElements field) throws Exception;
+    
+    List<programActivityCodes> getActivityCodes(Integer programId) throws Exception;
     
 }

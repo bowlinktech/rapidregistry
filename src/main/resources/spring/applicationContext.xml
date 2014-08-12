@@ -31,6 +31,7 @@
             <list>
                 <value>/WEB-INF/tileDefs/default.xml</value>
                 <value>/WEB-INF/tileDefs/sysAdmin.xml</value>
+                <value>/WEB-INF/tileDefs/programManager.xml</value>
             </list>
         </property>
     </bean>
@@ -47,8 +48,7 @@
     </bean>
 	
     <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-        <!-- one of the properties available; the maximum file size in bytes -->
-        <!--<property name="maxUploadSize" value="200000"/>-->
+        <property name="maxUploadSize" value="-1" />
     </bean>
     
     <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">

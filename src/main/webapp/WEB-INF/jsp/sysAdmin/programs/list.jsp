@@ -5,20 +5,31 @@
 
 <div class="main clearfix full-width" role="main">
     <div class="col-md-12">
-        <c:if test="${not empty savedStatus}" >
-            <div class="alert alert-success" role="alert">
-                <strong>Success!</strong> 
-                <c:choose>
-                    <c:when test="${savedStatus == 'updated'}">The program has been successfully updated!</c:when>
-                    <c:when test="${savedStatus == 'created'}">The program has been successfully added!</c:when>
-                    <c:when test="${savedStatus == 'deleted'}">The program has been successfully removed!</c:when>
-                    <c:when test="${savedStatus == 'updatedpatientsharing'}">The patient sharing has been successfully updated.</c:when>
-                    <c:when test="${savedStatus == 'updatedprogrammodules'}">The program modules have been successfully updated.</c:when>
-                    
-                </c:choose>
-            </div>
-        </c:if>
+        <c:choose>
+            <c:when test="${not empty savedStatus}" >
+                <div class="alert alert-success" role="alert">
+                    <strong>Success!</strong> 
+                    <c:choose>
+                        <c:when test="${savedStatus == 'updated'}">The program has been successfully updated!</c:when>
+                        <c:when test="${savedStatus == 'created'}">The program has been successfully added!</c:when>
+                        <c:when test="${savedStatus == 'deleted'}">The program has been successfully removed!</c:when>
+                        <c:when test="${savedStatus == 'updatedpatientsharing'}">The patient sharing has been successfully updated.</c:when>
+                        <c:when test="${savedStatus == 'updatedprogrammodules'}">The program modules have been successfully updated.</c:when>
 
+                    </c:choose>
+                </div>    
+            </c:when>
+            <c:when test="${not empty param.msg}" >
+                <div class="alert alert-success">
+                    <strong>Success!</strong> 
+                    <c:choose>
+                        <c:when test="${param.msg == 'updated'}">The program fields have been successfully updated!</c:when>
+                        <c:when test="${param.msg == 'created'}">The crosswalk has been successfully added!</c:when>
+                    </c:choose>
+                </div>
+            </c:when>
+        </c:choose>
+       
         <section class="panel panel-default">
             <div class="panel-body">
 

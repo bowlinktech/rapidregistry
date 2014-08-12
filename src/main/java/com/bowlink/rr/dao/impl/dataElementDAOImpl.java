@@ -1,0 +1,333 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.bowlink.rr.dao.impl;
+
+import com.bowlink.rr.dao.dataElementDAO;
+import com.bowlink.rr.model.crosswalks;
+import com.bowlink.rr.model.demoDataElements;
+import com.bowlink.rr.model.healthDataElements;
+import java.util.List;
+import org.hibernate.Criteria;
+import org.hibernate.Query;
+import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Disjunction;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ *
+ * @author chadmccue
+ */
+@Repository
+public class dataElementDAOImpl implements dataElementDAO {
+
+    @Autowired
+    private SessionFactory sessionFactory;
+
+    /**
+     * The 'getDemoDataElements' function will return a list of all available demographic data elements.
+     *
+     *
+     */
+    @Override
+    public List<demoDataElements> getDemoDataElements() throws Exception {
+
+        Query query = sessionFactory.getCurrentSession().createQuery("from demoDataElements order by elementName asc");
+
+        List<demoDataElements> fieldList = query.list();
+
+        return fieldList;
+
+    }
+    
+    /**
+     * The 'getHealthDataElements' function will return a list of all available health data elements.
+     *
+     *
+     */
+    @Override
+    public List<healthDataElements> getHealthDataElements() throws Exception {
+
+        Query query = sessionFactory.getCurrentSession().createQuery("from healthDataElements order by elementName asc");
+
+        List<healthDataElements> fieldList = query.list();
+
+        return fieldList;
+
+    }
+
+    /**
+     * The 'getCrosswalks' function will return the list of available crosswalks to associate a message types to. This function will only return crosswalks not associated to a specific organization.
+     *
+     * @param page	The current crosswalk page
+     * @param	maxResults	The maximum number of crosswalks to return from each query
+     * @param	orgId	The organization id (default 0)
+     *
+     * @Table	crosswalks
+     *
+     * @Return	This function will return a list of crosswalks
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<crosswalks> getCrosswalks(int page, int maxResults, int programId) {
+
+        Query query = null;
+
+        if (programId == 0) {
+            query = sessionFactory.getCurrentSession().createQuery("from crosswalks where programId = 0 order by name asc");
+        } else {
+            query = sessionFactory.getCurrentSession().createQuery("from crosswalks where (programId = 0 or programId = :programId) order by name asc");
+            query.setParameter("programId", programId);
+        }
+
+        int firstResult = 0;
+
+        //Set the parameters for paging
+        //Set the page to load
+        if (page > 1) {
+            firstResult = (maxResults * (page - 1));
+        }
+        query.setFirstResult(firstResult);
+
+        //Set the max results to display
+        //If 0 is passed then we want all crosswalks
+        if (maxResults > 0) {
+            query.setMaxResults(maxResults);
+        }
+
+        return query.list();
+
+    }
+
+    /**
+     * The 'getValidationTypes' function will return a list of available field validation types
+     *
+     */
+    @Override
+    @SuppressWarnings("rawtypes")
+    public List getValidationTypes() {
+        Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT id, validationType FROM lu_validationtypes order by id asc");
+
+        return query.list();
+    }
+
+    /**
+     * The 'getDemoFieldName' function will return the name of a field based on the fieldId passed in. This is used for display purposes to show the actual field lable instead of a field name.
+     *
+     * @param fieldId	This will hold the id of the field to retrieve
+     *
+     * @Return This function will return a string (field name)
+     */
+    @Override
+    @Transactional
+    public String getDemoFieldName(int fieldId) {
+        Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT elementName FROM demographicDataElements where id = :fieldId")
+                .setParameter("fieldId", fieldId);
+
+        String fieldName = (String) query.uniqueResult();
+
+        return fieldName;
+    }
+    
+    /**
+     * The 'getHealthFieldName' function will return the name of a field based on the fieldId passed in. This is used for display purposes to show the actual field lable instead of a field name.
+     *
+     * @param fieldId	This will hold the id of the field to retrieve
+     *
+     * @Return This function will return a string (field name)
+     */
+    @Override
+    @Transactional
+    public String getHealthFieldName(int fieldId) {
+        Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT elementName FROM healthDataElements where id = :fieldId")
+                .setParameter("fieldId", fieldId);
+
+        String fieldName = (String) query.uniqueResult();
+
+        return fieldName;
+    }
+
+    /**
+     * The 'getCrosswalkName' function will return the name of a crosswalk based on the id passed in.
+     *
+     * @param cwId	This will hold the id of the crosswalk to retrieve
+     *
+     * @Return This function will return a string (crosswalk name).
+     */
+    @Override
+    @Transactional
+    public String getCrosswalkName(int cwId) {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(crosswalks.class);
+        criteria.add(Restrictions.eq("id", cwId));
+
+        crosswalks cwDetails = (crosswalks) criteria.uniqueResult();
+
+        String cwName = "";
+
+        if (cwDetails.getProgramId() > 0) {
+            cwName = cwDetails.getName() + " (Program Specific)";
+        } else {
+            cwName = cwDetails.getName();
+        }
+
+        return cwName;
+    }
+
+    
+    /**
+     * The 'getValidationName' function will return the name of the selected validation passed in. 
+     * This is used for display purposes to show the actual validation name instead.
+     *
+     * @param validationId	This will hold the id of the validation type to retrieve
+     *
+     * @Return This function will return a string (validation name)
+     */
+    @Override
+    @Transactional
+    public String getValidationName(int validationId) {
+        Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT validationType FROM lu_validationtypes where id = :validationId")
+                .setParameter("validationId", validationId);
+
+        String validationName = (String) query.uniqueResult();
+
+        return validationName;
+    }
+    
+    /**
+     * The 'findTotalCrosswalks' function will return the total number of generic crosswalks in the system
+     *
+     * @param programId Will pass the programId this will help determine if I want all crosswalks or generic system only crosswalks
+     *
+     * @Table	crosswalks
+     *
+     *
+     * @Return	This function will return the total number of generic crosswalks set up in the system
+     */
+    @Override
+    public double findTotalCrosswalks(int programId) {
+
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(crosswalks.class);
+
+        if (programId == 0) {
+            criteria.add(Restrictions.eq("programId", 0));
+        }
+        else {
+           Disjunction or = Restrictions.disjunction();
+           or.add(Restrictions.eq("programId", 0));
+           or.add(Restrictions.eq("programId", programId));
+           criteria.add(or);
+            
+        }
+
+        double totalCrosswalks = (double) criteria.list().size();
+
+        return totalCrosswalks;
+    }
+    
+    /**
+     * The 'getDelimiters' function will return a list of available file delimiters
+     *
+     */
+    @Override
+    @SuppressWarnings("rawtypes")
+    @Transactional
+    public List getDelimiters() {
+        Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT id, delimiter FROM lu_delimiters order by delimiter asc");
+
+        return query.list();
+    }
+
+    /**
+     * The 'getDelimiterChar' will return the actual character of the delimiter for the id passed into the function
+     *
+     * @param id	The id will hold the delimiter ID to retrieve its associated character
+     *
+     * @returns string
+     */
+    @Transactional
+    public String getDelimiterChar(int id) {
+        Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT delimChar FROM lu_delimiters where id = :id");
+        query.setParameter("id", id);
+
+        String delimChar = (String) query.uniqueResult();
+
+        return delimChar;
+    }
+    
+    /**
+     *
+     */
+    @Override
+    @Transactional
+    public Long checkCrosswalkName(String name, int programId) {
+        Query query = null;
+
+        if (programId > 0) {
+            query = sessionFactory.getCurrentSession().createQuery("select count(id) as total from crosswalks where name = :name and programId = :programId");
+            query.setParameter("name", name);
+            query.setParameter("programId", programId);
+        } else {
+            query = sessionFactory.getCurrentSession().createQuery("select count(id) as total from crosswalks where name = :name");
+            query.setParameter("name", name);
+        }
+
+        Long cwId = (Long) query.uniqueResult();
+
+        return cwId;
+    }
+
+    /**
+     * The 'createCrosswalk" function will create the new crosswalk
+     *
+     * @Table	crosswalks
+     *
+     * @param	crosswalkDetails	This will hold the crosswalk object from the form
+     *
+     * @return The function will return the id of the new crosswalk
+     *
+     */
+    @Override
+    public Integer createCrosswalk(crosswalks crosswalkDetails) {
+        Integer lastId = null;
+
+        lastId = (Integer) sessionFactory.getCurrentSession().save(crosswalkDetails);
+
+        return lastId;
+    }
+
+    /**
+     * The 'getCrosswalk' function will return a single crosswalk object based on the id passed in.
+     *
+     * @param	cwId	This will be id to find the specific crosswalk
+     *
+     * @return	The function will return a crosswalk object
+     */
+    @Override
+    public crosswalks getCrosswalk(int cwId) {
+        return (crosswalks) sessionFactory.getCurrentSession().get(crosswalks.class, cwId);
+    }
+
+    /**
+     * The 'getDelimiters' function will return a list of available file delimiters
+     *
+     * @param	cwId	This will be the id of the crosswalk to return the associated data elements for
+     *
+     * @return	The function will return a list of data objects for the crosswalk
+     *
+     */
+    @Override
+    @SuppressWarnings("rawtypes")
+    @Transactional
+    public List getCrosswalkData(int cwId) {
+        Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT sourceValue, targetValue, descValue FROM rel_crosswalkData where crosswalkId = :crosswalkid order by id asc");
+        query.setParameter("crosswalkid", cwId);
+
+        return query.list();
+    }
+
+}
