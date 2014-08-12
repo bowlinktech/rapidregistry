@@ -8,6 +8,7 @@ package com.bowlink.rr.service;
 
 import com.bowlink.rr.model.patientSharing;
 import com.bowlink.rr.model.program;
+import com.bowlink.rr.model.programDemoDataElements;
 import com.bowlink.rr.model.programModules;
 import java.util.List;
 
@@ -42,6 +43,12 @@ public interface programManager {
     void saveProgramModules(programModules module) throws Exception;
     
     void deleteProgramModules(Integer programId) throws Exception;
+    
+    List<programDemoDataElements> getProgramDemoFields(Integer programId) throws Exception;
+    
+    void deleteDemoFields(Integer programId) throws Exception;
+    
+    void saveDemoFields(programDemoDataElements field) throws Exception;
     
     
 }

@@ -27,7 +27,7 @@
             <frame-options policy="SAMEORIGIN" />
             <xss-protection />
         </headers>
-        <csrf />
+        <!--<csrf />-->
     </http>
     
     

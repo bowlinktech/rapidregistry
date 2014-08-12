@@ -9,6 +9,7 @@ package com.bowlink.rr.service.impl;
 import com.bowlink.rr.dao.programDAO;
 import com.bowlink.rr.model.patientSharing;
 import com.bowlink.rr.model.program;
+import com.bowlink.rr.model.programDemoDataElements;
 import com.bowlink.rr.model.programModules;
 import com.bowlink.rr.service.programManager;
 import java.util.List;
@@ -114,6 +115,24 @@ public class programManagerImpl implements programManager {
     @Transactional
     public void deleteProgramModules(Integer programId) throws Exception {
         programDAO.deleteProgramModules(programId);
+    }
+    
+    @Override
+    @Transactional
+    public List<programDemoDataElements> getProgramDemoFields(Integer programId) throws Exception {
+        return programDAO.getProgramDemoFields(programId);
+    }
+    
+    @Override
+    @Transactional
+    public void deleteDemoFields(Integer programId) throws Exception {
+        programDAO.deleteDemoFields(programId);
+    }
+    
+    @Override
+    @Transactional
+    public void saveDemoFields(programDemoDataElements field) throws Exception {
+        programDAO.saveDemoFields(field);
     }
     
 }

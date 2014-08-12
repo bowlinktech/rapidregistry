@@ -8,7 +8,6 @@ package com.bowlink.rr.dao.impl;
 
 import com.bowlink.rr.dao.moduleDAO;
 import com.bowlink.rr.model.modules;
-import com.bowlink.rr.model.programModules;
 import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;

@@ -9,6 +9,7 @@ package com.bowlink.rr.dao.impl;
 import com.bowlink.rr.dao.programDAO;
 import com.bowlink.rr.model.patientSharing;
 import com.bowlink.rr.model.program;
+import com.bowlink.rr.model.programDemoDataElements;
 import com.bowlink.rr.model.programModules;
 import java.util.ArrayList;
 import java.util.List;
@@ -256,5 +257,48 @@ public class programDAOImpl implements programDAO {
         q1.setParameter("programId", programId);
         q1.executeUpdate();
     }
+    
+    
+    /**
+     * The 'getProgramDemoFields' function will return a list of selected demographic fields associated with
+     * the passed in program Id.
+     * 
+     * @param programId     The id of the program to retrieve demographic fields
+     * 
+     * @return This function will return a list of data elements
+     */
+    @Override
+    public List<programDemoDataElements> getProgramDemoFields(Integer programId) throws Exception {
+        Query query = sessionFactory.getCurrentSession().createQuery("from programDemoDataElements where programId = :programId");
+        query.setParameter("programId", programId);
+        
+        return query.list();
+    }
+    
+    /**
+     * The 'deleteDemoFields' function will remove all data fields saved for the passed in program.
+     * 
+     * @param programId The id that will contain the selected program
+     * 
+     * @throws Exception 
+     */
+    @Override
+    public void deleteDemoFields(Integer programId) throws Exception {
+        Query deleteTranslations = sessionFactory.getCurrentSession().createQuery("delete from programDemoDataElements where programId = :programId");
+        deleteTranslations.setParameter("programId", programId);
+        deleteTranslations.executeUpdate();
+    }
+    
+    /**
+     * The 'saveDemoFields' function will save all selected demo fields for the passed in program.
+     * 
+     * @param field         The programDemoDataElemets object to save
+     * @throws Exception 
+     */
+    @Override
+    public void saveDemoFields(programDemoDataElements field) throws Exception {
+        sessionFactory.getCurrentSession().save(field);
+    }
+    
     
 }
