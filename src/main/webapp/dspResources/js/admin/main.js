@@ -10,13 +10,15 @@ require.config({
         'sprintf': '../vendor/sprintf',
         'moment': '../vendor/moment',
         'daterangepicker': '../vendor/daterangepicker',
-        'dataTables': '../vendor/jquery.dataTables.min'
+        'dataTables': '../vendor/jquery.dataTables.min',
+        'duallistbox': '../vendor/jquery.bootstrap-duallistbox'
     },
     shim: {
         'bootstrap': ['jquery'],
         'responsive-tables': ['jquery'],
         'daterangepicker': ['jquery', 'bootstrap'],
-        'dataTables': ['jquery']
+        'dataTables': ['jquery'],
+        'duallistbox': ['jquery']
     }
 });
 

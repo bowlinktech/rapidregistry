@@ -12,7 +12,10 @@ import com.bowlink.rr.model.program;
 import com.bowlink.rr.model.programActivityCodes;
 import com.bowlink.rr.model.programDemoDataElements;
 import com.bowlink.rr.model.programHealthDataElements;
+import com.bowlink.rr.model.programMPI;
+import com.bowlink.rr.model.programMPIFields;
 import com.bowlink.rr.model.programModules;
+import com.bowlink.rr.model.programReports;
 import com.bowlink.rr.service.programManager;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -157,8 +160,68 @@ public class programManagerImpl implements programManager {
     
     @Override
     @Transactional
-    public List<programActivityCodes> getActivityCodes(Integer programId) throws Exception {
-        return programDAO.getActivityCodes(programId);
+    public boolean getUsedActivityCodes (Integer programId, Integer codeId) throws Exception {
+        return programDAO.getUsedActivityCodes(programId, codeId);
     }
     
+    @Override
+    @Transactional
+    public void saveProgramActivityCode(programActivityCodes newCodeAssoc) throws Exception {
+        programDAO.saveProgramActivityCode(newCodeAssoc);
+    }
+    
+    @Override
+    @Transactional
+    public void removeProgramActivityCodes(Integer programId) throws Exception {
+        programDAO.removeProgramActivityCodes(programId);
+    }
+    
+    @Override
+    @Transactional
+    public List<Integer> getProgramReports(Integer programId) throws Exception {
+        return programDAO.getProgramReports(programId);
+    }
+    
+    @Override
+    @Transactional
+    public void saveProgramReports(programReports report) throws Exception {
+        programDAO.saveProgramReports(report);
+    }
+    
+    @Override
+    @Transactional
+    public void deleteProgramReports(Integer programId) throws Exception {
+        programDAO.deleteProgramReports(programId);
+    }
+    
+    @Override
+    @Transactional
+    public List<programMPI> getProgramMPIAlgorithms(Integer programId) throws Exception {
+        return programDAO.getProgramMPIAlgorithms(programId);
+    }
+    
+    @Override
+    @Transactional
+    public List<programMPIFields> getProgramMPIFields(Integer mpiId) throws Exception {
+        return programDAO.getProgramMPIFields(mpiId);
+    }
+    
+    @Override
+    @Transactional
+    public Integer createMPIAlgorithm(programMPI newMPIAlgorithm) throws Exception {
+        return programDAO.createMPIAlgorithm(newMPIAlgorithm);
+    }
+    
+    @Override
+    @Transactional
+    public void createMPIAlgorithmFields(programMPIFields newField) throws Exception {
+        programDAO.createMPIAlgorithmFields(newField);
+    }
+    
+    @Override
+    @Transactional
+    public programMPI getMPIAlgorithm(Integer mpiId) throws Exception {
+        return programDAO.getMPIAlgorithm(mpiId);
+    }
+
 }

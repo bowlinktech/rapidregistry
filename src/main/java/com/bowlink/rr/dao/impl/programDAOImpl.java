@@ -12,7 +12,10 @@ import com.bowlink.rr.model.program;
 import com.bowlink.rr.model.programActivityCodes;
 import com.bowlink.rr.model.programDemoDataElements;
 import com.bowlink.rr.model.programHealthDataElements;
+import com.bowlink.rr.model.programMPI;
+import com.bowlink.rr.model.programMPIFields;
 import com.bowlink.rr.model.programModules;
+import com.bowlink.rr.model.programReports;
 import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.Criteria;
@@ -344,18 +347,177 @@ public class programDAOImpl implements programDAO {
     }
     
     /**
-     * The 'getActivityCodes' function will return a list of associated activity codes for the passed
-     * in program Id
+     * The 'getUsedActivityCodes' function will check to see if the passed in activity code is associated with the
+     * passed in program Id
      * 
+     * @param codeId    The id of the activity code passed in.
      * @param programId The id of the program to search on
-     * @return  This function will return a list of program activity code objects.
+     * @return  This function will return either true or false.
      * @throws Exception 
      */
     @Override
-    public List<programActivityCodes> getActivityCodes(Integer programId) throws Exception {
-        Query query = sessionFactory.getCurrentSession().createQuery("from programActivityCodes where programId = :programId");
+    public boolean getUsedActivityCodes(Integer programId, Integer codeId) throws Exception {
+        Query query = sessionFactory.getCurrentSession().createQuery("from programActivityCodes where programId = :programId and codeId = :codeId");
         query.setParameter("programId", programId);
+        query.setParameter("codeId", codeId);
         
-        return query.list();
+        if(query.list().isEmpty()) {
+            return false;
+        }
+        else {
+            return true;
+        }
+        
     }
+    
+    /**
+     * The 'saveProgramActivityCode' function will save the associated activity codes to the passed in 
+     * program.
+     * 
+     * @param   newCodeAssoc    The new activity code and program object
+     */
+    @Override
+    public void saveProgramActivityCode(programActivityCodes newCodeAssoc) throws Exception {
+        sessionFactory.getCurrentSession().save(newCodeAssoc);
+    }
+    
+    /**
+     * The 'removeProgramActivityCodes' function will remove the associated activity codes with the passed in
+     * program.
+     * 
+     * @param programId     The id of the passed in program
+     */
+    @Override
+    public void removeProgramActivityCodes(Integer programId) throws Exception {
+        Query deleteActivityCodes = sessionFactory.getCurrentSession().createQuery("delete from programActivityCodes where programId = :programId");
+        deleteActivityCodes.setParameter("programId", programId);
+        deleteActivityCodes.executeUpdate();
+    }
+    
+    /**
+     * The 'getProgramReports' function will return a list of reports the passed in program is using
+     * 
+     * @param programId     The id of the program to search used reports
+     * 
+     * @return This function will return a list of report Ids
+     */
+    @Override
+    public List<Integer> getProgramReports(Integer programId) throws Exception {
+        
+        List<Integer> usedReports = new ArrayList<Integer>();
+        
+        Query query = sessionFactory.getCurrentSession().createQuery("from programReports where programId = :programId");
+        query.setParameter("programId", programId);
+
+        List<programReports> reportList = query.list();
+        
+        if(reportList.size() > 0) {
+            for(programReports report : reportList) {
+                usedReports.add(report.getReportId());
+            }
+        }
+        
+        return usedReports;
+        
+    }
+    
+    /**
+     * The '/saveProgramReports' function will save the list of associated program reports
+     * programs
+     * 
+     * @param report   The object holding the selected report
+     */
+    @Override
+    public void saveProgramReports(programReports report) throws Exception {
+       sessionFactory.getCurrentSession().save(report);
+    }
+    
+    
+    /**
+     * The 'deleteProgramReports' function will remove all the reports for the selected program
+     * 
+     * @param programId The id of the selected program to delete all reports.
+     */
+    @Override
+    public void deleteProgramReports(Integer programId) throws Exception {
+        
+         /** Need to first delete current associations **/
+        Query q1 = sessionFactory.getCurrentSession().createQuery("delete from programReports where programId = :programId");
+        q1.setParameter("programId", programId);
+        q1.executeUpdate();
+    }
+    
+    /**
+     * The 'getProgramMPIAlgorithms' function will return a list of the programs in the system.
+     * 
+     * @return The function will return a list of progams in the system
+     */
+    @Override
+    public List<programMPI> getProgramMPIAlgorithms(Integer programId) throws Exception {
+        Query query = sessionFactory.getCurrentSession().createQuery("from programMPI where programId = :programId order by id asc");
+        query.setParameter("programId", programId);
+
+        List<programMPI> MPIList = query.list();
+        return MPIList;
+    }
+    
+    /**
+     * The 'getProgramMPIFields' function will get a list of fields associated to teach MPI Algorithm.
+     * 
+     * @param mpiId The id of the MPI Algorithm
+     * @return  This function will return a list of MPI Fields
+     * @throws Exception 
+     */
+    @Override
+    public List<programMPIFields> getProgramMPIFields(Integer mpiId) throws Exception {
+        Query query = sessionFactory.getCurrentSession().createQuery("from programMPIFields where mpiId = :mpiId order by id asc");
+        query.setParameter("mpiId", mpiId);
+
+        List<programMPIFields> fieldList = query.list();
+        return fieldList;
+    }
+    
+    /**
+     * The 'createMPIAlgorithm' function will create the new MPI Algorithm
+     * 
+     * @param newMPIAlgorithm   The object that holds the new algorithm
+     * 
+     * @return This function will return the id from the new algorithm
+     */
+    @Override
+    public Integer createMPIAlgorithm(programMPI newMPIAlgorithm) throws Exception {
+        Integer lastId = null;
+
+        lastId = (Integer) sessionFactory.getCurrentSession().save(newMPIAlgorithm);
+
+        return lastId;
+    }
+    
+    
+    /**
+     * The 'createMPIAlgorithmFields' function will save the fields associated to the MPI 
+     * algorithm.
+     * 
+     * 
+     */
+    @Override
+    public void createMPIAlgorithmFields(programMPIFields newField) throws Exception {
+        sessionFactory.getCurrentSession().save(newField);
+    }
+    
+    /**
+     * The 'getMPIAlgorithm' function will return the details of the passed in mpi algorithm.
+     * 
+     * @param mpiId The id of the selected MPI algorithm
+     * @return
+     * @throws Exception 
+     */
+    @Override
+    public programMPI getMPIAlgorithm(Integer mpiId) throws Exception {
+        Query query = sessionFactory.getCurrentSession().createQuery("from programMPI where id = :mpiId");
+        query.setParameter("mpiId", mpiId);
+
+        return (programMPI) query.uniqueResult();
+    }
+
 }

@@ -9,6 +9,7 @@
                 <div class="alert alert-success" role="alert">
                     <strong>Success!</strong> 
                     <c:choose>
+                        <c:when test="${savedStatus == 'updatedprogrammodules'}">The program modules have been successfully updated.</c:when>
                         <c:when test="${savedStatus == 'updatedpatientsharing'}">The patient sharing has been successfully updated.</c:when>
                     </c:choose>
                 </div>
@@ -33,7 +34,7 @@
               <div class="panel-body">
                 <div class="form-container scrollable">
                     <p>
-                        Below is a list of available modules that can be associated to this program. Mark off the modules in which <strong>${programDetails.programName}</strong> users has access to.
+                        Below is a list of available modules that can be associated to this program. Mark off the modules in which <strong>${programDetails.programName}</strong> users have access to.
                     </p>
                    <table class="table table-striped table-hover table-default">
                         <thead>

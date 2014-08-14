@@ -11,7 +11,10 @@ import com.bowlink.rr.model.program;
 import com.bowlink.rr.model.programActivityCodes;
 import com.bowlink.rr.model.programDemoDataElements;
 import com.bowlink.rr.model.programHealthDataElements;
+import com.bowlink.rr.model.programMPI;
+import com.bowlink.rr.model.programMPIFields;
 import com.bowlink.rr.model.programModules;
+import com.bowlink.rr.model.programReports;
 import java.util.List;
 import org.springframework.stereotype.Repository;
 
@@ -60,6 +63,26 @@ public interface programDAO {
     
     void saveHealthFields(programHealthDataElements field) throws Exception;
     
-    List<programActivityCodes> getActivityCodes(Integer programId) throws Exception;
+    boolean getUsedActivityCodes (Integer programId, Integer codeId) throws Exception;
+    
+    void saveProgramActivityCode(programActivityCodes newCodeAssoc) throws Exception;
+    
+    void removeProgramActivityCodes(Integer programId) throws Exception;
+    
+    List<Integer> getProgramReports(Integer programId) throws Exception;
+    
+    void saveProgramReports(programReports report) throws Exception;
+    
+    void deleteProgramReports(Integer programId) throws Exception;
+    
+    List<programMPI> getProgramMPIAlgorithms(Integer programId) throws Exception;
+    
+    List<programMPIFields> getProgramMPIFields(Integer mpiId) throws Exception;
+    
+    Integer createMPIAlgorithm(programMPI newMPIAlgorithm) throws Exception;
+    
+    void createMPIAlgorithmFields(programMPIFields newField) throws Exception;
+    
+    programMPI getMPIAlgorithm(Integer mpiId) throws Exception;
     
 }

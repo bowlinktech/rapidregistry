@@ -15,7 +15,7 @@
                         <c:when test="${savedStatus == 'deleted'}">The program has been successfully removed!</c:when>
                         <c:when test="${savedStatus == 'updatedpatientsharing'}">The patient sharing has been successfully updated.</c:when>
                         <c:when test="${savedStatus == 'updatedprogrammodules'}">The program modules have been successfully updated.</c:when>
-
+                        <c:when test="${savedStatus == 'codesupdated'}">The activity codes have been successfully added!</c:when>
                     </c:choose>
                 </div>    
             </c:when>
@@ -29,7 +29,7 @@
                 </div>
             </c:when>
         </c:choose>
-       
+
         <section class="panel panel-default">
             <div class="panel-body">
 
@@ -38,9 +38,9 @@
                             <thead>
                                 <tr>
                                     <th scope="col">Program Name ${result}</th>
-                                <th scope="col" class="center-text"># of Program Admins</th>
-                                <th scope="col" class="center-text">Date Created</th>
-                                <th scope="col"></th>
+                                    <th scope="col" class="center-text"># of Program Admins</th>
+                                    <th scope="col" class="center-text">Date Created</th>
+                                    <th scope="col"></th>
                             </tr>
                         </thead>
                         <tbody>

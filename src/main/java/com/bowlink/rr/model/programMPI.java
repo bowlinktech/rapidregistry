@@ -6,8 +6,8 @@
 
 package com.bowlink.rr.model;
 
-import com.bowlink.rr.validator.NoHtml;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,7 +15,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
 
 /**
@@ -23,25 +22,25 @@ import org.springframework.format.annotation.DateTimeFormat;
  * @author chadmccue
  */
 @Entity
-@Table(name = "ACTIVITYCODES")
-public class activityCodes {
+@Table(name = "PROGRAMMPIALGORITHMS")
+public class programMPI {
     
     @Transient
-    private boolean selected = false;
+    private List<programMPIFields> fields = null;
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID", nullable = false)
     private int id;
     
-    @NotEmpty
-    @NoHtml
-    @Column(name = "CODE", nullable = false)
-    private String code;
+    @Column(name = "PROGRAMID", nullable = false)
+    private Integer programId = null;
     
-    @NoHtml
-    @Column(name = "CODEDESC", nullable = false)
-    private String codeDesc;
+    @Column(name = "STATUS", nullable = false)
+    private boolean status = false;
+    
+    @Column(name = "ACTION", nullable = false)
+    private Integer action = 3;
     
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
     @Column(name = "DATECREATED", nullable = true)
@@ -55,20 +54,28 @@ public class activityCodes {
         this.id = id;
     }
 
-    public String getCode() {
-        return code;
+    public Integer getProgramId() {
+        return programId;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setProgramId(Integer programId) {
+        this.programId = programId;
     }
 
-    public String getCodeDesc() {
-        return codeDesc;
+    public boolean getStatus() {
+        return status;
     }
 
-    public void setCodeDesc(String codeDesc) {
-        this.codeDesc = codeDesc;
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+
+    public Integer getAction() {
+        return action;
+    }
+
+    public void setAction(Integer action) {
+        this.action = action;
     }
 
     public Date getDateCreated() {
@@ -79,12 +86,12 @@ public class activityCodes {
         this.dateCreated = dateCreated;
     }
 
-    public boolean getSelected() {
-        return selected;
+    public List<programMPIFields> getFields() {
+        return fields;
     }
 
-    public void setSelected(boolean selected) {
-        this.selected = selected;
+    public void setFields(List<programMPIFields> fields) {
+        this.fields = fields;
     }
     
     
