@@ -62,10 +62,10 @@
                                                          ${selField.action}
                                                      </td>
                                                      <td>
-                                                        <a href="javascript:void(0);" rel="${selField.id}" class="btn btn-link removeAlgorithmField" title="Remove this field" role="button">
+                                                        <a href="javascript:void(0);" rel="${selField.id}" class="btn btn-link removeAlgorithmField pull-right" title="Remove this field" role="button">
                                                           <span class="glyphicon glyphicon-remove"></span>
                                                           Delete
-                                                      </a> 
+                                                        </a> 
                                                      </td>
                                                  </tr>
                                              </c:forEach>

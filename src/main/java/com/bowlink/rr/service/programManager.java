@@ -15,6 +15,7 @@ import com.bowlink.rr.model.programMPI;
 import com.bowlink.rr.model.programMPIFields;
 import com.bowlink.rr.model.programModules;
 import com.bowlink.rr.model.programReports;
+import com.bowlink.rr.model.programAdmin;
 import java.util.List;
 
 /**
@@ -79,9 +80,15 @@ public interface programManager {
     
     Integer createMPIAlgorithm(programMPI newMPIAlgorithm) throws Exception;
     
+    void updateMPIAlgorithm(programMPI MPIAlgorithm) throws Exception;
+    
     void createMPIAlgorithmFields(programMPIFields newField) throws Exception;
     
     programMPI getMPIAlgorithm(Integer mpiId) throws Exception;
    
+    void removeAlgorithmField(Integer algorithmFieldId) throws Exception;
     
+    List<programAdmin> getProgramAdministrators(Integer programId) throws Exception;
+    
+    void saveAdminProgram(programAdmin adminProgram) throws Exception;
 }

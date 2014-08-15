@@ -43,15 +43,15 @@
                     <c:when test="${param['page'] == 'mpi'}">
                         <a href="javascript:void(0);" title="MPI Algorithms" class="unstyled-link">MPI Algorithms</a>
                     </c:when>  
-                    <c:when test="${param['page'] == 'users'}">
-                        <a href="javascript:void(0);" title="Program Admin Users" class="unstyled-link">Program Admin Users</a>
+                    <c:when test="${param['page'] == 'admins'}">
+                        <a href="javascript:void(0);" title="Program Admins" class="unstyled-link">Program Admins</a>
                     </c:when>      
                 </c:choose>
             </h1>
         </div>
         <ul class="nav navbar-nav navbar-right navbar-actions" role="menu">
             <c:choose>
-                <c:when test="${param['page'] != 'list' && param['page'] != 'mpi' }">
+                <c:when test="${param['page'] != 'list' && param['page'] != 'mpi' && param['page'] != 'admins' }">
                     <li role="menuitem"><a href="javascript:void(0);" id="saveDetails" title="Save Form" role="button"><span class="glyphicon glyphicon-ok icon-stacked"></span> Save </a></li>
                     <li role="menuitem"><a href="javascript:void(0);" id="saveCloseDetails" title="Save &amp; Close" role="button"><span class="glyphicon glyphicon-floppy-disk icon-stacked"></span> Save &amp; Close</a></li>
                 </c:when>

@@ -107,5 +107,15 @@
         <put-attribute name="jscript" value="/dspResources/js/sysAdmin/programs/algorithms.js" />
     </definition>
     
+    <definition name="/administrators" extends="base.definition.programAdmin">
+        <put-attribute name="page-id" value="dashboard-details" />
+        <put-attribute name="page-section" value="section-dashboard" />
+        <put-attribute name="header" value="/WEB-INF/jsp/common/sysAdminHeader.jsp?sect=programs" />
+        <put-attribute name="actions" value="/WEB-INF/jsp/sysAdmin/programs/actionBar.jsp?page=admins" />
+        <put-attribute name="menu" value="/WEB-INF/jsp/sysAdmin/programs/menu.jsp?page=admins" />
+        <put-attribute name="body" value="/WEB-INF/jsp/sysAdmin/programs/programAdmins/admins.jsp" />
+        <put-attribute name="jscript" value="/dspResources/js/sysAdmin/programs/admins.js" />
+    </definition>
+    
     
 </tiles-definitions>

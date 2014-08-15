@@ -16,6 +16,7 @@ import com.bowlink.rr.model.programMPI;
 import com.bowlink.rr.model.programMPIFields;
 import com.bowlink.rr.model.programModules;
 import com.bowlink.rr.model.programReports;
+import com.bowlink.rr.model.programAdmin;
 import com.bowlink.rr.service.programManager;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -214,6 +215,12 @@ public class programManagerImpl implements programManager {
     
     @Override
     @Transactional
+    public void updateMPIAlgorithm(programMPI MPIAlgorithm) throws Exception {
+        programDAO.updateMPIAlgorithm(MPIAlgorithm);
+    }
+    
+    @Override
+    @Transactional
     public void createMPIAlgorithmFields(programMPIFields newField) throws Exception {
         programDAO.createMPIAlgorithmFields(newField);
     }
@@ -222,6 +229,24 @@ public class programManagerImpl implements programManager {
     @Transactional
     public programMPI getMPIAlgorithm(Integer mpiId) throws Exception {
         return programDAO.getMPIAlgorithm(mpiId);
+    }
+    
+    @Override
+    @Transactional
+    public void removeAlgorithmField(Integer algorithmFieldId) throws Exception {
+        programDAO.removeAlgorithmField(algorithmFieldId);
+    }
+    
+    @Override
+    @Transactional
+    public List<programAdmin> getProgramAdministrators(Integer programId) throws Exception {
+        return programDAO.getProgramAdministrators(programId);
+    }
+    
+    @Override
+    @Transactional
+    public void saveAdminProgram(programAdmin adminProgram) throws Exception {
+        programDAO.saveAdminProgram(adminProgram);
     }
 
 }

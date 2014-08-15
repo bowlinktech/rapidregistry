@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.Email;
@@ -18,6 +19,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Entity
 @Table(name = "USERS")
 public class User {
+    
+    @Transient
+    Integer timesloggedIn = 0;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -154,5 +158,15 @@ public class User {
     public void setresetCode(String resetCode) {
         this.resetCode = resetCode;
     }
+
+    public Integer getTimesloggedIn() {
+        return timesloggedIn;
+    }
+
+    public void setTimesloggedIn(Integer timesloggedIn) {
+        this.timesloggedIn = timesloggedIn;
+    }
+    
+    
    
 }

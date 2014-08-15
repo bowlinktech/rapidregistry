@@ -16,6 +16,7 @@ import com.bowlink.rr.model.programMPI;
 import com.bowlink.rr.model.programMPIFields;
 import com.bowlink.rr.model.programModules;
 import com.bowlink.rr.model.programReports;
+import com.bowlink.rr.model.programAdmin;
 import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.Criteria;
@@ -493,6 +494,18 @@ public class programDAOImpl implements programDAO {
         return lastId;
     }
     
+    /**
+     * The 'updateMPIAlgorithm' function will update the selected MPI Algorithm
+     * 
+     * @param MPIAlgorithm   The object that holds the selected algorithm
+     * 
+     * @return This function will not return anything
+     */
+    @Override
+    public void updateMPIAlgorithm(programMPI MPIAlgorithm) throws Exception {
+        sessionFactory.getCurrentSession().update(MPIAlgorithm);
+    }
+    
     
     /**
      * The 'createMPIAlgorithmFields' function will save the fields associated to the MPI 
@@ -520,4 +533,41 @@ public class programDAOImpl implements programDAO {
         return (programMPI) query.uniqueResult();
     }
 
+    /**
+     * The 'removeAlgorithmField' function will remove the selected field from the MPI algorithm
+     * 
+     * @param algorithmFieldId  The id of the selected MPI Algorithm field
+     */
+    @Override
+    public void removeAlgorithmField(Integer algorithmFieldId) throws Exception {
+        Query deleteAlgorithmField = sessionFactory.getCurrentSession().createQuery("delete from programMPIFields where id = :algorithmFieldId");
+        deleteAlgorithmField.setParameter("algorithmFieldId", algorithmFieldId);
+        deleteAlgorithmField.executeUpdate();
+    }
+    
+    /**
+     * The '/getProgramAdminsitrators' function will return a list of administrators associated to the passed in
+     * programId
+     * 
+     * @param programId The id of the program to find administrators for.
+     * 
+     * @Return This function will return a list of programAdmin objects
+     */
+    @Override
+    public List<programAdmin> getProgramAdministrators(Integer programId) throws Exception {
+        Query query = sessionFactory.getCurrentSession().createQuery("from programAdmin where programId = :programId");
+        query.setParameter("programId", programId);
+
+        List<programAdmin> administratorList = query.list();
+        return administratorList;
+    }
+    
+    /**
+     * The 'saveAdminProgram' function will save the new program assocition to the new user.
+     * 
+     * @param adminProgram  The programAdmin object to save
+     */
+    public void saveAdminProgram(programAdmin adminProgram) throws Exception {
+        sessionFactory.getCurrentSession().save(adminProgram);
+    }
 }

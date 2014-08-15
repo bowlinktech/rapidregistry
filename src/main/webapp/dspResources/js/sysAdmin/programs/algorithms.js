@@ -81,6 +81,19 @@ require(['./main'], function () {
                 }
             });
         });
+        
+        $(document).on('click', '.removeAlgorithmField', function() {
+            var fieldId = $(this).attr('rel');
+            
+            $.ajax({
+                url: 'removeAlgorithmField.do',
+                data: {'algorithmfieldId': fieldId},
+                type: "POST",
+                success: function(data) {
+                   $('#row_'+fieldId).remove();
+                }
+            });
+        });
 
 
     });

@@ -1,5 +1,6 @@
 package com.bowlink.rr.controller;
 
+import com.bowlink.rr.model.User;
 import com.bowlink.rr.model.activityCodes;
 import com.bowlink.rr.model.crosswalks;
 import com.bowlink.rr.model.demoDataElements;
@@ -8,6 +9,7 @@ import com.bowlink.rr.model.modules;
 import com.bowlink.rr.model.patientSharing;
 import com.bowlink.rr.model.program;
 import com.bowlink.rr.model.programActivityCodes;
+import com.bowlink.rr.model.programAdmin;
 import com.bowlink.rr.model.programDemoDataElements;
 import com.bowlink.rr.model.programHealthDataElements;
 import com.bowlink.rr.model.programMPI;
@@ -20,6 +22,7 @@ import com.bowlink.rr.service.dataElementManager;
 import com.bowlink.rr.service.moduleManager;
 import com.bowlink.rr.service.programManager;
 import com.bowlink.rr.service.reportManager;
+import com.bowlink.rr.service.userManager;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -68,6 +71,9 @@ public class programController {
     
     @Autowired
     reportManager reportmanager;
+    
+    @Autowired
+    userManager usermanager;
 
     private static List<programDemoDataElements> demoFields = null;
 
@@ -1061,13 +1067,13 @@ public class programController {
     
     
     /**
-     * The '/{programName}/create_mpialgorithm' POST request will handle submitting the new organization system user.
+     * The '/{programName}/create_mpialgorithm' POST request will handle submitting the new MPI Algorithm.
      *
-     * @param user	The object containing the system user form fields
-     * @param result	The validation result
+     * @param mpidetails    The object containing the MPI Algorithm form fields
+     * @param result        The validation result
      * @param redirectAttr	The variable that will hold values that can be read after the redirect
      *
-     * @return	Will return the system user list page on "Save" Will return the system user form page on error
+     * @return	Will return the MPI Algorithm list page on "Save" Will return the MPI Algorithm form page on error
      *
      * @Objects	(1) The object containing all the information for the clicked org
      * @throws Exception
@@ -1117,6 +1123,64 @@ public class programController {
         mav.addObject("success", "algorithmCreated");
         return mav;
     }
+    
+   /**
+     * The '/{programName}/update_mpialgorithm' POST request will handle submitting the selected MPI Algorithm changes.
+     *
+     * @param mpidetails    The object containing the MPI Algorithm form fields
+     * @param result        The validation result
+     * @param redirectAttr	The variable that will hold values that can be read after the redirect
+     *
+     * @return	Will return the MPI Algorithm list page on "Save" Will return the MPI Algorithm form page on error
+     *
+     * @Objects	(1) The object containing all the information for the clicked org
+     * @throws Exception
+     */
+    @RequestMapping(value = "/{programName}/update_mpialgorithm", method = RequestMethod.POST)
+    public @ResponseBody
+    ModelAndView updateMPIAlgorithm(@Valid @ModelAttribute(value = "mpidetails") programMPI mpidetails, BindingResult result,  @RequestParam(value = "fieldIds", required = true) List<Integer> fieldIds, @RequestParam(value = "fieldAction", required = true) List<String> fieldAction, HttpSession session) throws Exception {
+
+        
+        if (result.hasErrors()) {
+            ModelAndView mav = new ModelAndView();
+            mav.setViewName("/sysAdmin/programs/mpi/details");
+            /* Get a list of available fields */
+            List<programDemoDataElements> programdemoFields = programmanager.getProgramDemoFields((Integer) session.getAttribute("programId"));
+
+            String fieldName;
+
+            for (programDemoDataElements field : programdemoFields) {
+                //Get the field name by id
+                fieldName = dataelementmanager.getDemoFieldName(field.getFieldId());
+                field.setFieldName(fieldName);
+
+            }
+            mav.addObject("availableFields", programdemoFields);
+            mav.addObject("btnValue", "Create");
+            return mav;
+        }
+
+
+        programmanager.updateMPIAlgorithm(mpidetails);
+        
+        int i = 0;
+        for(Integer fieldId : fieldIds) {
+            programMPIFields newField = new programMPIFields();
+            newField.setFieldId(fieldId);
+            newField.setMpiId(mpidetails.getId());
+            
+            String selFieldAction = fieldAction.get(i);
+            newField.setAction(selFieldAction);
+            
+            programmanager.createMPIAlgorithmFields(newField);
+            
+            i+=1;
+        }
+
+        ModelAndView mav = new ModelAndView("/sysAdmin/programs/mpi/details");
+        mav.addObject("success", "algorithmUpdated");
+        return mav;
+    }
 
     /**
      * The '/{programName}/algorithm.edit' GET request will be used to create a new MPI Algorithm
@@ -1157,6 +1221,151 @@ public class programController {
         mav.addObject("btnValue", "Update");
         mav.addObject("mpidetails", mpi);
 
+        return mav;
+    }
+    
+    /**
+     * The '/{programName}/remvoeAlgorithmField.do' POST request will remove the selected field for the passed in
+     * MPI Algorithm.
+     * 
+     * @param algorithmFieldId  The id of the field to be removed.
+     * 
+     * @return Will return a 1 when the field is successfully removed.
+     */
+    @RequestMapping(value = "/{programName}/removeAlgorithmField.do", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody Integer removeAlgorithmField(@RequestParam Integer algorithmfieldId, HttpSession session) throws Exception {
+        
+        programmanager.removeAlgorithmField(algorithmfieldId);
+        
+        return 1;
+    }
+    
+    /**
+     * The '/{programName}/program-admins' GET request will display the program administrators.
+     *
+     * @param programName	The {programName} will be the program name with spaces removed.
+     *
+     * @return	Will return the program admin list page.
+     *
+     * @throws Exception
+     *
+     */
+    @RequestMapping(value = "/{programName}/program-admins", method = RequestMethod.GET)
+    public ModelAndView getprogramAdministrators(HttpSession session) throws Exception {
+
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/administrators");
+        mav.addObject("id", session.getAttribute("programId"));
+
+        program programDetails = programmanager.getProgramById((Integer) session.getAttribute("programId"));
+        mav.addObject("programDetails", programDetails);
+
+        /* Get a list of Adminsitrators */
+        List<programAdmin> administrators = programmanager.getProgramAdministrators((Integer) session.getAttribute("programId"));
+        
+        List<User> programAdministrators = null;
+        programAdministrators = new CopyOnWriteArrayList<User>();
+        
+        if(!administrators.isEmpty()) {
+            
+            for(programAdmin admin : administrators) {
+                User userDetails = usermanager.getUserById(admin.getUserId());
+                programAdministrators.add(userDetails);
+            }
+        }
+        
+        mav.addObject("programAdministrators", programAdministrators);
+
+        return mav;
+
+    }
+    
+    /**
+     * The '/{programName}/administrator.create' GET request will be used to create a new program Administrator
+     *
+     * @return The blank program administrator page
+     *
+     * @Objects (1) An object that will hold the blank MPI Algorithm
+     */
+    @RequestMapping(value = "/{programName}/administrator.create", method = RequestMethod.GET)
+    @ResponseBody public ModelAndView newAdministratorForm(HttpSession session) throws Exception {
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/sysAdmin/programs/programAdmins/details");
+
+        //Create a new blank provider.
+        User user = new User();
+        user.setRoleId(2);
+       
+        mav.addObject("btnValue", "Create");
+        mav.addObject("admindetails", user);
+
+        return mav;
+    }
+    
+    /**
+     * The '/{programName}/create_programadmin' POST request will handle submitting the new program administrator.
+     *
+     * @param admindetails    The object containing the program administrator form fields
+     * @param result        The validation result
+     * @param redirectAttr	The variable that will hold values that can be read after the redirect
+     *
+     * @return	Will return the program administrators list page on "Save" Will return the program administrator form page on error
+     
+     * @throws Exception
+     */
+    @RequestMapping(value = "/{programName}/create_programadmin", method = RequestMethod.POST)
+    public @ResponseBody
+    ModelAndView saveAdminProram(@Valid @ModelAttribute(value = "admindetails") User admindetails, BindingResult result, HttpSession session) throws Exception {
+
+        
+        if (result.hasErrors()) {
+            ModelAndView mav = new ModelAndView();
+            mav.setViewName("/sysAdmin/programs/programAdmins/details");
+            mav.addObject("btnValue", "Create");
+            return mav;
+        }
+        
+        
+        Integer adminId = usermanager.createUser(admindetails);
+
+        programAdmin adminprogram = new programAdmin();
+        adminprogram.setProgramId((Integer) session.getAttribute("programId"));
+        adminprogram.setUserId(adminId);
+        
+        programmanager.saveAdminProgram(adminprogram);
+
+        ModelAndView mav = new ModelAndView("/sysAdmin/programs/programAdmins/details");
+        mav.addObject("success", "adminCreated");
+        return mav;
+    }
+    
+    /**
+     * The '/{programName}/update_programadmin' POST request will handle submitting the program administrator changes.
+     *
+     * @param admindetails    The object containing the program administrator form fields
+     * @param result        The validation result
+     * @param redirectAttr	The variable that will hold values that can be read after the redirect
+     *
+     * @return	Will return the program administrators list page on "Save" Will return the program administrator form page on error
+     
+     * @throws Exception
+     */
+    @RequestMapping(value = "/{programName}/update_programadmin", method = RequestMethod.POST)
+    public @ResponseBody
+    ModelAndView updateProgramAdmin(@Valid @ModelAttribute(value = "admindetails") User admindetails, BindingResult result, HttpSession session) throws Exception {
+
+        
+        if (result.hasErrors()) {
+            ModelAndView mav = new ModelAndView();
+            mav.setViewName("/sysAdmin/programs/programAdmins/details");
+            mav.addObject("btnValue", "Create");
+            return mav;
+        }
+        
+        usermanager.updateUser(admindetails);
+
+        ModelAndView mav = new ModelAndView("/sysAdmin/programs/programAdmins/details");
+        mav.addObject("success", "adminUpdated");
         return mav;
     }
 

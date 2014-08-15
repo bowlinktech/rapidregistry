@@ -15,14 +15,15 @@
                 <c:when test="${not empty savedStatus}" >
                     <c:choose>
                         <c:when test="${savedStatus == 'updatedprogrammodules'}">The program modules have been successfully updated.</c:when>
+                        <c:when test="${savedStatus == 'algorithmUpdated'}">The program MPI Algorithm has been successfully updated.</c:when>
                     </c:choose>
                 </c:when>
                 <c:when test="${not empty param.msg}" >
                     <div class="alert alert-success">
                         <strong>Success!</strong> 
                         <c:choose>
-                            <c:when test="${param.msg == 'updated'}">The program health fields have been successfully updated!</c:when>
-                            <c:when test="${param.msg == 'created'}">The crosswalk has been successfully added!</c:when>
+                            <c:when test="${param.msg == 'updated'}">The program MPI Algorithm has been successfully updated!</c:when>
+                            <c:when test="${param.msg == 'created'}">The program MPI Algorithm has been successfully added!</c:when>
                         </c:choose>
                     </div>
                 </c:when>
