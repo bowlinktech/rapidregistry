@@ -19,4 +19,8 @@ public interface activityCodeManager {
     
     activityCodes getActivityCodeById(Integer codeId) throws Exception;
     
+    void createActivityCode(activityCodes codeDetails) throws Exception;
+    
+    void updateActivityCode(activityCodes codeDetails) throws Exception;
+    
 }

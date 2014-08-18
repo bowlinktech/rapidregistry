@@ -32,6 +32,7 @@
                 <value>/WEB-INF/tileDefs/default.xml</value>
                 <value>/WEB-INF/tileDefs/sysAdmin.xml</value>
                 <value>/WEB-INF/tileDefs/programManager.xml</value>
+                <value>/WEB-INF/tileDefs/activityCodeManager.xml</value>
             </list>
         </property>
     </bean>

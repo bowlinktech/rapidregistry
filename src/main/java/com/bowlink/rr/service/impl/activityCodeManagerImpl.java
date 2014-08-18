@@ -36,4 +36,16 @@ public class activityCodeManagerImpl implements activityCodeManager {
         return activityCodeDAO.getActivityCodeById(codeId);
     }
     
+    @Override
+    @Transactional
+    public void createActivityCode(activityCodes codeDetails) throws Exception {
+        activityCodeDAO.createActivityCode(codeDetails);
+    }
+    
+    @Override
+    @Transactional
+    public void updateActivityCode(activityCodes codeDetails) throws Exception {
+        activityCodeDAO.updateActivityCode(codeDetails);
+    }
+    
 }

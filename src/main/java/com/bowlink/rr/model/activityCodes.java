@@ -39,6 +39,7 @@ public class activityCodes {
     @Column(name = "CODE", nullable = false)
     private String code;
     
+    @NotEmpty
     @NoHtml
     @Column(name = "CODEDESC", nullable = false)
     private String codeDesc;

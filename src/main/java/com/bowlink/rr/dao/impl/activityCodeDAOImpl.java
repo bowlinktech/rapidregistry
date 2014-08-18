@@ -26,6 +26,30 @@ public class activityCodeDAOImpl implements activityCodeDAO {
     
     @Autowired
     private SessionFactory sessionFactory;
+    
+    /**
+     * The 'createActivityCode' function will submit the new activity code. 
+     *
+     * @param   codeDetails The object containing the activity code details
+     * @throws Exception 
+     */
+    @Override
+    public void createActivityCode(activityCodes codeDetails) throws Exception {
+        sessionFactory.getCurrentSession().save(codeDetails);
+    }
+    
+    /**
+     * The 'createActivityCode' function will submit the activity code changes.
+     * 
+     * @param   codeDetails The object containing the activity code details
+     * 
+     * @param codeDetails
+     * @throws Exception 
+     */
+    @Override
+    public void updateActivityCode(activityCodes codeDetails) throws Exception {
+        sessionFactory.getCurrentSession().update(codeDetails);
+    }
 
     /**
      * The 'getActivityCodes' function will return a list of all activity codes. If a programId is
