@@ -79,5 +79,11 @@ public class userManagerImpl implements userManager {
     public List<User> getAllUsers() {
         return userDAO.getAllUsers();
     }
+    
+    @Override
+    @Transactional
+    public List<User> getProgramAdmins() {
+        return userDAO.getProgramAdmins();
+    }
 
 }

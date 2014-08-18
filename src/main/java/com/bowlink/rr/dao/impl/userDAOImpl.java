@@ -55,12 +55,6 @@ public class userDAOImpl implements userDAO {
     @Override
     public void updateUser(User user) {
         sessionFactory.getCurrentSession().update(user);
-
-        //Delete the current sections the user has access to
-        Query q1 = sessionFactory.getCurrentSession().createQuery("delete from userAccess where userId = :userId");
-        q1.setParameter("userId", user.getId());
-        q1.executeUpdate();
-
     }
 
     /**
@@ -172,14 +166,29 @@ public class userDAOImpl implements userDAO {
         }
     }
 
+    /**
+     * The 'getAllUsers' function will return a list of all users in the system.
+     * 
+     * @return This function will return a list of User objects.
+     */
     @Override
     @SuppressWarnings("unchecked")
     public List<User> getAllUsers() {
         Query query = sessionFactory.getCurrentSession().createQuery("from User");
-
-        List<User> userList = query.list();
-        return userList;
+        return query.list();
     }
 
+    /**
+     * The 'getProgramAdmins' function will return a list of users with a role of program admin.
+     * 
+     * @return This function will return a list of User objects that have a role of program admin
+     */
+    @Override
+    public List<User> getProgramAdmins() {
+        
+        Query query = sessionFactory.getCurrentSession().createQuery("from User where roleId = 2 order by lastName asc");
+
+        return query.list();
+    }
     
 }

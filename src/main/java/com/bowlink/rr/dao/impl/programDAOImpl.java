@@ -567,7 +567,25 @@ public class programDAOImpl implements programDAO {
      * 
      * @param adminProgram  The programAdmin object to save
      */
+    @Override
     public void saveAdminProgram(programAdmin adminProgram) throws Exception {
         sessionFactory.getCurrentSession().save(adminProgram);
+    }
+    
+    /**
+     * The 'removeAdminProgram' function will remove the association between the selected admin and the
+     * selected program.
+     * 
+     * @param programId The id of the selected program
+     * @param adminid   The id of hte selected admin
+     * 
+     * @throws Exception 
+     */
+    @Override
+    public void removeAdminProgram(Integer programId, Integer adminid) throws Exception {
+        Query removeAdminProgram = sessionFactory.getCurrentSession().createQuery("delete from programAdmin where userId = :adminid and programId = :programId");
+        removeAdminProgram.setParameter("adminid", adminid);
+        removeAdminProgram.setParameter("programId", programId);
+        removeAdminProgram.executeUpdate();
     }
 }

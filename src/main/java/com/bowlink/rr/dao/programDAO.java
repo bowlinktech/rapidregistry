@@ -94,4 +94,6 @@ public interface programDAO {
     
     void saveAdminProgram(programAdmin adminProgram) throws Exception;
     
+    void removeAdminProgram(Integer programId, Integer adminid) throws Exception;
+    
 }

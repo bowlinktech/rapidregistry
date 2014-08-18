@@ -72,6 +72,49 @@ require(['./main'], function () {
             });
         });
         
+        
+        $(document).on('click', '#showNewForm', function() {
+           $('#selectAdminForm').hide();
+           $('#detailForm').show();
+        });
+        
+        $(document).on('change', '#existingAdmin', function() {
+           
+            var selAdminId = $(this).val();
+            
+            if(selAdminId > 0) {
+                $.ajax({
+                    url: 'administrator.associateToProgram',
+                    data: {'adminId': selAdminId},
+                    type: "POST",
+                    success: function(data) {
+                      window.location.href = "program-admins?msg=associated";
+                    }
+                });
+            }
+            
+        });
+        
+        $(document).on('click', '.removeUser', function() {
+            
+            var removeAdmin = confirm("Are you sure you want to remove this admin from this program?");
+            
+            if(removeAdmin) {
+                var selAdminId = $(this).attr('rel');
+                
+                 $.ajax({
+                    url: 'administrator.removeFromProgram',
+                    data: {'adminId': selAdminId},
+                    type: "POST",
+                    success: function(data) {
+                      window.location.href = "program-admins?msg=removed";
+                    }
+                });
+                
+            }
+            
+        })
+        
     });
 });
 

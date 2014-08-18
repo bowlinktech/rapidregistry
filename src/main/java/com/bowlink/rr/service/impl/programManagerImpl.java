@@ -248,5 +248,11 @@ public class programManagerImpl implements programManager {
     public void saveAdminProgram(programAdmin adminProgram) throws Exception {
         programDAO.saveAdminProgram(adminProgram);
     }
+    
+    @Override
+    @Transactional
+    public void removeAdminProgram(Integer programId, Integer adminid) throws Exception {
+        programDAO.removeAdminProgram(programId, adminid);
+    }
 
 }

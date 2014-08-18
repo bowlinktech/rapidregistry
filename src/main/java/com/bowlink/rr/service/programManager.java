@@ -91,4 +91,7 @@ public interface programManager {
     List<programAdmin> getProgramAdministrators(Integer programId) throws Exception;
     
     void saveAdminProgram(programAdmin adminProgram) throws Exception;
+    
+    void removeAdminProgram(Integer programId, Integer adminid) throws Exception;
+    
 }

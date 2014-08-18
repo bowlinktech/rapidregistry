@@ -21,7 +21,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 public class User {
     
     @Transient
-    Integer timesloggedIn = 0;
+    Long timesloggedIn = null;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -159,11 +159,11 @@ public class User {
         this.resetCode = resetCode;
     }
 
-    public Integer getTimesloggedIn() {
+    public Long getTimesloggedIn() {
         return timesloggedIn;
     }
 
-    public void setTimesloggedIn(Integer timesloggedIn) {
+    public void setTimesloggedIn(Long timesloggedIn) {
         this.timesloggedIn = timesloggedIn;
     }
     

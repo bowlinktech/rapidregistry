@@ -4,8 +4,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %> 
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 
 <div class="main clearfix" role="main">
@@ -18,6 +16,8 @@
                         <c:choose>
                             <c:when test="${param.msg == 'updated'}">The program admin user has been successfully updated!</c:when>
                             <c:when test="${param.msg == 'created'}">The program admin user has been successfully added!</c:when>
+                            <c:when test="${param.msg == 'associated'}">The selected admin is now associated to this program!</c:when>
+                            <c:when test="${param.msg == 'removed'}">The selected admin is now removed from this program!</c:when>
                         </c:choose>
                     </div>
                 </c:when>
@@ -65,7 +65,12 @@
                                                     <c:choose><c:when test="${admin.status == true}">Active</c:when><c:otherwise>Inactive</c:otherwise></c:choose>
                                                 </td>
                                                 <td class="center-text">
-                                                   10
+                                                    <c:choose>
+                                                        <c:when test="${admin.timesloggedIn > 0}">
+                                                            <fmt:formatNumber value="${admin.timesloggedIn}" />
+                                                        </c:when>
+                                                        <c:otherwise>0</c:otherwise>
+                                                    </c:choose>    
                                                 </td>
                                                 <td class="center-text"><fmt:formatDate value="${admin.dateCreated}" type="date" pattern="M/dd/yyyy" /></td>
                                                 <td class="actions-col">
@@ -73,6 +78,10 @@
                                                         <span class="glyphicon glyphicon-edit"></span>
                                                         Edit
                                                     </a>
+                                                    <a href="javascript:void(0);" rel="${admin.id}" class="btn btn-link removeUser" title="Remove this user from this program." role="button">
+                                                        <span class="glyphicon glyphicon-remove"></span>
+                                                        Remove From Program
+                                                    </a>    
                                                 </td>
                                             </tr>
                                         </c:forEach>

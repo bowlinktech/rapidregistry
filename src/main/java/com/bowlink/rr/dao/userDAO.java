@@ -35,4 +35,6 @@ public interface userDAO {
     
     Integer getUserByIdentifier(String identifier);
     
+    List<User> getProgramAdmins();
+    
 }

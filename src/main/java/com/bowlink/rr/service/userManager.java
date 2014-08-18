@@ -31,5 +31,7 @@ public interface userManager {
     List<User> getAllUsers();
     
     Integer getUserByIdentifier(String identifier);
+    
+    List<User> getProgramAdmins();
 
 }

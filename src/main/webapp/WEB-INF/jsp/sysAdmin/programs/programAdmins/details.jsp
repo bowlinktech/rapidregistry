@@ -7,70 +7,96 @@
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             <h3 class="panel-title"><c:choose><c:when test="${btnValue == 'Update'}">Update</c:when><c:when test="${btnValue == 'Create'}">Add</c:when></c:choose> Program Administrator ${success}</h3>
-                </div>
-                <div class="modal-body">
-            <form:form id="admindetailsform" commandName="admindetails" modelAttribute="admindetails"  method="post" role="form">
-                <form:hidden path="id" id="id" />
-                <form:hidden path="roleId" />
-                <form:hidden path="dateCreated" />
-                <div class="form-container">
-                    <div class="form-group">
-                        <label for="status">Status *</label>
-                        <div>
-                            <label class="radio-inline">
-                                <form:radiobutton id="status" path="status" value="true" /> Active
-                            </label>
-                            <label class="radio-inline">
-                                <form:radiobutton id="status" path="status" value="false" /> Inactive
-                            </label>
-                        </div>
+         </div>
+         <div class="modal-body">
+            <c:if test="${btnValue == 'Create'}">
+                <p>
+                    Please choose from the existing list of program administrators to associate to this program or click the button below to add a new
+                    program administrator into the system.
+                </p>
+                 <div class="form-container" id="selectAdminForm">
+                     <div class="form-group ${status.error ? 'has-error' : '' }">
+                        <label class="control-label" for="firstName">Exiting Program Admins</label>
+                        <select class="form-control" name="existingAdmin" id="existingAdmin">
+                            <option value="0">- Select and Existing admin -</option>
+                            <c:forEach items="${availableUsers}" var="user">
+                                <option value="${user.id}">${user.firstName}&nbsp;${user.lastName}</option>
+                            </c:forEach>
+                        </select>
                     </div>
-                    <spring:bind path="firstName">
-                        <div class="form-group ${status.error ? 'has-error' : '' }">
-                            <label class="control-label" for="firstName">First Name *</label>
-                            <form:input path="firstName" id="firstName" class="form-control" type="text" maxLength="55" />
-                            <form:errors path="firstName" cssClass="control-label" element="label" />
-                        </div>
-                    </spring:bind>
-                    <spring:bind path="lastName">
-                        <div class="form-group ${status.error ? 'has-error' : '' }">
-                            <label class="control-label" for="lastName">Last Name *</label>
-                            <form:input path="lastName" id="lastName" class="form-control" type="text" maxLength="55" />
-                            <form:errors path="lastName" cssClass="control-label" element="label" />
-                        </div>
-                    </spring:bind>
-                    <spring:bind path="email">
-                        <div class="form-group ${status.error ? 'has-error' : '' }">
-                            <label class="control-label" for="email">Email</label>
-                            <form:input path="email" id="email" class="form-control" type="text"  maxLength="255" />
-                            <form:errors path="email" cssClass="control-label" element="label" />
-                        </div>
-                    </spring:bind>
-                    <spring:bind path="username">
-                        <div class="form-group ${status.error ? 'has-error' : '' } ${not empty existingUsername ? 'has-error' : ''}">
-                            <label class="control-label" for="username">Username *</label>
-                            <form:input path="username" id="username" class="form-control" type="text" maxLength="15" />
-                            <form:errors path="username" cssClass="control-label" element="label" />
-                            <c:if test="${not empty existingUsername}"><span class="control-label">${existingUsername}</span></c:if>
+                     <div class="form-group">
+                        <label class="control-label" for="firstName">- OR -</label>
+                     </div> 
+                     <div class="form-group">
+                         <input type="button" id="showNewForm" role="button" class="btn btn-primary" value="Create New Program Admin"/>
+                     </div>   
+                 </div>
+            </c:if>
+             <div id="detailForm" ${btnValue == 'Create' ? 'style="display:none;' : '' }>
+                 <form:form id="admindetailsform" commandName="admindetails" modelAttribute="admindetails"  method="post" role="form">
+                    <form:hidden path="id" id="id" />
+                    <form:hidden path="roleId" />
+                    <form:hidden path="dateCreated" />
+                    <div class="form-container">
+                        <div class="form-group">
+                            <label for="status">Status *</label>
+                            <div>
+                                <label class="radio-inline">
+                                    <form:radiobutton id="status" path="status" value="true" /> Active
+                                </label>
+                                <label class="radio-inline">
+                                    <form:radiobutton id="status" path="status" value="false" /> Inactive
+                                </label>
                             </div>
-                    </spring:bind>
-                    <spring:bind path="password">
-                        <div id="passwordDiv" class="form-group ${status.error ? 'has-error' : '' }">
-                            <label class="control-label" for="password">Password *</label>
-                            <form:input path="password" id="password" class="form-control" type="password" maxLength="15" autocomplete="off"  />
-                            <form:errors path="password" cssClass="control-label" element="label" />
                         </div>
-                    </spring:bind>
-                    <div id="confirmPasswordDiv" class="form-group">
-                        <label class="control-label" for="confirmPassword">Confirm Password *</label>
-                        <input id="confirmPassword" name="confirmpassword" class="form-control" maxLength="15" autocomplete="off" type="password" value=${userdetails.getPassword()} />
-                        <span id="confimPasswordMsg" class="control-label"></span>
+                        <spring:bind path="firstName">
+                            <div class="form-group ${status.error ? 'has-error' : '' }">
+                                <label class="control-label" for="firstName">First Name *</label>
+                                <form:input path="firstName" id="firstName" class="form-control" type="text" maxLength="55" />
+                                <form:errors path="firstName" cssClass="control-label" element="label" />
+                            </div>
+                        </spring:bind>
+                        <spring:bind path="lastName">
+                            <div class="form-group ${status.error ? 'has-error' : '' }">
+                                <label class="control-label" for="lastName">Last Name *</label>
+                                <form:input path="lastName" id="lastName" class="form-control" type="text" maxLength="55" />
+                                <form:errors path="lastName" cssClass="control-label" element="label" />
+                            </div>
+                        </spring:bind>
+                        <spring:bind path="email">
+                            <div class="form-group ${status.error ? 'has-error' : '' }">
+                                <label class="control-label" for="email">Email</label>
+                                <form:input path="email" id="email" class="form-control" type="text"  maxLength="255" />
+                                <form:errors path="email" cssClass="control-label" element="label" />
+                            </div>
+                        </spring:bind>
+                        <spring:bind path="username">
+                            <div class="form-group ${status.error ? 'has-error' : '' } ${not empty existingUsername ? 'has-error' : ''}">
+                                <label class="control-label" for="username">Username *</label>
+                                <form:input path="username" id="username" class="form-control" type="text" maxLength="15" />
+                                <form:errors path="username" cssClass="control-label" element="label" />
+                                <c:if test="${not empty existingUsername}"><span class="control-label">${existingUsername}</span></c:if>
+                                </div>
+                        </spring:bind>
+                        <spring:bind path="password">
+                            <div id="passwordDiv" class="form-group ${status.error ? 'has-error' : '' }">
+                                <label class="control-label" for="password">Password *</label>
+                                <form:input path="password" id="password" class="form-control" type="password" maxLength="15" autocomplete="off"  />
+                                <form:errors path="password" cssClass="control-label" element="label" />
+                            </div>
+                        </spring:bind>
+                        <div id="confirmPasswordDiv" class="form-group">
+                            <label class="control-label" for="confirmPassword">Confirm Password *</label>
+                            <input id="confirmPassword" name="confirmpassword" class="form-control" maxLength="15" autocomplete="off" type="password" value=${admindetails.getPassword()} />
+                            <span id="confimPasswordMsg" class="control-label"></span>
+                        </div>
+                        <div class="form-group">
+                            <input type="button" id="submitButton" rel="${btnValue}" role="button" class="btn btn-primary" value="${btnValue}"/>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <input type="button" id="submitButton" rel="${btnValue}" role="button" class="btn btn-primary" value="${btnValue}"/>
-                    </div>
-                </div>
-            </form:form>
+                </form:form>
+             </div>
+             
         </div>
     </div>
 </div>

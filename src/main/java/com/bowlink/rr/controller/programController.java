@@ -1285,7 +1285,7 @@ public class programController {
      *
      * @return The blank program administrator page
      *
-     * @Objects (1) An object that will hold the blank MPI Algorithm
+     * @Objects (1) An object that will hold the blank program admin form.
      */
     @RequestMapping(value = "/{programName}/administrator.create", method = RequestMethod.GET)
     @ResponseBody public ModelAndView newAdministratorForm(HttpSession session) throws Exception {
@@ -1298,6 +1298,9 @@ public class programController {
        
         mav.addObject("btnValue", "Create");
         mav.addObject("admindetails", user);
+        
+        List<User> availableUsers = usermanager.getProgramAdmins();
+        mav.addObject("availableUsers", availableUsers);
 
         return mav;
     }
@@ -1321,6 +1324,8 @@ public class programController {
         if (result.hasErrors()) {
             ModelAndView mav = new ModelAndView();
             mav.setViewName("/sysAdmin/programs/programAdmins/details");
+            List<User> availableUsers = usermanager.getProgramAdmins();
+            mav.addObject("availableUsers", availableUsers);
             mav.addObject("btnValue", "Create");
             return mav;
         }
@@ -1336,6 +1341,32 @@ public class programController {
 
         ModelAndView mav = new ModelAndView("/sysAdmin/programs/programAdmins/details");
         mav.addObject("success", "adminCreated");
+        return mav;
+    }
+    
+    /**
+     * The '/{programName}/administrator.edit' GET request will be used to edit the selected program Administrator
+     *
+     * @return The program administrator page
+     *
+     * @Objects (1) An object that will hold the selected program admin details
+     */
+    @RequestMapping(value = "/{programName}/administrator.edit", method = RequestMethod.GET)
+    @ResponseBody public ModelAndView editAdministratorForm(@RequestParam Integer adminId, HttpSession session) throws Exception {
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/sysAdmin/programs/programAdmins/details");
+
+        //Create a new blank provider.
+        User userDetails = usermanager.getUserById(adminId);
+       
+        userDetails.setTimesloggedIn(usermanager.findTotalLogins(adminId));
+        
+        mav.addObject("btnValue", "Update");
+        mav.addObject("admindetails", userDetails);
+        
+        List<User> availableUsers = usermanager.getProgramAdmins();
+        mav.addObject("availableUsers", availableUsers);
+
         return mav;
     }
     
@@ -1358,7 +1389,9 @@ public class programController {
         if (result.hasErrors()) {
             ModelAndView mav = new ModelAndView();
             mav.setViewName("/sysAdmin/programs/programAdmins/details");
-            mav.addObject("btnValue", "Create");
+            List<User> availableUsers = usermanager.getProgramAdmins();
+            mav.addObject("availableUsers", availableUsers);
+            mav.addObject("btnValue", "Update");
             return mav;
         }
         
@@ -1368,5 +1401,50 @@ public class programController {
         mav.addObject("success", "adminUpdated");
         return mav;
     }
+    
+    
+    /**
+     * The '/{programName}/administrator.associateToProgram' POST request will be used to associate the selected admin to the
+     * program
+     *
+     * @return The program administrator page
+     *
+     * @Objects (1) An object that will hold the selected program admin details
+     */
+    @RequestMapping(value = "/{programName}/administrator.associateToProgram", method = RequestMethod.POST)
+    @ResponseBody public ModelAndView associateAdminToProgram(@RequestParam Integer adminId, HttpSession session) throws Exception {
+        
+        //Create a new blank provider.
+        programAdmin details = new programAdmin();
+        details.setProgramId((Integer) session.getAttribute("programId"));
+        details.setUserId(adminId);
+       
+        programmanager.saveAdminProgram(details);
+        
+        //Create a new blank provider.
+        User userDetails = usermanager.getUserById(adminId);
+       
+        ModelAndView mav = new ModelAndView("/sysAdmin/programs/programAdmins/details");
+        mav.addObject("success", "adminUpdated");
+        mav.addObject("admindetails", userDetails);
+        return mav;
+    }
+    
+    /**
+     * The '/{programName}/administrator.removeFromProgram' POST request will remove the association between the selected
+     * admin and the program
+     *
+     * @return The program administrator list page
+     *
+     */
+    @RequestMapping(value = "/{programName}/administrator.removeFromProgram", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody Integer removeProgramAssociation(@RequestParam Integer adminId, HttpSession session) throws Exception {
+        
+        //Create a new blank provider.
+        programmanager.removeAdminProgram((Integer) session.getAttribute("programId"), adminId);
+       
+        return 1;
+    }
+    
 
 }
