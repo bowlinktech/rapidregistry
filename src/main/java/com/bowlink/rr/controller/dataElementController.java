@@ -7,9 +7,14 @@
 package com.bowlink.rr.controller;
 
 import com.bowlink.rr.model.crosswalks;
+import com.bowlink.rr.model.demoDataElements;
+import com.bowlink.rr.model.healthDataElements;
+import com.bowlink.rr.model.program;
+import com.bowlink.rr.model.programDemoDataElements;
 import com.bowlink.rr.service.dataElementManager;
 import com.bowlink.rr.service.programManager;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -37,6 +42,60 @@ public class dataElementController {
     
     @Autowired
     programManager programmanager;
+    
+    /**
+     * The '/demo-fields' GET request will display the demographic field list page.
+     *
+     *
+     * @return	Will return the data element list page.
+     *
+     * @throws Exception
+     *
+     */
+    @RequestMapping(value = "/demo-fields", method = RequestMethod.GET)
+    public ModelAndView demoDataElements(HttpSession session) throws Exception {
+
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/demoFields");
+       
+        /**
+         * Get a list of all available demographic fields *
+         */
+        List<demoDataElements> dataElements = dataelementmanager.getDemoDataElements();
+        mav.addObject("availableFields", dataElements);
+
+
+        return mav;
+
+    }
+    
+    
+    /**
+     * The '/health-fields' GET request will display the health field list page.
+     *
+     *
+     * @return	Will return the data element list page.
+     *
+     * @throws Exception
+     *
+     */
+    @RequestMapping(value = "/health-fields", method = RequestMethod.GET)
+    public ModelAndView healthDataElements(HttpSession session) throws Exception {
+
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/healthFields");
+       
+        /**
+         * Get a list of all available demographic fields *
+         */
+        List<healthDataElements> dataElements = dataelementmanager.getHealthDataElements();
+        mav.addObject("availableFields", dataElements);
+
+
+        return mav;
+
+    }
+    
     
     /**
      * The '/getCrosswalks.do' function will return all the available crosswalks.

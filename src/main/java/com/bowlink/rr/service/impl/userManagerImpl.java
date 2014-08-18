@@ -85,5 +85,17 @@ public class userManagerImpl implements userManager {
     public List<User> getProgramAdmins() {
         return userDAO.getProgramAdmins();
     }
+    
+    @Override
+    @Transactional
+    public List<User> getUsersByRoleId(Integer roleId) {
+        return userDAO.getUsersByRoleId(roleId);
+    }
+    
+    @Override
+    @Transactional
+    public void deleteUser(Integer userId) {
+        userDAO.deleteUser(userId);
+    }
 
 }

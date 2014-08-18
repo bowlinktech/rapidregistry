@@ -39,4 +39,16 @@ public class reportManagerImpl implements reportManager {
         return reportDAO.getAllReports();
     }
     
+    @Override
+    @Transactional
+    public reports getReportById(Integer reportId) throws Exception {
+        return reportDAO.getReportById(reportId);
+    }
+    
+    @Override
+    @Transactional
+    public void updateReport(reports reportDetails) throws Exception {
+        reportDAO.updateReport(reportDetails);
+    }
+    
 }

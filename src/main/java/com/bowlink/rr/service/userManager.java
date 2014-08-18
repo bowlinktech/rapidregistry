@@ -33,5 +33,9 @@ public interface userManager {
     Integer getUserByIdentifier(String identifier);
     
     List<User> getProgramAdmins();
+    
+    List<User> getUsersByRoleId(Integer roleId);
+    
+    void deleteUser(Integer userId);
 
 }

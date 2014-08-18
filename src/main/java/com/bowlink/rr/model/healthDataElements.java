@@ -34,6 +34,9 @@ public class healthDataElements {
     
     @Column(name = "SAVETOTABLECOL", nullable = false)
     private String saveToTableCol;
+    
+    @Column(name = "STATUS", nullable = false)
+    private boolean status = false;
 
     public int getId() {
         return id;
@@ -65,6 +68,14 @@ public class healthDataElements {
 
     public void setSaveToTableCol(String saveToTableCol) {
         this.saveToTableCol = saveToTableCol;
+    }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
     }
     
     

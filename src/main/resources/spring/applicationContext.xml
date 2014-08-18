@@ -33,6 +33,8 @@
                 <value>/WEB-INF/tileDefs/sysAdmin.xml</value>
                 <value>/WEB-INF/tileDefs/programManager.xml</value>
                 <value>/WEB-INF/tileDefs/activityCodeManager.xml</value>
+                <value>/WEB-INF/tileDefs/reportManager.xml</value>
+                <value>/WEB-INF/tileDefs/dataElementManager.xml</value>
             </list>
         </property>
     </bean>

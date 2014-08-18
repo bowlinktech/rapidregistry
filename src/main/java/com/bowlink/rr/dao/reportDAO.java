@@ -20,4 +20,8 @@ public interface reportDAO {
     Integer createReport(reports report) throws Exception;
     
     List<reports> getAllReports() throws Exception;
+    
+    reports getReportById(Integer reportId) throws Exception;
+    
+    void updateReport(reports reportDetails) throws Exception;
 }

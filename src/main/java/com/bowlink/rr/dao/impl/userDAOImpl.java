@@ -12,6 +12,7 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -191,4 +192,38 @@ public class userDAOImpl implements userDAO {
         return query.list();
     }
     
+    /**
+     * The 'getUsersByRoleId' function will return a a list of users based on the roleId passed in.
+     *
+     * @param	roleId	The id of the role to find users
+     *
+     * @return	The function will return a user object
+     */
+    @Override
+    public List<User> getUsersByRoleId(Integer roleId) {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(User.class);
+        criteria.add(Restrictions.eq("roleId", roleId));
+        criteria.addOrder(Order.desc("lastName"));
+        return criteria.list();
+    }
+    
+    /**
+     * The 'deleteUser' function will remove the passed in user.
+     * 
+     * @param userId    The id of the user to be removed.
+     */
+    @Override
+    public void deleteUser(Integer userId) {
+        Query removeuserLogins = sessionFactory.getCurrentSession().createQuery("delete from userLogin where userId = :userId");
+        removeuserLogins.setParameter("userId", userId);
+        removeuserLogins.executeUpdate();
+        
+        Query removeAdminProgram = sessionFactory.getCurrentSession().createQuery("delete from programAdmin where userId = :userId");
+        removeAdminProgram.setParameter("userId", userId);
+        removeAdminProgram.executeUpdate();
+        
+        Query removeUser = sessionFactory.getCurrentSession().createQuery("delete from User where id = :userId");
+        removeUser.setParameter("userId", userId);
+        removeUser.executeUpdate();
+    }
 }

@@ -9,8 +9,10 @@ package com.bowlink.rr.dao.impl;
 import com.bowlink.rr.dao.reportDAO;
 import com.bowlink.rr.model.reports;
 import java.util.List;
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -54,6 +56,36 @@ public class reportDAOImpl implements reportDAO {
 
         List<reports> reportList = query.list();
         return reportList;
+    }
+    
+    /**
+     * The 'getReportById' function will return the details of the report for the passed in
+     * id.
+     * 
+     * @param reportId    The id of the clicked report
+     * @return  This function will return a reports object
+     * @throws Exception 
+     */
+    @Override
+    public reports getReportById(Integer reportId) throws Exception {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(reports.class);
+        criteria.add(Restrictions.eq("id", reportId));
+
+        reports reportDetails = (reports) criteria.uniqueResult(); 
+        
+        return reportDetails;
+    }
+    
+    /**
+     * The 'updateReport' function will submit the report changes.
+     * 
+     * @param   reportDetails The object containing the report details
+     * 
+     * @throws Exception 
+     */
+    @Override
+    public void updateReport(reports reportDetails) throws Exception {
+        sessionFactory.getCurrentSession().update(reportDetails);
     }
     
 }

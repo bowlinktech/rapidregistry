@@ -37,4 +37,8 @@ public interface userDAO {
     
     List<User> getProgramAdmins();
     
+    List<User> getUsersByRoleId(Integer roleId);
+    
+     void deleteUser(Integer userId);
+    
 }
