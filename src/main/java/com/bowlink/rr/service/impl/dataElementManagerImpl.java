@@ -257,4 +257,42 @@ public class dataElementManagerImpl implements dataElementManager {
         return dataElementDAO.getDelimiters();
     }
     
+    @SuppressWarnings("rawtypes")
+    @Override
+    @Transactional
+    public List getInformationTables() {
+        return dataElementDAO.getInformationTables();
+    }
+    
+    @SuppressWarnings("rawtypes")
+    @Override
+    @Transactional
+    public List getTableColumns(String tableName) {
+        return dataElementDAO.getTableColumns(tableName);
+    }
+    
+    @Override
+    @Transactional
+    public void saveDemoField(demoDataElements formField) throws Exception {
+        dataElementDAO.saveDemoField(formField);
+    }
+    
+    @Override
+    @Transactional
+    public void saveHealthField(healthDataElements formField) throws Exception {
+        dataElementDAO.saveHealthField(formField);
+    }
+    
+    @Override
+    @Transactional
+    public demoDataElements getDemoFieldDetails(Integer fieldId) throws Exception {
+        return dataElementDAO.getDemoFieldDetails(fieldId);
+    }
+    
+    @Override
+    @Transactional
+    public healthDataElements getHealthFieldDetails(Integer fieldId) throws Exception {
+        return dataElementDAO.getHealthFieldDetails(fieldId);
+    }
+    
  }

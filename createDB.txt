@@ -30,7 +30,7 @@ CREATE TABLE `activityCodes` (
   `codeDesc` varchar(45) NOT NULL,
   `dateCreated` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -39,7 +39,35 @@ CREATE TABLE `activityCodes` (
 
 LOCK TABLES `activityCodes` WRITE;
 /*!40000 ALTER TABLE `activityCodes` DISABLE KEYS */;
+INSERT INTO `activityCodes` VALUES (1,'test code 1','this is a test code','2014-08-14 10:11:28'),(2,'test code 2','this is another test code','2014-08-14 10:11:28'),(3,'another code','this is another code description.','2014-08-18 00:40:52');
 /*!40000 ALTER TABLE `activityCodes` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `cannedReports`
+--
+
+DROP TABLE IF EXISTS `cannedReports`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cannedReports` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `reportName` varchar(255) NOT NULL,
+  `jspPage` varchar(255) NOT NULL,
+  `reportDesc` varchar(255) DEFAULT NULL,
+  `dateCreated` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `cannedReports`
+--
+
+LOCK TABLES `cannedReports` WRITE;
+/*!40000 ALTER TABLE `cannedReports` DISABLE KEYS */;
+INSERT INTO `cannedReports` VALUES (1,'Patient List','patientListReport','This report will display a list of patients associated with a program.','2014-08-14 00:16:54');
+/*!40000 ALTER TABLE `cannedReports` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -55,11 +83,11 @@ CREATE TABLE `crosswalks` (
   `fileDelimiter` int(11) NOT NULL,
   `fileName` varchar(45) NOT NULL,
   `dateCreated` datetime DEFAULT CURRENT_TIMESTAMP,
-  `orgId` int(11) DEFAULT '0',
+  `programId` int(11) DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `delimId_idx` (`fileDelimiter`),
-  CONSTRAINT `delimId` FOREIGN KEY (`fileDelimiter`) REFERENCES `ref_delimiters` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=latin1;
+  CONSTRAINT `delimId` FOREIGN KEY (`fileDelimiter`) REFERENCES `lu_delimiters` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -68,7 +96,300 @@ CREATE TABLE `crosswalks` (
 
 LOCK TABLES `crosswalks` WRITE;
 /*!40000 ALTER TABLE `crosswalks` DISABLE KEYS */;
+INSERT INTO `crosswalks` VALUES (35,'Gender Crosswalk',1,'StandardGenderCrosswalk.txt','2014-08-12 01:10:45',1);
 /*!40000 ALTER TABLE `crosswalks` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `demographicDataElements`
+--
+
+DROP TABLE IF EXISTS `demographicDataElements`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `demographicDataElements` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `elementName` varchar(45) NOT NULL,
+  `saveToTableName` varchar(55) NOT NULL,
+  `saveToTableCol` varchar(55) NOT NULL,
+  `status` bit(1) NOT NULL DEFAULT b'0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `demographicDataElements`
+--
+
+LOCK TABLES `demographicDataElements` WRITE;
+/*!40000 ALTER TABLE `demographicDataElements` DISABLE KEYS */;
+INSERT INTO `demographicDataElements` VALUES (4,'Patient Id','storage_patients','sourcePatientId',''),(5,'First Name','storage_patients','firstName',''),(6,'Last Name','storage_patients','lastName',''),(7,'Date of Birth','storage_patients','dob',''),(8,'Race','storage_patients','race','');
+/*!40000 ALTER TABLE `demographicDataElements` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `healthDataElements`
+--
+
+DROP TABLE IF EXISTS `healthDataElements`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `healthDataElements` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `elementName` varchar(45) NOT NULL,
+  `saveToTableName` varchar(55) NOT NULL,
+  `saveToTableCol` varchar(55) NOT NULL,
+  `status` bit(1) NOT NULL DEFAULT b'0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `healthDataElements`
+--
+
+LOCK TABLES `healthDataElements` WRITE;
+/*!40000 ALTER TABLE `healthDataElements` DISABLE KEYS */;
+/*!40000 ALTER TABLE `healthDataElements` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `lu_delimiters`
+--
+
+DROP TABLE IF EXISTS `lu_delimiters`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `lu_delimiters` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `delimiter` varchar(45) NOT NULL,
+  `delimChar` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `lu_delimiters`
+--
+
+LOCK TABLES `lu_delimiters` WRITE;
+/*!40000 ALTER TABLE `lu_delimiters` DISABLE KEYS */;
+INSERT INTO `lu_delimiters` VALUES (1,'comma',','),(2,'pipe','|'),(3,'colon',':'),(11,'semi-colon',';'),(12,'tab','');
+/*!40000 ALTER TABLE `lu_delimiters` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `lu_genders`
+--
+
+DROP TABLE IF EXISTS `lu_genders`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `lu_genders` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `displayText` varchar(45) NOT NULL COMMENT 'Female, Male, Other, Unknown, etc.',
+  `description` varchar(200) DEFAULT NULL,
+  `isCustom` bit(1) NOT NULL DEFAULT b'0' COMMENT 'This field tracks look up item and flags it as 1 if it is a custom field that should not be a general option. 1 for True, 0 for False',
+  `status` bit(1) NOT NULL DEFAULT b'1' COMMENT 'This field is 1 if it is available to general public and in use.  It is set to 0 when it is no longer available as a choice to users. 1 for True, 0 for False',
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'This is the date that the record was added to UT',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `lu_genders`
+--
+
+LOCK TABLES `lu_genders` WRITE;
+/*!40000 ALTER TABLE `lu_genders` DISABLE KEYS */;
+INSERT INTO `lu_genders` VALUES (1,'Male','Male','\0','','2013-11-06 12:07:44'),(2,'Female','Female','\0','','2013-11-06 12:07:44'),(3,'Transgender',NULL,'\0','','2013-11-06 12:07:44'),(4,'Unknown or Refused to Report',NULL,'\0','','2013-11-06 12:07:44');
+/*!40000 ALTER TABLE `lu_genders` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `lu_hispanics`
+--
+
+DROP TABLE IF EXISTS `lu_hispanics`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `lu_hispanics` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `displayText` varchar(45) NOT NULL COMMENT 'Yes, No, Not Reported',
+  `description` varchar(200) DEFAULT NULL COMMENT 'Could be a description on how to answer the category?',
+  `isCustom` bit(1) NOT NULL DEFAULT b'0' COMMENT 'This field tracks look up item and flags it as 1 if it is a custom field that should not be a general option. 1 for True, 0 for False',
+  `status` bit(1) NOT NULL DEFAULT b'1' COMMENT 'This field is 1 if it is available to general public and in use.  It is set to 0 when it is no longer available as a choice to users. 1 for True, 0 for False',
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'This is the date that the record was added to UT',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `lu_hispanics`
+--
+
+LOCK TABLES `lu_hispanics` WRITE;
+/*!40000 ALTER TABLE `lu_hispanics` DISABLE KEYS */;
+INSERT INTO `lu_hispanics` VALUES (1,'Hispanic or Latino',NULL,'\0','','2013-11-06 12:26:40'),(2,'Not Hispanic or Latino',NULL,'\0','','2013-11-06 12:26:40'),(3,'Unknown or Refused to Report',NULL,'\0','','2013-11-06 12:26:40'),(4,'Spaniard',NULL,'\0','','2014-06-27 13:52:50'),(5,'Andalusian',NULL,'\0','','2014-06-27 13:52:50'),(6,'Asturian',NULL,'\0','','2014-06-27 13:52:50'),(7,'Castillian',NULL,'\0','','2014-06-27 13:52:50'),(8,'Catalonian',NULL,'\0','','2014-06-27 13:52:50'),(9,'Belearic Islander',NULL,'\0','','2014-06-27 13:52:50'),(10,'Gallego',NULL,'\0','','2014-06-27 13:52:50'),(11,'Valencian',NULL,'\0','','2014-06-27 13:52:50'),(12,'Canarian',NULL,'\0','','2014-06-27 13:52:50'),(13,'Spanish Basque',NULL,'\0','','2014-06-27 13:52:51'),(14,'Mexican',NULL,'\0','','2014-06-27 13:52:51'),(15,'Mexican American',NULL,'\0','','2014-06-27 13:52:51'),(16,'Mexicano',NULL,'\0','','2014-06-27 13:52:51'),(17,'Chicano',NULL,'\0','','2014-06-27 13:52:51'),(18,'La Raza',NULL,'\0','','2014-06-27 13:52:51'),(19,'Mexican American Indian',NULL,'\0','','2014-06-27 13:52:51'),(20,'Central American',NULL,'\0','','2014-06-27 13:52:51'),(21,'Costa Rican',NULL,'\0','','2014-06-27 13:52:51'),(22,'Guatemalan',NULL,'\0','','2014-06-27 13:52:51'),(23,'Honduran',NULL,'\0','','2014-06-27 13:52:51'),(24,'Nicaraguan',NULL,'\0','','2014-06-27 13:52:51'),(25,'Panamanian',NULL,'\0','','2014-06-27 13:52:51'),(26,'Salvadoran',NULL,'\0','','2014-06-27 13:52:51'),(27,'Central American Indian',NULL,'\0','','2014-06-27 13:52:51'),(28,'Canal Zone',NULL,'\0','','2014-06-27 13:52:51'),(29,'South American',NULL,'\0','','2014-06-27 13:52:51'),(30,'Argentinean',NULL,'\0','','2014-06-27 13:52:51'),(31,'Bolivian',NULL,'\0','','2014-06-27 13:52:51'),(32,'Chilean',NULL,'\0','','2014-06-27 13:52:51'),(33,'Colombian',NULL,'\0','','2014-06-27 13:52:51'),(34,'Ecuadorian',NULL,'\0','','2014-06-27 13:52:51'),(35,'Paraguayan',NULL,'\0','','2014-06-27 13:52:51'),(36,'Peruvian',NULL,'\0','','2014-06-27 13:52:51'),(37,'Uruguayan',NULL,'\0','','2014-06-27 13:52:51'),(38,'Venezuelan',NULL,'\0','','2014-06-27 13:52:51'),(39,'South American Indian',NULL,'\0','','2014-06-27 13:52:51'),(40,'Criollo',NULL,'\0','','2014-06-27 13:52:51'),(41,'Latin American/Latin, Latino',NULL,'\0','','2014-06-27 13:52:51'),(42,'Puerto Rican',NULL,'\0','','2014-06-27 13:52:51'),(43,'Cuban',NULL,'\0','','2014-06-27 13:52:51'),(44,'Dominican',NULL,'\0','','2014-06-27 13:52:51');
+/*!40000 ALTER TABLE `lu_hispanics` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `lu_languages`
+--
+
+DROP TABLE IF EXISTS `lu_languages`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `lu_languages` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `displayText` varchar(255) NOT NULL COMMENT 'English, Spanish, Polish, Italian etc.',
+  `description` varchar(200) DEFAULT NULL,
+  `isCustom` bit(1) NOT NULL DEFAULT b'0' COMMENT 'This field tracks look up item and flags it as 1 if it is a custom field that should not be a general option. 1 for True, 0 for False',
+  `status` bit(1) NOT NULL DEFAULT b'1' COMMENT 'This field is 1 if it is available to general public and in use.  It is set to 0 when it is no longer available as a choice to users. 1 for True, 0 for False',
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'This is the date that the record was added to UT',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=485 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `lu_languages`
+--
+
+LOCK TABLES `lu_languages` WRITE;
+/*!40000 ALTER TABLE `lu_languages` DISABLE KEYS */;
+INSERT INTO `lu_languages` VALUES (1,'Abkhazian',' ','\0','','2014-06-12 22:10:54'),(2,'Achinese',' ','\0','','2014-06-12 22:10:54'),(3,'Acoli',' ','\0','','2014-06-12 22:10:54'),(4,'Adangme',' ','\0','','2014-06-12 22:10:54'),(5,'Adyghe; Adygei',' ','\0','','2014-06-12 22:10:54'),(6,'Afar',' ','\0','','2014-06-12 22:10:54'),(7,'Afrihili',' ','\0','','2014-06-12 22:10:54'),(8,'Afrikaans',' ','\0','','2014-06-12 22:10:54'),(9,'Afro-Asiatic (Other)',' ','\0','','2014-06-12 22:10:54'),(10,'Ainu',' ','\0','','2014-06-12 22:10:54'),(11,'Akan',' ','\0','','2014-06-12 22:10:54'),(12,'Akkadian',' ','\0','','2014-06-12 22:10:54'),(13,'Albanian',' ','\0','','2014-06-12 22:10:54'),(14,'Aleut',' ','\0','','2014-06-12 22:10:54'),(15,'Algonquian languages',' ','\0','','2014-06-12 22:10:54'),(16,'Altaic (Other)',' ','\0','','2014-06-12 22:10:54'),(17,'Amharic',' ','\0','','2014-06-12 22:10:54'),(18,'Angika',' ','\0','','2014-06-12 22:10:54'),(19,'Apache languages',' ','\0','','2014-06-12 22:10:54'),(20,'Arabic',' ','\0','','2014-06-12 22:10:54'),(21,'Aragonese',' ','\0','','2014-06-12 22:10:54'),(22,'Arapaho',' ','\0','','2014-06-12 22:10:54'),(23,'Arawak',' ','\0','','2014-06-12 22:10:54'),(24,'Armenian',' ','\0','','2014-06-12 22:10:54'),(25,'Aromanian; Arumanian; Macedo-Romanian',' ','\0','','2014-06-12 22:10:54'),(26,'Artificial (Other)',' ','\0','','2014-06-12 22:10:54'),(27,'Assamese',' ','\0','','2014-06-12 22:10:54'),(28,'Asturian; Bable; Leonese; Asturleonese',' ','\0','','2014-06-12 22:10:54'),(29,'Athapascan languages',' ','\0','','2014-06-12 22:10:54'),(30,'Australian languages',' ','\0','','2014-06-12 22:10:54'),(31,'Austronesian (Other)',' ','\0','','2014-06-12 22:10:54'),(32,'Avaric',' ','\0','','2014-06-12 22:10:54'),(33,'Avestan',' ','\0','','2014-06-12 22:10:54'),(34,'Awadhi',' ','\0','','2014-06-12 22:10:54'),(35,'Aymara',' ','\0','','2014-06-12 22:10:54'),(36,'Azerbaijani',' ','\0','','2014-06-12 22:10:54'),(37,'Balinese',' ','\0','','2014-06-12 22:10:54'),(38,'Baltic (Other)',' ','\0','','2014-06-12 22:10:54'),(39,'Baluchi',' ','\0','','2014-06-12 22:10:54'),(40,'Bambara',' ','\0','','2014-06-12 22:10:54'),(41,'Bamileke languages',' ','\0','','2014-06-12 22:10:54'),(42,'Banda languages',' ','\0','','2014-06-12 22:10:54'),(43,'Bantu (Other)',' ','\0','','2014-06-12 22:10:54'),(44,'Basa',' ','\0','','2014-06-12 22:10:54'),(45,'Bashkir',' ','\0','','2014-06-12 22:10:54'),(46,'Basque',' ','\0','','2014-06-12 22:10:54'),(47,'Batak languages',' ','\0','','2014-06-12 22:10:54'),(48,'Beja; Bedawiyet',' ','\0','','2014-06-12 22:10:54'),(49,'Belarusian',' ','\0','','2014-06-12 22:10:54'),(50,'Bemba',' ','\0','','2014-06-12 22:10:54'),(51,'Bengali',' ','\0','','2014-06-12 22:10:54'),(52,'Berber (Other)',' ','\0','','2014-06-12 22:10:54'),(53,'Bhojpuri',' ','\0','','2014-06-12 22:10:54'),(54,'Bihari',' ','\0','','2014-06-12 22:10:54'),(55,'Bikol',' ','\0','','2014-06-12 22:10:54'),(56,'Bini; Edo',' ','\0','','2014-06-12 22:10:54'),(57,'Bislama',' ','\0','','2014-06-12 22:10:54'),(58,'Blin; Bilin',' ','\0','','2014-06-12 22:10:54'),(59,'Blissymbols; Blissymbolics; Bliss',' ','\0','','2014-06-12 22:10:54'),(60,'Bokmal, Norwegian; Norwegian Bokmal',' ','\0','','2014-06-12 22:10:54'),(61,'Bosnian',' ','\0','','2014-06-12 22:10:54'),(62,'Braj',' ','\0','','2014-06-12 22:10:54'),(63,'Breton',' ','\0','','2014-06-12 22:10:54'),(64,'Buginese',' ','\0','','2014-06-12 22:10:54'),(65,'Bulgarian',' ','\0','','2014-06-12 22:10:54'),(66,'Buriat',' ','\0','','2014-06-12 22:10:54'),(67,'Burmese',' ','\0','','2014-06-12 22:10:54'),(68,'Caddo',' ','\0','','2014-06-12 22:10:54'),(69,'Catalan; Valencian',' ','\0','','2014-06-12 22:10:54'),(70,'Caucasian (Other)',' ','\0','','2014-06-12 22:10:54'),(71,'Cebuano',' ','\0','','2014-06-12 22:10:54'),(72,'Celtic (Other)',' ','\0','','2014-06-12 22:10:54'),(73,'Central American Indian (Other)',' ','\0','','2014-06-12 22:10:54'),(74,'Central Khmer',' ','\0','','2014-06-12 22:10:54'),(75,'Chagatai',' ','\0','','2014-06-12 22:10:54'),(76,'Chamic languages',' ','\0','','2014-06-12 22:10:54'),(77,'Chamorro',' ','\0','','2014-06-12 22:10:54'),(78,'Chechen',' ','\0','','2014-06-12 22:10:54'),(79,'Cherokee',' ','\0','','2014-06-12 22:10:54'),(80,'Cheyenne',' ','\0','','2014-06-12 22:10:54'),(81,'Chibcha',' ','\0','','2014-06-12 22:10:54'),(82,'Chichewa; Chewa; Nyanja',' ','\0','','2014-06-12 22:10:54'),(83,'Chinese',' ','\0','','2014-06-12 22:10:54'),(84,'Chinook jargon',' ','\0','','2014-06-12 22:10:54'),(85,'Chipewyan; Dene Suline',' ','\0','','2014-06-12 22:10:54'),(86,'Choctaw',' ','\0','','2014-06-12 22:10:54'),(87,'Church Slavic; Old Slavonic; Church Slavonic; Old Bulgarian; Old Church Slavonic',' ','\0','','2014-06-12 22:10:54'),(88,'Chuukese',' ','\0','','2014-06-12 22:10:54'),(89,'Chuvash',' ','\0','','2014-06-12 22:10:54'),(90,'Classical Newari; Old Newari; Classical Nepal Bhasa',' ','\0','','2014-06-12 22:10:54'),(91,'Classical Syriac',' ','\0','','2014-06-12 22:10:54'),(92,'Coptic',' ','\0','','2014-06-12 22:10:54'),(93,'Cornish',' ','\0','','2014-06-12 22:10:54'),(94,'Corsican',' ','\0','','2014-06-12 22:10:54'),(95,'Cree',' ','\0','','2014-06-12 22:10:54'),(96,'Creek',' ','\0','','2014-06-12 22:10:54'),(97,'Creoles and pidgins (Other)',' ','\0','','2014-06-12 22:10:54'),(98,'Creoles and pidgins, English based (Other)',' ','\0','','2014-06-12 22:10:54'),(99,'Creoles and pidgins, French-based (Other)',' ','\0','','2014-06-12 22:10:54'),(100,'Creoles and pidgins, Portuguese-based (Other)',' ','\0','','2014-06-12 22:10:54'),(101,'Crimean Tatar; Crimean Turkish',' ','\0','','2014-06-12 22:10:54'),(102,'Croatian',' ','\0','','2014-06-12 22:10:54'),(103,'Cushitic (Other)',' ','\0','','2014-06-12 22:10:54'),(104,'Czech',' ','\0','','2014-06-12 22:10:54'),(105,'Dakota',' ','\0','','2014-06-12 22:10:54'),(106,'Danish',' ','\0','','2014-06-12 22:10:54'),(107,'Dargwa',' ','\0','','2014-06-12 22:10:54'),(108,'Delaware',' ','\0','','2014-06-12 22:10:54'),(109,'Dinka',' ','\0','','2014-06-12 22:10:54'),(110,'Divehi; Dhivehi; Maldivian',' ','\0','','2014-06-12 22:10:54'),(111,'Dogri',' ','\0','','2014-06-12 22:10:54'),(112,'Dogrib',' ','\0','','2014-06-12 22:10:54'),(113,'Dravidian (Other)',' ','\0','','2014-06-12 22:10:54'),(114,'Duala',' ','\0','','2014-06-12 22:10:54'),(115,'Dutch, Middle (ca.1050-1350)',' ','\0','','2014-06-12 22:10:54'),(116,'Dutch; Flemish',' ','\0','','2014-06-12 22:10:54'),(117,'Dyula',' ','\0','','2014-06-12 22:10:54'),(118,'Dzongkha',' ','\0','','2014-06-12 22:10:54'),(119,'Eastern Frisian',' ','\0','','2014-06-12 22:10:54'),(120,'Efik',' ','\0','','2014-06-12 22:10:54'),(121,'Egyptian (Ancient)',' ','\0','','2014-06-12 22:10:54'),(122,'Ekajuk',' ','\0','','2014-06-12 22:10:54'),(123,'Elamite',' ','\0','','2014-06-12 22:10:54'),(124,'English',' ','\0','','2014-06-12 22:10:54'),(125,'English, Middle (1100-1500)',' ','\0','','2014-06-12 22:10:54'),(126,'English, Old (ca.450-1100)',' ','\0','','2014-06-12 22:10:54'),(127,'Erzya',' ','\0','','2014-06-12 22:10:54'),(128,'Esperanto',' ','\0','','2014-06-12 22:10:54'),(129,'Estonian',' ','\0','','2014-06-12 22:10:54'),(130,'Ewe',' ','\0','','2014-06-12 22:10:54'),(131,'Ewondo',' ','\0','','2014-06-12 22:10:54'),(132,'Fang',' ','\0','','2014-06-12 22:10:54'),(133,'Fanti',' ','\0','','2014-06-12 22:10:54'),(134,'Faroese',' ','\0','','2014-06-12 22:10:54'),(135,'Fijian',' ','\0','','2014-06-12 22:10:54'),(136,'Filipino; Pilipino',' ','\0','','2014-06-12 22:10:54'),(137,'Finnish',' ','\0','','2014-06-12 22:10:54'),(138,'Finno-Ugrian (Other)',' ','\0','','2014-06-12 22:10:54'),(139,'Fon',' ','\0','','2014-06-12 22:10:54'),(140,'French',' ','\0','','2014-06-12 22:10:54'),(141,'French, Middle (ca.1400-1600)',' ','\0','','2014-06-12 22:10:54'),(142,'French, Old (842-ca.1400)',' ','\0','','2014-06-12 22:10:54'),(143,'Friulian',' ','\0','','2014-06-12 22:10:54'),(144,'Fulah',' ','\0','','2014-06-12 22:10:54'),(145,'Ga',' ','\0','','2014-06-12 22:10:54'),(146,'Gaelic; Scottish Gaelic',' ','\0','','2014-06-12 22:10:54'),(147,'Galibi Carib',' ','\0','','2014-06-12 22:10:54'),(148,'Galician',' ','\0','','2014-06-12 22:10:54'),(149,'Ganda',' ','\0','','2014-06-12 22:10:54'),(150,'Gayo',' ','\0','','2014-06-12 22:10:54'),(151,'Gbaya',' ','\0','','2014-06-12 22:10:54'),(152,'Geez',' ','\0','','2014-06-12 22:10:54'),(153,'Georgian',' ','\0','','2014-06-12 22:10:54'),(154,'German',' ','\0','','2014-06-12 22:10:54'),(155,'German, Middle High (ca.1050-1500)',' ','\0','','2014-06-12 22:10:54'),(156,'German, Old High (ca.750-1050)',' ','\0','','2014-06-12 22:10:54'),(157,'Germanic (Other)',' ','\0','','2014-06-12 22:10:54'),(158,'Gilbertese',' ','\0','','2014-06-12 22:10:54'),(159,'Gondi',' ','\0','','2014-06-12 22:10:54'),(160,'Gorontalo',' ','\0','','2014-06-12 22:10:54'),(161,'Gothic',' ','\0','','2014-06-12 22:10:54'),(162,'Grebo',' ','\0','','2014-06-12 22:10:54'),(163,'Greek, Ancient (to 1453)',' ','\0','','2014-06-12 22:10:54'),(164,'Greek, Modern (1453-)',' ','\0','','2014-06-12 22:10:54'),(165,'Guarani',' ','\0','','2014-06-12 22:10:54'),(166,'Gujarati',' ','\0','','2014-06-12 22:10:54'),(167,'Gwich\'in',' ','\0','','2014-06-12 22:10:54'),(168,'Haida',' ','\0','','2014-06-12 22:10:54'),(169,'Haitian; Haitian Creole',' ','\0','','2014-06-12 22:10:54'),(170,'Hausa',' ','\0','','2014-06-12 22:10:54'),(171,'Hawaiian',' ','\0','','2014-06-12 22:10:54'),(172,'Hebrew',' ','\0','','2014-06-12 22:10:54'),(173,'Herero',' ','\0','','2014-06-12 22:10:54'),(174,'Hiligaynon',' ','\0','','2014-06-12 22:10:54'),(175,'Himachali',' ','\0','','2014-06-12 22:10:54'),(176,'Hindi',' ','\0','','2014-06-12 22:10:54'),(177,'Hiri Motu',' ','\0','','2014-06-12 22:10:54'),(178,'Hittite',' ','\0','','2014-06-12 22:10:54'),(179,'Hmong',' ','\0','','2014-06-12 22:10:54'),(180,'Hungarian',' ','\0','','2014-06-12 22:10:54'),(181,'Hupa',' ','\0','','2014-06-12 22:10:54'),(182,'Iban',' ','\0','','2014-06-12 22:10:54'),(183,'Icelandic',' ','\0','','2014-06-12 22:10:54'),(184,'Ido',' ','\0','','2014-06-12 22:10:54'),(185,'Igbo',' ','\0','','2014-06-12 22:10:54'),(186,'Ijo languages',' ','\0','','2014-06-12 22:10:54'),(187,'Iloko',' ','\0','','2014-06-12 22:10:54'),(188,'Inari Sami',' ','\0','','2014-06-12 22:10:54'),(189,'Indic (Other)',' ','\0','','2014-06-12 22:10:54'),(190,'Indo-European (Other)',' ','\0','','2014-06-12 22:10:54'),(191,'Indonesian',' ','\0','','2014-06-12 22:10:54'),(192,'Ingush',' ','\0','','2014-06-12 22:10:54'),(193,'Interlingua (International Auxiliary Language Association)',' ','\0','','2014-06-12 22:10:54'),(194,'Interlingue; Occidental',' ','\0','','2014-06-12 22:10:54'),(195,'Inuktitut',' ','\0','','2014-06-12 22:10:54'),(196,'Inupiaq',' ','\0','','2014-06-12 22:10:54'),(197,'Iranian (Other)',' ','\0','','2014-06-12 22:10:54'),(198,'Irish',' ','\0','','2014-06-12 22:10:54'),(199,'Irish, Middle (900-1200)',' ','\0','','2014-06-12 22:10:54'),(200,'Irish, Old (to 900)',' ','\0','','2014-06-12 22:10:54'),(201,'Iroquoian languages',' ','\0','','2014-06-12 22:10:54'),(202,'Italian',' ','\0','','2014-06-12 22:10:54'),(203,'Japanese',' ','\0','','2014-06-12 22:10:54'),(204,'Javanese',' ','\0','','2014-06-12 22:10:54'),(205,'Judeo-Arabic',' ','\0','','2014-06-12 22:10:54'),(206,'Judeo-Persian',' ','\0','','2014-06-12 22:10:54'),(207,'Kabardian',' ','\0','','2014-06-12 22:10:54'),(208,'Kabyle',' ','\0','','2014-06-12 22:10:54'),(209,'Kachin; Jingpho',' ','\0','','2014-06-12 22:10:54'),(210,'Kalaallisut; Greenlandic',' ','\0','','2014-06-12 22:10:54'),(211,'Kalmyk; Oirat',' ','\0','','2014-06-12 22:10:54'),(212,'Kamba',' ','\0','','2014-06-12 22:10:54'),(213,'Kannada',' ','\0','','2014-06-12 22:10:54'),(214,'Kanuri',' ','\0','','2014-06-12 22:10:54'),(215,'Karachay-Balkar',' ','\0','','2014-06-12 22:10:54'),(216,'Kara-Kalpak',' ','\0','','2014-06-12 22:10:54'),(217,'Karelian',' ','\0','','2014-06-12 22:10:54'),(218,'Karen languages',' ','\0','','2014-06-12 22:10:54'),(219,'Kashmiri',' ','\0','','2014-06-12 22:10:54'),(220,'Kashubian',' ','\0','','2014-06-12 22:10:54'),(221,'Kawi',' ','\0','','2014-06-12 22:10:54'),(222,'Kazakh',' ','\0','','2014-06-12 22:10:54'),(223,'Khasi',' ','\0','','2014-06-12 22:10:54'),(224,'Khoisan (Other)',' ','\0','','2014-06-12 22:10:54'),(225,'Khotanese',' ','\0','','2014-06-12 22:10:54'),(226,'Kikuyu; Gikuyu',' ','\0','','2014-06-12 22:10:54'),(227,'Kimbundu',' ','\0','','2014-06-12 22:10:54'),(228,'Kinyarwanda',' ','\0','','2014-06-12 22:10:54'),(229,'Kirghiz; Kyrgyz',' ','\0','','2014-06-12 22:10:54'),(230,'Klingon; tlhIngan-Hol',' ','\0','','2014-06-12 22:10:54'),(231,'Komi',' ','\0','','2014-06-12 22:10:54'),(232,'Kongo',' ','\0','','2014-06-12 22:10:54'),(233,'Konkani',' ','\0','','2014-06-12 22:10:54'),(234,'Korean',' ','\0','','2014-06-12 22:10:54'),(235,'Kosraean',' ','\0','','2014-06-12 22:10:54'),(236,'Kpelle',' ','\0','','2014-06-12 22:10:54'),(237,'Kru languages',' ','\0','','2014-06-12 22:10:54'),(238,'Kuanyama; Kwanyama',' ','\0','','2014-06-12 22:10:54'),(239,'Kumyk',' ','\0','','2014-06-12 22:10:54'),(240,'Kurdish',' ','\0','','2014-06-12 22:10:54'),(241,'Kurukh',' ','\0','','2014-06-12 22:10:54'),(242,'Kutenai',' ','\0','','2014-06-12 22:10:54'),(243,'Ladino',' ','\0','','2014-06-12 22:10:54'),(244,'Lahnda',' ','\0','','2014-06-12 22:10:54'),(245,'Lamba',' ','\0','','2014-06-12 22:10:54'),(246,'Land Dayak languages',' ','\0','','2014-06-12 22:10:54'),(247,'Lao',' ','\0','','2014-06-12 22:10:54'),(248,'Latin',' ','\0','','2014-06-12 22:10:54'),(249,'Latvian',' ','\0','','2014-06-12 22:10:54'),(250,'Lezghian',' ','\0','','2014-06-12 22:10:54'),(251,'Limburgan; Limburger; Limburgish',' ','\0','','2014-06-12 22:10:54'),(252,'Lingala',' ','\0','','2014-06-12 22:10:54'),(253,'Lithuanian',' ','\0','','2014-06-12 22:10:54'),(254,'Lojban',' ','\0','','2014-06-12 22:10:54'),(255,'Low German; Low Saxon; German, Low; Saxon, Low',' ','\0','','2014-06-12 22:10:54'),(256,'Lower Sorbian',' ','\0','','2014-06-12 22:10:54'),(257,'Lozi',' ','\0','','2014-06-12 22:10:54'),(258,'Luba-Katanga',' ','\0','','2014-06-12 22:10:54'),(259,'Luba-Lulua',' ','\0','','2014-06-12 22:10:54'),(260,'Luiseno',' ','\0','','2014-06-12 22:10:54'),(261,'Lule Sami',' ','\0','','2014-06-12 22:10:54'),(262,'Lunda',' ','\0','','2014-06-12 22:10:54'),(263,'Luo (Kenya and Tanzania)',' ','\0','','2014-06-12 22:10:54'),(264,'Lushai',' ','\0','','2014-06-12 22:10:54'),(265,'Luxembourgish; Letzeburgesch',' ','\0','','2014-06-12 22:10:54'),(266,'Macedonian',' ','\0','','2014-06-12 22:10:54'),(267,'Madurese',' ','\0','','2014-06-12 22:10:54'),(268,'Magahi',' ','\0','','2014-06-12 22:10:54'),(269,'Maithili',' ','\0','','2014-06-12 22:10:54'),(270,'Makasar',' ','\0','','2014-06-12 22:10:54'),(271,'Malagasy',' ','\0','','2014-06-12 22:10:54'),(272,'Malay',' ','\0','','2014-06-12 22:10:54'),(273,'Malayalam',' ','\0','','2014-06-12 22:10:54'),(274,'Maltese',' ','\0','','2014-06-12 22:10:54'),(275,'Manchu',' ','\0','','2014-06-12 22:10:54'),(276,'Mandar',' ','\0','','2014-06-12 22:10:54'),(277,'Mandingo',' ','\0','','2014-06-12 22:10:54'),(278,'Manipuri',' ','\0','','2014-06-12 22:10:54'),(279,'Manobo languages',' ','\0','','2014-06-12 22:10:54'),(280,'Manx',' ','\0','','2014-06-12 22:10:54'),(281,'Maori',' ','\0','','2014-06-12 22:10:54'),(282,'Mapudungun; Mapuche',' ','\0','','2014-06-12 22:10:54'),(283,'Marathi',' ','\0','','2014-06-12 22:10:54'),(284,'Mari',' ','\0','','2014-06-12 22:10:54'),(285,'Marshallese',' ','\0','','2014-06-12 22:10:54'),(286,'Marwari',' ','\0','','2014-06-12 22:10:54'),(287,'Masai',' ','\0','','2014-06-12 22:10:54'),(288,'Mayan languages',' ','\0','','2014-06-12 22:10:54'),(289,'Mende',' ','\0','','2014-06-12 22:10:54'),(290,'Mi\'kmaq; Micmac',' ','\0','','2014-06-12 22:10:54'),(291,'Minangkabau',' ','\0','','2014-06-12 22:10:54'),(292,'Mirandese',' ','\0','','2014-06-12 22:10:54'),(293,'Mohawk',' ','\0','','2014-06-12 22:10:54'),(294,'Moksha',' ','\0','','2014-06-12 22:10:54'),(295,'Moldavian; Moldovan',' ','\0','','2014-06-12 22:10:54'),(296,'Mongo',' ','\0','','2014-06-12 22:10:54'),(297,'Mongolian',' ','\0','','2014-06-12 22:10:54'),(298,'Mon-Khmer (Other)',' ','\0','','2014-06-12 22:10:54'),(299,'Mossi',' ','\0','','2014-06-12 22:10:54'),(300,'Multiple languages',' ','\0','','2014-06-12 22:10:54'),(301,'Munda languages',' ','\0','','2014-06-12 22:10:54'),(302,'Nahuatl languages',' ','\0','','2014-06-12 22:10:54'),(303,'Nauru',' ','\0','','2014-06-12 22:10:54'),(304,'Navajo; Navaho',' ','\0','','2014-06-12 22:10:54'),(305,'Ndebele, North; North Ndebele',' ','\0','','2014-06-12 22:10:54'),(306,'Ndebele, South; South Ndebele',' ','\0','','2014-06-12 22:10:54'),(307,'Ndonga',' ','\0','','2014-06-12 22:10:54'),(308,'Neapolitan',' ','\0','','2014-06-12 22:10:54'),(309,'Nepal Bhasa; Newari',' ','\0','','2014-06-12 22:10:54'),(310,'Nepali',' ','\0','','2014-06-12 22:10:54'),(311,'Nias',' ','\0','','2014-06-12 22:10:54'),(312,'Niger-Kordofanian (Other)',' ','\0','','2014-06-12 22:10:54'),(313,'Nilo-Saharan (Other)',' ','\0','','2014-06-12 22:10:54'),(314,'Niuean',' ','\0','','2014-06-12 22:10:54'),(315,'N\'Ko',' ','\0','','2014-06-12 22:10:54'),(316,'No linguistic content; Not applicable',' ','\0','','2014-06-12 22:10:54'),(317,'Nogai',' ','\0','','2014-06-12 22:10:54'),(318,'Norse, Old',' ','\0','','2014-06-12 22:10:54'),(319,'North American Indian',' ','\0','','2014-06-12 22:10:54'),(320,'Northern Frisian',' ','\0','','2014-06-12 22:10:54'),(321,'Northern Sami',' ','\0','','2014-06-12 22:10:54'),(322,'Norwegian',' ','\0','','2014-06-12 22:10:54'),(323,'Norwegian Nynorsk; Nynorsk, Norwegian',' ','\0','','2014-06-12 22:10:54'),(324,'Nubian languages',' ','\0','','2014-06-12 22:10:54'),(325,'Nyamwezi',' ','\0','','2014-06-12 22:10:54'),(326,'Nyankole',' ','\0','','2014-06-12 22:10:54'),(327,'Nyoro',' ','\0','','2014-06-12 22:10:54'),(328,'Nzima',' ','\0','','2014-06-12 22:10:54'),(329,'Occitan (post 1500); Provencal',' ','\0','','2014-06-12 22:10:54'),(330,'Official Aramaic (700-300 BCE); Imperial Aramaic (700-300 BCE)',' ','\0','','2014-06-12 22:10:54'),(331,'Ojibwa',' ','\0','','2014-06-12 22:10:54'),(332,'Oriya',' ','\0','','2014-06-12 22:10:54'),(333,'Oromo',' ','\0','','2014-06-12 22:10:54'),(334,'Osage',' ','\0','','2014-06-12 22:10:54'),(335,'Ossetian; Ossetic',' ','\0','','2014-06-12 22:10:54'),(336,'Otomian languages',' ','\0','','2014-06-12 22:10:54'),(337,'Pahlavi',' ','\0','','2014-06-12 22:10:54'),(338,'Palauan',' ','\0','','2014-06-12 22:10:54'),(339,'Pali',' ','\0','','2014-06-12 22:10:54'),(340,'Pampanga; Kapampangan',' ','\0','','2014-06-12 22:10:54'),(341,'Pangasinan',' ','\0','','2014-06-12 22:10:54'),(342,'Panjabi; Punjabi',' ','\0','','2014-06-12 22:10:54'),(343,'Papiamento',' ','\0','','2014-06-12 22:10:54'),(344,'Papuan (Other)',' ','\0','','2014-06-12 22:10:54'),(345,'Pedi; Sepedi; Northern Sotho',' ','\0','','2014-06-12 22:10:54'),(346,'Persian',' ','\0','','2014-06-12 22:10:54'),(347,'Persian, Old (ca.600-400 B.C.)',' ','\0','','2014-06-12 22:10:54'),(348,'Philippine (Other)',' ','\0','','2014-06-12 22:10:54'),(349,'Phoenician',' ','\0','','2014-06-12 22:10:54'),(350,'Pohnpeian',' ','\0','','2014-06-12 22:10:54'),(351,'Polish',' ','\0','','2014-06-12 22:10:54'),(352,'Portuguese',' ','\0','','2014-06-12 22:10:54'),(353,'Prakrit languages',' ','\0','','2014-06-12 22:10:54'),(354,'Provencal, Old (to 1500)',' ','\0','','2014-06-12 22:10:54'),(355,'Pushto; Pashto',' ','\0','','2014-06-12 22:10:54'),(356,'Quechua',' ','\0','','2014-06-12 22:10:54'),(357,'Rajasthani',' ','\0','','2014-06-12 22:10:54'),(358,'Rapanui',' ','\0','','2014-06-12 22:10:54'),(359,'Rarotongan; Cook Islands Maori',' ','\0','','2014-06-12 22:10:54'),(360,'Romance (Other)',' ','\0','','2014-06-12 22:10:54'),(361,'Romanian',' ','\0','','2014-06-12 22:10:54'),(362,'Romansh',' ','\0','','2014-06-12 22:10:54'),(363,'Romany',' ','\0','','2014-06-12 22:10:54'),(364,'Rundi',' ','\0','','2014-06-12 22:10:54'),(365,'Russian',' ','\0','','2014-06-12 22:10:54'),(366,'Salishan languages',' ','\0','','2014-06-12 22:10:54'),(367,'Samaritan Aramaic',' ','\0','','2014-06-12 22:10:54'),(368,'Sami languages (Other)',' ','\0','','2014-06-12 22:10:54'),(369,'Samoan',' ','\0','','2014-06-12 22:10:54'),(370,'Sandawe',' ','\0','','2014-06-12 22:10:54'),(371,'Sango',' ','\0','','2014-06-12 22:10:54'),(372,'Sanskrit',' ','\0','','2014-06-12 22:10:54'),(373,'Santali',' ','\0','','2014-06-12 22:10:54'),(374,'Sardinian',' ','\0','','2014-06-12 22:10:54'),(375,'Sasak',' ','\0','','2014-06-12 22:10:54'),(376,'Scots',' ','\0','','2014-06-12 22:10:54'),(377,'Selkup',' ','\0','','2014-06-12 22:10:54'),(378,'Semitic (Other)',' ','\0','','2014-06-12 22:10:54'),(379,'Serbian',' ','\0','','2014-06-12 22:10:54'),(380,'Serer',' ','\0','','2014-06-12 22:10:54'),(381,'Shan',' ','\0','','2014-06-12 22:10:54'),(382,'Shona',' ','\0','','2014-06-12 22:10:54'),(383,'Sichuan Yi; Nuosu',' ','\0','','2014-06-12 22:10:54'),(384,'Sicilian',' ','\0','','2014-06-12 22:10:54'),(385,'Sidamo',' ','\0','','2014-06-12 22:10:54'),(386,'Sign Languages',' ','\0','','2014-06-12 22:10:54'),(387,'Siksika',' ','\0','','2014-06-12 22:10:54'),(388,'Sindhi',' ','\0','','2014-06-12 22:10:54'),(389,'Sinhala; Sinhalese',' ','\0','','2014-06-12 22:10:54'),(390,'Sino-Tibetan (Other)',' ','\0','','2014-06-12 22:10:54'),(391,'Siouan languages',' ','\0','','2014-06-12 22:10:54'),(392,'Skolt Sami',' ','\0','','2014-06-12 22:10:54'),(393,'Slave (Athapascan)',' ','\0','','2014-06-12 22:10:54'),(394,'Slavic (Other)',' ','\0','','2014-06-12 22:10:54'),(395,'Slovak',' ','\0','','2014-06-12 22:10:54'),(396,'Slovenian',' ','\0','','2014-06-12 22:10:54'),(397,'Sogdian',' ','\0','','2014-06-12 22:10:54'),(398,'Somali',' ','\0','','2014-06-12 22:10:54'),(399,'Songhai languages',' ','\0','','2014-06-12 22:10:54'),(400,'Soninke',' ','\0','','2014-06-12 22:10:54'),(401,'Sorbian languages',' ','\0','','2014-06-12 22:10:54'),(402,'Sotho, Southern',' ','\0','','2014-06-12 22:10:54'),(403,'South American Indian (Other)',' ','\0','','2014-06-12 22:10:54'),(404,'Southern Altai',' ','\0','','2014-06-12 22:10:54'),(405,'Southern Sami',' ','\0','','2014-06-12 22:10:54'),(406,'Spanish',' ','\0','','2014-06-12 22:10:54'),(407,'Sranan Tongo',' ','\0','','2014-06-12 22:10:54'),(408,'Sukuma',' ','\0','','2014-06-12 22:10:54'),(409,'Sumerian',' ','\0','','2014-06-12 22:10:54'),(410,'Sundanese',' ','\0','','2014-06-12 22:10:54'),(411,'Susu',' ','\0','','2014-06-12 22:10:54'),(412,'Swahili',' ','\0','','2014-06-12 22:10:54'),(413,'Swati',' ','\0','','2014-06-12 22:10:54'),(414,'Swedish',' ','\0','','2014-06-12 22:10:54'),(415,'Swiss German; Alemannic; Alsatian',' ','\0','','2014-06-12 22:10:54'),(416,'Syriac',' ','\0','','2014-06-12 22:10:54'),(417,'Tagalog,Tahitian',' ','\0','','2014-06-12 22:10:54'),(418,'Tai (Other)',' ','\0','','2014-06-12 22:10:54'),(419,'Tajik',' ','\0','','2014-06-12 22:10:54'),(420,'Tamashek',' ','\0','','2014-06-12 22:10:54'),(421,'Tamil',' ','\0','','2014-06-12 22:10:54'),(422,'Tatar',' ','\0','','2014-06-12 22:10:54'),(423,'Telugu',' ','\0','','2014-06-12 22:10:54'),(424,'Tereno',' ','\0','','2014-06-12 22:10:54'),(425,'Tetum',' ','\0','','2014-06-12 22:10:54'),(426,'Thai',' ','\0','','2014-06-12 22:10:54'),(427,'Tibetan',' ','\0','','2014-06-12 22:10:54'),(428,'Tigre',' ','\0','','2014-06-12 22:10:54'),(429,'Tigrinya',' ','\0','','2014-06-12 22:10:54'),(430,'Timne',' ','\0','','2014-06-12 22:10:54'),(431,'Tiv',' ','\0','','2014-06-12 22:10:54'),(432,'Tlingit',' ','\0','','2014-06-12 22:10:54'),(433,'Tok Pisin',' ','\0','','2014-06-12 22:10:54'),(434,'Tokelau',' ','\0','','2014-06-12 22:10:54'),(435,'Tonga (Nyasa)',' ','\0','','2014-06-12 22:10:54'),(436,'Tonga (Tonga Islands)',' ','\0','','2014-06-12 22:10:54'),(437,'Tsimshian',' ','\0','','2014-06-12 22:10:54'),(438,'Tsonga',' ','\0','','2014-06-12 22:10:54'),(439,'Tswana',' ','\0','','2014-06-12 22:10:54'),(440,'Tumbuka',' ','\0','','2014-06-12 22:10:54'),(441,'Tupi languages',' ','\0','','2014-06-12 22:10:54'),(442,'Turkish',' ','\0','','2014-06-12 22:10:54'),(443,'Turkish, Ottoman (1500-1928)',' ','\0','','2014-06-12 22:10:54'),(444,'Turkmen',' ','\0','','2014-06-12 22:10:54'),(445,'Tuvalu',' ','\0','','2014-06-12 22:10:54'),(446,'Tuvinian',' ','\0','','2014-06-12 22:10:54'),(447,'Twi',' ','\0','','2014-06-12 22:10:54'),(448,'Udmurt',' ','\0','','2014-06-12 22:10:54'),(449,'Ugaritic',' ','\0','','2014-06-12 22:10:54'),(450,'Uighur; Uyghur',' ','\0','','2014-06-12 22:10:54'),(451,'Ukrainian',' ','\0','','2014-06-12 22:10:54'),(452,'Umbundu',' ','\0','','2014-06-12 22:10:54'),(453,'Uncoded languages',' ','\0','','2014-06-12 22:10:54'),(454,'Undetermined',' ','\0','','2014-06-12 22:10:54'),(455,'Upper Sorbian',' ','\0','','2014-06-12 22:10:54'),(456,'Urdu',' ','\0','','2014-06-12 22:10:54'),(457,'Uzbek',' ','\0','','2014-06-12 22:10:54'),(458,'Vai',' ','\0','','2014-06-12 22:10:54'),(459,'Venda',' ','\0','','2014-06-12 22:10:54'),(460,'Vietnamese',' ','\0','','2014-06-12 22:10:54'),(461,'Volapuk',' ','\0','','2014-06-12 22:10:54'),(462,'Votic',' ','\0','','2014-06-12 22:10:54'),(463,'Wakashan languages',' ','\0','','2014-06-12 22:10:54'),(464,'Walamo',' ','\0','','2014-06-12 22:10:54'),(465,'Walloon',' ','\0','','2014-06-12 22:10:54'),(466,'Waray',' ','\0','','2014-06-12 22:10:54'),(467,'Washo',' ','\0','','2014-06-12 22:10:54'),(468,'Welsh',' ','\0','','2014-06-12 22:10:54'),(469,'Western Frisian',' ','\0','','2014-06-12 22:10:54'),(470,'Wolof',' ','\0','','2014-06-12 22:10:54'),(471,'Xhosa',' ','\0','','2014-06-12 22:10:54'),(472,'Yakut',' ','\0','','2014-06-12 22:10:54'),(473,'Yao',' ','\0','','2014-06-12 22:10:54'),(474,'Yapese',' ','\0','','2014-06-12 22:10:54'),(475,'Yiddish',' ','\0','','2014-06-12 22:10:54'),(476,'Yoruba',' ','\0','','2014-06-12 22:10:54'),(477,'Yupik languages',' ','\0','','2014-06-12 22:10:54'),(478,'Zande languages',' ','\0','','2014-06-12 22:10:54'),(479,'Zapotec',' ','\0','','2014-06-12 22:10:54'),(480,'Zaza; Dimili; Dimli; Kirdki; Kirmanjki; Zazaki',' ','\0','','2014-06-12 22:10:54'),(481,'Zenaga',' ','\0','','2014-06-12 22:10:54'),(482,'Zhuang; Chuang',' ','\0','','2014-06-12 22:10:54'),(483,'Zulu',' ','\0','','2014-06-12 22:10:54'),(484,'Zuni',' ','\0','','2014-06-12 22:10:54');
+/*!40000 ALTER TABLE `lu_languages` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `lu_martialstatuses`
+--
+
+DROP TABLE IF EXISTS `lu_martialstatuses`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `lu_martialstatuses` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `displayText` varchar(45) NOT NULL COMMENT 'Single, Married, Divorced, Declined to Report etc',
+  `description` varchar(200) DEFAULT NULL COMMENT 'description or additional information for the display text ',
+  `isCustom` bit(1) NOT NULL DEFAULT b'0' COMMENT 'This field tracks look up item and flags it as 1 if it is a custom field that should not be a general option. 1 for True, 0 for False',
+  `status` bit(1) NOT NULL DEFAULT b'1' COMMENT 'This field is 1 if it is available to general public and in use.  It is set to 0 when it is no longer available as a choice to users. 1 for True, 0 for False',
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'This is the date that the record was added to UT',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `lu_martialstatuses`
+--
+
+LOCK TABLES `lu_martialstatuses` WRITE;
+/*!40000 ALTER TABLE `lu_martialstatuses` DISABLE KEYS */;
+INSERT INTO `lu_martialstatuses` VALUES (1,'Married',NULL,'\0','','2013-11-06 12:34:04'),(2,'Single',NULL,'\0','','2013-11-06 12:34:04'),(3,'Divorced',NULL,'\0','','2013-11-06 12:34:04'),(4,'Widowed',NULL,'\0','','2013-11-06 12:34:04'),(5,'Other',NULL,'\0','','2013-11-06 12:34:04'),(6,'Unknown/Not Reported',NULL,'\0','','2013-11-06 12:34:04');
+/*!40000 ALTER TABLE `lu_martialstatuses` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `lu_programModules`
+--
+
+DROP TABLE IF EXISTS `lu_programModules`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `lu_programModules` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `moduleName` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `lu_programModules`
+--
+
+LOCK TABLES `lu_programModules` WRITE;
+/*!40000 ALTER TABLE `lu_programModules` DISABLE KEYS */;
+INSERT INTO `lu_programModules` VALUES (1,'Scheduling Module'),(2,'Survey Module'),(3,'Report Module');
+/*!40000 ALTER TABLE `lu_programModules` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `lu_races`
+--
+
+DROP TABLE IF EXISTS `lu_races`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `lu_races` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `displayText` varchar(45) NOT NULL COMMENT 'black, white, Am Indian / Alaskan Native etc',
+  `description` varchar(200) DEFAULT NULL,
+  `isCustom` bit(1) NOT NULL DEFAULT b'0' COMMENT 'This field tracks look up item and flags it as 1 if it is a custom field that should not be a general option. 1 for True, 0 for False',
+  `status` bit(1) NOT NULL DEFAULT b'1' COMMENT 'This field is 1 if it is available to general public and in use.  It is set to 0 when it is no longer available as a choice to users. 1 for True, 0 for False',
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `lu_races`
+--
+
+LOCK TABLES `lu_races` WRITE;
+/*!40000 ALTER TABLE `lu_races` DISABLE KEYS */;
+INSERT INTO `lu_races` VALUES (1,'White',NULL,'\0','','2013-11-06 12:51:16'),(2,'Black or African American',NULL,'\0','','2013-11-06 12:51:16'),(3,'American Indian/Alaskan Native',NULL,'\0','','2013-11-06 12:51:16'),(4,'Asian',NULL,'\0','','2013-11-06 12:51:16'),(5,'Native Hawaiian or Other Pacific Islander',NULL,'\0','','2013-11-06 12:51:16'),(6,'Unknown or Refused to Report',NULL,'\0','','2013-11-06 12:51:16'),(7,'More than One Race',NULL,'\0','','2014-05-30 00:54:05'),(8,'Chinese',NULL,'\0','','2014-06-27 13:32:44'),(9,'Taiwanese',NULL,'\0','','2014-06-27 13:32:44'),(10,'Filipino',NULL,'\0','','2014-06-27 13:32:44'),(11,'Hmong',NULL,'\0','','2014-06-27 13:32:44'),(12,'Indonesian',NULL,'\0','','2014-06-27 13:32:44'),(13,'Japanese',NULL,'\0','','2014-06-27 13:32:44'),(14,'Korean',NULL,'\0','','2014-06-27 13:32:44'),(15,'Laotian',NULL,'\0','','2014-06-27 13:32:44'),(16,'Ethiopian',NULL,'\0','','2014-06-27 13:32:44'),(17,'Liberian',NULL,'\0','','2014-06-27 13:32:44'),(18,'Nigerian',NULL,'\0','','2014-06-27 13:32:44');
+/*!40000 ALTER TABLE `lu_races` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `lu_validationtypes`
+--
+
+DROP TABLE IF EXISTS `lu_validationtypes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `lu_validationtypes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `validationType` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `lu_validationtypes`
+--
+
+LOCK TABLES `lu_validationtypes` WRITE;
+/*!40000 ALTER TABLE `lu_validationtypes` DISABLE KEYS */;
+INSERT INTO `lu_validationtypes` VALUES (1,'None'),(2,'Email'),(3,'Phone Number'),(4,'Date'),(5,'Numeric'),(6,'URL');
+/*!40000 ALTER TABLE `lu_validationtypes` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `patientSharing`
+--
+
+DROP TABLE IF EXISTS `patientSharing`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `patientSharing` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `programId` int(11) NOT NULL,
+  `sharingProgramId` int(11) NOT NULL,
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `patientSharing`
+--
+
+LOCK TABLES `patientSharing` WRITE;
+/*!40000 ALTER TABLE `patientSharing` DISABLE KEYS */;
+INSERT INTO `patientSharing` VALUES (2,1,3,'2014-08-11 12:19:43'),(3,1,4,'2014-08-11 12:19:43'),(4,1,4,'2014-08-11 12:19:56');
+/*!40000 ALTER TABLE `patientSharing` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -84,7 +405,7 @@ CREATE TABLE `programActivityCodes` (
   `codeId` int(11) NOT NULL,
   `dateCreated` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -93,32 +414,61 @@ CREATE TABLE `programActivityCodes` (
 
 LOCK TABLES `programActivityCodes` WRITE;
 /*!40000 ALTER TABLE `programActivityCodes` DISABLE KEYS */;
+INSERT INTO `programActivityCodes` VALUES (12,'1',1,'2014-08-14 11:22:00'),(13,'1',2,'2014-08-14 11:22:00');
 /*!40000 ALTER TABLE `programActivityCodes` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `programGeneralHealthFields`
+-- Table structure for table `programMPIAlgorithms`
 --
 
-DROP TABLE IF EXISTS `programGeneralHealthFields`;
+DROP TABLE IF EXISTS `programMPIAlgorithms`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `programGeneralHealthFields` (
+CREATE TABLE `programMPIAlgorithms` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `programId` int(11) NOT NULL,
-  `fieldId` int(11) NOT NULL,
-  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `status` bit(1) NOT NULL DEFAULT b'0',
+  `action` tinyint(4) NOT NULL DEFAULT '3' COMMENT '1 = Match\n2 = No Match\n3 = Review',
+  `dateCreated` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `programGeneralHealthFields`
+-- Dumping data for table `programMPIAlgorithms`
 --
 
-LOCK TABLES `programGeneralHealthFields` WRITE;
-/*!40000 ALTER TABLE `programGeneralHealthFields` DISABLE KEYS */;
-/*!40000 ALTER TABLE `programGeneralHealthFields` ENABLE KEYS */;
+LOCK TABLES `programMPIAlgorithms` WRITE;
+/*!40000 ALTER TABLE `programMPIAlgorithms` DISABLE KEYS */;
+INSERT INTO `programMPIAlgorithms` VALUES (2,1,'',1,'2014-08-14 02:31:34');
+/*!40000 ALTER TABLE `programMPIAlgorithms` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `programMPIFields`
+--
+
+DROP TABLE IF EXISTS `programMPIFields`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `programMPIFields` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `MPIId` int(11) NOT NULL,
+  `fieldId` int(11) NOT NULL,
+  `action` varchar(45) NOT NULL DEFAULT 'equals',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `programMPIFields`
+--
+
+LOCK TABLES `programMPIFields` WRITE;
+/*!40000 ALTER TABLE `programMPIFields` DISABLE KEYS */;
+INSERT INTO `programMPIFields` VALUES (2,2,6,'equals'),(3,2,5,'equals');
+/*!40000 ALTER TABLE `programMPIFields` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -133,7 +483,7 @@ CREATE TABLE `programModules` (
   `programId` int(11) NOT NULL,
   `moduleId` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -142,6 +492,7 @@ CREATE TABLE `programModules` (
 
 LOCK TABLES `programModules` WRITE;
 /*!40000 ALTER TABLE `programModules` DISABLE KEYS */;
+INSERT INTO `programModules` VALUES (13,1,3),(14,1,2);
 /*!40000 ALTER TABLE `programModules` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -182,9 +533,13 @@ CREATE TABLE `programPatientDemoFields` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `programId` int(11) NOT NULL,
   `fieldId` int(11) NOT NULL,
-  `dateCreated` datetime DEFAULT CURRENT_TIMESTAMP,
+  `requiredField` bit(1) NOT NULL DEFAULT b'0',
+  `validationId` int(11) NOT NULL,
+  `crosswalkId` int(11) DEFAULT '0',
+  `dspPos` int(11) NOT NULL DEFAULT '1',
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -193,7 +548,86 @@ CREATE TABLE `programPatientDemoFields` (
 
 LOCK TABLES `programPatientDemoFields` WRITE;
 /*!40000 ALTER TABLE `programPatientDemoFields` DISABLE KEYS */;
+INSERT INTO `programPatientDemoFields` VALUES (18,1,5,'',1,0,1,'2014-08-12 11:50:00'),(19,1,6,'',1,0,3,'2014-08-12 11:50:05'),(20,1,7,'',4,35,2,'2014-08-12 13:47:44');
 /*!40000 ALTER TABLE `programPatientDemoFields` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `programPatientHealthFields`
+--
+
+DROP TABLE IF EXISTS `programPatientHealthFields`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `programPatientHealthFields` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `programId` int(11) NOT NULL,
+  `fieldId` int(11) NOT NULL,
+  `requiredField` bit(1) NOT NULL DEFAULT b'0',
+  `validationId` int(11) NOT NULL,
+  `crosswalkId` int(11) DEFAULT '0',
+  `dspPos` int(11) NOT NULL DEFAULT '1',
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `programPatientHealthFields`
+--
+
+LOCK TABLES `programPatientHealthFields` WRITE;
+/*!40000 ALTER TABLE `programPatientHealthFields` DISABLE KEYS */;
+/*!40000 ALTER TABLE `programPatientHealthFields` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `programPatients`
+--
+
+DROP TABLE IF EXISTS `programPatients`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `programPatients` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `programId` int(11) NOT NULL,
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `programPatients`
+--
+
+LOCK TABLES `programPatients` WRITE;
+/*!40000 ALTER TABLE `programPatients` DISABLE KEYS */;
+/*!40000 ALTER TABLE `programPatients` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `programReports`
+--
+
+DROP TABLE IF EXISTS `programReports`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `programReports` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `programId` int(11) NOT NULL,
+  `reportId` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `programReports`
+--
+
+LOCK TABLES `programReports` WRITE;
+/*!40000 ALTER TABLE `programReports` DISABLE KEYS */;
+INSERT INTO `programReports` VALUES (1,1,1);
+/*!40000 ALTER TABLE `programReports` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -208,8 +642,9 @@ CREATE TABLE `programs` (
   `programName` varchar(55) NOT NULL,
   `programDesc` text,
   `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `emailAddress` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -218,6 +653,7 @@ CREATE TABLE `programs` (
 
 LOCK TABLES `programs` WRITE;
 /*!40000 ALTER TABLE `programs` DISABLE KEYS */;
+INSERT INTO `programs` VALUES (1,'Massachusetts Quitline','This is the massachusetts quitline program.','2014-08-08 09:42:32','info@massquitline.com'),(3,'Family Planning','','2014-08-11 10:53:59','info@familyplanning.org'),(4,'test','','2014-08-11 00:00:34','info@test.com');
 /*!40000 ALTER TABLE `programs` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -237,7 +673,7 @@ CREATE TABLE `rel_crosswalkdata` (
   PRIMARY KEY (`id`),
   KEY `fkcrosswalkId_idx` (`crosswalkId`),
   CONSTRAINT `fkcwalkDataId` FOREIGN KEY (`crosswalkId`) REFERENCES `crosswalks` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=1988 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2000 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -246,6 +682,7 @@ CREATE TABLE `rel_crosswalkdata` (
 
 LOCK TABLES `rel_crosswalkdata` WRITE;
 /*!40000 ALTER TABLE `rel_crosswalkdata` DISABLE KEYS */;
+INSERT INTO `rel_crosswalkdata` VALUES (1996,35,'Male','1','Male'),(1997,35,'Female','2','Female'),(1998,35,'Transgender','3','Transgender'),(1999,35,'Unknown','4','Unknown or Refused to Report');
 /*!40000 ALTER TABLE `rel_crosswalkdata` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -263,7 +700,7 @@ CREATE TABLE `rel_userlogins` (
   PRIMARY KEY (`id`),
   KEY `userId_idx` (`userId`),
   CONSTRAINT `userId` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=2391 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2499 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -272,6 +709,7 @@ CREATE TABLE `rel_userlogins` (
 
 LOCK TABLES `rel_userlogins` WRITE;
 /*!40000 ALTER TABLE `rel_userlogins` DISABLE KEYS */;
+INSERT INTO `rel_userlogins` VALUES (2391,1,'2014-08-07 15:38:19'),(2392,1,'2014-08-08 13:08:06'),(2393,1,'2014-08-08 13:10:05'),(2394,1,'2014-08-08 13:10:32'),(2395,1,'2014-08-08 13:47:37'),(2396,1,'2014-08-08 21:20:05'),(2397,1,'2014-08-08 21:38:11'),(2398,1,'2014-08-08 21:42:31'),(2399,1,'2014-08-08 21:53:38'),(2400,1,'2014-08-08 22:37:09'),(2401,1,'2014-08-08 23:28:38'),(2402,1,'2014-08-08 23:31:37'),(2403,1,'2014-08-08 23:34:28'),(2404,1,'2014-08-08 23:36:07'),(2405,1,'2014-08-08 23:39:31'),(2406,1,'2014-08-08 23:42:00'),(2407,1,'2014-08-08 23:44:13'),(2408,1,'2014-08-11 10:12:59'),(2409,1,'2014-08-11 10:30:27'),(2410,1,'2014-08-11 10:33:32'),(2411,1,'2014-08-11 10:34:54'),(2412,1,'2014-08-11 10:35:46'),(2413,1,'2014-08-11 10:37:36'),(2414,1,'2014-08-11 10:39:17'),(2415,1,'2014-08-11 10:48:58'),(2416,1,'2014-08-11 10:50:19'),(2417,1,'2014-08-11 10:53:57'),(2418,1,'2014-08-11 11:38:21'),(2419,1,'2014-08-11 12:00:18'),(2420,1,'2014-08-11 12:17:33'),(2421,1,'2014-08-11 13:55:00'),(2422,1,'2014-08-11 13:58:54'),(2423,1,'2014-08-11 14:47:10'),(2424,1,'2014-08-11 14:48:41'),(2425,1,'2014-08-11 14:49:58'),(2426,1,'2014-08-11 14:51:30'),(2427,1,'2014-08-12 10:36:05'),(2428,1,'2014-08-12 11:26:37'),(2429,1,'2014-08-12 11:31:20'),(2430,1,'2014-08-12 11:41:58'),(2431,1,'2014-08-12 11:49:52'),(2432,1,'2014-08-12 12:24:00'),(2433,1,'2014-08-12 12:43:58'),(2434,1,'2014-08-12 12:50:27'),(2435,1,'2014-08-12 12:52:26'),(2436,1,'2014-08-12 13:00:27'),(2437,1,'2014-08-12 13:07:26'),(2438,1,'2014-08-12 13:47:34'),(2439,1,'2014-08-12 14:34:25'),(2440,1,'2014-08-12 15:12:10'),(2441,1,'2014-08-14 09:50:30'),(2442,1,'2014-08-14 10:39:33'),(2443,1,'2014-08-14 11:05:26'),(2444,1,'2014-08-14 11:08:22'),(2445,1,'2014-08-14 11:16:43'),(2446,1,'2014-08-14 11:53:49'),(2447,1,'2014-08-14 13:09:25'),(2448,1,'2014-08-14 13:23:55'),(2449,1,'2014-08-14 13:26:36'),(2450,1,'2014-08-14 13:36:21'),(2451,1,'2014-08-14 14:10:53'),(2452,1,'2014-08-14 14:12:25'),(2453,1,'2014-08-14 14:16:27'),(2454,1,'2014-08-14 14:20:25'),(2455,1,'2014-08-14 14:26:33'),(2456,1,'2014-08-14 14:31:29'),(2457,1,'2014-08-14 14:39:39'),(2458,1,'2014-08-14 15:00:23'),(2459,1,'2014-08-15 10:55:25'),(2460,1,'2014-08-15 11:06:46'),(2461,1,'2014-08-15 11:15:07'),(2462,1,'2014-08-15 11:47:48'),(2463,1,'2014-08-15 11:49:53'),(2464,1,'2014-08-15 12:02:15'),(2465,1,'2014-08-15 12:09:27'),(2466,1,'2014-08-15 12:12:46'),(2467,1,'2014-08-15 12:15:40'),(2468,1,'2014-08-15 12:19:10'),(2469,1,'2014-08-18 09:48:52'),(2470,1,'2014-08-18 10:00:43'),(2471,1,'2014-08-18 10:04:10'),(2472,1,'2014-08-18 10:06:40'),(2473,1,'2014-08-18 10:09:47'),(2474,1,'2014-08-18 10:12:48'),(2475,1,'2014-08-18 10:48:10'),(2476,1,'2014-08-18 11:01:43'),(2477,1,'2014-08-18 11:05:26'),(2478,1,'2014-08-18 11:08:35'),(2479,1,'2014-08-18 11:29:04'),(2480,1,'2014-08-18 12:00:12'),(2481,1,'2014-08-18 12:15:27'),(2482,1,'2014-08-18 12:17:18'),(2483,1,'2014-08-18 12:33:12'),(2484,1,'2014-08-18 12:39:15'),(2485,1,'2014-08-18 12:43:11'),(2486,1,'2014-08-18 12:43:11'),(2487,1,'2014-08-18 12:47:33'),(2488,1,'2014-08-18 13:32:48'),(2489,1,'2014-08-18 13:44:58'),(2490,1,'2014-08-18 13:48:03'),(2491,1,'2014-08-18 14:20:51'),(2492,1,'2014-08-18 14:24:14'),(2493,1,'2014-08-18 14:24:14'),(2494,1,'2014-08-18 14:39:51'),(2495,1,'2014-08-19 11:57:23'),(2496,1,'2014-08-19 12:15:34'),(2497,1,'2014-08-19 13:55:24'),(2498,1,'2014-08-19 14:20:15');
 /*!40000 ALTER TABLE `rel_userlogins` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -297,6 +735,89 @@ LOCK TABLES `siteModules` WRITE;
 /*!40000 ALTER TABLE `siteModules` DISABLE KEYS */;
 INSERT INTO `siteModules` VALUES (1,'Reporting Module'),(2,'Scheduling Module'),(3,'Survey Module');
 /*!40000 ALTER TABLE `siteModules` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `storage_patients`
+--
+
+DROP TABLE IF EXISTS `storage_patients`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `storage_patients` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'primary key for patient, it will serve as our system''s patient Id',
+  `programpatientId` int(11) NOT NULL,
+  `sourcePatientId` varchar(45) DEFAULT NULL COMMENT 'Id assigned to patient by source system - e.g Pat148R-2KD-BOS',
+  `prefix` varchar(45) DEFAULT NULL COMMENT 'e.g. Mr, Dr., Ms, Sir, Princess, Knight, etc',
+  `firstName` varchar(45) DEFAULT NULL COMMENT 'e.g. John',
+  `middleName` varchar(45) DEFAULT NULL COMMENT 'e.g Joshua',
+  `lastName` varchar(45) DEFAULT NULL COMMENT 'e.g. Doe',
+  `suffix` varchar(45) DEFAULT NULL COMMENT 'e.g. Jr, III, IV etc.',
+  `dob` datetime DEFAULT NULL COMMENT 'Patient''s date of birth 1-1-1912',
+  `genderId` int(11) DEFAULT NULL COMMENT 'Look up value from lu_Genders. Look up field is int and not free hand field because we should have some limits to some fields as what the user can type.  We will add it to our look up table if something creative comes up.  It is also a repetitive field, using int will take up less space and faster when it comes to indexing\nSample equivalent values are - male, female, unknown, transgender, etc.',
+  `raceId` int(11) DEFAULT NULL COMMENT 'Look up Id from lu_Races - equivalent values could be Asian, White, Black, etc.',
+  `hispanicId` int(11) DEFAULT NULL COMMENT 'id from lu_Hispanics\nSample look up values are Yes, No, Not Reported',
+  `primaryLanguageId` int(11) DEFAULT NULL COMMENT 'Id from lu_Languages - Sample look up values - English, Spanish, Polish, Mandarin (Chinese), Cantonese (Chinese) etc.',
+  `englishProficient` varchar(10) DEFAULT NULL COMMENT 'can be Yes, No, Unknown...\nWe wi\nso changing it to varchar',
+  `maritalStatusId` int(11) DEFAULT NULL COMMENT 'look up from lu_MartialStatuses - Sample look up values are - Single, Married, Divorced, Not Reported, etc.',
+  `email` varchar(100) DEFAULT NULL COMMENT 'e.g. test@test.com',
+  `additonalContactNumber` varchar(45) DEFAULT NULL,
+  `url` varchar(100) DEFAULT NULL COMMENT 'e.g. http://test.com',
+  `occupation` varchar(45) DEFAULT NULL,
+  `guardianName` varchar(45) DEFAULT NULL COMMENT 'name of guardian - Jane Doe, John Smith',
+  `emergencyContact` varchar(45) DEFAULT NULL COMMENT 'Name of emergency contact - Jane Doe',
+  `emergencyTel` varchar(45) DEFAULT NULL COMMENT '123-456-7890',
+  `patientStatusId` int(11) DEFAULT NULL COMMENT 'id from lu_PatientStatuses - Could be equivalent int value of active, pending, future, expired, etc.',
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'This is the date that the record was added to UT',
+  `race` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `genderFK_idx` (`genderId`),
+  KEY `raceFK_idx` (`raceId`),
+  KEY `lauguageFK_idx` (`primaryLanguageId`),
+  KEY `martialStatusFK_idx` (`maritalStatusId`),
+  KEY `hispanicFK_idx` (`hispanicId`),
+  KEY `patientFK_idx` (`programpatientId`),
+  CONSTRAINT `genderFK` FOREIGN KEY (`genderId`) REFERENCES `lu_genders` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `hispanicFK` FOREIGN KEY (`hispanicId`) REFERENCES `lu_hispanics` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `lauguageFK` FOREIGN KEY (`primaryLanguageId`) REFERENCES `lu_languages` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `martialStatusFK` FOREIGN KEY (`maritalStatusId`) REFERENCES `lu_martialstatuses` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `patientFK` FOREIGN KEY (`programpatientId`) REFERENCES `programPatients` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `raceFK` FOREIGN KEY (`raceId`) REFERENCES `lu_races` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `storage_patients`
+--
+
+LOCK TABLES `storage_patients` WRITE;
+/*!40000 ALTER TABLE `storage_patients` DISABLE KEYS */;
+/*!40000 ALTER TABLE `storage_patients` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `userPrograms`
+--
+
+DROP TABLE IF EXISTS `userPrograms`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `userPrograms` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `userId` int(11) NOT NULL,
+  `programId` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `userPrograms`
+--
+
+LOCK TABLES `userPrograms` WRITE;
+/*!40000 ALTER TABLE `userPrograms` DISABLE KEYS */;
+INSERT INTO `userPrograms` VALUES (6,36,1);
+/*!40000 ALTER TABLE `userPrograms` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -345,7 +866,7 @@ CREATE TABLE `users` (
   PRIMARY KEY (`id`),
   KEY `userRoleId_idx` (`roleId`),
   CONSTRAINT `userRoleId` FOREIGN KEY (`roleId`) REFERENCES `userroles` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -354,7 +875,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'','Chad','McCue','admin','!sysadmin!','chadmccue05@gmail.com',1,0,'2014-08-07 10:56:34',NULL);
+INSERT INTO `users` VALUES (1,'','Chad','McCue','admin','!sysadmin!','chadmccue05@gmail.com',1,0,'2014-08-07 10:56:34',NULL),(36,'','Chad','McCue','cmccue','cmccue','chadmccue05@gmail.com',2,0,'2014-08-15 00:02:19',NULL),(37,'\0','Mike','Stelmach','mikes','mikes','mikes@jsi.com',1,0,'2014-08-18 02:23:08',NULL);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -371,4 +892,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-08-07 13:26:45
+-- Dump completed on 2014-08-19 14:25:42

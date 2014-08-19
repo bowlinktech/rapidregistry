@@ -329,5 +329,76 @@ public class dataElementDAOImpl implements dataElementDAO {
 
         return query.list();
     }
+    
+    /**
+     * The 'getInformationTables' function will return a list of all available information tables where we can associate fields to an actual table and column.
+     */
+    @Override
+    @SuppressWarnings("rawtypes")
+    @Transactional
+    public List getInformationTables() {
+        Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT distinct table_name FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'rapidregistry' and TABLE_NAME LIKE 'storage\\_%'");
 
+        return query.list();
+    }
+    
+    /**
+     * The 'getTableColumns' function will return a list of columns from the passed in table name
+     *
+     */
+    @Override
+    @SuppressWarnings("rawtypes")
+    @Transactional
+    public List getTableColumns(String tableName) {
+        Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'rapidregistry' AND TABLE_NAME = :tableName and COLUMN_NAME not in ('id', 'dateCreated') order by COLUMN_NAME")
+                .setParameter("tableName", tableName);
+
+        return query.list();
+    }
+    
+    /**
+     * The 'saveDemoField' function will save the new demographic data element
+     * @param formField The object holding the data element object
+     * @throws Exception 
+     */
+    @Override
+    public void saveDemoField(demoDataElements formField) throws Exception {
+        sessionFactory.getCurrentSession().saveOrUpdate(formField);
+    }
+    
+    /**
+     * The 'saveHealthField' function will save the new health data element
+     * @param formField The object holding the data element object
+     * @throws Exception 
+     */
+    @Override
+    public void saveHealthField(healthDataElements formField) throws Exception {
+        sessionFactory.getCurrentSession().saveOrUpdate(formField);
+    }
+    
+    /**
+     * The 'getDemoFieldDetails' function will return the details of the selected demo
+     * data element.
+     * 
+     * @param fieldId The id of the selected field
+     * @return
+     * @throws Exception 
+     */
+    @Override
+    public demoDataElements getDemoFieldDetails(Integer fieldId) throws Exception {
+        return (demoDataElements) sessionFactory.getCurrentSession().get(demoDataElements.class, fieldId); 
+    }
+    
+    /**
+     * The 'getHealthFieldDetails' function will return the details of the selected health
+     * data element.
+     * 
+     * @param fieldId The id of the selected field
+     * @return
+     * @throws Exception 
+     */
+    @Override
+    public healthDataElements getHealthFieldDetails(Integer fieldId) throws Exception {
+        return (healthDataElements) sessionFactory.getCurrentSession().get(healthDataElements.class, fieldId); 
+    }
 }

@@ -48,4 +48,18 @@ public interface dataElementManager {
     
     String getValidationName(int validationId);
     
+    @SuppressWarnings("rawtypes")
+    List getInformationTables();
+
+    @SuppressWarnings("rawtypes")
+    List getTableColumns(String tableName);
+    
+    void saveDemoField(demoDataElements formField) throws Exception;
+    
+    void saveHealthField(healthDataElements formField) throws Exception;
+    
+    demoDataElements getDemoFieldDetails(Integer fieldId) throws Exception;
+    
+    healthDataElements getHealthFieldDetails(Integer fieldId) throws Exception;
+    
 }

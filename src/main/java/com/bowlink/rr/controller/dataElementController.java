@@ -9,12 +9,9 @@ package com.bowlink.rr.controller;
 import com.bowlink.rr.model.crosswalks;
 import com.bowlink.rr.model.demoDataElements;
 import com.bowlink.rr.model.healthDataElements;
-import com.bowlink.rr.model.program;
-import com.bowlink.rr.model.programDemoDataElements;
 import com.bowlink.rr.service.dataElementManager;
 import com.bowlink.rr.service.programManager;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -262,6 +259,197 @@ public class dataElementController {
         mav.addObject("delimiters", delimiters);
 
         return mav;
+    }
+    
+    /**
+     * The '/addNewDemoField' GET request will return the new field module
+     * 
+     *  
+     * @return  The function returns the new field module with a empty messageTypeFormFields
+     *          object
+     */
+    @RequestMapping(value = "/addNewDemoField", method = RequestMethod.GET)
+    public @ResponseBody ModelAndView addNewDemoField() throws Exception {
+        
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/sysAdmin/dataElements/details");
+        
+        demoDataElements newdemoField = new demoDataElements();
+        mav.addObject("dataElementFormFields", newdemoField);
+       
+
+        //Get the list of available information tables
+        @SuppressWarnings("rawtypes")
+        List infoTables = dataelementmanager.getInformationTables();
+        mav.addObject("infoTables", infoTables);
+
+        return mav;
+    }
+    
+    /**
+     * The '/addNewDemoField' POST request will submit the new field module
+     * 
+     * @param dataElementFormFields      The object containing the new field
+     * 
+     * @return  The function will reload the mappings page showing the new field
+     *          after the field has been successfully added.
+     */    
+    @RequestMapping(value = "/addNewDemoField", method = RequestMethod.POST)
+    public ModelAndView submitNewDemoField(@ModelAttribute(value = "dataElementFormFields") demoDataElements dataElementFormFields, RedirectAttributes redirectAttr) throws Exception {
+        
+        dataelementmanager.saveDemoField(dataElementFormFields);
+       
+        redirectAttr.addFlashAttribute("savedStatus", "fieldcreated");
+        
+        ModelAndView mav = new ModelAndView(new RedirectView("demo-fields"));
+        return mav;
+    }
+    
+    /**
+     * The '/editDemoField' GET request will return the selected field module
+     * 
+     *  
+     * @return  The function returns the new field module with a empty messageTypeFormFields
+     *          object
+     */
+    @RequestMapping(value = "/editDemoField", method = RequestMethod.GET)
+    public @ResponseBody ModelAndView editDemoField(@RequestParam Integer fieldId) throws Exception {
+        
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/sysAdmin/dataElements/details");
+         
+        
+        demoDataElements fieldDetails = dataelementmanager.getDemoFieldDetails(fieldId);
+        mav.addObject("dataElementFormFields", fieldDetails);
+       
+
+        //Get the list of available information tables
+        @SuppressWarnings("rawtypes")
+        List infoTables = dataelementmanager.getInformationTables();
+        mav.addObject("infoTables", infoTables);
+
+        return mav;
+    }
+    
+    /**
+     * The '/editDemoField' POST request will submit the deom field changes
+     * 
+     * @param dataElementFormFields      The object containing the new field
+     * 
+     * @return  The function will reload the mappings page showing the new field
+     *          after the field has been successfully added.
+     */    
+    @RequestMapping(value = "/editDemoField", method = RequestMethod.POST)
+    public ModelAndView submitDemoFieldChanges(@ModelAttribute(value = "dataElementFormFields") demoDataElements dataElementFormFields, RedirectAttributes redirectAttr) throws Exception {
+        
+        dataelementmanager.saveDemoField(dataElementFormFields);
+       
+        redirectAttr.addFlashAttribute("savedStatus", "fieldupdated");
+       
+        ModelAndView mav = new ModelAndView(new RedirectView("demo-fields"));
+        return mav;
+    }
+    
+    /**
+     * The '/addNewHealthField' GET request will return the new field module
+     */
+    @RequestMapping(value = "/addNewHealthField", method = RequestMethod.GET)
+    public @ResponseBody ModelAndView addNewHealthField() throws Exception {
+        
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/sysAdmin/dataElements/details");
+         mav.addObject("fieldType", "demo");
+        
+        healthDataElements newhealthField = new healthDataElements();
+        mav.addObject("dataElementFormFields", newhealthField);
+       
+
+        //Get the list of available information tables
+        @SuppressWarnings("rawtypes")
+        List infoTables = dataelementmanager.getInformationTables();
+        mav.addObject("infoTables", infoTables);
+
+        return mav;
+    }
+    
+    /**
+     * The '/addNewHealthField' POST request will submit the new field module
+     * 
+     * @param dataElementFormFields      The object containing the new field
+     * 
+     * @return  The function will reload the mappings page showing the new field
+     *          after the field has been successfully added.
+     */    
+    @RequestMapping(value = "/addNewHealthField", method = RequestMethod.POST)
+    public ModelAndView submitNewDemoField(@ModelAttribute(value = "dataElementFormFields") healthDataElements dataElementFormFields, RedirectAttributes redirectAttr) throws Exception {
+        
+        dataelementmanager.saveHealthField(dataElementFormFields);
+        
+        if(dataElementFormFields.getId() > 0) {
+            redirectAttr.addFlashAttribute("savedStatus", "fieldupdated");
+        }
+        else {
+            redirectAttr.addFlashAttribute("savedStatus", "fieldcreated");
+        }
+       
+        ModelAndView mav = new ModelAndView(new RedirectView("health-fields"));
+        return mav;
+    }
+    
+    /**
+     * The '/editHealthField' GET request will return the selected field module
+     */
+    @RequestMapping(value = "/editHealthField", method = RequestMethod.GET)
+    public @ResponseBody ModelAndView editHealthField(@RequestParam Integer fieldId) throws Exception {
+        
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/sysAdmin/dataElements/details");
+         
+        
+        healthDataElements fieldDetails = dataelementmanager.getHealthFieldDetails(fieldId);
+        mav.addObject("dataElementFormFields", fieldDetails);
+       
+
+        //Get the list of available information tables
+        @SuppressWarnings("rawtypes")
+        List infoTables = dataelementmanager.getInformationTables();
+        mav.addObject("infoTables", infoTables);
+
+        return mav;
+    }
+    
+    /**
+     * The '/editHealthField' POST request will submit the deom field changes
+     * 
+     * @param dataElementFormFields      The object containing the new field
+     * 
+     * @return  The function will reload the mappings page showing the new field
+     *          after the field has been successfully added.
+     */    
+    @RequestMapping(value = "/editHealthField", method = RequestMethod.POST)
+    public ModelAndView submitHealthFieldChanges(@ModelAttribute(value = "dataElementFormFields") healthDataElements dataElementFormFields, RedirectAttributes redirectAttr) throws Exception {
+        
+        dataelementmanager.saveHealthField(dataElementFormFields);
+       
+        redirectAttr.addFlashAttribute("savedStatus", "fieldupdated");
+       
+        ModelAndView mav = new ModelAndView(new RedirectView("health-fields"));
+        return mav;
+    }
+    
+    /**
+     * The '/getTableCols.do' GET request will return a list of columns for the passed in table name
+     *
+     * @param tableName
+     *
+     * @return The function will return a list of column names.
+     */
+    @SuppressWarnings("rawtypes")
+    @RequestMapping(value = "/getTableCols.do", method = RequestMethod.GET)
+    public @ResponseBody List getTableCols(@RequestParam(value = "tableName", required = true) String tableName) {
+
+        List columns = dataelementmanager.getTableColumns(tableName);
+        return columns;
     }
     
 }

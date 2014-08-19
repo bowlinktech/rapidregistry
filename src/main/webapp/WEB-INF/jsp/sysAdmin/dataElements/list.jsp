@@ -10,14 +10,12 @@
     <div class="row-fluid">
         <div class="col-md-12">
             <c:choose>
-                <c:when test="${not empty param.msg}" >
+                <c:when test="${not empty savedStatus}" >
                     <div class="alert alert-success">
                         <strong>Success!</strong> 
                         <c:choose>
-                            <c:when test="${param.msg == 'updated'}">The program admin user has been successfully updated!</c:when>
-                            <c:when test="${param.msg == 'created'}">The program admin user has been successfully added!</c:when>
-                            <c:when test="${param.msg == 'associated'}">The selected admin is now associated to this program!</c:when>
-                            <c:when test="${param.msg == 'removed'}">The selected admin is now removed from this program!</c:when>
+                            <c:when test="${savedStatus == 'fieldupdated'}">The data element has been successfully updated!</c:when>
+                            <c:when test="${savedStatus == 'fieldcreated'}">The data element has been successfully added!</c:when>
                         </c:choose>
                     </div>
                 </c:when>
