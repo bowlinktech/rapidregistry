@@ -3,6 +3,7 @@
     <nav class="secondary-nav" role="navigation">
         <ul class="nav nav-pills nav-stacked" role="menu">
             <li role="menuitem" ${param['page'] == 'details' ? 'class="active"' : ''}><a href="${param['page'] != 'details' ? './' : 'javascript:void(0);'}" title="Program Details">Details</a></li>
+            <li role="menuitem" ${param['page'] == 'hierarchy' ? 'class="active"' : ''} ${id > 0 ? '' : 'class="disabled"'}><a href="${param['page'] != 'hierarchy' && id > 0 ? 'organization-hierarchy' : 'javascript:void(0);'}" title="Organization Hierarchy">Organization Hierarchy</a></li>
             <li role="menuitem" ${param['page'] == 'sharing' ? 'class="active"' : ''} ${id > 0 ? '' : 'class="disabled"'}><a href="${param['page'] != 'sharing' && id > 0 ? 'patient-sharing' : 'javascript:void(0);'}" title="Program Patient Sharing">Patient Sharing</a></li>
             <li role="menuitem" ${param['page'] == 'modules' ? 'class="active"' : ''} ${id > 0 ? '' : 'class="disabled"'}><a href="${param['page'] != 'modules' && id > 0 ? 'program-modules' : 'javascript:void(0);'}" title="Program Modules">Program Modules</a></li>
             <li role="menuitem" ${param['page'] == 'demodata' ? 'class="active"' : ''} ${id > 0 ? '' : 'class="disabled"'}><a href="${param['page'] != 'demodata' && id > 0 ? 'demo-data-elements' : 'javascript:void(0);'}" title="Demographic Data Elements">Demo Data Elements</a></li>

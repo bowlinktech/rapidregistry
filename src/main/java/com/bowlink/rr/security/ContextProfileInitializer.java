@@ -27,10 +27,10 @@ public class ContextProfileInitializer implements ApplicationContextInitializer<
             Logger.getLogger(ContextProfileInitializer.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        if("10.202.52.54".equals(hostname)) {
+        if("172.24.16.43".equals(hostname)) {
             profiles = "staging";
         } 
-        else if("10.202.52.152".equals(hostname)) {
+        else if("172.24.16.41".equals(hostname)) {
             profiles = "prod";
         }
                 
