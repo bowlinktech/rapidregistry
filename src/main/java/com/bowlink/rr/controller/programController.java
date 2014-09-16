@@ -528,6 +528,7 @@ public class programController {
     public @ResponseBody
     ModelAndView setDemographicField(
             @RequestParam(value = "fieldId", required = true) Integer fieldId, @RequestParam(value = "fieldText", required = true) String fieldText,
+            @RequestParam(value = "fieldDisplayName", required = true) String fieldDisplayName,
             @RequestParam(value = "cw", required = true) Integer cw, @RequestParam(value = "CWText", required = true) String cwText,
             @RequestParam(value = "validationId", required = true) Integer validationId, @RequestParam(value = "validationName", required = true) String validationName,
             @RequestParam(value = "requiredField", required = true) boolean requiredField, HttpSession session
@@ -546,6 +547,7 @@ public class programController {
         field.setCwName(cwText);
         field.setFieldId(fieldId);
         field.setFieldName(fieldText);
+        field.setFieldDisplayname(fieldDisplayName);
         field.setValidationId(validationId);
         field.setValidationName(validationName);
         field.setRequiredField(requiredField);

@@ -136,18 +136,26 @@ require(['./main'], function () {
             $('#crosswalkdetailsform').submit();
 
         });
+        
+        //Set the field display name on change
+        $(document).on('change', '#field', function() {
+            var selectedFieldText = $('#field').find(":selected").text();
+            $('#fieldDisplayName').val(selectedFieldText);
+            
+        });
 
         //This function will handle populating the program demographic field table
         //The trigger will be when a crosswalk is selected along with a
         //field
         $(document).on('click', '#submitFieldButton', function() {
             var selectedField = $('#field').val();
-            var selectedFieldText = $('#field').find(":selected").text();
             var selectedCW = $('#crosswalk').val();
+            var selectedFieldText = $('#field').find(":selected").text();
             var selectedCWText = $('#crosswalk').find(":selected").text();
             var selectedValidation = $('#fieldValidation').val();
             var selectedValidationText = $('#fieldValidation').find(":selected").text();
             var required = $('#requiredField').val();
+            var fieldDisplayName = $('#fieldDisplayName').val();
 
             //Remove all error classes and error messages
             $('div').removeClass("has-error");
@@ -166,7 +174,7 @@ require(['./main'], function () {
                 $.ajax({
                     url: "../setDemographicField",
                     type: "GET",
-                    data: {'fieldId': selectedField, 'fieldText': selectedFieldText, 'cw': selectedCW, 'CWText': selectedCWText, 'validationId': selectedValidation
+                    data: {'fieldId': selectedField, 'fieldText': selectedFieldText, 'fieldDisplayName': fieldDisplayName, 'cw': selectedCW, 'CWText': selectedCWText, 'validationId': selectedValidation
                         , 'validationName': selectedValidationText, 'requiredField': required
                     },
                     success: function(data) {
@@ -177,6 +185,7 @@ require(['./main'], function () {
                         $('#crosswalk option:eq("")').prop('selected', true);
                         $('#fieldValidation option:eq("0")').prop('selected', true);
                         $('#requiredField option:eq("0")').prop('selected', true);
+                        $('#fieldDisplayName').val("");
                     }
                 });
             }
