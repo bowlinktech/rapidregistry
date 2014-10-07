@@ -7,8 +7,7 @@
 package com.bowlink.rr.controller;
 
 import com.bowlink.rr.model.crosswalks;
-import com.bowlink.rr.model.demoDataElements;
-import com.bowlink.rr.model.healthDataElements;
+import com.bowlink.rr.model.dataElements;
 import com.bowlink.rr.service.dataElementManager;
 import com.bowlink.rr.service.programManager;
 import java.util.List;
@@ -41,7 +40,7 @@ public class dataElementController {
     programManager programmanager;
     
     /**
-     * The '/demo-fields' GET request will display the demographic field list page.
+     * The '/' GET request will display the data element (fields) list page.
      *
      *
      * @return	Will return the data element list page.
@@ -49,8 +48,8 @@ public class dataElementController {
      * @throws Exception
      *
      */
-    @RequestMapping(value = "/demo-fields", method = RequestMethod.GET)
-    public ModelAndView demoDataElements(HttpSession session) throws Exception {
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public ModelAndView dataElements(HttpSession session) throws Exception {
 
         ModelAndView mav = new ModelAndView();
         mav.setViewName("/demoFields");
@@ -58,34 +57,7 @@ public class dataElementController {
         /**
          * Get a list of all available demographic fields *
          */
-        List<demoDataElements> dataElements = dataelementmanager.getDemoDataElements();
-        mav.addObject("availableFields", dataElements);
-
-
-        return mav;
-
-    }
-    
-    
-    /**
-     * The '/health-fields' GET request will display the health field list page.
-     *
-     *
-     * @return	Will return the data element list page.
-     *
-     * @throws Exception
-     *
-     */
-    @RequestMapping(value = "/health-fields", method = RequestMethod.GET)
-    public ModelAndView healthDataElements(HttpSession session) throws Exception {
-
-        ModelAndView mav = new ModelAndView();
-        mav.setViewName("/healthFields");
-       
-        /**
-         * Get a list of all available demographic fields *
-         */
-        List<healthDataElements> dataElements = dataelementmanager.getHealthDataElements();
+        List<dataElements> dataElements = dataelementmanager.getdataElements();
         mav.addObject("availableFields", dataElements);
 
 
@@ -262,20 +234,20 @@ public class dataElementController {
     }
     
     /**
-     * The '/addNewDemoField' GET request will return the new field module
+     * The '/addNewField' GET request will return the new field module
      * 
      *  
      * @return  The function returns the new field module with a empty messageTypeFormFields
      *          object
      */
-    @RequestMapping(value = "/addNewDemoField", method = RequestMethod.GET)
-    public @ResponseBody ModelAndView addNewDemoField() throws Exception {
+    @RequestMapping(value = "/addNewField", method = RequestMethod.GET)
+    public @ResponseBody ModelAndView addNewField() throws Exception {
         
         ModelAndView mav = new ModelAndView();
         mav.setViewName("/sysAdmin/dataElements/details");
         
-        demoDataElements newdemoField = new demoDataElements();
-        mav.addObject("dataElementFormFields", newdemoField);
+        dataElements newField = new dataElements();
+        mav.addObject("dataElementFormFields", newField);
        
 
         //Get the list of available information tables
@@ -287,39 +259,39 @@ public class dataElementController {
     }
     
     /**
-     * The '/addNewDemoField' POST request will submit the new field module
+     * The '/addNewField' POST request will submit the new field module
      * 
      * @param dataElementFormFields      The object containing the new field
      * 
      * @return  The function will reload the mappings page showing the new field
      *          after the field has been successfully added.
      */    
-    @RequestMapping(value = "/addNewDemoField", method = RequestMethod.POST)
-    public ModelAndView submitNewDemoField(@ModelAttribute(value = "dataElementFormFields") demoDataElements dataElementFormFields, RedirectAttributes redirectAttr) throws Exception {
+    @RequestMapping(value = "/addNewField", method = RequestMethod.POST)
+    public ModelAndView submitNewField(@ModelAttribute(value = "dataElementFormFields") dataElements dataElementFormFields, RedirectAttributes redirectAttr) throws Exception {
         
-        dataelementmanager.saveDemoField(dataElementFormFields);
+        dataelementmanager.saveField(dataElementFormFields);
        
         redirectAttr.addFlashAttribute("savedStatus", "fieldcreated");
         
-        ModelAndView mav = new ModelAndView(new RedirectView("demo-fields"));
+        ModelAndView mav = new ModelAndView(new RedirectView(""));
         return mav;
     }
     
     /**
-     * The '/editDemoField' GET request will return the selected field module
+     * The '/editField' GET request will return the selected field module
      * 
      *  
      * @return  The function returns the new field module with a empty messageTypeFormFields
      *          object
      */
-    @RequestMapping(value = "/editDemoField", method = RequestMethod.GET)
-    public @ResponseBody ModelAndView editDemoField(@RequestParam Integer fieldId) throws Exception {
+    @RequestMapping(value = "/editField", method = RequestMethod.GET)
+    public @ResponseBody ModelAndView editField(@RequestParam Integer fieldId) throws Exception {
         
         ModelAndView mav = new ModelAndView();
         mav.setViewName("/sysAdmin/dataElements/details");
          
         
-        demoDataElements fieldDetails = dataelementmanager.getDemoFieldDetails(fieldId);
+        dataElements fieldDetails = dataelementmanager.getFieldDetails(fieldId);
         mav.addObject("dataElementFormFields", fieldDetails);
        
 
@@ -332,7 +304,7 @@ public class dataElementController {
     }
     
     /**
-     * The '/editDemoField' POST request will submit the deom field changes
+     * The '/editField' POST request will submit the field changes
      * 
      * @param dataElementFormFields      The object containing the new field
      * 
@@ -340,100 +312,13 @@ public class dataElementController {
      *          after the field has been successfully added.
      */    
     @RequestMapping(value = "/editDemoField", method = RequestMethod.POST)
-    public ModelAndView submitDemoFieldChanges(@ModelAttribute(value = "dataElementFormFields") demoDataElements dataElementFormFields, RedirectAttributes redirectAttr) throws Exception {
+    public ModelAndView submitDemoFieldChanges(@ModelAttribute(value = "dataElementFormFields") dataElements dataElementFormFields, RedirectAttributes redirectAttr) throws Exception {
         
-        dataelementmanager.saveDemoField(dataElementFormFields);
+        dataelementmanager.saveField(dataElementFormFields);
        
         redirectAttr.addFlashAttribute("savedStatus", "fieldupdated");
        
-        ModelAndView mav = new ModelAndView(new RedirectView("demo-fields"));
-        return mav;
-    }
-    
-    /**
-     * The '/addNewHealthField' GET request will return the new field module
-     */
-    @RequestMapping(value = "/addNewHealthField", method = RequestMethod.GET)
-    public @ResponseBody ModelAndView addNewHealthField() throws Exception {
-        
-        ModelAndView mav = new ModelAndView();
-        mav.setViewName("/sysAdmin/dataElements/details");
-         mav.addObject("fieldType", "demo");
-        
-        healthDataElements newhealthField = new healthDataElements();
-        mav.addObject("dataElementFormFields", newhealthField);
-       
-
-        //Get the list of available information tables
-        @SuppressWarnings("rawtypes")
-        List infoTables = dataelementmanager.getInformationTables();
-        mav.addObject("infoTables", infoTables);
-
-        return mav;
-    }
-    
-    /**
-     * The '/addNewHealthField' POST request will submit the new field module
-     * 
-     * @param dataElementFormFields      The object containing the new field
-     * 
-     * @return  The function will reload the mappings page showing the new field
-     *          after the field has been successfully added.
-     */    
-    @RequestMapping(value = "/addNewHealthField", method = RequestMethod.POST)
-    public ModelAndView submitNewDemoField(@ModelAttribute(value = "dataElementFormFields") healthDataElements dataElementFormFields, RedirectAttributes redirectAttr) throws Exception {
-        
-        dataelementmanager.saveHealthField(dataElementFormFields);
-        
-        if(dataElementFormFields.getId() > 0) {
-            redirectAttr.addFlashAttribute("savedStatus", "fieldupdated");
-        }
-        else {
-            redirectAttr.addFlashAttribute("savedStatus", "fieldcreated");
-        }
-       
-        ModelAndView mav = new ModelAndView(new RedirectView("health-fields"));
-        return mav;
-    }
-    
-    /**
-     * The '/editHealthField' GET request will return the selected field module
-     */
-    @RequestMapping(value = "/editHealthField", method = RequestMethod.GET)
-    public @ResponseBody ModelAndView editHealthField(@RequestParam Integer fieldId) throws Exception {
-        
-        ModelAndView mav = new ModelAndView();
-        mav.setViewName("/sysAdmin/dataElements/details");
-         
-        
-        healthDataElements fieldDetails = dataelementmanager.getHealthFieldDetails(fieldId);
-        mav.addObject("dataElementFormFields", fieldDetails);
-       
-
-        //Get the list of available information tables
-        @SuppressWarnings("rawtypes")
-        List infoTables = dataelementmanager.getInformationTables();
-        mav.addObject("infoTables", infoTables);
-
-        return mav;
-    }
-    
-    /**
-     * The '/editHealthField' POST request will submit the deom field changes
-     * 
-     * @param dataElementFormFields      The object containing the new field
-     * 
-     * @return  The function will reload the mappings page showing the new field
-     *          after the field has been successfully added.
-     */    
-    @RequestMapping(value = "/editHealthField", method = RequestMethod.POST)
-    public ModelAndView submitHealthFieldChanges(@ModelAttribute(value = "dataElementFormFields") healthDataElements dataElementFormFields, RedirectAttributes redirectAttr) throws Exception {
-        
-        dataelementmanager.saveHealthField(dataElementFormFields);
-       
-        redirectAttr.addFlashAttribute("savedStatus", "fieldupdated");
-       
-        ModelAndView mav = new ModelAndView(new RedirectView("health-fields"));
+        ModelAndView mav = new ModelAndView(new RedirectView(""));
         return mav;
     }
     

@@ -7,8 +7,7 @@ package com.bowlink.rr.dao.impl;
 
 import com.bowlink.rr.dao.dataElementDAO;
 import com.bowlink.rr.model.crosswalks;
-import com.bowlink.rr.model.demoDataElements;
-import com.bowlink.rr.model.healthDataElements;
+import com.bowlink.rr.model.dataElements;
 import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -35,32 +34,16 @@ public class dataElementDAOImpl implements dataElementDAO {
      *
      */
     @Override
-    public List<demoDataElements> getDemoDataElements() throws Exception {
+    public List<dataElements> getdataElements() throws Exception {
 
-        Query query = sessionFactory.getCurrentSession().createQuery("from demoDataElements order by elementName asc");
+        Query query = sessionFactory.getCurrentSession().createQuery("from dataElements order by elementName asc");
 
-        List<demoDataElements> fieldList = query.list();
+        List<dataElements> fieldList = query.list();
 
         return fieldList;
 
     }
     
-    /**
-     * The 'getHealthDataElements' function will return a list of all available health data elements.
-     *
-     *
-     */
-    @Override
-    public List<healthDataElements> getHealthDataElements() throws Exception {
-
-        Query query = sessionFactory.getCurrentSession().createQuery("from healthDataElements order by elementName asc");
-
-        List<healthDataElements> fieldList = query.list();
-
-        return fieldList;
-
-    }
-
     /**
      * The 'getCrosswalks' function will return the list of available crosswalks to associate a message types to. This function will only return crosswalks not associated to a specific organization.
      *
@@ -125,8 +108,8 @@ public class dataElementDAOImpl implements dataElementDAO {
      */
     @Override
     @Transactional
-    public String getDemoFieldName(int fieldId) {
-        Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT elementName FROM demographicDataElements where id = :fieldId")
+    public String getfieldName(int fieldId) {
+        Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT elementName FROM dataElements where id = :fieldId")
                 .setParameter("fieldId", fieldId);
 
         String fieldName = (String) query.uniqueResult();
@@ -134,24 +117,6 @@ public class dataElementDAOImpl implements dataElementDAO {
         return fieldName;
     }
     
-    /**
-     * The 'getHealthFieldName' function will return the name of a field based on the fieldId passed in. This is used for display purposes to show the actual field lable instead of a field name.
-     *
-     * @param fieldId	This will hold the id of the field to retrieve
-     *
-     * @Return This function will return a string (field name)
-     */
-    @Override
-    @Transactional
-    public String getHealthFieldName(int fieldId) {
-        Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT elementName FROM healthDataElements where id = :fieldId")
-                .setParameter("fieldId", fieldId);
-
-        String fieldName = (String) query.uniqueResult();
-
-        return fieldName;
-    }
-
     /**
      * The 'getCrosswalkName' function will return the name of a crosswalk based on the id passed in.
      *
@@ -357,27 +322,18 @@ public class dataElementDAOImpl implements dataElementDAO {
     }
     
     /**
-     * The 'saveDemoField' function will save the new demographic data element
+     * The 'saveField' function will save the new data element
      * @param formField The object holding the data element object
      * @throws Exception 
      */
     @Override
-    public void saveDemoField(demoDataElements formField) throws Exception {
+    public void saveField(dataElements formField) throws Exception {
         sessionFactory.getCurrentSession().saveOrUpdate(formField);
     }
     
-    /**
-     * The 'saveHealthField' function will save the new health data element
-     * @param formField The object holding the data element object
-     * @throws Exception 
-     */
-    @Override
-    public void saveHealthField(healthDataElements formField) throws Exception {
-        sessionFactory.getCurrentSession().saveOrUpdate(formField);
-    }
     
     /**
-     * The 'getDemoFieldDetails' function will return the details of the selected demo
+     * The 'getFieldDetails' function will return the details of the selected
      * data element.
      * 
      * @param fieldId The id of the selected field
@@ -385,20 +341,8 @@ public class dataElementDAOImpl implements dataElementDAO {
      * @throws Exception 
      */
     @Override
-    public demoDataElements getDemoFieldDetails(Integer fieldId) throws Exception {
-        return (demoDataElements) sessionFactory.getCurrentSession().get(demoDataElements.class, fieldId); 
+    public dataElements getFieldDetails(Integer fieldId) throws Exception {
+        return (dataElements) sessionFactory.getCurrentSession().get(dataElements.class, fieldId); 
     }
     
-    /**
-     * The 'getHealthFieldDetails' function will return the details of the selected health
-     * data element.
-     * 
-     * @param fieldId The id of the selected field
-     * @return
-     * @throws Exception 
-     */
-    @Override
-    public healthDataElements getHealthFieldDetails(Integer fieldId) throws Exception {
-        return (healthDataElements) sessionFactory.getCurrentSession().get(healthDataElements.class, fieldId); 
-    }
 }

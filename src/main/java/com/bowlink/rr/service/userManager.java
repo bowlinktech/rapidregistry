@@ -20,11 +20,11 @@ public interface userManager {
 
     User getUserById(int userId);
 
-    User getUserByUserName(String username);
+    User getUserByEmail(String emailAddress);
 
     Long findTotalLogins(int userId);
 
-    void setLastLogin(String username);
+    void setLastLogin(String emailAddress);
 
     User getUserByResetCode(String resetCode);
 

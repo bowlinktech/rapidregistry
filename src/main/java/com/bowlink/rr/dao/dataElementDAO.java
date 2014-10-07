@@ -7,8 +7,7 @@
 package com.bowlink.rr.dao;
 
 import com.bowlink.rr.model.crosswalks;
-import com.bowlink.rr.model.demoDataElements;
-import com.bowlink.rr.model.healthDataElements;
+import com.bowlink.rr.model.dataElements;
 import java.util.List;
 
 /**
@@ -17,9 +16,7 @@ import java.util.List;
  */
 public interface dataElementDAO {
     
-    List<demoDataElements> getDemoDataElements() throws Exception;
-    
-    List<healthDataElements> getHealthDataElements() throws Exception;
+    List<dataElements> getdataElements() throws Exception;
     
     List<crosswalks> getCrosswalks(int page, int maxResults, int programId);
     
@@ -42,9 +39,7 @@ public interface dataElementDAO {
     @SuppressWarnings("rawtypes")
     List getValidationTypes();
     
-    String getDemoFieldName(int fieldId);
-    
-    String getHealthFieldName(int fieldId);
+    String getfieldName(int fieldId);
     
     String getCrosswalkName(int cwId);
     
@@ -56,13 +51,7 @@ public interface dataElementDAO {
     @SuppressWarnings("rawtypes")
     List getTableColumns(String tableName);
     
-    void saveDemoField(demoDataElements formField) throws Exception;
+    void saveField(dataElements formField) throws Exception;
     
-    void saveHealthField(healthDataElements formField) throws Exception;
-    
-    demoDataElements getDemoFieldDetails(Integer fieldId) throws Exception;
-    
-    healthDataElements getHealthFieldDetails(Integer fieldId) throws Exception;
-
-    
+    dataElements getFieldDetails(Integer fieldId) throws Exception;
 }

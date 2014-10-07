@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.bowlink.rr.model;
 
 import java.util.Date;
@@ -20,27 +19,27 @@ import org.springframework.format.annotation.DateTimeFormat;
  * @author chadmccue
  */
 @Entity
-@Table(name = "USER_PROGRAMS")
-public class programAdmin {
+@Table(name = "PROGRAM_ENGAGEMENTSECTIONS")
+public class programEngagementSections {
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID", nullable = false)
     private int id;
     
-    @Column(name = "SYSTEMUSERID", nullable = false)
-    private Integer systemUserId = null;
+    @Column(name = "PROGRAMID", nullable = false)
+    private int programId;
     
-     @Column(name = "PROGRAMID", nullable = false)
-    private Integer programId = null;
+    @Column(name = "SECTIONNAME", nullable = true)
+    private String sectionName = "";
     
-    @Column(name = "CREATEDBY", nullable = false)
-    private Integer createdBy = 0;
+    @Column(name = "DSPPOS", nullable = true)
+    private int dspPos = 1;
     
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
     @Column(name = "DATECREATED", nullable = true)
     private Date dateCreated = new Date();
-   
+
     public int getId() {
         return id;
     }
@@ -49,28 +48,28 @@ public class programAdmin {
         this.id = id;
     }
 
-    public Integer getsystemUserId() {
-        return systemUserId;
-    }
-
-    public void setsystemUserId(Integer systemUserId) {
-        this.systemUserId = systemUserId;
-    }
-
-    public Integer getProgramId() {
+    public int getProgramId() {
         return programId;
     }
 
-    public void setProgramId(Integer programId) {
+    public void setProgramId(int programId) {
         this.programId = programId;
     }
 
-    public Integer getCreatedBy() {
-        return createdBy;
+    public String getSectionName() {
+        return sectionName;
     }
 
-    public void setCreatedBy(Integer createdBy) {
-        this.createdBy = createdBy;
+    public void setSectionName(String sectionName) {
+        this.sectionName = sectionName;
+    }
+
+    public int getDspPos() {
+        return dspPos;
+    }
+
+    public void setDspPos(int dspPos) {
+        this.dspPos = dspPos;
     }
 
     public Date getDateCreated() {

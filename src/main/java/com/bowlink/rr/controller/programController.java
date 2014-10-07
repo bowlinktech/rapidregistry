@@ -3,18 +3,19 @@ package com.bowlink.rr.controller;
 import com.bowlink.rr.model.User;
 import com.bowlink.rr.model.activityCodes;
 import com.bowlink.rr.model.crosswalks;
-import com.bowlink.rr.model.demoDataElements;
-import com.bowlink.rr.model.healthDataElements;
+import com.bowlink.rr.model.dataElements;
 import com.bowlink.rr.model.modules;
-import com.bowlink.rr.model.patientSharing;
+import com.bowlink.rr.model.programPatientSharing;
 import com.bowlink.rr.model.program;
 import com.bowlink.rr.model.programActivityCodes;
 import com.bowlink.rr.model.programAdmin;
-import com.bowlink.rr.model.programDemoDataElements;
-import com.bowlink.rr.model.programHealthDataElements;
-import com.bowlink.rr.model.programMPI;
-import com.bowlink.rr.model.programMPIFields;
+import com.bowlink.rr.model.programPatientFields;
+import com.bowlink.rr.model.programEngagementFields;
+import com.bowlink.rr.model.programMCIAlgorithms;
+import com.bowlink.rr.model.programMCIFields;
 import com.bowlink.rr.model.programModules;
+import com.bowlink.rr.model.programPatientEntryMethods;
+import com.bowlink.rr.model.programPatientSections;
 import com.bowlink.rr.model.programReports;
 import com.bowlink.rr.model.reports;
 import com.bowlink.rr.service.activityCodeManager;
@@ -75,9 +76,9 @@ public class programController {
     @Autowired
     userManager usermanager;
 
-    private static List<programDemoDataElements> demoFields = null;
+    private static List<programPatientFields> patientFields = null;
 
-    private static List<programHealthDataElements> healthFields = null;
+    private static List<programEngagementFields> engagementFields = null;
 
     /**
      * The '' request will serve up the administrator dashboard after a successful login.
@@ -113,12 +114,12 @@ public class programController {
      * @throws Exception
      */
     @RequestMapping(value = "/create", method = RequestMethod.GET)
-    public ModelAndView createProgram(HttpServletRequest request, HttpServletResponse response, HttpSession session, RedirectAttributes redirectAttr) throws Exception {
+    public @ResponseBody ModelAndView createProgram(HttpServletRequest request, HttpServletResponse response, HttpSession session, RedirectAttributes redirectAttr) throws Exception {
 
         program program = new program();
 
         ModelAndView mav = new ModelAndView();
-        mav.setViewName("/details");
+        mav.setViewName("/sysAdmin/programs/newProgram");
         mav.addObject("program", program);
 
         return mav;
@@ -136,18 +137,18 @@ public class programController {
      * @throws Exception
      */
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public ModelAndView saveNewProgram(@Valid program program, BindingResult result, RedirectAttributes redirectAttr, @RequestParam String action, HttpSession session) throws Exception {
+    public @ResponseBody ModelAndView saveNewProgram(@Valid program program, BindingResult result, @RequestParam String action, HttpSession session) throws Exception {
 
         if (result.hasErrors()) {
             ModelAndView mav = new ModelAndView();
-            mav.setViewName("/details");
+            mav.setViewName("/sysAdmin/programs/newProgram");
             return mav;
         }
 
         program exisingProgram = programmanager.getProgramByName(program.getProgramName(), 0);
         if (exisingProgram != null) {
             ModelAndView mav = new ModelAndView();
-            mav.setViewName("/details");
+            mav.setViewName("/sysAdmin/programs/newProgram");
             mav.addObject("id", program.getId());
             mav.addObject("existingProgram", "Program " + program.getProgramName() + " already exists.");
 
@@ -162,24 +163,18 @@ public class programController {
 
         id = (Integer) programmanager.createProgram(program);
 
-        session.setAttribute("programId", id);
-
-        redirectAttr.addFlashAttribute("savedStatus", "created");
-
-        if (action.equals("save")) {
-            ModelAndView mav = new ModelAndView(new RedirectView(program.getProgramName().replace(" ", "-").toLowerCase() + "/patient-sharing"));
-            return mav;
-        } else {
-            ModelAndView mav = new ModelAndView(new RedirectView("../programs/"));
-            return mav;
-        }
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/sysAdmin/programs/newProgram");
+        mav.addObject("success", "programCreated");
+        
+        return mav;
 
     }
 
     /**
      * The '/{programName}' GET request will display the clicked program details page.
      *
-     * @param programName	The {programName} will be the program name with spaces removed.
+     * @param programName   The {programName} will be the program name with spaces removed.
      *
      * @return	Will return the program details page.
      *
@@ -196,6 +191,12 @@ public class programController {
 
         mav.addObject("id", programDetails.getId());
         mav.addObject("program", programDetails);
+        
+        /* Get the list of patient entry methods */
+        List<programPatientEntryMethods> entryMethods = programmanager.getPatientEntryMethods(programDetails.getId());
+        mav.addObject("entryMethods", entryMethods);
+        
+        /* Get the list of avaiable table for survey */
 
         session.setAttribute("programId", programDetails.getId());
 
@@ -244,7 +245,7 @@ public class programController {
         redirectAttr.addFlashAttribute("savedStatus", "updated");
 
         if (action.equals("save")) {
-            ModelAndView mav = new ModelAndView(new RedirectView("patient-sharing"));
+            ModelAndView mav = new ModelAndView(new RedirectView("organization-hierarchy"));
             return mav;
         } else {
             ModelAndView mav = new ModelAndView(new RedirectView("../../programs/"));
@@ -316,7 +317,7 @@ public class programController {
 
             for (Integer programId : programIds) {
 
-                patientSharing newpatientshare = new patientSharing();
+                programPatientSharing newpatientshare = new programPatientSharing();
 
                 newpatientshare.setProgramId(selProgramId);
                 newpatientshare.setSharingProgramId(programId);
@@ -422,7 +423,7 @@ public class programController {
     }
 
     /**
-     * The '/{programName}/demo-data-elements' GET request will display the page to associate demographic data elements to a program.
+     * The '/{programName}/patient-detail-sections' GET request will display the page that will list the patient detail sections to a program.
      *
      * @param programName	The {programName} will be the program name with spaces removed.
      *
@@ -431,23 +432,61 @@ public class programController {
      * @throws Exception
      *
      */
-    @RequestMapping(value = "/{programName}/demo-data-elements", method = RequestMethod.GET)
-    public ModelAndView programDemoDataElements(HttpSession session) throws Exception {
-
-        //Set the data translations array to get ready to hold data
-        demoFields = new CopyOnWriteArrayList<programDemoDataElements>();
+    @RequestMapping(value = "/{programName}/patient-detail-sections", method = RequestMethod.GET)
+    public ModelAndView programPatientDetailSections(HttpSession session) throws Exception {
 
         ModelAndView mav = new ModelAndView();
-        mav.setViewName("/demodataelements");
+        mav.setViewName("/patientDetailSections");
         mav.addObject("id", session.getAttribute("programId"));
 
         program programDetails = programmanager.getProgramById((Integer) session.getAttribute("programId"));
         mav.addObject("programDetails", programDetails);
 
         /**
+         * Get a list of all patient detail sections *
+         */
+        List<programPatientSections> patientSections = programmanager.getPatientSections((Integer) session.getAttribute("programId"));
+        mav.addObject("patientSections", patientSections);
+
+        return mav;
+
+    }
+    
+    /**
+     * The '/{programName}/{sectionId}/{sectionName}/fields' GET request will display the page that will list the fields 
+     * for the selected section and program.
+     *
+     * @param programName	The {programName} will be the program name with spaces removed.
+     * @param sectionid     The {sectionId} will be the id of the selected section
+     * @param sectionName   The {sectionName} will be the section name with spaces removed.
+     *
+     * @return	Will return the program modules page.
+     *
+     * @throws Exception
+     *
+     */
+    @RequestMapping(value = "/{programName}/{sectionId}/{sectionName}/fields", method = RequestMethod.GET)
+    public ModelAndView programPatientSectionFields(@PathVariable String programName, @PathVariable Integer sectionId, @PathVariable String sectionName, HttpSession session) throws Exception {
+
+        //Set the data translations array to get ready to hold data
+        patientFields = new CopyOnWriteArrayList<programPatientFields>();
+
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/patientFields");
+        mav.addObject("id", session.getAttribute("programId"));
+        mav.addObject("sectionId", sectionId);
+
+        program programDetails = programmanager.getProgramById((Integer) session.getAttribute("programId"));
+        mav.addObject("programDetails", programDetails);
+        
+        programPatientSections sectionDetails = programmanager.getPatientSectionById(sectionId);
+        mav.addObject("sectionDetails", sectionDetails);
+        
+
+        /**
          * Get a list of all available demographic fields *
          */
-        List<demoDataElements> dataElements = dataelementmanager.getDemoDataElements();
+        List<dataElements> dataElements = dataelementmanager.getdataElements();
         mav.addObject("availableFields", dataElements);
 
         //Return a list of available crosswalks
@@ -463,13 +502,13 @@ public class programController {
     }
 
     /**
-     * The '/getDemographicFields.do' function will return the list of existing demographic fields set up for the selected program.
+     * The '/getPatientFields.do' function will return the list of existing patient fields set up for the selected program and section.
      *
      * @Return list of data fields
      */
-    @RequestMapping(value = "/getDemographicFields.do", method = RequestMethod.GET)
+    @RequestMapping(value = "/getPatientFields.do", method = RequestMethod.GET)
     public @ResponseBody
-    ModelAndView getDemographicFields(@RequestParam(value = "reload", required = true) boolean reload, HttpSession session) throws Exception {
+    ModelAndView getDemographicFields(@RequestParam(value = "reload", required = true) boolean reload, HttpSession session, @RequestParam(value = "sectionId", required = true) Integer sectionId) throws Exception {
 
         ModelAndView mav = new ModelAndView();
         mav.setViewName("/sysAdmin/programs/dataElements/existingFields");
@@ -479,15 +518,15 @@ public class programController {
          */
         if (reload == false) {
             //Need to get a list of existing translations
-            List<programDemoDataElements> programdemoFields = programmanager.getProgramDemoFields((Integer) session.getAttribute("programId"));
+            List<programPatientFields> patientFields = programmanager.getPatientFields((Integer) session.getAttribute("programId"), sectionId);
 
             String fieldName;
             String crosswalkName;
             String validationName;
 
-            for (programDemoDataElements field : programdemoFields) {
+            for (programPatientFields field : patientFields) {
                 //Get the field name by id
-                fieldName = dataelementmanager.getDemoFieldName(field.getFieldId());
+                fieldName = dataelementmanager.getfieldName(field.getFieldId());
                 field.setFieldName(fieldName);
 
                 //Get the crosswalk name by id
@@ -502,18 +541,18 @@ public class programController {
                     field.setValidationName(validationName);
                 }
 
-                demoFields.add(field);
+                patientFields.add(field);
             }
         }
 
-        mav.addObject("existingFields", demoFields);
+        mav.addObject("existingFields", patientFields);
 
         return mav;
 
     }
 
     /**
-     * The '/setDemographicField' function will handle taking in a selected field, selected crosswalk and selected validation type and add it to an array of translations. This array will be used when the form is submitted to associate to the existing program.
+     * The '/setPatientField' function will handle taking in a selected field, selected crosswalk and selected validation type and add it to an array of translations. This array will be used when the form is submitted to associate to the existing program.
      *
      * @param fieldId This will hold the id of the selected field
      * @param cw This will hold the id of the selected crosswalk
@@ -524,25 +563,27 @@ public class programController {
      *
      * @Return	This function will return the existing translations view that will display the table of newly selected translations
      */
-    @RequestMapping(value = "/setDemographicField{params}", method = RequestMethod.GET)
+    @RequestMapping(value = "/setPatientField{params}", method = RequestMethod.GET)
     public @ResponseBody
     ModelAndView setDemographicField(
-            @RequestParam(value = "fieldId", required = true) Integer fieldId, @RequestParam(value = "fieldText", required = true) String fieldText,
+            @RequestParam(value = "fieldId", required = true) Integer fieldId, @RequestParam(value = "sectionId", required = true) Integer sectionId, @RequestParam(value = "fieldText", required = true) String fieldText,
             @RequestParam(value = "fieldDisplayName", required = true) String fieldDisplayName,
             @RequestParam(value = "cw", required = true) Integer cw, @RequestParam(value = "CWText", required = true) String cwText,
             @RequestParam(value = "validationId", required = true) Integer validationId, @RequestParam(value = "validationName", required = true) String validationName,
-            @RequestParam(value = "requiredField", required = true) boolean requiredField, HttpSession session
+            @RequestParam(value = "requiredField", required = true) boolean requiredField, 
+            @RequestParam(value = "dataGridColumn", required = true) boolean dataGridColumn, HttpSession session
     ) throws Exception {
 
-        int dspPos = demoFields.size() + 1;
+        int dspPos = patientFields.size() + 1;
 
         if (cw == null) {
             cw = 0;
             cwText = null;
         }
 
-        programDemoDataElements field = new programDemoDataElements();
+        programPatientFields field = new programPatientFields();
         field.setProgramId((Integer) session.getAttribute("programId"));
+        field.setSectionId(sectionId);
         field.setCrosswalkId(cw);
         field.setCwName(cwText);
         field.setFieldId(fieldId);
@@ -552,154 +593,17 @@ public class programController {
         field.setValidationName(validationName);
         field.setRequiredField(requiredField);
         field.setDspPos(dspPos);
+        field.setDataGridColumn(dataGridColumn);
 
-        demoFields.add(field);
-
-        ModelAndView mav = new ModelAndView();
-        mav.setViewName("/sysAdmin/programs/dataElements/existingFields");
-        mav.addObject("existingFields", demoFields);
-
-        return mav;
-    }
-
-    /**
-     * The '/{programName}/health-data-elements' GET request will display the page to associate health data elements to a program.
-     *
-     * @param programName	The {programName} will be the program name with spaces removed.
-     *
-     * @return	Will return the program modules page.
-     *
-     * @throws Exception
-     *
-     */
-    @RequestMapping(value = "/{programName}/health-data-elements", method = RequestMethod.GET)
-    public ModelAndView programHealthDataElements(HttpSession session) throws Exception {
-
-        //Set the health fields array to get ready to hold data
-        healthFields = new CopyOnWriteArrayList<programHealthDataElements>();
-
-        ModelAndView mav = new ModelAndView();
-        mav.setViewName("/healthdataelements");
-        mav.addObject("id", session.getAttribute("programId"));
-
-        program programDetails = programmanager.getProgramById((Integer) session.getAttribute("programId"));
-        mav.addObject("programDetails", programDetails);
-
-        /**
-         * Get a list of all available demographic fields *
-         */
-        List<healthDataElements> dataElements = dataelementmanager.getHealthDataElements();
-        mav.addObject("availableFields", dataElements);
-
-        //Return a list of available crosswalks
-        List<crosswalks> crosswalks = dataelementmanager.getCrosswalks(1, 0, (Integer) session.getAttribute("programId"));
-        mav.addObject("crosswalks", crosswalks);
-
-        //Return a list of validation types
-        List validationTypes = dataelementmanager.getValidationTypes();
-        mav.addObject("validationTypes", validationTypes);
-
-        return mav;
-
-    }
-
-    /**
-     * The '/getHealthFields.do' function will return the list of existing health fields set up for the selected program.
-     *
-     * @Return list of data fields
-     */
-    @RequestMapping(value = "/getHealthFields.do", method = RequestMethod.GET)
-    public @ResponseBody
-    ModelAndView getHealthFields(@RequestParam(value = "reload", required = true) boolean reload, HttpSession session) throws Exception {
+        patientFields.add(field);
 
         ModelAndView mav = new ModelAndView();
         mav.setViewName("/sysAdmin/programs/dataElements/existingFields");
-
-        /**
-         * only get the saved translations if reload == 0 We only want to retrieve the saved ones on initial load
-         */
-        if (reload == false) {
-            //Need to get a list of existing health fields
-            List<programHealthDataElements> programHealthFields = programmanager.getProgramHealthFields((Integer) session.getAttribute("programId"));
-
-            String fieldName;
-            String crosswalkName;
-            String validationName;
-
-            for (programHealthDataElements field : programHealthFields) {
-                //Get the field name by id
-                fieldName = dataelementmanager.getDemoFieldName(field.getFieldId());
-                field.setFieldName(fieldName);
-
-                //Get the crosswalk name by id
-                if (field.getCrosswalkId() != 0) {
-                    crosswalkName = dataelementmanager.getCrosswalkName(field.getCrosswalkId());
-                    field.setCwName(crosswalkName);
-                }
-
-                //Get the macro name by id
-                if (field.getValidationId() > 0) {
-                    validationName = dataelementmanager.getValidationName(field.getValidationId());
-                    field.setValidationName(validationName);
-                }
-
-                healthFields.add(field);
-            }
-        }
-
-        mav.addObject("existingFields", healthFields);
-
-        return mav;
-
-    }
-
-    /**
-     * The '/setHealthField' function will handle taking in a selected field, selected crosswalk and selected validation type and add it to an array of translations. This array will be used when the form is submitted to associate to the existing program.
-     *
-     * @param fieldId This will hold the id of the selected field
-     * @param cw This will hold the id of the selected crosswalk
-     * @param fieldText This will hold the text value of the selected field (used for display purposes)
-     * @param CWText This will hold the text value of the selected crosswalk (used for display purposes)
-     * @param validationId This will hold the id of the selected validation type
-     * @param validationName This will hold the name of the selected validation type
-     *
-     * @Return	This function will return the existing translations view that will display the table of newly selected translations
-     */
-    @RequestMapping(value = "/setHealthField{params}", method = RequestMethod.GET)
-    public @ResponseBody
-    ModelAndView setHealthField(
-            @RequestParam(value = "fieldId", required = true) Integer fieldId, @RequestParam(value = "fieldText", required = true) String fieldText,
-            @RequestParam(value = "cw", required = true) Integer cw, @RequestParam(value = "CWText", required = true) String cwText,
-            @RequestParam(value = "validationId", required = true) Integer validationId, @RequestParam(value = "validationName", required = true) String validationName,
-            @RequestParam(value = "requiredField", required = true) boolean requiredField, HttpSession session
-    ) throws Exception {
-
-        int dspPos = healthFields.size() + 1;
-
-        if (cw == null) {
-            cw = 0;
-            cwText = null;
-        }
-
-        programHealthDataElements field = new programHealthDataElements();
-        field.setProgramId((Integer) session.getAttribute("programId"));
-        field.setCrosswalkId(cw);
-        field.setCwName(cwText);
-        field.setFieldId(fieldId);
-        field.setFieldName(fieldText);
-        field.setValidationId(validationId);
-        field.setValidationName(validationName);
-        field.setRequiredField(requiredField);
-        field.setDspPos(dspPos);
-
-        healthFields.add(field);
-
-        ModelAndView mav = new ModelAndView();
-        mav.setViewName("/sysAdmin/programs/dataElements/existingFields");
-        mav.addObject("existingFields", healthFields);
+        mav.addObject("existingFields", patientFields);
 
         return mav;
     }
+
 
     /**
      * The 'removeField{params}' function will handle removing a field from demoFields array.
@@ -714,29 +618,29 @@ public class programController {
     public @ResponseBody
     Integer removeField(@RequestParam(value = "fieldType", required = true) String fieldType, @RequestParam(value = "fieldId", required = true) Integer fieldId, @RequestParam(value = "dspOrder", required = true) Integer dspOrder) throws Exception {
 
-        if ("demo".equals(fieldType)) {
-            Iterator<programDemoDataElements> it = demoFields.iterator();
+        if ("patient".equals(fieldType)) {
+            Iterator<programPatientFields> it = patientFields.iterator();
 
             int currdspOrder;
 
             while (it.hasNext()) {
-                programDemoDataElements field = it.next();
+                programPatientFields field = it.next();
                 if (field.getFieldId() == fieldId && field.getDspPos() == dspOrder) {
-                    demoFields.remove(field);
+                    patientFields.remove(field);
                 } else if (field.getDspPos() > dspOrder) {
                     currdspOrder = field.getDspPos();
                     field.setDspPos(currdspOrder - 1);
                 }
             }
         } else {
-            Iterator<programHealthDataElements> it = healthFields.iterator();
+            Iterator<programEngagementFields> it = engagementFields.iterator();
 
             int currdspOrder;
 
             while (it.hasNext()) {
-                programHealthDataElements field = it.next();
+                programEngagementFields field = it.next();
                 if (field.getFieldId() == fieldId && field.getDspPos() == dspOrder) {
-                    healthFields.remove(field);
+                    engagementFields.remove(field);
                 } else if (field.getDspPos() > dspOrder) {
                     currdspOrder = field.getDspPos();
                     field.setDspPos(currdspOrder - 1);
@@ -761,10 +665,10 @@ public class programController {
     Integer updateTranslationProcessOrder(@RequestParam(value = "fieldType", required = true) String fieldType, @RequestParam(value = "currdspOrder", required = true) Integer currdspOrder, @RequestParam(value = "newdspOrder", required = true) Integer newdspOrder) throws Exception {
 
         if ("demo".equals(fieldType)) {
-            Iterator<programDemoDataElements> it = demoFields.iterator();
+            Iterator<programPatientFields> it = patientFields.iterator();
 
             while (it.hasNext()) {
-                programDemoDataElements field = it.next();
+                programPatientFields field = it.next();
                 if (field.getDspPos() == currdspOrder) {
                     field.setDspPos(newdspOrder);
                 } else if (field.getDspPos() == newdspOrder) {
@@ -772,10 +676,10 @@ public class programController {
                 }
             }
         } else {
-            Iterator<programHealthDataElements> it = healthFields.iterator();
+            Iterator<programEngagementFields> it = engagementFields.iterator();
 
             while (it.hasNext()) {
-                programHealthDataElements field = it.next();
+                programEngagementFields field = it.next();
                 if (field.getDspPos() == currdspOrder) {
                     field.setDspPos(newdspOrder);
                 } else if (field.getDspPos() == newdspOrder) {
@@ -788,44 +692,25 @@ public class programController {
     }
 
     /**
-     * The '/saveProgramDemoFields' POST request will submit the selected fields and save it to the data base.
+     * The '/saveProgramPatientFields' POST request will submit the selected fields and save it to the data base.
      *
      */
-    @RequestMapping(value = "/saveProgramDemoFields", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/saveProgramPatientFields", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
-    Integer saveProgramDemoFields(HttpSession session) throws Exception {
+    Integer saveProgramPatientFields(@RequestParam(value = "sectionId", required = true) Integer sectionId, HttpSession session) throws Exception {
 
         //Delete all the data translations before creating
         //This will help with the jquery removing translations
-        programmanager.deleteDemoFields((Integer) session.getAttribute("programId"));
+        programmanager.deletePatientFields((Integer) session.getAttribute("programId"), sectionId);
 
         //Loop through the list of translations
-        for (programDemoDataElements field : demoFields) {
-            programmanager.saveDemoFields(field);
+        for (programPatientFields field : patientFields) {
+            programmanager.savePatientFields(field);
         }
 
         return 1;
     }
 
-    /**
-     * The '/saveProgramHealthFields' POST request will submit the selected fields and save it to the data base.
-     *
-     */
-    @RequestMapping(value = "/saveProgramHealthFields", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody
-    Integer saveProgramHealthFields(HttpSession session) throws Exception {
-
-        //Delete all the data translations before creating
-        //This will help with the jquery removing translations
-        programmanager.deleteHealthFields((Integer) session.getAttribute("programId"));
-
-        //Loop through the list of translations
-        for (programHealthDataElements field : healthFields) {
-            programmanager.saveHealthFields(field);
-        }
-
-        return 1;
-    }
 
     /**
      * The '/{programName}/activity-codes' GET request will display the program activity code page.
@@ -990,7 +875,7 @@ public class programController {
     }
     
     /**
-     * The '/{programName}/mpi-algorithms' GET request will display the program MPI Algorithms.
+     * The '/{programName}/mci-algorithms' GET request will display the program MCI Algorithms.
      *
      * @param programName	The {programName} will be the program name with spaces removed.
      *
@@ -999,236 +884,236 @@ public class programController {
      * @throws Exception
      *
      */
-    @RequestMapping(value = "/{programName}/mpi-algorithms", method = RequestMethod.GET)
-    public ModelAndView programMPIAlgorithms(HttpSession session) throws Exception {
+    @RequestMapping(value = "/{programName}/mci-algorithms", method = RequestMethod.GET)
+    public ModelAndView programMCIAlgorithms(HttpSession session) throws Exception {
 
         ModelAndView mav = new ModelAndView();
-        mav.setViewName("/mpialgorithms");
+        mav.setViewName("/mcialgorithms");
         mav.addObject("id", session.getAttribute("programId"));
 
         program programDetails = programmanager.getProgramById((Integer) session.getAttribute("programId"));
         mav.addObject("programDetails", programDetails);
 
         /* Get a list of MPI Algorithms */
-        List<programMPI> mpiAlgorithms = programmanager.getProgramMPIAlgorithms((Integer) session.getAttribute("programId"));
+        List<programMCIAlgorithms> mciAlgorithms = programmanager.getProgramMCIAlgorithms((Integer) session.getAttribute("programId"));
         
-        if(!mpiAlgorithms.isEmpty()) {
-            for(programMPI mpi : mpiAlgorithms) {
-                List<programMPIFields> fields = programmanager.getProgramMPIFields(mpi.getId());
+        if(!mciAlgorithms.isEmpty()) {
+            for(programMCIAlgorithms mci : mciAlgorithms) {
+                List<programMCIFields> fields = programmanager.getProgramMCIFields(mci.getId());
                 
-                for(programMPIFields field : fields) {
+                for(programMCIFields field : fields) {
                     //Get the field name by id
-                    String fieldName = dataelementmanager.getDemoFieldName(field.getFieldId());
+                    String fieldName = dataelementmanager.getfieldName(field.getFieldId());
                     field.setFieldName(fieldName);
                 }
                 
-                mpi.setFields(fields);
+                mci.setFields(fields);
             }
         }
         
-        mav.addObject("mpiAlgorithms", mpiAlgorithms);
+        mav.addObject("mpiAlgorithms", mciAlgorithms);
 
         return mav;
 
     }
     
     /**
-     * The '/{programName}/algorithm.create' GET request will be used to create a new MPI Algorithm
+     * The '/{programName}/algorithm.create' GET request will be used to create a new MCI Algorithm
      *
      * @return The blank MPI Algorithm page
      *
-     * @Objects (1) An object that will hold the blank MPI Algorithm
+     * @Objects (1) An object that will hold the blank MCI Algorithm
      */
     @RequestMapping(value = "/{programName}/algorithm.create", method = RequestMethod.GET)
-    @ResponseBody public ModelAndView newMPIAlgorithmForm(HttpSession session) throws Exception {
+    @ResponseBody public ModelAndView newMCIAlgorithmForm(HttpSession session) throws Exception {
         ModelAndView mav = new ModelAndView();
-        mav.setViewName("/sysAdmin/programs/mpi/details");
+        mav.setViewName("/sysAdmin/programs/mci/details");
 
         //Create a new blank provider.
-        programMPI mpi = new programMPI();
-        mpi.setProgramId((Integer) session.getAttribute("programId"));
+        programMCIAlgorithms mci = new programMCIAlgorithms();
+        mci.setProgramId((Integer) session.getAttribute("programId"));
         
         /* Get a list of available fields */
-        List<programDemoDataElements> programdemoFields = programmanager.getProgramDemoFields((Integer) session.getAttribute("programId"));
+        List<programPatientFields> programPatientFields = programmanager.getPatientFieldsByProgramId((Integer) session.getAttribute("programId"));
 
         String fieldName;
 
-        for (programDemoDataElements field : programdemoFields) {
+        for (programPatientFields field : programPatientFields) {
             //Get the field name by id
-            fieldName = dataelementmanager.getDemoFieldName(field.getFieldId());
+            fieldName = dataelementmanager.getfieldName(field.getFieldId());
             field.setFieldName(fieldName);
 
         }
-        mav.addObject("availableFields", programdemoFields);
+        mav.addObject("availableFields", programPatientFields);
 
         mav.addObject("btnValue", "Create");
-        mav.addObject("mpidetails", mpi);
+        mav.addObject("mcidetails", mci);
 
         return mav;
     }
     
     
     /**
-     * The '/{programName}/create_mpialgorithm' POST request will handle submitting the new MPI Algorithm.
+     * The '/{programName}/create_mcialgorithm' POST request will handle submitting the new MCI Algorithm.
      *
      * @param mpidetails    The object containing the MPI Algorithm form fields
      * @param result        The validation result
      * @param redirectAttr	The variable that will hold values that can be read after the redirect
      *
-     * @return	Will return the MPI Algorithm list page on "Save" Will return the MPI Algorithm form page on error
+     * @return	Will return the MCI Algorithm list page on "Save" Will return the MPI Algorithm form page on error
      *
      * @Objects	(1) The object containing all the information for the clicked org
      * @throws Exception
      */
-    @RequestMapping(value = "/{programName}/create_mpialgorithm", method = RequestMethod.POST)
+    @RequestMapping(value = "/{programName}/create_mcialgorithm", method = RequestMethod.POST)
     public @ResponseBody
-    ModelAndView createMPIAlgorithm(@Valid @ModelAttribute(value = "mpidetails") programMPI mpidetails, BindingResult result,  @RequestParam(value = "fieldIds", required = true) List<Integer> fieldIds, @RequestParam(value = "fieldAction", required = true) List<String> fieldAction, HttpSession session) throws Exception {
+    ModelAndView createMCIAlgorithm(@Valid @ModelAttribute(value = "mcidetails") programMCIAlgorithms mcidetails, BindingResult result,  @RequestParam(value = "fieldIds", required = true) List<Integer> fieldIds, @RequestParam(value = "fieldAction", required = true) List<String> fieldAction, HttpSession session) throws Exception {
 
         
         if (result.hasErrors()) {
             ModelAndView mav = new ModelAndView();
-            mav.setViewName("/sysAdmin/programs/mpi/details");
+            mav.setViewName("/sysAdmin/programs/mci/details");
             /* Get a list of available fields */
-            List<programDemoDataElements> programdemoFields = programmanager.getProgramDemoFields((Integer) session.getAttribute("programId"));
+            List<programPatientFields> programPatientFields = programmanager.getPatientFieldsByProgramId((Integer) session.getAttribute("programId"));
 
             String fieldName;
 
-            for (programDemoDataElements field : programdemoFields) {
+            for (programPatientFields field : programPatientFields) {
                 //Get the field name by id
-                fieldName = dataelementmanager.getDemoFieldName(field.getFieldId());
+                fieldName = dataelementmanager.getfieldName(field.getFieldId());
                 field.setFieldName(fieldName);
 
             }
-            mav.addObject("availableFields", programdemoFields);
+            mav.addObject("availableFields", programPatientFields);
             mav.addObject("btnValue", "Create");
             return mav;
         }
 
 
-        Integer mpiId = programmanager.createMPIAlgorithm(mpidetails);
+        Integer mciId = programmanager.createMCIAlgorithm(mcidetails);
         
         int i = 0;
         for(Integer fieldId : fieldIds) {
-            programMPIFields newField = new programMPIFields();
+            programMCIFields newField = new programMCIFields();
             newField.setFieldId(fieldId);
-            newField.setMpiId(mpiId);
+            newField.setMciId(mciId);
             
             String selFieldAction = fieldAction.get(i);
             newField.setAction(selFieldAction);
             
-            programmanager.createMPIAlgorithmFields(newField);
+            programmanager.createMCIAlgorithmFields(newField);
             
             i+=1;
         }
 
-        ModelAndView mav = new ModelAndView("/sysAdmin/programs/mpi/details");
+        ModelAndView mav = new ModelAndView("/sysAdmin/programs/mci/details");
         mav.addObject("success", "algorithmCreated");
         return mav;
     }
     
    /**
-     * The '/{programName}/update_mpialgorithm' POST request will handle submitting the selected MPI Algorithm changes.
+     * The '/{programName}/update_mcialgorithm' POST request will handle submitting the selected MCI Algorithm changes.
      *
-     * @param mpidetails    The object containing the MPI Algorithm form fields
+     * @param mcidetails    The object containing the MCI Algorithm form fields
      * @param result        The validation result
      * @param redirectAttr	The variable that will hold values that can be read after the redirect
      *
-     * @return	Will return the MPI Algorithm list page on "Save" Will return the MPI Algorithm form page on error
+     * @return	Will return the MPI Algorithm list page on "Save" Will return the MCI Algorithm form page on error
      *
      * @Objects	(1) The object containing all the information for the clicked org
      * @throws Exception
      */
-    @RequestMapping(value = "/{programName}/update_mpialgorithm", method = RequestMethod.POST)
+    @RequestMapping(value = "/{programName}/update_mcialgorithm", method = RequestMethod.POST)
     public @ResponseBody
-    ModelAndView updateMPIAlgorithm(@Valid @ModelAttribute(value = "mpidetails") programMPI mpidetails, BindingResult result,  @RequestParam(value = "fieldIds", required = true) List<Integer> fieldIds, @RequestParam(value = "fieldAction", required = true) List<String> fieldAction, HttpSession session) throws Exception {
+    ModelAndView updateMPIAlgorithm(@Valid @ModelAttribute(value = "mcidetails") programMCIAlgorithms mpidetails, BindingResult result,  @RequestParam(value = "fieldIds", required = true) List<Integer> fieldIds, @RequestParam(value = "fieldAction", required = true) List<String> fieldAction, HttpSession session) throws Exception {
 
         
         if (result.hasErrors()) {
             ModelAndView mav = new ModelAndView();
             mav.setViewName("/sysAdmin/programs/mpi/details");
             /* Get a list of available fields */
-            List<programDemoDataElements> programdemoFields = programmanager.getProgramDemoFields((Integer) session.getAttribute("programId"));
+            List<programPatientFields> programPatienttFields = programmanager.getPatientFieldsByProgramId((Integer) session.getAttribute("programId"));
 
             String fieldName;
 
-            for (programDemoDataElements field : programdemoFields) {
+            for (programPatientFields field : programPatienttFields) {
                 //Get the field name by id
-                fieldName = dataelementmanager.getDemoFieldName(field.getFieldId());
+                fieldName = dataelementmanager.getfieldName(field.getFieldId());
                 field.setFieldName(fieldName);
 
             }
-            mav.addObject("availableFields", programdemoFields);
+            mav.addObject("availableFields", programPatienttFields);
             mav.addObject("btnValue", "Create");
             return mav;
         }
 
 
-        programmanager.updateMPIAlgorithm(mpidetails);
+        programmanager.updateMCIAlgorithm(mpidetails);
         
         int i = 0;
         for(Integer fieldId : fieldIds) {
-            programMPIFields newField = new programMPIFields();
+            programMCIFields newField = new programMCIFields();
             newField.setFieldId(fieldId);
-            newField.setMpiId(mpidetails.getId());
+            newField.setMciId(mpidetails.getId());
             
             String selFieldAction = fieldAction.get(i);
             newField.setAction(selFieldAction);
             
-            programmanager.createMPIAlgorithmFields(newField);
+            programmanager.createMCIAlgorithmFields(newField);
             
             i+=1;
         }
 
-        ModelAndView mav = new ModelAndView("/sysAdmin/programs/mpi/details");
+        ModelAndView mav = new ModelAndView("/sysAdmin/programs/mci/details");
         mav.addObject("success", "algorithmUpdated");
         return mav;
     }
 
     /**
-     * The '/{programName}/algorithm.edit' GET request will be used to create a new MPI Algorithm
+     * The '/{programName}/algorithm.edit' GET request will be used to create a new MCI Algorithm
      *
-     * @return The blank MPI Algorithm page
+     * @return The blank MCI Algorithm page
      *
-     * @Objects (1) An object that will hold the blank MPI Algorithm
+     * @Objects (1) An object that will hold the blank MCI Algorithm
      */
     @RequestMapping(value = "/{programName}/algorithm.edit", method = RequestMethod.GET)
-    @ResponseBody public ModelAndView editMPIAlgorithmForm(@RequestParam Integer mpiId, HttpSession session) throws Exception {
+    @ResponseBody public ModelAndView editMCIAlgorithmForm(@RequestParam Integer mciId, HttpSession session) throws Exception {
         ModelAndView mav = new ModelAndView();
         mav.setViewName("/sysAdmin/programs/mpi/details");
 
         //Create a new blank provider.
-        programMPI mpi = programmanager.getMPIAlgorithm(mpiId);
+        programMCIAlgorithms mci = programmanager.getMCIAlgorithm(mciId);
         
         /* Get a list of available fields */
-        List<programDemoDataElements> programdemoFields = programmanager.getProgramDemoFields((Integer) session.getAttribute("programId"));
+        List<programPatientFields> programPatientFields = programmanager.getPatientFieldsByProgramId((Integer) session.getAttribute("programId"));
 
         String fieldName;
 
-        for (programDemoDataElements field : programdemoFields) {
+        for (programPatientFields field : programPatientFields) {
             //Get the field name by id
-            fieldName = dataelementmanager.getDemoFieldName(field.getFieldId());
+            fieldName = dataelementmanager.getfieldName(field.getFieldId());
             field.setFieldName(fieldName);
         }
-        mav.addObject("availableFields", programdemoFields);
+        mav.addObject("availableFields", programPatientFields);
         
-        List<programMPIFields> fields = programmanager.getProgramMPIFields(mpiId);
+        List<programMCIFields> fields = programmanager.getProgramMCIFields(mciId);
         
-        for(programMPIFields field : fields) {
+        for(programMCIFields field : fields) {
             //Get the field name by id
-            String selfieldName = dataelementmanager.getDemoFieldName(field.getFieldId());
+            String selfieldName = dataelementmanager.getfieldName(field.getFieldId());
             field.setFieldName(selfieldName);
         }
         mav.addObject("selFields", fields);
 
         mav.addObject("btnValue", "Update");
-        mav.addObject("mpidetails", mpi);
+        mav.addObject("mpidetails", mci);
 
         return mav;
     }
     
     /**
      * The '/{programName}/remvoeAlgorithmField.do' POST request will remove the selected field for the passed in
-     * MPI Algorithm.
+     * MCI Algorithm.
      * 
      * @param algorithmFieldId  The id of the field to be removed.
      * 
@@ -1271,8 +1156,8 @@ public class programController {
         if(!administrators.isEmpty()) {
             
             for(programAdmin admin : administrators) {
-                User userDetails = usermanager.getUserById(admin.getUserId());
-                userDetails.setTimesloggedIn(usermanager.findTotalLogins(admin.getUserId()));
+                User userDetails = usermanager.getUserById(admin.getsystemUserId());
+                userDetails.setTimesloggedIn(usermanager.findTotalLogins(admin.getsystemUserId()));
            
                 programAdministrators.add(userDetails);
             }
@@ -1339,7 +1224,7 @@ public class programController {
 
         programAdmin adminprogram = new programAdmin();
         adminprogram.setProgramId((Integer) session.getAttribute("programId"));
-        adminprogram.setUserId(adminId);
+        adminprogram.setsystemUserId(adminId);
         
         programmanager.saveAdminProgram(adminprogram);
 
@@ -1421,7 +1306,7 @@ public class programController {
         //Create a new blank provider.
         programAdmin details = new programAdmin();
         details.setProgramId((Integer) session.getAttribute("programId"));
-        details.setUserId(adminId);
+        details.setsystemUserId(adminId);
        
         programmanager.saveAdminProgram(details);
         

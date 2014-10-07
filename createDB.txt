@@ -1,6 +1,6 @@
-CREATE DATABASE  IF NOT EXISTS `rapidregistry` /*!40100 DEFAULT CHARACTER SET latin1 */;
+CREATE DATABASE  IF NOT EXISTS `rapidregistry` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `rapidregistry`;
--- MySQL dump 10.13  Distrib 5.6.11, for osx10.6 (i386)
+-- MySQL dump 10.13  Distrib 5.6.19, for osx10.7 (i386)
 --
 -- Host: 127.0.0.1    Database: rapidregistry
 -- ------------------------------------------------------
@@ -18,32 +18,6 @@ USE `rapidregistry`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `activityCodes`
---
-
-DROP TABLE IF EXISTS `activityCodes`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `activityCodes` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `code` varchar(45) NOT NULL,
-  `codeDesc` varchar(45) NOT NULL,
-  `dateCreated` datetime DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `activityCodes`
---
-
-LOCK TABLES `activityCodes` WRITE;
-/*!40000 ALTER TABLE `activityCodes` DISABLE KEYS */;
-INSERT INTO `activityCodes` VALUES (1,'test code 1','this is a test code','2014-08-14 10:11:28'),(2,'test code 2','this is another test code','2014-08-14 10:11:28'),(3,'another code','this is another code description.','2014-08-18 00:40:52');
-/*!40000 ALTER TABLE `activityCodes` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `cannedReports`
 --
 
@@ -52,12 +26,13 @@ DROP TABLE IF EXISTS `cannedReports`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `cannedReports` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `reportName` varchar(255) NOT NULL,
-  `jspPage` varchar(255) NOT NULL,
-  `reportDesc` varchar(255) DEFAULT NULL,
+  `reportName` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `jspPage` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `reportDesc` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `dateCreated` datetime DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+  PRIMARY KEY (`id`),
+  KEY `reportid_idx` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -66,7 +41,6 @@ CREATE TABLE `cannedReports` (
 
 LOCK TABLES `cannedReports` WRITE;
 /*!40000 ALTER TABLE `cannedReports` DISABLE KEYS */;
-INSERT INTO `cannedReports` VALUES (1,'Patient List','patientListReport','This report will display a list of patients associated with a program.','2014-08-14 00:16:54');
 /*!40000 ALTER TABLE `cannedReports` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -79,15 +53,15 @@ DROP TABLE IF EXISTS `crosswalks`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `crosswalks` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(45) NOT NULL,
+  `name` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
   `fileDelimiter` int(11) NOT NULL,
-  `fileName` varchar(45) NOT NULL,
+  `fileName` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
   `dateCreated` datetime DEFAULT CURRENT_TIMESTAMP,
   `programId` int(11) DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `delimId_idx` (`fileDelimiter`),
-  CONSTRAINT `delimId` FOREIGN KEY (`fileDelimiter`) REFERENCES `lu_delimiters` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=latin1;
+  CONSTRAINT `delimId` FOREIGN KEY (`fileDelimiter`) REFERENCES `lu_delimiters` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -96,61 +70,242 @@ CREATE TABLE `crosswalks` (
 
 LOCK TABLES `crosswalks` WRITE;
 /*!40000 ALTER TABLE `crosswalks` DISABLE KEYS */;
-INSERT INTO `crosswalks` VALUES (35,'Gender Crosswalk',1,'StandardGenderCrosswalk.txt','2014-08-12 01:10:45',1);
+INSERT INTO `crosswalks` VALUES (35,'Gender Crosswalk',1,'StandardGenderCrosswalk.txt','2014-08-12 01:10:45',0);
 /*!40000 ALTER TABLE `crosswalks` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `demographicDataElements`
+-- Table structure for table `dataElements`
 --
 
-DROP TABLE IF EXISTS `demographicDataElements`;
+DROP TABLE IF EXISTS `dataElements`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `demographicDataElements` (
+CREATE TABLE `dataElements` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `elementName` varchar(45) NOT NULL,
-  `saveToTableName` varchar(55) NOT NULL,
-  `saveToTableCol` varchar(55) NOT NULL,
+  `elementName` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
+  `saveToTableName` varchar(55) COLLATE utf8_unicode_ci NOT NULL,
+  `saveToTableCol` varchar(55) COLLATE utf8_unicode_ci NOT NULL,
   `status` bit(1) NOT NULL DEFAULT b'0',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
+  PRIMARY KEY (`id`),
+  KEY `fieldId_idx` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `demographicDataElements`
+-- Dumping data for table `dataElements`
 --
 
-LOCK TABLES `demographicDataElements` WRITE;
-/*!40000 ALTER TABLE `demographicDataElements` DISABLE KEYS */;
-INSERT INTO `demographicDataElements` VALUES (4,'Patient Id','storage_patients','sourcePatientId',''),(5,'First Name','storage_patients','firstName',''),(6,'Last Name','storage_patients','lastName',''),(7,'Date of Birth','storage_patients','dob',''),(8,'Race','storage_patients','race','');
-/*!40000 ALTER TABLE `demographicDataElements` ENABLE KEYS */;
+LOCK TABLES `dataElements` WRITE;
+/*!40000 ALTER TABLE `dataElements` DISABLE KEYS */;
+/*!40000 ALTER TABLE `dataElements` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `healthDataElements`
+-- Table structure for table `engagementSurveys`
 --
 
-DROP TABLE IF EXISTS `healthDataElements`;
+DROP TABLE IF EXISTS `engagementSurveys`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `healthDataElements` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `elementName` varchar(45) NOT NULL,
-  `saveToTableName` varchar(55) NOT NULL,
-  `saveToTableCol` varchar(55) NOT NULL,
-  `status` bit(1) NOT NULL DEFAULT b'0',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+CREATE TABLE `engagementSurveys` (
+  `id` int(11) NOT NULL DEFAULT '0',
+  `engagementId` int(11) NOT NULL,
+  `programPatientId` int(11) NOT NULL,
+  `surveyId` int(11) NOT NULL,
+  `dateStarted` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `dateComplated` datetime NOT NULL,
+  `systemUserId` int(11) NOT NULL,
+  `lastAnsQuestionId` int(11) NOT NULL DEFAULT '0',
+  `completed` bit(1) NOT NULL DEFAULT b'1',
+  PRIMARY KEY (`id`),
+  KEY `engagmentId_idx` (`engagementId`),
+  KEY `patientId_idx` (`programPatientId`),
+  KEY `fk_engagementSurveys_systemUserId` (`systemUserId`),
+  KEY `fk_engagementSurveys_surveyId` (`surveyId`),
+  CONSTRAINT `fk_engagementSurveys_surveyId` FOREIGN KEY (`surveyId`) REFERENCES `surveys` (`id`),
+  CONSTRAINT `fk_engagementSurveys_engageId` FOREIGN KEY (`engagementId`) REFERENCES `patientEngagements` (`id`),
+  CONSTRAINT `fk_engagementSurveys_patientId` FOREIGN KEY (`programPatientId`) REFERENCES `programPatients` (`id`),
+  CONSTRAINT `fk_engagementSurveys_systemUserId` FOREIGN KEY (`systemUserId`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `healthDataElements`
+-- Dumping data for table `engagementSurveys`
 --
 
-LOCK TABLES `healthDataElements` WRITE;
-/*!40000 ALTER TABLE `healthDataElements` DISABLE KEYS */;
-/*!40000 ALTER TABLE `healthDataElements` ENABLE KEYS */;
+LOCK TABLES `engagementSurveys` WRITE;
+/*!40000 ALTER TABLE `engagementSurveys` DISABLE KEYS */;
+/*!40000 ALTER TABLE `engagementSurveys` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `excludedDays`
+--
+
+DROP TABLE IF EXISTS `excludedDays`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `excludedDays` (
+  `id` int(11) NOT NULL DEFAULT '0',
+  `programId` int(11) NOT NULL,
+  `inactiveDayCalendarId` int(11) NOT NULL,
+  `excludedDay` date DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `programId_idx` (`programId`),
+  KEY `calendarId_idx` (`inactiveDayCalendarId`),
+  CONSTRAINT `fk_excludedDays_programId` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`),
+  CONSTRAINT `fk_excludedDays` FOREIGN KEY (`inactiveDayCalendarId`) REFERENCES `inactiveDayCalendar` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `excludedDays`
+--
+
+LOCK TABLES `excludedDays` WRITE;
+/*!40000 ALTER TABLE `excludedDays` DISABLE KEYS */;
+/*!40000 ALTER TABLE `excludedDays` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `inactiveDayCalendar`
+--
+
+DROP TABLE IF EXISTS `inactiveDayCalendar`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `inactiveDayCalendar` (
+  `id` int(11) NOT NULL DEFAULT '0',
+  `programId` int(11) NOT NULL,
+  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `fromDate` datetime NOT NULL,
+  `toDate` datetime DEFAULT NULL,
+  `howManyTypeId` int(11) NOT NULL,
+  `howMany` int(255) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `programId_idx` (`programId`),
+  KEY `fk_inactiveDayCalendar_howManyType` (`howManyTypeId`),
+  CONSTRAINT `fk_inactiveDayCalendar_howManyType` FOREIGN KEY (`howManyTypeId`) REFERENCES `lu_howManyTypes` (`id`),
+  CONSTRAINT `fk_inactiveDayCalendar_programId` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `inactiveDayCalendar`
+--
+
+LOCK TABLES `inactiveDayCalendar` WRITE;
+/*!40000 ALTER TABLE `inactiveDayCalendar` DISABLE KEYS */;
+/*!40000 ALTER TABLE `inactiveDayCalendar` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `inactiveDayCalendarCustom`
+--
+
+DROP TABLE IF EXISTS `inactiveDayCalendarCustom`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `inactiveDayCalendarCustom` (
+  `id` int(11) NOT NULL DEFAULT '0',
+  `inactiveDayCalendarId` int(11) NOT NULL,
+  `month` int(255) NOT NULL DEFAULT '0',
+  `day` int(255) DEFAULT '0',
+  `dayNumber` int(11) DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `calendarId_idx` (`inactiveDayCalendarId`),
+  CONSTRAINT `fk_inactiveDayCalendarCustom` FOREIGN KEY (`inactiveDayCalendarId`) REFERENCES `inactiveDayCalendar` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `inactiveDayCalendarCustom`
+--
+
+LOCK TABLES `inactiveDayCalendarCustom` WRITE;
+/*!40000 ALTER TABLE `inactiveDayCalendarCustom` DISABLE KEYS */;
+/*!40000 ALTER TABLE `inactiveDayCalendarCustom` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `inactiveDays`
+--
+
+DROP TABLE IF EXISTS `inactiveDays`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `inactiveDays` (
+  `id` int(11) NOT NULL DEFAULT '0',
+  `programId` int(11) DEFAULT NULL,
+  `inactiveDayCalendarID` int(11) DEFAULT NULL,
+  `inactiveDay` date DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `programId_idx` (`programId`),
+  KEY `calendarId_idx` (`inactiveDayCalendarID`),
+  CONSTRAINT `fk_inactiveDays_programId` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`),
+  CONSTRAINT `fk_inactiveDays` FOREIGN KEY (`inactiveDayCalendarID`) REFERENCES `inactiveDayCalendar` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `inactiveDays`
+--
+
+LOCK TABLES `inactiveDays` WRITE;
+/*!40000 ALTER TABLE `inactiveDays` DISABLE KEYS */;
+/*!40000 ALTER TABLE `inactiveDays` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `lu_activityCodes`
+--
+
+DROP TABLE IF EXISTS `lu_activityCodes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `lu_activityCodes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `code` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
+  `codeDesc` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
+  `dateCreated` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `activityCodeid_idx` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `lu_activityCodes`
+--
+
+LOCK TABLES `lu_activityCodes` WRITE;
+/*!40000 ALTER TABLE `lu_activityCodes` DISABLE KEYS */;
+/*!40000 ALTER TABLE `lu_activityCodes` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `lu_answerTypes`
+--
+
+DROP TABLE IF EXISTS `lu_answerTypes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `lu_answerTypes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `answerType` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `lu_answerTypes`
+--
+
+LOCK TABLES `lu_answerTypes` WRITE;
+/*!40000 ALTER TABLE `lu_answerTypes` DISABLE KEYS */;
+INSERT INTO `lu_answerTypes` VALUES (1,'Multiple Choice','2014-10-02 10:56:34'),(2,'Dropdown','2014-10-02 10:56:34'),(3,'Single Textbox','2014-10-02 10:56:34'),(4,'Multiple Textbox','2014-10-02 10:56:34'),(5,'Comment Box','2014-10-02 10:56:34'),(6,'Date/Time','2014-10-02 10:56:34'),(7,'Display Text','2014-10-02 10:56:34');
+/*!40000 ALTER TABLE `lu_answerTypes` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -162,10 +317,10 @@ DROP TABLE IF EXISTS `lu_delimiters`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `lu_delimiters` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `delimiter` varchar(45) NOT NULL,
-  `delimChar` varchar(45) NOT NULL,
+  `delimiter` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
+  `delimChar` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -179,6 +334,29 @@ INSERT INTO `lu_delimiters` VALUES (1,'comma',','),(2,'pipe','|'),(3,'colon',':'
 UNLOCK TABLES;
 
 --
+-- Table structure for table `lu_frequencies`
+--
+
+DROP TABLE IF EXISTS `lu_frequencies`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `lu_frequencies` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `lu_frequencies`
+--
+
+LOCK TABLES `lu_frequencies` WRITE;
+/*!40000 ALTER TABLE `lu_frequencies` DISABLE KEYS */;
+/*!40000 ALTER TABLE `lu_frequencies` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `lu_genders`
 --
 
@@ -187,13 +365,13 @@ DROP TABLE IF EXISTS `lu_genders`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `lu_genders` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `displayText` varchar(45) NOT NULL COMMENT 'Female, Male, Other, Unknown, etc.',
-  `description` varchar(200) DEFAULT NULL,
+  `displayText` varchar(45) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Female, Male, Other, Unknown, etc.',
+  `description` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL,
   `isCustom` bit(1) NOT NULL DEFAULT b'0' COMMENT 'This field tracks look up item and flags it as 1 if it is a custom field that should not be a general option. 1 for True, 0 for False',
   `status` bit(1) NOT NULL DEFAULT b'1' COMMENT 'This field is 1 if it is available to general public and in use.  It is set to 0 when it is no longer available as a choice to users. 1 for True, 0 for False',
   `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'This is the date that the record was added to UT',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -215,13 +393,13 @@ DROP TABLE IF EXISTS `lu_hispanics`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `lu_hispanics` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `displayText` varchar(45) NOT NULL COMMENT 'Yes, No, Not Reported',
-  `description` varchar(200) DEFAULT NULL COMMENT 'Could be a description on how to answer the category?',
+  `displayText` varchar(45) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Yes, No, Not Reported',
+  `description` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Could be a description on how to answer the category?',
   `isCustom` bit(1) NOT NULL DEFAULT b'0' COMMENT 'This field tracks look up item and flags it as 1 if it is a custom field that should not be a general option. 1 for True, 0 for False',
   `status` bit(1) NOT NULL DEFAULT b'1' COMMENT 'This field is 1 if it is available to general public and in use.  It is set to 0 when it is no longer available as a choice to users. 1 for True, 0 for False',
   `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'This is the date that the record was added to UT',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -235,6 +413,54 @@ INSERT INTO `lu_hispanics` VALUES (1,'Hispanic or Latino',NULL,'\0','','2013-11
 UNLOCK TABLES;
 
 --
+-- Table structure for table `lu_howManyTypes`
+--
+
+DROP TABLE IF EXISTS `lu_howManyTypes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `lu_howManyTypes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `lu_howManyTypes`
+--
+
+LOCK TABLES `lu_howManyTypes` WRITE;
+/*!40000 ALTER TABLE `lu_howManyTypes` DISABLE KEYS */;
+INSERT INTO `lu_howManyTypes` VALUES (1,'Daily'),(2,'Weekly'),(3,'Months');
+/*!40000 ALTER TABLE `lu_howManyTypes` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `lu_insuranceCarriers`
+--
+
+DROP TABLE IF EXISTS `lu_insuranceCarriers`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `lu_insuranceCarriers` (
+  `id` int(11) NOT NULL,
+  `carrier` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `lu_insuranceCarriers`
+--
+
+LOCK TABLES `lu_insuranceCarriers` WRITE;
+/*!40000 ALTER TABLE `lu_insuranceCarriers` DISABLE KEYS */;
+/*!40000 ALTER TABLE `lu_insuranceCarriers` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `lu_languages`
 --
 
@@ -243,13 +469,13 @@ DROP TABLE IF EXISTS `lu_languages`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `lu_languages` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `displayText` varchar(255) NOT NULL COMMENT 'English, Spanish, Polish, Italian etc.',
-  `description` varchar(200) DEFAULT NULL,
+  `displayText` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT 'English, Spanish, Polish, Italian etc.',
+  `description` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL,
   `isCustom` bit(1) NOT NULL DEFAULT b'0' COMMENT 'This field tracks look up item and flags it as 1 if it is a custom field that should not be a general option. 1 for True, 0 for False',
   `status` bit(1) NOT NULL DEFAULT b'1' COMMENT 'This field is 1 if it is available to general public and in use.  It is set to 0 when it is no longer available as a choice to users. 1 for True, 0 for False',
   `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'This is the date that the record was added to UT',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=485 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=485 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -263,31 +489,57 @@ INSERT INTO `lu_languages` VALUES (1,'Abkhazian',' ','\0','','2014-06-12 22:10:
 UNLOCK TABLES;
 
 --
--- Table structure for table `lu_martialstatuses`
+-- Table structure for table `lu_maritalStatuses`
 --
 
-DROP TABLE IF EXISTS `lu_martialstatuses`;
+DROP TABLE IF EXISTS `lu_maritalStatuses`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `lu_martialstatuses` (
+CREATE TABLE `lu_maritalStatuses` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `displayText` varchar(45) NOT NULL COMMENT 'Single, Married, Divorced, Declined to Report etc',
-  `description` varchar(200) DEFAULT NULL COMMENT 'description or additional information for the display text ',
+  `displayText` varchar(45) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Single, Married, Divorced, Declined to Report etc',
+  `description` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'description or additional information for the display text ',
   `isCustom` bit(1) NOT NULL DEFAULT b'0' COMMENT 'This field tracks look up item and flags it as 1 if it is a custom field that should not be a general option. 1 for True, 0 for False',
   `status` bit(1) NOT NULL DEFAULT b'1' COMMENT 'This field is 1 if it is available to general public and in use.  It is set to 0 when it is no longer available as a choice to users. 1 for True, 0 for False',
   `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'This is the date that the record was added to UT',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `lu_martialstatuses`
+-- Dumping data for table `lu_maritalStatuses`
 --
 
-LOCK TABLES `lu_martialstatuses` WRITE;
-/*!40000 ALTER TABLE `lu_martialstatuses` DISABLE KEYS */;
-INSERT INTO `lu_martialstatuses` VALUES (1,'Married',NULL,'\0','','2013-11-06 12:34:04'),(2,'Single',NULL,'\0','','2013-11-06 12:34:04'),(3,'Divorced',NULL,'\0','','2013-11-06 12:34:04'),(4,'Widowed',NULL,'\0','','2013-11-06 12:34:04'),(5,'Other',NULL,'\0','','2013-11-06 12:34:04'),(6,'Unknown/Not Reported',NULL,'\0','','2013-11-06 12:34:04');
-/*!40000 ALTER TABLE `lu_martialstatuses` ENABLE KEYS */;
+LOCK TABLES `lu_maritalStatuses` WRITE;
+/*!40000 ALTER TABLE `lu_maritalStatuses` DISABLE KEYS */;
+INSERT INTO `lu_maritalStatuses` VALUES (1,'Married',NULL,'\0','','2013-11-06 12:34:04'),(2,'Single',NULL,'\0','','2013-11-06 12:34:04'),(3,'Divorced',NULL,'\0','','2013-11-06 12:34:04'),(4,'Widowed',NULL,'\0','','2013-11-06 12:34:04'),(5,'Other',NULL,'\0','','2013-11-06 12:34:04'),(6,'Unknown/Not Reported',NULL,'\0','','2013-11-06 12:34:04');
+/*!40000 ALTER TABLE `lu_maritalStatuses` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `lu_phoneTypes`
+--
+
+DROP TABLE IF EXISTS `lu_phoneTypes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `lu_phoneTypes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `displayText` varchar(45) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Cell Phone, Home Phone, etc',
+  `status` bit(1) NOT NULL DEFAULT b'1' COMMENT 'This field is 1 if it is available to general public and in use.  It is set to 0 when it is no longer available as a choice to users. 1 for True, 0 for False',
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'This is the date that the record was added to UT',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `lu_phoneTypes`
+--
+
+LOCK TABLES `lu_phoneTypes` WRITE;
+/*!40000 ALTER TABLE `lu_phoneTypes` DISABLE KEYS */;
+INSERT INTO `lu_phoneTypes` VALUES (1,'Home Phone','','2014-10-02 10:56:34'),(2,'Mobile Phone','','2014-10-02 10:56:34'),(3,'Work Phone','','2014-10-02 10:56:34');
+/*!40000 ALTER TABLE `lu_phoneTypes` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -299,9 +551,9 @@ DROP TABLE IF EXISTS `lu_programModules`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `lu_programModules` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `moduleName` varchar(45) NOT NULL,
+  `moduleName` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -323,13 +575,13 @@ DROP TABLE IF EXISTS `lu_races`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `lu_races` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `displayText` varchar(45) NOT NULL COMMENT 'black, white, Am Indian / Alaskan Native etc',
-  `description` varchar(200) DEFAULT NULL,
+  `displayText` varchar(45) COLLATE utf8_unicode_ci NOT NULL COMMENT 'black, white, Am Indian / Alaskan Native etc',
+  `description` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL,
   `isCustom` bit(1) NOT NULL DEFAULT b'0' COMMENT 'This field tracks look up item and flags it as 1 if it is a custom field that should not be a general option. 1 for True, 0 for False',
   `status` bit(1) NOT NULL DEFAULT b'1' COMMENT 'This field is 1 if it is available to general public and in use.  It is set to 0 when it is no longer available as a choice to users. 1 for True, 0 for False',
   `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -343,6 +595,57 @@ INSERT INTO `lu_races` VALUES (1,'White',NULL,'\0','','2013-11-06 12:51:16'),(2
 UNLOCK TABLES;
 
 --
+-- Table structure for table `lu_tobaccoTypes`
+--
+
+DROP TABLE IF EXISTS `lu_tobaccoTypes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `lu_tobaccoTypes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `displayText` varchar(45) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Cigarettes, Cigars, Chewing Tobacco',
+  `description` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `lu_tobaccoTypes`
+--
+
+LOCK TABLES `lu_tobaccoTypes` WRITE;
+/*!40000 ALTER TABLE `lu_tobaccoTypes` DISABLE KEYS */;
+INSERT INTO `lu_tobaccoTypes` VALUES (1,'Cigarettes','Cigarettes','2014-10-02 10:56:34'),(2,'Cigars','Cigars','2014-10-02 10:56:34'),(3,'Chewing Tobacco','Chewing Tobacco','2014-10-02 10:56:34');
+/*!40000 ALTER TABLE `lu_tobaccoTypes` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `lu_userTypes`
+--
+
+DROP TABLE IF EXISTS `lu_userTypes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `lu_userTypes` (
+  `id` int(11) NOT NULL DEFAULT '0',
+  `type` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `lu_userTypes`
+--
+
+LOCK TABLES `lu_userTypes` WRITE;
+/*!40000 ALTER TABLE `lu_userTypes` DISABLE KEYS */;
+INSERT INTO `lu_userTypes` VALUES (1,'Staff Member','2014-10-02 10:56:34'),(2,'State Report User','2014-10-02 10:56:34');
+/*!40000 ALTER TABLE `lu_userTypes` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `lu_validationtypes`
 --
 
@@ -351,9 +654,9 @@ DROP TABLE IF EXISTS `lu_validationtypes`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `lu_validationtypes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `validationType` varchar(45) NOT NULL,
+  `validationType` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -367,133 +670,201 @@ INSERT INTO `lu_validationtypes` VALUES (1,'None'),(2,'Email'),(3,'Phone Number'
 UNLOCK TABLES;
 
 --
--- Table structure for table `patientSharing`
+-- Table structure for table `modifiedFields`
 --
 
-DROP TABLE IF EXISTS `patientSharing`;
+DROP TABLE IF EXISTS `modifiedFields`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `patientSharing` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `programId` int(11) NOT NULL,
-  `sharingProgramId` int(11) NOT NULL,
-  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `patientSharing`
---
-
-LOCK TABLES `patientSharing` WRITE;
-/*!40000 ALTER TABLE `patientSharing` DISABLE KEYS */;
-INSERT INTO `patientSharing` VALUES (2,1,3,'2014-08-11 12:19:43'),(3,1,4,'2014-08-11 12:19:43'),(4,1,4,'2014-08-11 12:19:56');
-/*!40000 ALTER TABLE `patientSharing` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `programActivityCodes`
---
-
-DROP TABLE IF EXISTS `programActivityCodes`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `programActivityCodes` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `programId` varchar(45) NOT NULL,
-  `codeId` int(11) NOT NULL,
-  `dateCreated` datetime DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `programActivityCodes`
---
-
-LOCK TABLES `programActivityCodes` WRITE;
-/*!40000 ALTER TABLE `programActivityCodes` DISABLE KEYS */;
-INSERT INTO `programActivityCodes` VALUES (12,'1',1,'2014-08-14 11:22:00'),(13,'1',2,'2014-08-14 11:22:00');
-/*!40000 ALTER TABLE `programActivityCodes` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `programMPIAlgorithms`
---
-
-DROP TABLE IF EXISTS `programMPIAlgorithms`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `programMPIAlgorithms` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `programId` int(11) NOT NULL,
-  `status` bit(1) NOT NULL DEFAULT b'0',
-  `action` tinyint(4) NOT NULL DEFAULT '3' COMMENT '1 = Match\n2 = No Match\n3 = Review',
-  `dateCreated` datetime DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `programMPIAlgorithms`
---
-
-LOCK TABLES `programMPIAlgorithms` WRITE;
-/*!40000 ALTER TABLE `programMPIAlgorithms` DISABLE KEYS */;
-INSERT INTO `programMPIAlgorithms` VALUES (2,1,'',1,'2014-08-14 02:31:34');
-/*!40000 ALTER TABLE `programMPIAlgorithms` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `programMPIFields`
---
-
-DROP TABLE IF EXISTS `programMPIFields`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `programMPIFields` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `MPIId` int(11) NOT NULL,
+CREATE TABLE `modifiedFields` (
+  `id` int(11) NOT NULL DEFAULT '0',
+  `programPatientId` int(11) NOT NULL,
   `fieldId` int(11) NOT NULL,
-  `action` varchar(45) NOT NULL DEFAULT 'equals',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+  `systemUserId` int(11) NOT NULL,
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `patientId_idx` (`programPatientId`),
+  KEY `fieldId_idx` (`fieldId`),
+  KEY `fk_modifiedFields_userId` (`systemUserId`),
+  CONSTRAINT `fk_modifiedFields_userId` FOREIGN KEY (`systemUserId`) REFERENCES `users` (`id`),
+  CONSTRAINT `fk_modifiedFields_fieldId` FOREIGN KEY (`fieldId`) REFERENCES `dataElements` (`id`),
+  CONSTRAINT `fk_modifiedFields_patientId` FOREIGN KEY (`programPatientId`) REFERENCES `programPatients` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `programMPIFields`
+-- Dumping data for table `modifiedFields`
 --
 
-LOCK TABLES `programMPIFields` WRITE;
-/*!40000 ALTER TABLE `programMPIFields` DISABLE KEYS */;
-INSERT INTO `programMPIFields` VALUES (2,2,6,'equals'),(3,2,5,'equals');
-/*!40000 ALTER TABLE `programMPIFields` ENABLE KEYS */;
+LOCK TABLES `modifiedFields` WRITE;
+/*!40000 ALTER TABLE `modifiedFields` DISABLE KEYS */;
+/*!40000 ALTER TABLE `modifiedFields` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `programModules`
+-- Table structure for table `orgHierarchyAssoc`
 --
 
-DROP TABLE IF EXISTS `programModules`;
+DROP TABLE IF EXISTS `orgHierarchyAssoc`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `programModules` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `programId` int(11) NOT NULL,
-  `moduleId` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
+CREATE TABLE `orgHierarchyAssoc` (
+  `id` int(11) NOT NULL,
+  `hierarchyId` int(11) NOT NULL,
+  `detailsId` int(255) NOT NULL,
+  `dspPos` int(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `heirarchyId_idx` (`hierarchyId`),
+  KEY `fk_orgHierarchyAssoc_detailId` (`detailsId`),
+  CONSTRAINT `fk_orgHierarchyAssoc_detailId` FOREIGN KEY (`detailsId`) REFERENCES `programOrgHierarchy_details` (`id`),
+  CONSTRAINT `fk_orgHierarchyAssoc_id` FOREIGN KEY (`hierarchyId`) REFERENCES `programOrgHierarchy` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `programModules`
+-- Dumping data for table `orgHierarchyAssoc`
 --
 
-LOCK TABLES `programModules` WRITE;
-/*!40000 ALTER TABLE `programModules` DISABLE KEYS */;
-INSERT INTO `programModules` VALUES (13,1,3),(14,1,2);
-/*!40000 ALTER TABLE `programModules` ENABLE KEYS */;
+LOCK TABLES `orgHierarchyAssoc` WRITE;
+/*!40000 ALTER TABLE `orgHierarchyAssoc` DISABLE KEYS */;
+/*!40000 ALTER TABLE `orgHierarchyAssoc` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `patientActivities`
+--
+
+DROP TABLE IF EXISTS `patientActivities`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `patientActivities` (
+  `id` int(11) NOT NULL,
+  `programPatientId` int(11) NOT NULL,
+  `engagementId` int(11) NOT NULL,
+  `activityCodeId` int(11) NOT NULL,
+  `activityCode` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `desc` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `systemUserId` int(11) NOT NULL,
+  `surveyId` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`,`programPatientId`),
+  KEY `engagementId_idx` (`engagementId`),
+  KEY `patientId_idx` (`programPatientId`),
+  KEY `fk_patientActivities_codeId` (`activityCodeId`),
+  KEY `fk_patientActivities_surveyId` (`surveyId`),
+  CONSTRAINT `fk_patientActivities_surveyId` FOREIGN KEY (`surveyId`) REFERENCES `surveys` (`id`),
+  CONSTRAINT `fk_patientActivities_codeId` FOREIGN KEY (`activityCodeId`) REFERENCES `lu_activityCodes` (`id`),
+  CONSTRAINT `fk_patientActivities_engageId` FOREIGN KEY (`engagementId`) REFERENCES `patientEngagements` (`id`),
+  CONSTRAINT `fk_patientActivities_patientId` FOREIGN KEY (`programPatientId`) REFERENCES `programPatients` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `patientActivities`
+--
+
+LOCK TABLES `patientActivities` WRITE;
+/*!40000 ALTER TABLE `patientActivities` DISABLE KEYS */;
+/*!40000 ALTER TABLE `patientActivities` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `patientCounselingAppts`
+--
+
+DROP TABLE IF EXISTS `patientCounselingAppts`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `patientCounselingAppts` (
+  `id` int(11) NOT NULL,
+  `programPatientId` int(11) NOT NULL,
+  `engagementId` int(11) NOT NULL,
+  `activityCodeId` int(11) NOT NULL,
+  `desc` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `scheduledDate` datetime NOT NULL,
+  `systemUserId` int(11) NOT NULL,
+  PRIMARY KEY (`id`,`programPatientId`),
+  KEY `engagementId_idx` (`engagementId`),
+  KEY `patientId_idx` (`programPatientId`),
+  KEY `_fk_patientCounselingAppts_codeId` (`activityCodeId`),
+  CONSTRAINT `_fk_patientCounselingAppts_codeId` FOREIGN KEY (`activityCodeId`) REFERENCES `lu_activityCodes` (`id`),
+  CONSTRAINT `fk_patientCounselingAppts_engageId` FOREIGN KEY (`engagementId`) REFERENCES `patientEngagements` (`id`),
+  CONSTRAINT `fk_patientCounselingAppts_patientId` FOREIGN KEY (`programPatientId`) REFERENCES `programPatients` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `patientCounselingAppts`
+--
+
+LOCK TABLES `patientCounselingAppts` WRITE;
+/*!40000 ALTER TABLE `patientCounselingAppts` DISABLE KEYS */;
+/*!40000 ALTER TABLE `patientCounselingAppts` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `patientCounselingApptsChangeLog`
+--
+
+DROP TABLE IF EXISTS `patientCounselingApptsChangeLog`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `patientCounselingApptsChangeLog` (
+  `id` int(11) NOT NULL,
+  `engagementId` int(11) NOT NULL,
+  `oldsystemUserId` int(11) NOT NULL DEFAULT '0',
+  `newSystemUserId` int(11) NOT NULL DEFAULT '0',
+  `oldScheduleDate` datetime DEFAULT NULL,
+  `newScheduleDate` datetime DEFAULT NULL,
+  `systemUserId` int(11) NOT NULL,
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`,`engagementId`),
+  UNIQUE KEY `id_UNIQUE` (`id`),
+  KEY `engagementId_fk_idx` (`engagementId`),
+  KEY `systemUserId_fk_idx` (`systemUserId`),
+  CONSTRAINT `engagementId_fk` FOREIGN KEY (`engagementId`) REFERENCES `patientEngagements` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `systemUserId_fk` FOREIGN KEY (`systemUserId`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `patientCounselingApptsChangeLog`
+--
+
+LOCK TABLES `patientCounselingApptsChangeLog` WRITE;
+/*!40000 ALTER TABLE `patientCounselingApptsChangeLog` DISABLE KEYS */;
+/*!40000 ALTER TABLE `patientCounselingApptsChangeLog` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `patientEngagements`
+--
+
+DROP TABLE IF EXISTS `patientEngagements`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `patientEngagements` (
+  `id` int(11) NOT NULL,
+  `programPatientId` int(11) NOT NULL,
+  `programId` int(11) NOT NULL,
+  `systemUserId` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `patientId_idx` (`programPatientId`),
+  KEY `fk_patientEngagements_programId` (`programId`),
+  KEY `fk_patientEngagements_userId` (`systemUserId`),
+  CONSTRAINT `fk_patientEngagements_userId` FOREIGN KEY (`systemUserId`) REFERENCES `users` (`id`),
+  CONSTRAINT `fk_patientEngagements_patientId` FOREIGN KEY (`programPatientId`) REFERENCES `programPatients` (`id`),
+  CONSTRAINT `fk_patientEngagements_programId` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `patientEngagements`
+--
+
+LOCK TABLES `patientEngagements` WRITE;
+/*!40000 ALTER TABLE `patientEngagements` DISABLE KEYS */;
+/*!40000 ALTER TABLE `patientEngagements` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -506,11 +877,13 @@ DROP TABLE IF EXISTS `programOrgHierarchy`;
 CREATE TABLE `programOrgHierarchy` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `programId` int(11) NOT NULL,
-  `name` varchar(45) NOT NULL,
+  `name` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
   `dspPos` int(11) NOT NULL DEFAULT '1',
   `dateCreated` datetime DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  PRIMARY KEY (`id`),
+  KEY `programId_idx` (`programId`),
+  CONSTRAINT `fk_programOrgHierarchy` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -523,43 +896,74 @@ LOCK TABLES `programOrgHierarchy` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `programPatientDemoFields`
+-- Table structure for table `programOrgHierarchy_assoc`
 --
 
-DROP TABLE IF EXISTS `programPatientDemoFields`;
+DROP TABLE IF EXISTS `programOrgHierarchy_assoc`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `programPatientDemoFields` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `programId` int(11) NOT NULL,
-  `fieldId` int(11) NOT NULL,
-  `requiredField` bit(1) NOT NULL DEFAULT b'0',
-  `validationId` int(11) NOT NULL,
-  `crosswalkId` int(11) DEFAULT '0',
-  `dspPos` int(11) NOT NULL DEFAULT '1',
-  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=latin1;
+CREATE TABLE `programOrgHierarchy_assoc` (
+  `id` int(11) NOT NULL,
+  `hierarchyId` int(11) NOT NULL,
+  `associatedWith` int(255) NOT NULL,
+  `dspPos` int(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `heirarchyId_idx` (`hierarchyId`),
+  CONSTRAINT `fk_programOrgHierarchyAssoc_id` FOREIGN KEY (`hierarchyId`) REFERENCES `programOrgHierarchy` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `programPatientDemoFields`
+-- Dumping data for table `programOrgHierarchy_assoc`
 --
 
-LOCK TABLES `programPatientDemoFields` WRITE;
-/*!40000 ALTER TABLE `programPatientDemoFields` DISABLE KEYS */;
-INSERT INTO `programPatientDemoFields` VALUES (18,1,5,'',1,0,1,'2014-08-12 11:50:00'),(19,1,6,'',1,0,3,'2014-08-12 11:50:05'),(20,1,7,'',4,35,2,'2014-08-12 13:47:44');
-/*!40000 ALTER TABLE `programPatientDemoFields` ENABLE KEYS */;
+LOCK TABLES `programOrgHierarchy_assoc` WRITE;
+/*!40000 ALTER TABLE `programOrgHierarchy_assoc` DISABLE KEYS */;
+/*!40000 ALTER TABLE `programOrgHierarchy_assoc` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `programPatientHealthFields`
+-- Table structure for table `programOrgHierarchy_details`
 --
 
-DROP TABLE IF EXISTS `programPatientHealthFields`;
+DROP TABLE IF EXISTS `programOrgHierarchy_details`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `programPatientHealthFields` (
+CREATE TABLE `programOrgHierarchy_details` (
+  `id` int(11) NOT NULL,
+  `status` bit(1) NOT NULL DEFAULT b'1',
+  `programHierarchyId` int(11) NOT NULL,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `address` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `address2` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `dateCreated` datetime NOT NULL,
+  `city` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `state` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `zipcode` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `phoneNumber` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `heirarchyId_idx` (`programHierarchyId`),
+  CONSTRAINT `fk_orgHierarchyDetails_hierId` FOREIGN KEY (`programHierarchyId`) REFERENCES `programOrgHierarchy` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `programOrgHierarchy_details`
+--
+
+LOCK TABLES `programOrgHierarchy_details` WRITE;
+/*!40000 ALTER TABLE `programOrgHierarchy_details` DISABLE KEYS */;
+/*!40000 ALTER TABLE `programOrgHierarchy_details` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `programPatientEngagementFields`
+--
+
+DROP TABLE IF EXISTS `programPatientEngagementFields`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `programPatientEngagementFields` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `programId` int(11) NOT NULL,
   `fieldId` int(11) NOT NULL,
@@ -573,12 +977,12 @@ CREATE TABLE `programPatientHealthFields` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `programPatientHealthFields`
+-- Dumping data for table `programPatientEngagementFields`
 --
 
-LOCK TABLES `programPatientHealthFields` WRITE;
-/*!40000 ALTER TABLE `programPatientHealthFields` DISABLE KEYS */;
-/*!40000 ALTER TABLE `programPatientHealthFields` ENABLE KEYS */;
+LOCK TABLES `programPatientEngagementFields` WRITE;
+/*!40000 ALTER TABLE `programPatientEngagementFields` DISABLE KEYS */;
+/*!40000 ALTER TABLE `programPatientEngagementFields` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -591,9 +995,16 @@ DROP TABLE IF EXISTS `programPatients`;
 CREATE TABLE `programPatients` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `programId` int(11) NOT NULL,
+  `systemUserId` int(11) DEFAULT NULL,
   `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `MCIReview` bit(1) NOT NULL DEFAULT b'0',
+  PRIMARY KEY (`id`),
+  KEY `patientId_idx` (`id`),
+  KEY `programId_idx` (`programId`),
+  KEY `fk_programPatients_staffMemberId` (`systemUserId`),
+  CONSTRAINT `fk_programPatients_programId` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`),
+  CONSTRAINT `fk_programPatients_staffMemberId` FOREIGN KEY (`systemUserId`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -606,28 +1017,1201 @@ LOCK TABLES `programPatients` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `programReports`
+-- Table structure for table `programUploadType_formFields`
 --
 
-DROP TABLE IF EXISTS `programReports`;
+DROP TABLE IF EXISTS `programUploadType_formFields`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `programReports` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `programId` int(11) NOT NULL,
-  `reportId` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+CREATE TABLE `programUploadType_formFields` (
+  `id` int(11) NOT NULL DEFAULT '0',
+  `programUploadTypeId` int(11) NOT NULL,
+  `fieldNo` int(11) NOT NULL,
+  `fieldDesc` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `validationTypeId` int(255) NOT NULL,
+  `required` bit(1) NOT NULL DEFAULT b'0',
+  `useField` bit(1) NOT NULL DEFAULT b'1',
+  `saveToTableName` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `saveToTableCol` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `uploadTypeId_idx` (`programUploadTypeId`),
+  CONSTRAINT `fk_programUploadTypeFormFields` FOREIGN KEY (`programUploadTypeId`) REFERENCES `programUploadTypes` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `programReports`
+-- Dumping data for table `programUploadType_formFields`
 --
 
-LOCK TABLES `programReports` WRITE;
-/*!40000 ALTER TABLE `programReports` DISABLE KEYS */;
-INSERT INTO `programReports` VALUES (1,1,1);
-/*!40000 ALTER TABLE `programReports` ENABLE KEYS */;
+LOCK TABLES `programUploadType_formFields` WRITE;
+/*!40000 ALTER TABLE `programUploadType_formFields` DISABLE KEYS */;
+/*!40000 ALTER TABLE `programUploadType_formFields` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `programUploadTypes`
+--
+
+DROP TABLE IF EXISTS `programUploadTypes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `programUploadTypes` (
+  `id` int(11) NOT NULL DEFAULT '0',
+  `programId` int(11) NOT NULL,
+  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `programId_idx` (`programId`),
+  CONSTRAINT `fk_programUploadTypes_programId` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `programUploadTypes`
+--
+
+LOCK TABLES `programUploadTypes` WRITE;
+/*!40000 ALTER TABLE `programUploadTypes` DISABLE KEYS */;
+/*!40000 ALTER TABLE `programUploadTypes` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `programUpload_errors`
+--
+
+DROP TABLE IF EXISTS `programUpload_errors`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `programUpload_errors` (
+  `id` int(11) NOT NULL DEFAULT '0',
+  `programUploadId` int(11) NOT NULL,
+  `fieldNo` int(11) NOT NULL,
+  `fieldDesc` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `errorDesc` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `errorData` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `programUploadId_idx` (`programUploadId`),
+  CONSTRAINT `fk_programUploadErrors` FOREIGN KEY (`programUploadId`) REFERENCES `programUploads` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `programUpload_errors`
+--
+
+LOCK TABLES `programUpload_errors` WRITE;
+/*!40000 ALTER TABLE `programUpload_errors` DISABLE KEYS */;
+/*!40000 ALTER TABLE `programUpload_errors` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `programUpload_fields`
+--
+
+DROP TABLE IF EXISTS `programUpload_fields`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `programUpload_fields` (
+  `id` int(11) NOT NULL DEFAULT '0',
+  `programUploadId` int(11) NOT NULL,
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `F1` text COLLATE utf8_unicode_ci,
+  `F2` text COLLATE utf8_unicode_ci,
+  `F3` text COLLATE utf8_unicode_ci,
+  `F4` text COLLATE utf8_unicode_ci,
+  `F5` text COLLATE utf8_unicode_ci,
+  `F6` text COLLATE utf8_unicode_ci,
+  `F7` text COLLATE utf8_unicode_ci,
+  `F8` text COLLATE utf8_unicode_ci,
+  `F9` text COLLATE utf8_unicode_ci,
+  `F10` text COLLATE utf8_unicode_ci,
+  `F11` text COLLATE utf8_unicode_ci,
+  `F12` text COLLATE utf8_unicode_ci,
+  `F13` text COLLATE utf8_unicode_ci,
+  `F14` text COLLATE utf8_unicode_ci,
+  `F15` text COLLATE utf8_unicode_ci,
+  `F16` text COLLATE utf8_unicode_ci,
+  `F17` text COLLATE utf8_unicode_ci,
+  `F18` text COLLATE utf8_unicode_ci,
+  `F19` text COLLATE utf8_unicode_ci,
+  `F20` text COLLATE utf8_unicode_ci,
+  `F21` text COLLATE utf8_unicode_ci,
+  `F22` text COLLATE utf8_unicode_ci,
+  `F23` text COLLATE utf8_unicode_ci,
+  `F24` text COLLATE utf8_unicode_ci,
+  `F25` text COLLATE utf8_unicode_ci,
+  `F26` text COLLATE utf8_unicode_ci,
+  `F27` text COLLATE utf8_unicode_ci,
+  `F28` text COLLATE utf8_unicode_ci,
+  `F29` text COLLATE utf8_unicode_ci,
+  `F30` text COLLATE utf8_unicode_ci,
+  `F31` text COLLATE utf8_unicode_ci,
+  `F32` text COLLATE utf8_unicode_ci,
+  `F33` text COLLATE utf8_unicode_ci,
+  `F34` text COLLATE utf8_unicode_ci,
+  `F35` text COLLATE utf8_unicode_ci,
+  `F36` text COLLATE utf8_unicode_ci,
+  `F37` text COLLATE utf8_unicode_ci,
+  `F38` text COLLATE utf8_unicode_ci,
+  `F39` text COLLATE utf8_unicode_ci,
+  `F40` text COLLATE utf8_unicode_ci,
+  `F41` text COLLATE utf8_unicode_ci,
+  `F42` text COLLATE utf8_unicode_ci,
+  `F43` text COLLATE utf8_unicode_ci,
+  `F44` text COLLATE utf8_unicode_ci,
+  `F45` text COLLATE utf8_unicode_ci,
+  `F46` text COLLATE utf8_unicode_ci,
+  `F47` text COLLATE utf8_unicode_ci,
+  `F48` text COLLATE utf8_unicode_ci,
+  `F49` text COLLATE utf8_unicode_ci,
+  `F50` text COLLATE utf8_unicode_ci,
+  `F51` text COLLATE utf8_unicode_ci,
+  `F52` text COLLATE utf8_unicode_ci,
+  `F53` text COLLATE utf8_unicode_ci,
+  `F54` text COLLATE utf8_unicode_ci,
+  `F55` text COLLATE utf8_unicode_ci,
+  `F56` text COLLATE utf8_unicode_ci,
+  `F57` text COLLATE utf8_unicode_ci,
+  `F58` text COLLATE utf8_unicode_ci,
+  `F59` text COLLATE utf8_unicode_ci,
+  `F60` text COLLATE utf8_unicode_ci,
+  `F61` text COLLATE utf8_unicode_ci,
+  `F62` text COLLATE utf8_unicode_ci,
+  `F63` text COLLATE utf8_unicode_ci,
+  `F64` text COLLATE utf8_unicode_ci,
+  `F65` text COLLATE utf8_unicode_ci,
+  `F66` text COLLATE utf8_unicode_ci,
+  `F67` text COLLATE utf8_unicode_ci,
+  `F68` text COLLATE utf8_unicode_ci,
+  `F69` text COLLATE utf8_unicode_ci,
+  `F70` text COLLATE utf8_unicode_ci,
+  `F71` text COLLATE utf8_unicode_ci,
+  `F72` text COLLATE utf8_unicode_ci,
+  `F73` text COLLATE utf8_unicode_ci,
+  `F74` text COLLATE utf8_unicode_ci,
+  `F75` text COLLATE utf8_unicode_ci,
+  `F76` text COLLATE utf8_unicode_ci,
+  `F77` text COLLATE utf8_unicode_ci,
+  `F78` text COLLATE utf8_unicode_ci,
+  `F79` text COLLATE utf8_unicode_ci,
+  `F80` text COLLATE utf8_unicode_ci,
+  `F81` text COLLATE utf8_unicode_ci,
+  `F82` text COLLATE utf8_unicode_ci,
+  `F83` text COLLATE utf8_unicode_ci,
+  `F84` text COLLATE utf8_unicode_ci,
+  `F85` text COLLATE utf8_unicode_ci,
+  `F86` text COLLATE utf8_unicode_ci,
+  `F87` text COLLATE utf8_unicode_ci,
+  `F88` text COLLATE utf8_unicode_ci,
+  `F89` text COLLATE utf8_unicode_ci,
+  `F90` text COLLATE utf8_unicode_ci,
+  `F91` text COLLATE utf8_unicode_ci,
+  `F92` text COLLATE utf8_unicode_ci,
+  `F93` text COLLATE utf8_unicode_ci,
+  `F94` text COLLATE utf8_unicode_ci,
+  `F95` text COLLATE utf8_unicode_ci,
+  `F96` text COLLATE utf8_unicode_ci,
+  `F97` text COLLATE utf8_unicode_ci,
+  `F98` text COLLATE utf8_unicode_ci,
+  `F99` text COLLATE utf8_unicode_ci,
+  `F100` text COLLATE utf8_unicode_ci,
+  `F101` text COLLATE utf8_unicode_ci,
+  `F102` text COLLATE utf8_unicode_ci,
+  `F103` text COLLATE utf8_unicode_ci,
+  `F104` text COLLATE utf8_unicode_ci,
+  `F105` text COLLATE utf8_unicode_ci,
+  `F106` text COLLATE utf8_unicode_ci,
+  `F107` text COLLATE utf8_unicode_ci,
+  `F108` text COLLATE utf8_unicode_ci,
+  `F109` text COLLATE utf8_unicode_ci,
+  `F110` text COLLATE utf8_unicode_ci,
+  `F111` text COLLATE utf8_unicode_ci,
+  `F112` text COLLATE utf8_unicode_ci,
+  `F113` text COLLATE utf8_unicode_ci,
+  `F114` text COLLATE utf8_unicode_ci,
+  `F115` text COLLATE utf8_unicode_ci,
+  `F116` text COLLATE utf8_unicode_ci,
+  `F117` text COLLATE utf8_unicode_ci,
+  `F118` text COLLATE utf8_unicode_ci,
+  `F119` text COLLATE utf8_unicode_ci,
+  `F120` text COLLATE utf8_unicode_ci,
+  `F121` text COLLATE utf8_unicode_ci,
+  `F122` text COLLATE utf8_unicode_ci,
+  `F123` text COLLATE utf8_unicode_ci,
+  `F124` text COLLATE utf8_unicode_ci,
+  `F125` text COLLATE utf8_unicode_ci,
+  `F126` text COLLATE utf8_unicode_ci,
+  `F127` text COLLATE utf8_unicode_ci,
+  `F128` text COLLATE utf8_unicode_ci,
+  `F129` text COLLATE utf8_unicode_ci,
+  `F130` text COLLATE utf8_unicode_ci,
+  `F131` text COLLATE utf8_unicode_ci,
+  `F132` text COLLATE utf8_unicode_ci,
+  `F133` text COLLATE utf8_unicode_ci,
+  `F134` text COLLATE utf8_unicode_ci,
+  `F135` text COLLATE utf8_unicode_ci,
+  `F136` text COLLATE utf8_unicode_ci,
+  `F137` text COLLATE utf8_unicode_ci,
+  `F138` text COLLATE utf8_unicode_ci,
+  `F139` text COLLATE utf8_unicode_ci,
+  `F140` text COLLATE utf8_unicode_ci,
+  `F141` text COLLATE utf8_unicode_ci,
+  `F142` text COLLATE utf8_unicode_ci,
+  `F143` text COLLATE utf8_unicode_ci,
+  `F144` text COLLATE utf8_unicode_ci,
+  `F145` text COLLATE utf8_unicode_ci,
+  `F146` text COLLATE utf8_unicode_ci,
+  `F147` text COLLATE utf8_unicode_ci,
+  `F148` text COLLATE utf8_unicode_ci,
+  `F149` text COLLATE utf8_unicode_ci,
+  `F150` text COLLATE utf8_unicode_ci,
+  `F151` text COLLATE utf8_unicode_ci,
+  `F152` text COLLATE utf8_unicode_ci,
+  `F153` text COLLATE utf8_unicode_ci,
+  `F154` text COLLATE utf8_unicode_ci,
+  `F155` text COLLATE utf8_unicode_ci,
+  `F156` text COLLATE utf8_unicode_ci,
+  `F157` text COLLATE utf8_unicode_ci,
+  `F158` text COLLATE utf8_unicode_ci,
+  `F159` text COLLATE utf8_unicode_ci,
+  `F160` text COLLATE utf8_unicode_ci,
+  `F161` text COLLATE utf8_unicode_ci,
+  `F162` text COLLATE utf8_unicode_ci,
+  `F163` text COLLATE utf8_unicode_ci,
+  `F164` text COLLATE utf8_unicode_ci,
+  `F165` text COLLATE utf8_unicode_ci,
+  `F166` text COLLATE utf8_unicode_ci,
+  `F167` text COLLATE utf8_unicode_ci,
+  `F168` text COLLATE utf8_unicode_ci,
+  `F169` text COLLATE utf8_unicode_ci,
+  `F170` text COLLATE utf8_unicode_ci,
+  `F171` text COLLATE utf8_unicode_ci,
+  `F172` text COLLATE utf8_unicode_ci,
+  `F173` text COLLATE utf8_unicode_ci,
+  `F174` text COLLATE utf8_unicode_ci,
+  `F175` text COLLATE utf8_unicode_ci,
+  `F176` text COLLATE utf8_unicode_ci,
+  `F177` text COLLATE utf8_unicode_ci,
+  `F178` text COLLATE utf8_unicode_ci,
+  `F179` text COLLATE utf8_unicode_ci,
+  `F180` text COLLATE utf8_unicode_ci,
+  `F181` text COLLATE utf8_unicode_ci,
+  `F182` text COLLATE utf8_unicode_ci,
+  `F183` text COLLATE utf8_unicode_ci,
+  `F184` text COLLATE utf8_unicode_ci,
+  `F185` text COLLATE utf8_unicode_ci,
+  `F186` text COLLATE utf8_unicode_ci,
+  `F187` text COLLATE utf8_unicode_ci,
+  `F188` text COLLATE utf8_unicode_ci,
+  `F189` text COLLATE utf8_unicode_ci,
+  `F190` text COLLATE utf8_unicode_ci,
+  `F191` text COLLATE utf8_unicode_ci,
+  `F192` text COLLATE utf8_unicode_ci,
+  `F193` text COLLATE utf8_unicode_ci,
+  `F194` text COLLATE utf8_unicode_ci,
+  `F195` text COLLATE utf8_unicode_ci,
+  `F196` text COLLATE utf8_unicode_ci,
+  `F197` text COLLATE utf8_unicode_ci,
+  `F198` text COLLATE utf8_unicode_ci,
+  `F199` text COLLATE utf8_unicode_ci,
+  `F200` text COLLATE utf8_unicode_ci,
+  `F201` text COLLATE utf8_unicode_ci,
+  `F202` text COLLATE utf8_unicode_ci,
+  `F203` text COLLATE utf8_unicode_ci,
+  `F204` text COLLATE utf8_unicode_ci,
+  `F205` text COLLATE utf8_unicode_ci,
+  `F206` text COLLATE utf8_unicode_ci,
+  `F207` text COLLATE utf8_unicode_ci,
+  `F208` text COLLATE utf8_unicode_ci,
+  `F209` text COLLATE utf8_unicode_ci,
+  `F210` text COLLATE utf8_unicode_ci,
+  `F211` text COLLATE utf8_unicode_ci,
+  `F212` text COLLATE utf8_unicode_ci,
+  `F213` text COLLATE utf8_unicode_ci,
+  `F214` text COLLATE utf8_unicode_ci,
+  `F215` text COLLATE utf8_unicode_ci,
+  `F216` text COLLATE utf8_unicode_ci,
+  `F217` text COLLATE utf8_unicode_ci,
+  `F218` text COLLATE utf8_unicode_ci,
+  `F219` text COLLATE utf8_unicode_ci,
+  `F220` text COLLATE utf8_unicode_ci,
+  `F221` text COLLATE utf8_unicode_ci,
+  `F222` text COLLATE utf8_unicode_ci,
+  `F223` text COLLATE utf8_unicode_ci,
+  `F224` text COLLATE utf8_unicode_ci,
+  `F225` text COLLATE utf8_unicode_ci,
+  `F226` text COLLATE utf8_unicode_ci,
+  `F227` text COLLATE utf8_unicode_ci,
+  `F228` text COLLATE utf8_unicode_ci,
+  `F229` text COLLATE utf8_unicode_ci,
+  `F230` text COLLATE utf8_unicode_ci,
+  `F231` text COLLATE utf8_unicode_ci,
+  `F232` text COLLATE utf8_unicode_ci,
+  `F233` text COLLATE utf8_unicode_ci,
+  `F234` text COLLATE utf8_unicode_ci,
+  `F235` text COLLATE utf8_unicode_ci,
+  `F236` text COLLATE utf8_unicode_ci,
+  `F237` text COLLATE utf8_unicode_ci,
+  `F238` text COLLATE utf8_unicode_ci,
+  `F239` text COLLATE utf8_unicode_ci,
+  `F240` text COLLATE utf8_unicode_ci,
+  `F241` text COLLATE utf8_unicode_ci,
+  `F242` text COLLATE utf8_unicode_ci,
+  `F243` text COLLATE utf8_unicode_ci,
+  `F244` text COLLATE utf8_unicode_ci,
+  `F245` text COLLATE utf8_unicode_ci,
+  `F246` text COLLATE utf8_unicode_ci,
+  `F247` text COLLATE utf8_unicode_ci,
+  `F248` text COLLATE utf8_unicode_ci,
+  `F249` text COLLATE utf8_unicode_ci,
+  `F250` text COLLATE utf8_unicode_ci,
+  `F251` text COLLATE utf8_unicode_ci,
+  `F252` text COLLATE utf8_unicode_ci,
+  `F253` text COLLATE utf8_unicode_ci,
+  `F254` text COLLATE utf8_unicode_ci,
+  `F255` text COLLATE utf8_unicode_ci,
+  `F256` text COLLATE utf8_unicode_ci,
+  `F257` text COLLATE utf8_unicode_ci,
+  `F258` text COLLATE utf8_unicode_ci,
+  `F259` text COLLATE utf8_unicode_ci,
+  `F260` text COLLATE utf8_unicode_ci,
+  `F261` text COLLATE utf8_unicode_ci,
+  `F262` text COLLATE utf8_unicode_ci,
+  `F263` text COLLATE utf8_unicode_ci,
+  `F264` text COLLATE utf8_unicode_ci,
+  `F265` text COLLATE utf8_unicode_ci,
+  `F266` text COLLATE utf8_unicode_ci,
+  `F267` text COLLATE utf8_unicode_ci,
+  `F268` text COLLATE utf8_unicode_ci,
+  `F269` text COLLATE utf8_unicode_ci,
+  `F270` text COLLATE utf8_unicode_ci,
+  `F271` text COLLATE utf8_unicode_ci,
+  `F272` text COLLATE utf8_unicode_ci,
+  `F273` text COLLATE utf8_unicode_ci,
+  `F274` text COLLATE utf8_unicode_ci,
+  `F275` text COLLATE utf8_unicode_ci,
+  `F276` text COLLATE utf8_unicode_ci,
+  `F277` text COLLATE utf8_unicode_ci,
+  `F278` text COLLATE utf8_unicode_ci,
+  `F279` text COLLATE utf8_unicode_ci,
+  `F280` text COLLATE utf8_unicode_ci,
+  `F281` text COLLATE utf8_unicode_ci,
+  `F282` text COLLATE utf8_unicode_ci,
+  `F283` text COLLATE utf8_unicode_ci,
+  `F284` text COLLATE utf8_unicode_ci,
+  `F285` text COLLATE utf8_unicode_ci,
+  `F286` text COLLATE utf8_unicode_ci,
+  `F287` text COLLATE utf8_unicode_ci,
+  `F288` text COLLATE utf8_unicode_ci,
+  `F289` text COLLATE utf8_unicode_ci,
+  `F290` text COLLATE utf8_unicode_ci,
+  `F291` text COLLATE utf8_unicode_ci,
+  `F292` text COLLATE utf8_unicode_ci,
+  `F293` text COLLATE utf8_unicode_ci,
+  `F294` text COLLATE utf8_unicode_ci,
+  `F295` text COLLATE utf8_unicode_ci,
+  `F296` text COLLATE utf8_unicode_ci,
+  `F297` text COLLATE utf8_unicode_ci,
+  `F298` text COLLATE utf8_unicode_ci,
+  `F299` text COLLATE utf8_unicode_ci,
+  `F300` text COLLATE utf8_unicode_ci,
+  `F301` text COLLATE utf8_unicode_ci,
+  `F302` text COLLATE utf8_unicode_ci,
+  `F303` text COLLATE utf8_unicode_ci,
+  `F304` text COLLATE utf8_unicode_ci,
+  `F305` text COLLATE utf8_unicode_ci,
+  `F306` text COLLATE utf8_unicode_ci,
+  `F307` text COLLATE utf8_unicode_ci,
+  `F308` text COLLATE utf8_unicode_ci,
+  `F309` text COLLATE utf8_unicode_ci,
+  `F310` text COLLATE utf8_unicode_ci,
+  `F311` text COLLATE utf8_unicode_ci,
+  `F312` text COLLATE utf8_unicode_ci,
+  `F313` text COLLATE utf8_unicode_ci,
+  `F314` text COLLATE utf8_unicode_ci,
+  `F315` text COLLATE utf8_unicode_ci,
+  `F316` text COLLATE utf8_unicode_ci,
+  `F317` text COLLATE utf8_unicode_ci,
+  `F318` text COLLATE utf8_unicode_ci,
+  `F319` text COLLATE utf8_unicode_ci,
+  `F320` text COLLATE utf8_unicode_ci,
+  `F321` text COLLATE utf8_unicode_ci,
+  `F322` text COLLATE utf8_unicode_ci,
+  `F323` text COLLATE utf8_unicode_ci,
+  `F324` text COLLATE utf8_unicode_ci,
+  `F325` text COLLATE utf8_unicode_ci,
+  `F326` text COLLATE utf8_unicode_ci,
+  `F327` text COLLATE utf8_unicode_ci,
+  `F328` text COLLATE utf8_unicode_ci,
+  `F329` text COLLATE utf8_unicode_ci,
+  `F330` text COLLATE utf8_unicode_ci,
+  `F331` text COLLATE utf8_unicode_ci,
+  `F332` text COLLATE utf8_unicode_ci,
+  `F333` text COLLATE utf8_unicode_ci,
+  `F334` text COLLATE utf8_unicode_ci,
+  `F335` text COLLATE utf8_unicode_ci,
+  `F336` text COLLATE utf8_unicode_ci,
+  `F337` text COLLATE utf8_unicode_ci,
+  `F338` text COLLATE utf8_unicode_ci,
+  `F339` text COLLATE utf8_unicode_ci,
+  `F340` text COLLATE utf8_unicode_ci,
+  `F341` text COLLATE utf8_unicode_ci,
+  `F342` text COLLATE utf8_unicode_ci,
+  `F343` text COLLATE utf8_unicode_ci,
+  `F344` text COLLATE utf8_unicode_ci,
+  `F345` text COLLATE utf8_unicode_ci,
+  `F346` text COLLATE utf8_unicode_ci,
+  `F347` text COLLATE utf8_unicode_ci,
+  `F348` text COLLATE utf8_unicode_ci,
+  `F349` text COLLATE utf8_unicode_ci,
+  `F350` text COLLATE utf8_unicode_ci,
+  `F351` text COLLATE utf8_unicode_ci,
+  `F352` text COLLATE utf8_unicode_ci,
+  `F353` text COLLATE utf8_unicode_ci,
+  `F354` text COLLATE utf8_unicode_ci,
+  `F355` text COLLATE utf8_unicode_ci,
+  `F356` text COLLATE utf8_unicode_ci,
+  `F357` text COLLATE utf8_unicode_ci,
+  `F358` text COLLATE utf8_unicode_ci,
+  `F359` text COLLATE utf8_unicode_ci,
+  `F360` text COLLATE utf8_unicode_ci,
+  `F361` text COLLATE utf8_unicode_ci,
+  `F362` text COLLATE utf8_unicode_ci,
+  `F363` text COLLATE utf8_unicode_ci,
+  `F364` text COLLATE utf8_unicode_ci,
+  `F365` text COLLATE utf8_unicode_ci,
+  `F366` text COLLATE utf8_unicode_ci,
+  `F367` text COLLATE utf8_unicode_ci,
+  `F368` text COLLATE utf8_unicode_ci,
+  `F369` text COLLATE utf8_unicode_ci,
+  `F370` text COLLATE utf8_unicode_ci,
+  `F371` text COLLATE utf8_unicode_ci,
+  `F372` text COLLATE utf8_unicode_ci,
+  `F373` text COLLATE utf8_unicode_ci,
+  `F374` text COLLATE utf8_unicode_ci,
+  `F375` text COLLATE utf8_unicode_ci,
+  `F376` text COLLATE utf8_unicode_ci,
+  `F377` text COLLATE utf8_unicode_ci,
+  `F378` text COLLATE utf8_unicode_ci,
+  `F379` text COLLATE utf8_unicode_ci,
+  `F380` text COLLATE utf8_unicode_ci,
+  `F381` text COLLATE utf8_unicode_ci,
+  `F382` text COLLATE utf8_unicode_ci,
+  `F383` text COLLATE utf8_unicode_ci,
+  `F384` text COLLATE utf8_unicode_ci,
+  `F385` text COLLATE utf8_unicode_ci,
+  `F386` text COLLATE utf8_unicode_ci,
+  `F387` text COLLATE utf8_unicode_ci,
+  `F388` text COLLATE utf8_unicode_ci,
+  `F389` text COLLATE utf8_unicode_ci,
+  `F390` text COLLATE utf8_unicode_ci,
+  `F391` text COLLATE utf8_unicode_ci,
+  `F392` text COLLATE utf8_unicode_ci,
+  `F393` text COLLATE utf8_unicode_ci,
+  `F394` text COLLATE utf8_unicode_ci,
+  `F395` text COLLATE utf8_unicode_ci,
+  `F396` text COLLATE utf8_unicode_ci,
+  `F397` text COLLATE utf8_unicode_ci,
+  `F398` text COLLATE utf8_unicode_ci,
+  `F399` text COLLATE utf8_unicode_ci,
+  `F400` text COLLATE utf8_unicode_ci,
+  `F401` text COLLATE utf8_unicode_ci,
+  `F402` text COLLATE utf8_unicode_ci,
+  `F403` text COLLATE utf8_unicode_ci,
+  `F404` text COLLATE utf8_unicode_ci,
+  `F405` text COLLATE utf8_unicode_ci,
+  `F406` text COLLATE utf8_unicode_ci,
+  `F407` text COLLATE utf8_unicode_ci,
+  `F408` text COLLATE utf8_unicode_ci,
+  `F409` text COLLATE utf8_unicode_ci,
+  `F410` text COLLATE utf8_unicode_ci,
+  `F411` text COLLATE utf8_unicode_ci,
+  `F412` text COLLATE utf8_unicode_ci,
+  `F413` text COLLATE utf8_unicode_ci,
+  `F414` text COLLATE utf8_unicode_ci,
+  `F415` text COLLATE utf8_unicode_ci,
+  `F416` text COLLATE utf8_unicode_ci,
+  `F417` text COLLATE utf8_unicode_ci,
+  `F418` text COLLATE utf8_unicode_ci,
+  `F419` text COLLATE utf8_unicode_ci,
+  `F420` text COLLATE utf8_unicode_ci,
+  `F421` text COLLATE utf8_unicode_ci,
+  `F422` text COLLATE utf8_unicode_ci,
+  `F423` text COLLATE utf8_unicode_ci,
+  `F424` text COLLATE utf8_unicode_ci,
+  `F425` text COLLATE utf8_unicode_ci,
+  `F426` text COLLATE utf8_unicode_ci,
+  `F427` text COLLATE utf8_unicode_ci,
+  `F428` text COLLATE utf8_unicode_ci,
+  `F429` text COLLATE utf8_unicode_ci,
+  `F430` text COLLATE utf8_unicode_ci,
+  `F431` text COLLATE utf8_unicode_ci,
+  `F432` text COLLATE utf8_unicode_ci,
+  `F433` text COLLATE utf8_unicode_ci,
+  `F434` text COLLATE utf8_unicode_ci,
+  `F435` text COLLATE utf8_unicode_ci,
+  `F436` text COLLATE utf8_unicode_ci,
+  `F437` text COLLATE utf8_unicode_ci,
+  `F438` text COLLATE utf8_unicode_ci,
+  `F439` text COLLATE utf8_unicode_ci,
+  `F440` text COLLATE utf8_unicode_ci,
+  `F441` text COLLATE utf8_unicode_ci,
+  `F442` text COLLATE utf8_unicode_ci,
+  `F443` text COLLATE utf8_unicode_ci,
+  `F444` text COLLATE utf8_unicode_ci,
+  `F445` text COLLATE utf8_unicode_ci,
+  `F446` text COLLATE utf8_unicode_ci,
+  `F447` text COLLATE utf8_unicode_ci,
+  `F448` text COLLATE utf8_unicode_ci,
+  `F449` text COLLATE utf8_unicode_ci,
+  `F450` text COLLATE utf8_unicode_ci,
+  `F451` text COLLATE utf8_unicode_ci,
+  `F452` text COLLATE utf8_unicode_ci,
+  `F453` text COLLATE utf8_unicode_ci,
+  `F454` text COLLATE utf8_unicode_ci,
+  `F455` text COLLATE utf8_unicode_ci,
+  `F456` text COLLATE utf8_unicode_ci,
+  `F457` text COLLATE utf8_unicode_ci,
+  `F458` text COLLATE utf8_unicode_ci,
+  `F459` text COLLATE utf8_unicode_ci,
+  `F460` text COLLATE utf8_unicode_ci,
+  `F461` text COLLATE utf8_unicode_ci,
+  `F462` text COLLATE utf8_unicode_ci,
+  `F463` text COLLATE utf8_unicode_ci,
+  `F464` text COLLATE utf8_unicode_ci,
+  `F465` text COLLATE utf8_unicode_ci,
+  `F466` text COLLATE utf8_unicode_ci,
+  `F467` text COLLATE utf8_unicode_ci,
+  `F468` text COLLATE utf8_unicode_ci,
+  `F469` text COLLATE utf8_unicode_ci,
+  `F470` text COLLATE utf8_unicode_ci,
+  `F471` text COLLATE utf8_unicode_ci,
+  `F472` text COLLATE utf8_unicode_ci,
+  `F473` text COLLATE utf8_unicode_ci,
+  `F474` text COLLATE utf8_unicode_ci,
+  `F475` text COLLATE utf8_unicode_ci,
+  `F476` text COLLATE utf8_unicode_ci,
+  `F477` text COLLATE utf8_unicode_ci,
+  `F478` text COLLATE utf8_unicode_ci,
+  `F479` text COLLATE utf8_unicode_ci,
+  `F480` text COLLATE utf8_unicode_ci,
+  `F481` text COLLATE utf8_unicode_ci,
+  `F482` text COLLATE utf8_unicode_ci,
+  `F483` text COLLATE utf8_unicode_ci,
+  `F484` text COLLATE utf8_unicode_ci,
+  `F485` text COLLATE utf8_unicode_ci,
+  `F486` text COLLATE utf8_unicode_ci,
+  `F487` text COLLATE utf8_unicode_ci,
+  `F488` text COLLATE utf8_unicode_ci,
+  `F489` text COLLATE utf8_unicode_ci,
+  `F490` text COLLATE utf8_unicode_ci,
+  `F491` text COLLATE utf8_unicode_ci,
+  `F492` text COLLATE utf8_unicode_ci,
+  `F493` text COLLATE utf8_unicode_ci,
+  `F494` text COLLATE utf8_unicode_ci,
+  `F495` text COLLATE utf8_unicode_ci,
+  `F496` text COLLATE utf8_unicode_ci,
+  `F497` text COLLATE utf8_unicode_ci,
+  `F498` text COLLATE utf8_unicode_ci,
+  `F499` text COLLATE utf8_unicode_ci,
+  `F500` text COLLATE utf8_unicode_ci,
+  PRIMARY KEY (`id`),
+  KEY `uploadId_idx` (`programUploadId`),
+  CONSTRAINT `fk_programUploadFields_programId` FOREIGN KEY (`programUploadId`) REFERENCES `programUploads` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `programUpload_fields`
+--
+
+LOCK TABLES `programUpload_fields` WRITE;
+/*!40000 ALTER TABLE `programUpload_fields` DISABLE KEYS */;
+/*!40000 ALTER TABLE `programUpload_fields` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `programUploads`
+--
+
+DROP TABLE IF EXISTS `programUploads`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `programUploads` (
+  `id` int(11) NOT NULL DEFAULT '0',
+  `programUploadTypeId` int(11) NOT NULL,
+  `systemUserId` int(11) NOT NULL,
+  `dateUploaded` datetime DEFAULT CURRENT_TIMESTAMP,
+  `totalRows` int(255) NOT NULL DEFAULT '0',
+  `totalUploaded` int(255) NOT NULL DEFAULT '0',
+  `totalInError` int(255) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `uploadTypeId_idx` (`programUploadTypeId`),
+  CONSTRAINT `fk_programUploads` FOREIGN KEY (`programUploadTypeId`) REFERENCES `programUploadTypes` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `programUploads`
+--
+
+LOCK TABLES `programUploads` WRITE;
+/*!40000 ALTER TABLE `programUploads` DISABLE KEYS */;
+/*!40000 ALTER TABLE `programUploads` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `program_activityCodeSchduletoDo`
+--
+
+DROP TABLE IF EXISTS `program_activityCodeSchduletoDo`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `program_activityCodeSchduletoDo` (
+  `id` int(11) NOT NULL DEFAULT '0',
+  `activityCodeScheduleId` int(11) NOT NULL,
+  `activityCodeId` int(11) NOT NULL,
+  `action` smallint(255) NOT NULL DEFAULT '1' COMMENT '1 = Add,  2 = Remvoe',
+  `howManyBefore4` int(255) NOT NULL,
+  `howManyTypeIdBefore4` int(255) NOT NULL,
+  `howManyAfter4` int(255) NOT NULL,
+  `howManyTypeIdAfter4` int(255) NOT NULL,
+  `staffMemberId` int(11) NOT NULL,
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `scheduleId_idx` (`activityCodeScheduleId`),
+  KEY `fk_activityCodeSchduleToDo_activityCode` (`activityCodeId`),
+  KEY `fk_activityCodeSchduleToDo_howmanybefore4` (`howManyTypeIdBefore4`),
+  KEY `fk_activityCodeSchduleToDo_howmanyafter4` (`howManyTypeIdAfter4`),
+  CONSTRAINT `fk_activityCodeSchduleToDo_howmanyafter4` FOREIGN KEY (`howManyTypeIdAfter4`) REFERENCES `lu_howManyTypes` (`id`),
+  CONSTRAINT `fk_activityCodeSchduleToDo` FOREIGN KEY (`activityCodeScheduleId`) REFERENCES `program_activityCodeSchedule` (`id`),
+  CONSTRAINT `fk_activityCodeSchduleToDo_activityCode` FOREIGN KEY (`activityCodeId`) REFERENCES `lu_activityCodes` (`id`),
+  CONSTRAINT `fk_activityCodeSchduleToDo_howmanybefore4` FOREIGN KEY (`howManyTypeIdBefore4`) REFERENCES `lu_howManyTypes` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `program_activityCodeSchduletoDo`
+--
+
+LOCK TABLES `program_activityCodeSchduletoDo` WRITE;
+/*!40000 ALTER TABLE `program_activityCodeSchduletoDo` DISABLE KEYS */;
+/*!40000 ALTER TABLE `program_activityCodeSchduletoDo` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `program_activityCodeSchedule`
+--
+
+DROP TABLE IF EXISTS `program_activityCodeSchedule`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `program_activityCodeSchedule` (
+  `id` int(11) NOT NULL DEFAULT '0',
+  `programActivityCodeId` int(11) NOT NULL,
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `programactivityid_idx` (`programActivityCodeId`),
+  CONSTRAINT `fk_programActivityCodeSchedule` FOREIGN KEY (`programActivityCodeId`) REFERENCES `program_activityCodes` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `program_activityCodeSchedule`
+--
+
+LOCK TABLES `program_activityCodeSchedule` WRITE;
+/*!40000 ALTER TABLE `program_activityCodeSchedule` DISABLE KEYS */;
+/*!40000 ALTER TABLE `program_activityCodeSchedule` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `program_activityCodes`
+--
+
+DROP TABLE IF EXISTS `program_activityCodes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `program_activityCodes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `programId` int(11) NOT NULL,
+  `codeId` int(11) NOT NULL,
+  `dateCreated` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `programId_idx` (`programId`),
+  KEY `fk_programActivityCodes_codeId` (`codeId`),
+  CONSTRAINT `fk_programActivityCodes_codeId` FOREIGN KEY (`codeId`) REFERENCES `lu_activityCodes` (`id`),
+  CONSTRAINT `fk_programActivityCodes_progId` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `program_activityCodes`
+--
+
+LOCK TABLES `program_activityCodes` WRITE;
+/*!40000 ALTER TABLE `program_activityCodes` DISABLE KEYS */;
+/*!40000 ALTER TABLE `program_activityCodes` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `program_engagementFields`
+--
+
+DROP TABLE IF EXISTS `program_engagementFields`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `program_engagementFields` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `programId` int(11) NOT NULL,
+  `sectionId` int(11) NOT NULL,
+  `fieldId` int(11) NOT NULL,
+  `requiredField` bit(1) NOT NULL DEFAULT b'0',
+  `validationId` int(11) NOT NULL,
+  `crosswalkId` int(11) DEFAULT '0',
+  `dspPos` int(11) NOT NULL DEFAULT '1',
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `fieldDisplayName` varchar(55) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `dataGridColumn` bit(1) NOT NULL DEFAULT b'0',
+  PRIMARY KEY (`id`),
+  KEY `sectionId_idx` (`sectionId`),
+  KEY `fk_programEngagementFields_programId` (`programId`),
+  KEY `fk_programEngagementFields_fieldId` (`fieldId`),
+  KEY `fk_programEngagementFields_crosswalkId` (`crosswalkId`),
+  KEY `fk_programEngagementFields_validationId` (`validationId`),
+  CONSTRAINT `fk_programEngagementFields_validationId` FOREIGN KEY (`validationId`) REFERENCES `lu_validationtypes` (`id`),
+  CONSTRAINT `fk_programEngagementFields_crosswalkId` FOREIGN KEY (`crosswalkId`) REFERENCES `crosswalks` (`id`),
+  CONSTRAINT `fk_programEngagementFields_fieldId` FOREIGN KEY (`fieldId`) REFERENCES `dataElements` (`id`),
+  CONSTRAINT `fk_programEngagementFields_programId` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`),
+  CONSTRAINT `fk_programEngagementFields_section` FOREIGN KEY (`sectionId`) REFERENCES `program_engagementSections` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `program_engagementFields`
+--
+
+LOCK TABLES `program_engagementFields` WRITE;
+/*!40000 ALTER TABLE `program_engagementFields` DISABLE KEYS */;
+/*!40000 ALTER TABLE `program_engagementFields` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `program_engagementSections`
+--
+
+DROP TABLE IF EXISTS `program_engagementSections`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `program_engagementSections` (
+  `id` int(11) NOT NULL,
+  `programId` int(11) NOT NULL,
+  `sectionName` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `dspPos` int(255) DEFAULT NULL,
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `programId_idx` (`programId`),
+  CONSTRAINT `fk_programEngagementSections` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `program_engagementSections`
+--
+
+LOCK TABLES `program_engagementSections` WRITE;
+/*!40000 ALTER TABLE `program_engagementSections` DISABLE KEYS */;
+/*!40000 ALTER TABLE `program_engagementSections` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `program_mciAlgorithms`
+--
+
+DROP TABLE IF EXISTS `program_mciAlgorithms`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `program_mciAlgorithms` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `programId` int(11) NOT NULL,
+  `status` bit(1) NOT NULL DEFAULT b'0',
+  `action` tinyint(4) NOT NULL DEFAULT '3' COMMENT '1 = Match\n2 = No Match\n3 = Review',
+  `dateCreated` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `programId` (`programId`),
+  CONSTRAINT `fk_programMPIAlgorithms_programId` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `program_mciAlgorithms`
+--
+
+LOCK TABLES `program_mciAlgorithms` WRITE;
+/*!40000 ALTER TABLE `program_mciAlgorithms` DISABLE KEYS */;
+/*!40000 ALTER TABLE `program_mciAlgorithms` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `program_mciEnrollMethod`
+--
+
+DROP TABLE IF EXISTS `program_mciEnrollMethod`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `program_mciEnrollMethod` (
+  `id` int(11) NOT NULL,
+  `programId` int(11) NOT NULL,
+  `surveyId` int(11) NOT NULL,
+  `btnValue` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `programId_idx` (`programId`),
+  CONSTRAINT `fk_program_mciEntryMethods` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `program_mciEnrollMethod`
+--
+
+LOCK TABLES `program_mciEnrollMethod` WRITE;
+/*!40000 ALTER TABLE `program_mciEnrollMethod` DISABLE KEYS */;
+/*!40000 ALTER TABLE `program_mciEnrollMethod` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `program_mciFields`
+--
+
+DROP TABLE IF EXISTS `program_mciFields`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `program_mciFields` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `mciId` int(11) NOT NULL,
+  `fieldId` int(11) NOT NULL,
+  `action` varchar(45) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'equals',
+  PRIMARY KEY (`id`),
+  KEY `mciid_idx` (`mciId`),
+  KEY `fk_programMPIFields_fieldId` (`fieldId`),
+  CONSTRAINT `fk_programMPIFields_fieldId` FOREIGN KEY (`fieldId`) REFERENCES `dataElements` (`id`),
+  CONSTRAINT `fk_programMPIFields__mciId` FOREIGN KEY (`mciId`) REFERENCES `program_mciAlgorithms` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `program_mciFields`
+--
+
+LOCK TABLES `program_mciFields` WRITE;
+/*!40000 ALTER TABLE `program_mciFields` DISABLE KEYS */;
+/*!40000 ALTER TABLE `program_mciFields` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `program_mciMatchingMethod`
+--
+
+DROP TABLE IF EXISTS `program_mciMatchingMethod`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `program_mciMatchingMethod` (
+  `id` int(11) NOT NULL,
+  `programId` int(11) NOT NULL,
+  `surveyId` int(11) NOT NULL,
+  `btnValue` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `programId_idx` (`programId`),
+  CONSTRAINT `fk_program_mciMatchingMethod` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `program_mciMatchingMethod`
+--
+
+LOCK TABLES `program_mciMatchingMethod` WRITE;
+/*!40000 ALTER TABLE `program_mciMatchingMethod` DISABLE KEYS */;
+/*!40000 ALTER TABLE `program_mciMatchingMethod` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `program_modules`
+--
+
+DROP TABLE IF EXISTS `program_modules`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `program_modules` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `programId` int(11) NOT NULL,
+  `moduleId` int(11) NOT NULL,
+  `displayName` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `dspPos` int(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `programId_idx` (`programId`),
+  KEY `fk_programModules_moduleId` (`moduleId`),
+  CONSTRAINT `fk_programModules_moduleId` FOREIGN KEY (`moduleId`) REFERENCES `lu_programModules` (`id`),
+  CONSTRAINT `fk_programModules` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `program_modules`
+--
+
+LOCK TABLES `program_modules` WRITE;
+/*!40000 ALTER TABLE `program_modules` DISABLE KEYS */;
+/*!40000 ALTER TABLE `program_modules` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `program_patientEntryMethods`
+--
+
+DROP TABLE IF EXISTS `program_patientEntryMethods`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `program_patientEntryMethods` (
+  `id` int(11) NOT NULL,
+  `programId` int(11) NOT NULL,
+  `surveyId` int(11) NOT NULL,
+  `btnValue` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `displayPos` int(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `programId_idx` (`programId`),
+  CONSTRAINT `fk_programPatientEntryMethods_programId` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `program_patientEntryMethods`
+--
+
+LOCK TABLES `program_patientEntryMethods` WRITE;
+/*!40000 ALTER TABLE `program_patientEntryMethods` DISABLE KEYS */;
+/*!40000 ALTER TABLE `program_patientEntryMethods` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `program_patientFields`
+--
+
+DROP TABLE IF EXISTS `program_patientFields`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `program_patientFields` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `programId` int(11) NOT NULL,
+  `sectionId` int(11) NOT NULL,
+  `fieldId` int(11) NOT NULL,
+  `requiredField` bit(1) NOT NULL DEFAULT b'0',
+  `validationId` int(11) NOT NULL,
+  `crosswalkId` int(11) DEFAULT '0',
+  `dspPos` int(11) NOT NULL DEFAULT '1',
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `fieldDisplayName` varchar(55) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `dataGridColumn` bit(1) NOT NULL DEFAULT b'0',
+  PRIMARY KEY (`id`),
+  KEY `sectionId_idx` (`sectionId`),
+  KEY `fk_programPatientFields_programId` (`programId`),
+  KEY `fk_programPatientFields_fieldId` (`fieldId`),
+  KEY `fk_programPatientFields_crosswalkId` (`crosswalkId`),
+  KEY `fk_programPatientFields_validationId` (`validationId`),
+  CONSTRAINT `fk_programPatientFields_validationId` FOREIGN KEY (`validationId`) REFERENCES `lu_validationtypes` (`id`),
+  CONSTRAINT `fk_programPatientFields_crosswalkId` FOREIGN KEY (`crosswalkId`) REFERENCES `crosswalks` (`id`),
+  CONSTRAINT `fk_programPatientFields_fieldId` FOREIGN KEY (`fieldId`) REFERENCES `dataElements` (`id`),
+  CONSTRAINT `fk_programPatientFields_programId` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`),
+  CONSTRAINT `fk_programPatientFields_sectionId` FOREIGN KEY (`sectionId`) REFERENCES `program_patientSections` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `program_patientFields`
+--
+
+LOCK TABLES `program_patientFields` WRITE;
+/*!40000 ALTER TABLE `program_patientFields` DISABLE KEYS */;
+/*!40000 ALTER TABLE `program_patientFields` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `program_patientMCIFields`
+--
+
+DROP TABLE IF EXISTS `program_patientMCIFields`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `program_patientMCIFields` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `programId` int(11) NOT NULL,
+  `fieldId` int(11) NOT NULL,
+  `dspPos` int(11) NOT NULL DEFAULT '1',
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `programId_idx` (`programId`),
+  KEY `fk_programPatientMCIFields_fieldId` (`fieldId`),
+  CONSTRAINT `fk_programPatientMCIFields_fieldId` FOREIGN KEY (`fieldId`) REFERENCES `program_patientFields` (`id`),
+  CONSTRAINT `fk_programPatientMCIFields_programId` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `program_patientMCIFields`
+--
+
+LOCK TABLES `program_patientMCIFields` WRITE;
+/*!40000 ALTER TABLE `program_patientMCIFields` DISABLE KEYS */;
+/*!40000 ALTER TABLE `program_patientMCIFields` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `program_patientSearchFields`
+--
+
+DROP TABLE IF EXISTS `program_patientSearchFields`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `program_patientSearchFields` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `programId` int(11) NOT NULL,
+  `fieldId` int(11) NOT NULL,
+  `dspPos` int(11) NOT NULL DEFAULT '1',
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `programId_idx` (`programId`),
+  KEY `fk_programPatientSearchFields_fieldId` (`fieldId`),
+  CONSTRAINT `fk_programPatientSearchFields_fieldId` FOREIGN KEY (`fieldId`) REFERENCES `program_patientFields` (`id`),
+  CONSTRAINT `fk_programPatientSearchFields_programId` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `program_patientSearchFields`
+--
+
+LOCK TABLES `program_patientSearchFields` WRITE;
+/*!40000 ALTER TABLE `program_patientSearchFields` DISABLE KEYS */;
+/*!40000 ALTER TABLE `program_patientSearchFields` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `program_patientSections`
+--
+
+DROP TABLE IF EXISTS `program_patientSections`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `program_patientSections` (
+  `id` int(11) NOT NULL,
+  `programId` int(11) NOT NULL,
+  `sectionName` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `dspPos` int(255) DEFAULT NULL,
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `programId_idx` (`programId`),
+  CONSTRAINT `fk_programPatientSections_programId` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `program_patientSections`
+--
+
+LOCK TABLES `program_patientSections` WRITE;
+/*!40000 ALTER TABLE `program_patientSections` DISABLE KEYS */;
+/*!40000 ALTER TABLE `program_patientSections` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `program_patientSharing`
+--
+
+DROP TABLE IF EXISTS `program_patientSharing`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `program_patientSharing` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `programId` int(11) NOT NULL,
+  `sharingProgramId` int(11) NOT NULL,
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `programId_idx` (`programId`),
+  KEY `fk_patientSharing_sharedProgramId` (`sharingProgramId`),
+  CONSTRAINT `fk_patientSharing_sharedProgramId` FOREIGN KEY (`sharingProgramId`) REFERENCES `programs` (`id`),
+  CONSTRAINT `fk_patientSharing_programId` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `program_patientSharing`
+--
+
+LOCK TABLES `program_patientSharing` WRITE;
+/*!40000 ALTER TABLE `program_patientSharing` DISABLE KEYS */;
+/*!40000 ALTER TABLE `program_patientSharing` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `program_patientSummaryFields`
+--
+
+DROP TABLE IF EXISTS `program_patientSummaryFields`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `program_patientSummaryFields` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `programId` int(11) NOT NULL,
+  `fieldId` int(11) NOT NULL,
+  `dspPos` int(11) NOT NULL DEFAULT '1',
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `programId` (`programId`),
+  KEY `fk_programPatientSummaryFields_fieldId` (`fieldId`),
+  CONSTRAINT `fk_programPatientSummaryFields_fieldId` FOREIGN KEY (`fieldId`) REFERENCES `program_patientFields` (`id`),
+  CONSTRAINT `fk_programPatientSummaryFields_programId` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `program_patientSummaryFields`
+--
+
+LOCK TABLES `program_patientSummaryFields` WRITE;
+/*!40000 ALTER TABLE `program_patientSummaryFields` DISABLE KEYS */;
+/*!40000 ALTER TABLE `program_patientSummaryFields` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `program_reports`
+--
+
+DROP TABLE IF EXISTS `program_reports`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `program_reports` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `programId` int(11) NOT NULL,
+  `reportId` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `programId_idx` (`programId`),
+  KEY `fk_programReports_reportId` (`reportId`),
+  CONSTRAINT `fk_programReports_reportId` FOREIGN KEY (`reportId`) REFERENCES `cannedReports` (`id`),
+  CONSTRAINT `fk_programReports_programId` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `program_reports`
+--
+
+LOCK TABLES `program_reports` WRITE;
+/*!40000 ALTER TABLE `program_reports` DISABLE KEYS */;
+/*!40000 ALTER TABLE `program_reports` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -639,12 +2223,12 @@ DROP TABLE IF EXISTS `programs`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `programs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `programName` varchar(55) NOT NULL,
-  `programDesc` text,
+  `programName` varchar(55) COLLATE utf8_unicode_ci NOT NULL,
+  `programDesc` text COLLATE utf8_unicode_ci,
   `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `emailAddress` varchar(255) NOT NULL,
+  `emailAddress` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -653,7 +2237,6 @@ CREATE TABLE `programs` (
 
 LOCK TABLES `programs` WRITE;
 /*!40000 ALTER TABLE `programs` DISABLE KEYS */;
-INSERT INTO `programs` VALUES (1,'Massachusetts Quitline','This is the massachusetts quitline program.','2014-08-08 09:42:32','info@massquitline.com'),(3,'Family Planning','','2014-08-11 10:53:59','info@familyplanning.org'),(4,'test','','2014-08-11 00:00:34','info@test.com');
 /*!40000 ALTER TABLE `programs` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -667,13 +2250,13 @@ DROP TABLE IF EXISTS `rel_crosswalkdata`;
 CREATE TABLE `rel_crosswalkdata` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `crosswalkId` int(11) NOT NULL,
-  `sourceValue` varchar(45) NOT NULL,
-  `targetValue` varchar(255) NOT NULL,
-  `descValue` varchar(255) NOT NULL,
+  `sourceValue` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
+  `targetValue` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `descValue` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fkcrosswalkId_idx` (`crosswalkId`),
-  CONSTRAINT `fkcwalkDataId` FOREIGN KEY (`crosswalkId`) REFERENCES `crosswalks` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=2000 DEFAULT CHARSET=latin1;
+  CONSTRAINT `fkcwalkDataId` FOREIGN KEY (`crosswalkId`) REFERENCES `crosswalks` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2000 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -687,54 +2270,126 @@ INSERT INTO `rel_crosswalkdata` VALUES (1996,35,'Male','1','Male'),(1997,35,'Fem
 UNLOCK TABLES;
 
 --
--- Table structure for table `rel_userlogins`
+-- Table structure for table `rel_userLogins`
 --
 
-DROP TABLE IF EXISTS `rel_userlogins`;
+DROP TABLE IF EXISTS `rel_userLogins`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `rel_userlogins` (
+CREATE TABLE `rel_userLogins` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `userId` int(11) NOT NULL,
+  `systemUserId` int(11) NOT NULL,
   `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `userId_idx` (`userId`),
-  CONSTRAINT `userId` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=2499 DEFAULT CHARSET=latin1;
+  KEY `userId_idx` (`systemUserId`),
+  CONSTRAINT `userId` FOREIGN KEY (`systemUserId`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2503 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `rel_userlogins`
+-- Dumping data for table `rel_userLogins`
 --
 
-LOCK TABLES `rel_userlogins` WRITE;
-/*!40000 ALTER TABLE `rel_userlogins` DISABLE KEYS */;
-INSERT INTO `rel_userlogins` VALUES (2391,1,'2014-08-07 15:38:19'),(2392,1,'2014-08-08 13:08:06'),(2393,1,'2014-08-08 13:10:05'),(2394,1,'2014-08-08 13:10:32'),(2395,1,'2014-08-08 13:47:37'),(2396,1,'2014-08-08 21:20:05'),(2397,1,'2014-08-08 21:38:11'),(2398,1,'2014-08-08 21:42:31'),(2399,1,'2014-08-08 21:53:38'),(2400,1,'2014-08-08 22:37:09'),(2401,1,'2014-08-08 23:28:38'),(2402,1,'2014-08-08 23:31:37'),(2403,1,'2014-08-08 23:34:28'),(2404,1,'2014-08-08 23:36:07'),(2405,1,'2014-08-08 23:39:31'),(2406,1,'2014-08-08 23:42:00'),(2407,1,'2014-08-08 23:44:13'),(2408,1,'2014-08-11 10:12:59'),(2409,1,'2014-08-11 10:30:27'),(2410,1,'2014-08-11 10:33:32'),(2411,1,'2014-08-11 10:34:54'),(2412,1,'2014-08-11 10:35:46'),(2413,1,'2014-08-11 10:37:36'),(2414,1,'2014-08-11 10:39:17'),(2415,1,'2014-08-11 10:48:58'),(2416,1,'2014-08-11 10:50:19'),(2417,1,'2014-08-11 10:53:57'),(2418,1,'2014-08-11 11:38:21'),(2419,1,'2014-08-11 12:00:18'),(2420,1,'2014-08-11 12:17:33'),(2421,1,'2014-08-11 13:55:00'),(2422,1,'2014-08-11 13:58:54'),(2423,1,'2014-08-11 14:47:10'),(2424,1,'2014-08-11 14:48:41'),(2425,1,'2014-08-11 14:49:58'),(2426,1,'2014-08-11 14:51:30'),(2427,1,'2014-08-12 10:36:05'),(2428,1,'2014-08-12 11:26:37'),(2429,1,'2014-08-12 11:31:20'),(2430,1,'2014-08-12 11:41:58'),(2431,1,'2014-08-12 11:49:52'),(2432,1,'2014-08-12 12:24:00'),(2433,1,'2014-08-12 12:43:58'),(2434,1,'2014-08-12 12:50:27'),(2435,1,'2014-08-12 12:52:26'),(2436,1,'2014-08-12 13:00:27'),(2437,1,'2014-08-12 13:07:26'),(2438,1,'2014-08-12 13:47:34'),(2439,1,'2014-08-12 14:34:25'),(2440,1,'2014-08-12 15:12:10'),(2441,1,'2014-08-14 09:50:30'),(2442,1,'2014-08-14 10:39:33'),(2443,1,'2014-08-14 11:05:26'),(2444,1,'2014-08-14 11:08:22'),(2445,1,'2014-08-14 11:16:43'),(2446,1,'2014-08-14 11:53:49'),(2447,1,'2014-08-14 13:09:25'),(2448,1,'2014-08-14 13:23:55'),(2449,1,'2014-08-14 13:26:36'),(2450,1,'2014-08-14 13:36:21'),(2451,1,'2014-08-14 14:10:53'),(2452,1,'2014-08-14 14:12:25'),(2453,1,'2014-08-14 14:16:27'),(2454,1,'2014-08-14 14:20:25'),(2455,1,'2014-08-14 14:26:33'),(2456,1,'2014-08-14 14:31:29'),(2457,1,'2014-08-14 14:39:39'),(2458,1,'2014-08-14 15:00:23'),(2459,1,'2014-08-15 10:55:25'),(2460,1,'2014-08-15 11:06:46'),(2461,1,'2014-08-15 11:15:07'),(2462,1,'2014-08-15 11:47:48'),(2463,1,'2014-08-15 11:49:53'),(2464,1,'2014-08-15 12:02:15'),(2465,1,'2014-08-15 12:09:27'),(2466,1,'2014-08-15 12:12:46'),(2467,1,'2014-08-15 12:15:40'),(2468,1,'2014-08-15 12:19:10'),(2469,1,'2014-08-18 09:48:52'),(2470,1,'2014-08-18 10:00:43'),(2471,1,'2014-08-18 10:04:10'),(2472,1,'2014-08-18 10:06:40'),(2473,1,'2014-08-18 10:09:47'),(2474,1,'2014-08-18 10:12:48'),(2475,1,'2014-08-18 10:48:10'),(2476,1,'2014-08-18 11:01:43'),(2477,1,'2014-08-18 11:05:26'),(2478,1,'2014-08-18 11:08:35'),(2479,1,'2014-08-18 11:29:04'),(2480,1,'2014-08-18 12:00:12'),(2481,1,'2014-08-18 12:15:27'),(2482,1,'2014-08-18 12:17:18'),(2483,1,'2014-08-18 12:33:12'),(2484,1,'2014-08-18 12:39:15'),(2485,1,'2014-08-18 12:43:11'),(2486,1,'2014-08-18 12:43:11'),(2487,1,'2014-08-18 12:47:33'),(2488,1,'2014-08-18 13:32:48'),(2489,1,'2014-08-18 13:44:58'),(2490,1,'2014-08-18 13:48:03'),(2491,1,'2014-08-18 14:20:51'),(2492,1,'2014-08-18 14:24:14'),(2493,1,'2014-08-18 14:24:14'),(2494,1,'2014-08-18 14:39:51'),(2495,1,'2014-08-19 11:57:23'),(2496,1,'2014-08-19 12:15:34'),(2497,1,'2014-08-19 13:55:24'),(2498,1,'2014-08-19 14:20:15');
-/*!40000 ALTER TABLE `rel_userlogins` ENABLE KEYS */;
+LOCK TABLES `rel_userLogins` WRITE;
+/*!40000 ALTER TABLE `rel_userLogins` DISABLE KEYS */;
+/*!40000 ALTER TABLE `rel_userLogins` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `siteModules`
+-- Table structure for table `storage_engagements`
 --
 
-DROP TABLE IF EXISTS `siteModules`;
+DROP TABLE IF EXISTS `storage_engagements`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `siteModules` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `moduleName` varchar(45) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+CREATE TABLE `storage_engagements` (
+  `id` int(11) NOT NULL,
+  `engagementId` int(11) NOT NULL,
+  `referralDate` datetime NOT NULL,
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `engagementId_idx` (`engagementId`),
+  CONSTRAINT `fk_storage_engagements_id` FOREIGN KEY (`engagementId`) REFERENCES `patientEngagements` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `siteModules`
+-- Dumping data for table `storage_engagements`
 --
 
-LOCK TABLES `siteModules` WRITE;
-/*!40000 ALTER TABLE `siteModules` DISABLE KEYS */;
-INSERT INTO `siteModules` VALUES (1,'Reporting Module'),(2,'Scheduling Module'),(3,'Survey Module');
-/*!40000 ALTER TABLE `siteModules` ENABLE KEYS */;
+LOCK TABLES `storage_engagements` WRITE;
+/*!40000 ALTER TABLE `storage_engagements` DISABLE KEYS */;
+/*!40000 ALTER TABLE `storage_engagements` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `storage_insuranceInfo`
+--
+
+DROP TABLE IF EXISTS `storage_insuranceInfo`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `storage_insuranceInfo` (
+  `id` int(11) NOT NULL,
+  `engagementId` int(11) NOT NULL,
+  `publicInsurance` int(255) NOT NULL DEFAULT '0',
+  `privateInsurance` int(255) NOT NULL DEFAULT '0',
+  `other` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `engagementId_idx` (`engagementId`),
+  KEY `fk_storage_insuranceInfo_public` (`publicInsurance`),
+  CONSTRAINT `fk_storage_insuranceInfo_public` FOREIGN KEY (`publicInsurance`) REFERENCES `lu_insuranceCarriers` (`id`),
+  CONSTRAINT `fk_storage_insuranceInfo_engageId` FOREIGN KEY (`engagementId`) REFERENCES `patientEngagements` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `storage_insuranceInfo`
+--
+
+LOCK TABLES `storage_insuranceInfo` WRITE;
+/*!40000 ALTER TABLE `storage_insuranceInfo` DISABLE KEYS */;
+/*!40000 ALTER TABLE `storage_insuranceInfo` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `storage_patientAddressInfo`
+--
+
+DROP TABLE IF EXISTS `storage_patientAddressInfo`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `storage_patientAddressInfo` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `programpatientId` int(11) NOT NULL,
+  `address1` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `address2` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `city` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `state` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `zipcode` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `phoneType1` int(255) DEFAULT NULL,
+  `phone1` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `phoneType2` int(255) DEFAULT NULL,
+  `phone2` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `patientId_idx` (`programpatientId`),
+  KEY `fk_storage_patientAddress_phonetype` (`phoneType1`),
+  KEY `fk_storage_patientAddressInfo_phonetype2` (`phoneType2`),
+  CONSTRAINT `fk_storage_patientAddressInfo_phonetype2` FOREIGN KEY (`phoneType2`) REFERENCES `lu_phoneTypes` (`id`),
+  CONSTRAINT `fk_storage_patientAddress` FOREIGN KEY (`programpatientId`) REFERENCES `programPatients` (`id`),
+  CONSTRAINT `fk_storage_patientAddress_phonetype` FOREIGN KEY (`phoneType1`) REFERENCES `lu_phoneTypes` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `storage_patientAddressInfo`
+--
+
+LOCK TABLES `storage_patientAddressInfo` WRITE;
+/*!40000 ALTER TABLE `storage_patientAddressInfo` DISABLE KEYS */;
+/*!40000 ALTER TABLE `storage_patientAddressInfo` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -747,29 +2402,31 @@ DROP TABLE IF EXISTS `storage_patients`;
 CREATE TABLE `storage_patients` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'primary key for patient, it will serve as our system''s patient Id',
   `programpatientId` int(11) NOT NULL,
-  `sourcePatientId` varchar(45) DEFAULT NULL COMMENT 'Id assigned to patient by source system - e.g Pat148R-2KD-BOS',
-  `prefix` varchar(45) DEFAULT NULL COMMENT 'e.g. Mr, Dr., Ms, Sir, Princess, Knight, etc',
-  `firstName` varchar(45) DEFAULT NULL COMMENT 'e.g. John',
-  `middleName` varchar(45) DEFAULT NULL COMMENT 'e.g Joshua',
-  `lastName` varchar(45) DEFAULT NULL COMMENT 'e.g. Doe',
-  `suffix` varchar(45) DEFAULT NULL COMMENT 'e.g. Jr, III, IV etc.',
+  `sourcePatientId` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Id assigned to patient by source system - e.g Pat148R-2KD-BOS',
+  `prefix` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'e.g. Mr, Dr., Ms, Sir, Princess, Knight, etc',
+  `firstName` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'e.g. John',
+  `middleName` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'e.g Joshua',
+  `lastName` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'e.g. Doe',
+  `suffix` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'e.g. Jr, III, IV etc.',
   `dob` datetime DEFAULT NULL COMMENT 'Patient''s date of birth 1-1-1912',
   `genderId` int(11) DEFAULT NULL COMMENT 'Look up value from lu_Genders. Look up field is int and not free hand field because we should have some limits to some fields as what the user can type.  We will add it to our look up table if something creative comes up.  It is also a repetitive field, using int will take up less space and faster when it comes to indexing\nSample equivalent values are - male, female, unknown, transgender, etc.',
   `raceId` int(11) DEFAULT NULL COMMENT 'Look up Id from lu_Races - equivalent values could be Asian, White, Black, etc.',
   `hispanicId` int(11) DEFAULT NULL COMMENT 'id from lu_Hispanics\nSample look up values are Yes, No, Not Reported',
   `primaryLanguageId` int(11) DEFAULT NULL COMMENT 'Id from lu_Languages - Sample look up values - English, Spanish, Polish, Mandarin (Chinese), Cantonese (Chinese) etc.',
-  `englishProficient` varchar(10) DEFAULT NULL COMMENT 'can be Yes, No, Unknown...\nWe wi\nso changing it to varchar',
+  `englishProficient` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'can be Yes, No, Unknown...\nWe wi\nso changing it to varchar',
   `maritalStatusId` int(11) DEFAULT NULL COMMENT 'look up from lu_MartialStatuses - Sample look up values are - Single, Married, Divorced, Not Reported, etc.',
-  `email` varchar(100) DEFAULT NULL COMMENT 'e.g. test@test.com',
-  `additonalContactNumber` varchar(45) DEFAULT NULL,
-  `url` varchar(100) DEFAULT NULL COMMENT 'e.g. http://test.com',
-  `occupation` varchar(45) DEFAULT NULL,
-  `guardianName` varchar(45) DEFAULT NULL COMMENT 'name of guardian - Jane Doe, John Smith',
-  `emergencyContact` varchar(45) DEFAULT NULL COMMENT 'Name of emergency contact - Jane Doe',
-  `emergencyTel` varchar(45) DEFAULT NULL COMMENT '123-456-7890',
+  `email` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'e.g. test@test.com',
+  `additonalContactNumber` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `url` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'e.g. http://test.com',
+  `occupation` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `guardianName` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'name of guardian - Jane Doe, John Smith',
+  `emergencyContact` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Name of emergency contact - Jane Doe',
+  `emergencyTel` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '123-456-7890',
   `patientStatusId` int(11) DEFAULT NULL COMMENT 'id from lu_PatientStatuses - Could be equivalent int value of active, pending, future, expired, etc.',
   `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'This is the date that the record was added to UT',
-  `race` varchar(45) DEFAULT NULL,
+  `race` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `lastContacted` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `clientType` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `genderFK_idx` (`genderId`),
   KEY `raceFK_idx` (`raceId`),
@@ -777,13 +2434,13 @@ CREATE TABLE `storage_patients` (
   KEY `martialStatusFK_idx` (`maritalStatusId`),
   KEY `hispanicFK_idx` (`hispanicId`),
   KEY `patientFK_idx` (`programpatientId`),
-  CONSTRAINT `genderFK` FOREIGN KEY (`genderId`) REFERENCES `lu_genders` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `hispanicFK` FOREIGN KEY (`hispanicId`) REFERENCES `lu_hispanics` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `lauguageFK` FOREIGN KEY (`primaryLanguageId`) REFERENCES `lu_languages` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `martialStatusFK` FOREIGN KEY (`maritalStatusId`) REFERENCES `lu_martialstatuses` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `patientFK` FOREIGN KEY (`programpatientId`) REFERENCES `programPatients` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `raceFK` FOREIGN KEY (`raceId`) REFERENCES `lu_races` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  CONSTRAINT `raceFK` FOREIGN KEY (`raceId`) REFERENCES `lu_races` (`id`),
+  CONSTRAINT `genderFK` FOREIGN KEY (`genderId`) REFERENCES `lu_genders` (`id`),
+  CONSTRAINT `hispanicFK` FOREIGN KEY (`hispanicId`) REFERENCES `lu_hispanics` (`id`),
+  CONSTRAINT `lauguageFK` FOREIGN KEY (`primaryLanguageId`) REFERENCES `lu_languages` (`id`),
+  CONSTRAINT `martialStatusFK` FOREIGN KEY (`maritalStatusId`) REFERENCES `lu_maritalStatuses` (`id`),
+  CONSTRAINT `patientFK` FOREIGN KEY (`programpatientId`) REFERENCES `programPatients` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -796,52 +2453,396 @@ LOCK TABLES `storage_patients` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `userPrograms`
+-- Table structure for table `storage_tobaccoUse`
 --
 
-DROP TABLE IF EXISTS `userPrograms`;
+DROP TABLE IF EXISTS `storage_tobaccoUse`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `userPrograms` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `userId` int(11) NOT NULL,
-  `programId` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+CREATE TABLE `storage_tobaccoUse` (
+  `id` int(11) NOT NULL,
+  `engagementId` int(11) NOT NULL,
+  `type` int(255) NOT NULL DEFAULT '0',
+  `amountPerDay` int(255) DEFAULT '0',
+  `quitTimeframe` int(255) DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `engagementId_idx` (`engagementId`),
+  KEY `fk_storage_tobaccoUse_typeId` (`type`),
+  CONSTRAINT `fk_storage_tobaccoUse_typeId` FOREIGN KEY (`type`) REFERENCES `lu_tobaccoTypes` (`id`),
+  CONSTRAINT `fk_storage_tobaccoUse_engageId` FOREIGN KEY (`engagementId`) REFERENCES `patientEngagements` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `userPrograms`
+-- Dumping data for table `storage_tobaccoUse`
 --
 
-LOCK TABLES `userPrograms` WRITE;
-/*!40000 ALTER TABLE `userPrograms` DISABLE KEYS */;
-INSERT INTO `userPrograms` VALUES (6,36,1);
-/*!40000 ALTER TABLE `userPrograms` ENABLE KEYS */;
+LOCK TABLES `storage_tobaccoUse` WRITE;
+/*!40000 ALTER TABLE `storage_tobaccoUse` DISABLE KEYS */;
+/*!40000 ALTER TABLE `storage_tobaccoUse` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `userroles`
+-- Table structure for table `survey_answers`
 --
 
-DROP TABLE IF EXISTS `userroles`;
+DROP TABLE IF EXISTS `survey_answers`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `userroles` (
+CREATE TABLE `survey_answers` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `role` varchar(45) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+  `questionId` int(11) NOT NULL,
+  `skipToPageId` int(11) NOT NULL DEFAULT '0',
+  `skipToQuestionId` int(11) NOT NULL DEFAULT '0',
+  `answer` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `activityCodeId` int(11) DEFAULT '0',
+  `defAnswer` bit(1) NOT NULL DEFAULT b'0',
+  `defAnsText` text COLLATE utf8_unicode_ci,
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `questionId_idx` (`questionId`),
+  CONSTRAINT `sa_qId` FOREIGN KEY (`questionId`) REFERENCES `survey_questions` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `userroles`
+-- Dumping data for table `survey_answers`
 --
 
-LOCK TABLES `userroles` WRITE;
-/*!40000 ALTER TABLE `userroles` DISABLE KEYS */;
-INSERT INTO `userroles` VALUES (1,'ROLE_SYSTEMADMIN'),(2,'ROLE_PROGRAMADMIN'),(3,'ROLE_USER');
-/*!40000 ALTER TABLE `userroles` ENABLE KEYS */;
+LOCK TABLES `survey_answers` WRITE;
+/*!40000 ALTER TABLE `survey_answers` DISABLE KEYS */;
+/*!40000 ALTER TABLE `survey_answers` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `survey_changeLogs`
+--
+
+DROP TABLE IF EXISTS `survey_changeLogs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `survey_changeLogs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `surveyId` int(11) NOT NULL,
+  `systemUserId` int(11) NOT NULL,
+  `notes` text COLLATE utf8_unicode_ci NOT NULL,
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `surveyid_idx` (`surveyId`),
+  CONSTRAINT `cl_survey` FOREIGN KEY (`surveyId`) REFERENCES `surveys` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `survey_changeLogs`
+--
+
+LOCK TABLES `survey_changeLogs` WRITE;
+/*!40000 ALTER TABLE `survey_changeLogs` DISABLE KEYS */;
+/*!40000 ALTER TABLE `survey_changeLogs` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `survey_pages`
+--
+
+DROP TABLE IF EXISTS `survey_pages`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `survey_pages` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `surveyId` int(11) NOT NULL,
+  `pageTitle` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `pageNum` int(11) NOT NULL,
+  `dateCreated` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `surveyId_idx` (`surveyId`),
+  CONSTRAINT `sp_sur` FOREIGN KEY (`surveyId`) REFERENCES `surveys` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `survey_pages`
+--
+
+LOCK TABLES `survey_pages` WRITE;
+/*!40000 ALTER TABLE `survey_pages` DISABLE KEYS */;
+/*!40000 ALTER TABLE `survey_pages` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `survey_patientAnswers`
+--
+
+DROP TABLE IF EXISTS `survey_patientAnswers`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `survey_patientAnswers` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `programPatientId` int(11) NOT NULL,
+  `questionid` int(11) NOT NULL,
+  `answerId` int(11) NOT NULL,
+  `answerText` text COLLATE utf8_unicode_ci,
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `programPatientId_idx` (`programPatientId`),
+  KEY `questionId_idx` (`questionid`),
+  CONSTRAINT `spa_qId` FOREIGN KEY (`questionid`) REFERENCES `survey_questions` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `survey_patientAnswers`
+--
+
+LOCK TABLES `survey_patientAnswers` WRITE;
+/*!40000 ALTER TABLE `survey_patientAnswers` DISABLE KEYS */;
+/*!40000 ALTER TABLE `survey_patientAnswers` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `survey_questions`
+--
+
+DROP TABLE IF EXISTS `survey_questions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `survey_questions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `hide` bit(1) NOT NULL DEFAULT b'0',
+  `required` bit(1) NOT NULL DEFAULT b'0',
+  `readOnly` bit(1) NOT NULL DEFAULT b'0',
+  `dspQuestionId` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `question` text COLLATE utf8_unicode_ci NOT NULL,
+  `surveyPageId` int(11) NOT NULL,
+  `answerTypeId` int(11) NOT NULL,
+  `columnsDisplayed` int(11) NOT NULL DEFAULT '0',
+  `allowMultipleAns` bit(1) NOT NULL DEFAULT b'0',
+  `saveToTableName` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `saveToFieldId` int(11) DEFAULT '0',
+  `autoPopulateFromField` bit(1) NOT NULL DEFAULT b'0',
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `pageId_idx` (`surveyPageId`),
+  KEY `sq_ansType` (`answerTypeId`),
+  CONSTRAINT `sq_ansType` FOREIGN KEY (`answerTypeId`) REFERENCES `lu_answerTypes` (`id`),
+  CONSTRAINT `sq_sp` FOREIGN KEY (`surveyPageId`) REFERENCES `survey_pages` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `survey_questions`
+--
+
+LOCK TABLES `survey_questions` WRITE;
+/*!40000 ALTER TABLE `survey_questions` DISABLE KEYS */;
+/*!40000 ALTER TABLE `survey_questions` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `survey_selectTableAssoc`
+--
+
+DROP TABLE IF EXISTS `survey_selectTableAssoc`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `survey_selectTableAssoc` (
+  `id` int(11) NOT NULL DEFAULT '0',
+  `questionId` int(11) NOT NULL,
+  `tableName` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `questionId_idx` (`questionId`),
+  CONSTRAINT `fk_survey_selectTableAssoc_questionId` FOREIGN KEY (`questionId`) REFERENCES `survey_questions` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `survey_selectTableAssoc`
+--
+
+LOCK TABLES `survey_selectTableAssoc` WRITE;
+/*!40000 ALTER TABLE `survey_selectTableAssoc` DISABLE KEYS */;
+/*!40000 ALTER TABLE `survey_selectTableAssoc` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `surveys`
+--
+
+DROP TABLE IF EXISTS `surveys`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `surveys` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `programId` int(11) NOT NULL,
+  `status` bit(1) NOT NULL DEFAULT b'1',
+  `requieEngagement` bit(1) NOT NULL DEFAULT b'1',
+  `title` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `doneButtonText` varchar(30) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'Done',
+  `nextButtonText` varchar(30) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'Next',
+  `prevButtonText` varchar(30) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'Prev',
+  `reminderStatus` bit(1) NOT NULL DEFAULT b'0',
+  `reminderText` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `activityCodeId` int(11) DEFAULT '0',
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `dateModified` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `surveyId_idx` (`id`),
+  KEY `programId_idx` (`programId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `surveys`
+--
+
+LOCK TABLES `surveys` WRITE;
+/*!40000 ALTER TABLE `surveys` DISABLE KEYS */;
+/*!40000 ALTER TABLE `surveys` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user_authorizedOrgHierarchy`
+--
+
+DROP TABLE IF EXISTS `user_authorizedOrgHierarchy`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user_authorizedOrgHierarchy` (
+  `id` int(11) NOT NULL,
+  `systemUserId` int(11) NOT NULL,
+  `programHierarchyId` int(11) NOT NULL,
+  `orgHierarchyDetailId` int(11) NOT NULL,
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_authorizedOrgHierarchy`
+--
+
+LOCK TABLES `user_authorizedOrgHierarchy` WRITE;
+/*!40000 ALTER TABLE `user_authorizedOrgHierarchy` DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_authorizedOrgHierarchy` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user_permissions`
+--
+
+DROP TABLE IF EXISTS `user_permissions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user_permissions` (
+  `id` int(11) NOT NULL DEFAULT '0',
+  `systemUserId` int(11) NOT NULL,
+  `moduleId` int(11) NOT NULL,
+  `createdBy` int(255) NOT NULL,
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `userId_idx` (`systemUserId`),
+  KEY `fk_userPermissions_moduleId` (`moduleId`),
+  CONSTRAINT `fk_userPermissions_moduleId` FOREIGN KEY (`moduleId`) REFERENCES `lu_programModules` (`id`),
+  CONSTRAINT `fk_userPermissions` FOREIGN KEY (`systemUserId`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_permissions`
+--
+
+LOCK TABLES `user_permissions` WRITE;
+/*!40000 ALTER TABLE `user_permissions` DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_permissions` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user_programs`
+--
+
+DROP TABLE IF EXISTS `user_programs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user_programs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `systemUserId` int(11) NOT NULL,
+  `programId` int(11) NOT NULL,
+  `createdBy` int(255) NOT NULL,
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `userId_idx` (`systemUserId`),
+  KEY `fk_userPrograms_programId` (`programId`),
+  CONSTRAINT `fk_userPrograms_programId` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`),
+  CONSTRAINT `fk_userPrograms_userid` FOREIGN KEY (`systemUserId`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_programs`
+--
+
+LOCK TABLES `user_programs` WRITE;
+/*!40000 ALTER TABLE `user_programs` DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_programs` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user_roles`
+--
+
+DROP TABLE IF EXISTS `user_roles`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user_roles` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `role` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_roles`
+--
+
+LOCK TABLES `user_roles` WRITE;
+/*!40000 ALTER TABLE `user_roles` DISABLE KEYS */;
+INSERT INTO `user_roles` VALUES (1,'ROLE_SYSTEMADMIN'),(2,'ROLE_PROGRAMADMIN'),(3,'ROLE_USER');
+/*!40000 ALTER TABLE `user_roles` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user_schedule`
+--
+
+DROP TABLE IF EXISTS `user_schedule`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user_schedule` (
+  `id` int(11) NOT NULL DEFAULT '0',
+  `systemUserId` int(11) NOT NULL,
+  `patientId` int(11) NOT NULL,
+  `activityCodeId` int(11) NOT NULL,
+  `activityCodeDesc` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `callDate` datetime NOT NULL,
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `userId_idx` (`systemUserId`),
+  KEY `fk_usersSchedule_patientId` (`patientId`),
+  CONSTRAINT `fk_usersSchedule_patientId` FOREIGN KEY (`patientId`) REFERENCES `programPatients` (`id`),
+  CONSTRAINT `fk_usersSchedule_userid` FOREIGN KEY (`systemUserId`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_schedule`
+--
+
+LOCK TABLES `user_schedule` WRITE;
+/*!40000 ALTER TABLE `user_schedule` DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_schedule` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -853,20 +2854,22 @@ DROP TABLE IF EXISTS `users`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `status` bit(1) NOT NULL DEFAULT b'1',
-  `firstName` varchar(55) NOT NULL,
-  `lastName` varchar(55) NOT NULL,
-  `username` varchar(15) NOT NULL,
-  `password` varchar(15) DEFAULT NULL,
-  `email` varchar(255) DEFAULT NULL,
+  `typeId` int(11) NOT NULL DEFAULT '0',
   `roleId` int(11) NOT NULL DEFAULT '2',
+  `status` bit(1) NOT NULL DEFAULT b'1',
+  `firstName` varchar(55) COLLATE utf8_unicode_ci NOT NULL,
+  `lastName` varchar(55) COLLATE utf8_unicode_ci NOT NULL,
+  `username` varchar(15) COLLATE utf8_unicode_ci NOT NULL,
+  `password` varchar(15) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `email` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `createdBy` int(11) NOT NULL DEFAULT '0',
   `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `resetCode` varchar(8) DEFAULT NULL,
+  `resetCode` varchar(8) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `userRoleId_idx` (`roleId`),
-  CONSTRAINT `userRoleId` FOREIGN KEY (`roleId`) REFERENCES `userroles` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=latin1;
+  KEY `userId_idx` (`id`),
+  CONSTRAINT `userRoleId` FOREIGN KEY (`roleId`) REFERENCES `user_roles` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -875,7 +2878,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'','Chad','McCue','admin','!sysadmin!','chadmccue05@gmail.com',1,0,'2014-08-07 10:56:34',NULL),(36,'','Chad','McCue','cmccue','cmccue','chadmccue05@gmail.com',2,0,'2014-08-15 00:02:19',NULL),(37,'\0','Mike','Stelmach','mikes','mikes','mikes@jsi.com',1,0,'2014-08-18 02:23:08',NULL);
+INSERT INTO `users` VALUES (1,0,1,'','Chad','McCue','admin','!sysadmin!','chadmccue05@gmail.com',0,'2014-08-07 10:56:34',NULL);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -892,4 +2895,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-08-19 14:25:42
+-- Dump completed on 2014-10-06  9:34:57

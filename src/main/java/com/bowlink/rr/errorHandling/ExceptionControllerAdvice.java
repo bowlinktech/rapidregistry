@@ -53,7 +53,7 @@ public class ExceptionControllerAdvice {
             
             if(userInfo == null && authentication != null) {
             // see if it is an admin that is logged in
-            	userInfo = usermanager.getUserByUserName(authentication.getName());          	
+            	userInfo = usermanager.getUserByEmail(authentication.getName());          	
             }
             if (userInfo != null) {	
             	sb.append("Logged in User: " + userInfo.getFirstName() + " " + userInfo.getLastName() + " (ID: "+ userInfo.getId() + ")");

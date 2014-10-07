@@ -20,7 +20,7 @@ import javax.persistence.Transient;
  */
 @Entity
 @Table(name = "PROGRAMMPIFIELDS")
-public class programMPIFields {
+public class programMCIFields {
     
     @Transient
     private String fieldName = null;
@@ -30,8 +30,8 @@ public class programMPIFields {
     @Column(name = "ID", nullable = false)
     private int id;
     
-    @Column(name = "MPIID", nullable = false)
-    private Integer mpiId = null;
+    @Column(name = "MCIID", nullable = false)
+    private Integer mciId = null;
     
     @Column(name = "FIELDID", nullable = false)
     private Integer fieldId = null;
@@ -47,12 +47,12 @@ public class programMPIFields {
         this.id = id;
     }
 
-    public Integer getMpiId() {
-        return mpiId;
+    public Integer getMciId() {
+        return mciId;
     }
 
-    public void setMpiId(Integer mpiId) {
-        this.mpiId = mpiId;
+    public void setMciId(Integer mciId) {
+        this.mciId = mciId;
     }
 
     public Integer getFieldId() {

@@ -7,8 +7,7 @@
 package com.bowlink.rr.service;
 
 import com.bowlink.rr.model.crosswalks;
-import com.bowlink.rr.model.demoDataElements;
-import com.bowlink.rr.model.healthDataElements;
+import com.bowlink.rr.model.dataElements;
 import java.util.List;
 
 /**
@@ -17,9 +16,7 @@ import java.util.List;
  */
 public interface dataElementManager {
     
-    List<demoDataElements> getDemoDataElements() throws Exception;
-    
-    List<healthDataElements> getHealthDataElements() throws Exception;
+    List<dataElements> getdataElements() throws Exception;
     
     List<crosswalks> getCrosswalks(int page, int maxResults, int programId);
     
@@ -40,9 +37,7 @@ public interface dataElementManager {
     @SuppressWarnings("rawtypes")
     List getValidationTypes();
     
-    String getDemoFieldName(int fieldId);
-    
-    String getHealthFieldName(int fieldId);
+    String getfieldName(int fieldId);
     
     String getCrosswalkName(int cwId);
     
@@ -54,12 +49,9 @@ public interface dataElementManager {
     @SuppressWarnings("rawtypes")
     List getTableColumns(String tableName);
     
-    void saveDemoField(demoDataElements formField) throws Exception;
+    void saveField(dataElements formField) throws Exception;
     
-    void saveHealthField(healthDataElements formField) throws Exception;
+    dataElements getFieldDetails(Integer fieldId) throws Exception;
     
-    demoDataElements getDemoFieldDetails(Integer fieldId) throws Exception;
-    
-    healthDataElements getHealthFieldDetails(Integer fieldId) throws Exception;
     
 }

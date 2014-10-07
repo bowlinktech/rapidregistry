@@ -21,7 +21,7 @@ import org.springframework.format.annotation.DateTimeFormat;
  * @author chadmccue
  */
 @Entity
-@Table(name = "PROGRAMACTIVITYCODES")
+@Table(name = "PROGRAM_ACTIVITYCODES")
 public class programActivityCodes {
     
     @Transient

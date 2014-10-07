@@ -27,7 +27,7 @@
             </div>
             <div class="collapse navbar-collapse navbar-ex1-collapse">
                 <ul class="nav navbar-nav" role="menu">
-                    <li role="menuitem" class="${param['sect'] == 'programs' ? 'active' : 'none'}"><a href="<c:url value='/sysAdmin/programs/' />" title="Program Manager">Program Manager</a><c:if test="${param['sect'] == 'programs'}"><span class="indicator-active arrow-up"></span></c:if></li>
+                    <li role="menuitem" class="${param['sect'] == 'programs' ? 'active' : 'none'}"><a href="<c:url value='/sysAdmin/programs' />" title="Program Manager">Program Manager</a><c:if test="${param['sect'] == 'programs'}"><span class="indicator-active arrow-up"></span></c:if></li>
                     <li role="menuitem" class="${param['sect'] == 'activitycodes' ? 'active' : 'none'}"><a href="<c:url value='/sysAdmin/activity-codes' />" title="Activity Code Manager">Activity Code Manager</a><c:if test="${param['sect'] == 'activitycodes'}"><span class="indicator-active arrow-up"></span></c:if></li>
                     <li role="menuitem" class="${param['sect'] == 'dataelements' ? 'active' : 'none'}"><a href="<c:url value='/sysAdmin/data-elements/demo-fields' />" title="Data Element Manager">Data Element Manager</a><c:if test="${param['sect'] == 'dataelements'}"><span class="indicator-active arrow-up"></span></c:if></li>
                     <li role="menuitem" class="${param['sect'] == 'reports' ? 'active' : 'none'}"><a href="<c:url value='/sysAdmin/reports' />" title="Report Manager">Report Manager</a><c:if test="${param['sect'] == 'reports'}"><span class="indicator-active arrow-up"></span></c:if></li>

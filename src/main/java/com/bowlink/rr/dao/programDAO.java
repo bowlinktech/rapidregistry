@@ -6,16 +6,17 @@
 
 package com.bowlink.rr.dao;
 
-import com.bowlink.rr.model.patientSharing;
+import com.bowlink.rr.model.programPatientSharing;
 import com.bowlink.rr.model.program;
 import com.bowlink.rr.model.programActivityCodes;
-import com.bowlink.rr.model.programDemoDataElements;
-import com.bowlink.rr.model.programHealthDataElements;
-import com.bowlink.rr.model.programMPI;
-import com.bowlink.rr.model.programMPIFields;
+import com.bowlink.rr.model.programPatientFields;
+import com.bowlink.rr.model.programEngagementFields;
+import com.bowlink.rr.model.programMCIAlgorithms;
+import com.bowlink.rr.model.programMCIFields;
 import com.bowlink.rr.model.programModules;
 import com.bowlink.rr.model.programReports;
 import com.bowlink.rr.model.programAdmin;
+import com.bowlink.rr.model.programPatientSections;
 import java.util.List;
 import org.springframework.stereotype.Repository;
 
@@ -42,7 +43,7 @@ public interface programDAO {
     
     List<Integer> getSharedPrograms(Integer programId) throws Exception;
      
-    void savePatientSharing(patientSharing newpatientshare) throws Exception;
+    void savePatientSharing(programPatientSharing newpatientshare) throws Exception;
     
     void deletePatientSharing(Integer programId) throws Exception;
     
@@ -52,17 +53,28 @@ public interface programDAO {
     
     void deleteProgramModules(Integer programId) throws Exception;
     
-    List<programDemoDataElements> getProgramDemoFields(Integer programId) throws Exception;
+    /** Patient Fields **/
     
-    void deleteDemoFields(Integer programId) throws Exception;
+    List<programPatientSections> getPatientSections(Integer programId) throws Exception;
     
-    void saveDemoFields(programDemoDataElements field) throws Exception;
+    List<programPatientFields> getPatientFieldsByProgramId(Integer programId) throws Exception;
     
-    List<programHealthDataElements> getProgramHealthFields(Integer programId) throws Exception;
+    programPatientSections getPatientSectionById(Integer sectionId) throws Exception;
+    
+    List<programPatientFields> getPatientFields(Integer programId, Integer sectionId) throws Exception;
+    
+    void deletePatientFields(Integer programId, Integer SectionId) throws Exception;
+    
+    void savePatientFields(programPatientFields field) throws Exception;
+    
+    
+    /** Engagement Fields **/
+    
+    List<programEngagementFields> getProgramHealthFields(Integer programId) throws Exception;
     
     void deleteHealthFields(Integer programId) throws Exception;
     
-    void saveHealthFields(programHealthDataElements field) throws Exception;
+    void saveHealthFields(programEngagementFields field) throws Exception;
     
     boolean getUsedActivityCodes (Integer programId, Integer codeId) throws Exception;
     
@@ -76,17 +88,17 @@ public interface programDAO {
     
     void deleteProgramReports(Integer programId) throws Exception;
     
-    List<programMPI> getProgramMPIAlgorithms(Integer programId) throws Exception;
+    List<programMCIAlgorithms> getProgramMCIAlgorithms(Integer programId) throws Exception;
     
-    List<programMPIFields> getProgramMPIFields(Integer mpiId) throws Exception;
+    List<programMCIFields> getProgramMCIFields(Integer mciId) throws Exception;
     
-    Integer createMPIAlgorithm(programMPI newMPIAlgorithm) throws Exception;
+    Integer createMCIAlgorithm(programMCIAlgorithms newMCIAlgorithm) throws Exception;
     
-    void updateMPIAlgorithm(programMPI MPIAlgorithm) throws Exception;
+    void updateMCIAlgorithm(programMCIAlgorithms MCIAlgorithm) throws Exception;
     
-    void createMPIAlgorithmFields(programMPIFields newField) throws Exception;
+    void createMCIAlgorithmFields(programMCIFields newField) throws Exception;
     
-    programMPI getMPIAlgorithm(Integer mpiId) throws Exception;
+    programMCIAlgorithms getMCIAlgorithm(Integer mpiId) throws Exception;
     
     void removeAlgorithmField(Integer algorithmFieldId) throws Exception;
     

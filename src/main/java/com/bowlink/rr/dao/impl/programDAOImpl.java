@@ -7,16 +7,17 @@
 package com.bowlink.rr.dao.impl;
 
 import com.bowlink.rr.dao.programDAO;
-import com.bowlink.rr.model.patientSharing;
+import com.bowlink.rr.model.programPatientSharing;
 import com.bowlink.rr.model.program;
 import com.bowlink.rr.model.programActivityCodes;
-import com.bowlink.rr.model.programDemoDataElements;
-import com.bowlink.rr.model.programHealthDataElements;
-import com.bowlink.rr.model.programMPI;
-import com.bowlink.rr.model.programMPIFields;
+import com.bowlink.rr.model.programPatientFields;
+import com.bowlink.rr.model.programEngagementFields;
+import com.bowlink.rr.model.programMCIAlgorithms;
+import com.bowlink.rr.model.programMCIFields;
 import com.bowlink.rr.model.programModules;
 import com.bowlink.rr.model.programReports;
 import com.bowlink.rr.model.programAdmin;
+import com.bowlink.rr.model.programPatientSections;
 import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.Criteria;
@@ -170,13 +171,13 @@ public class programDAOImpl implements programDAO {
         
         List<Integer> sharedPrograms = new ArrayList<Integer>();
         
-        Query query = sessionFactory.getCurrentSession().createQuery("from patientSharing where programId = :programId");
+        Query query = sessionFactory.getCurrentSession().createQuery("from programPatientSharing where programId = :programId");
         query.setParameter("programId", programId);
 
-        List<patientSharing> programList = query.list();
+        List<programPatientSharing> programList = query.list();
         
         if(programList.size() > 0) {
-            for(patientSharing sharedProgram : programList) {
+            for(programPatientSharing sharedProgram : programList) {
                 sharedPrograms.add(sharedProgram.getSharingProgramId());
             }
         }
@@ -192,7 +193,7 @@ public class programDAOImpl implements programDAO {
      * @param newpatientshare   The object holding the patientshare
      */
     @Override
-    public void savePatientSharing(patientSharing newpatientshare) throws Exception {
+    public void savePatientSharing(programPatientSharing newpatientshare) throws Exception {
        sessionFactory.getCurrentSession().save(newpatientshare);
     }
     
@@ -205,7 +206,7 @@ public class programDAOImpl implements programDAO {
     public void deletePatientSharing(Integer programId) throws Exception {
         
          /** Need to first delete current associations **/
-        Query q1 = sessionFactory.getCurrentSession().createQuery("delete from patientSharing where programId = :programId");
+        Query q1 = sessionFactory.getCurrentSession().createQuery("delete from programPatientSharing where programId = :programId");
         q1.setParameter("programId", programId);
         q1.executeUpdate();
     }
@@ -264,45 +265,93 @@ public class programDAOImpl implements programDAO {
         q1.executeUpdate();
     }
     
-    
     /**
-     * The 'getProgramDemoFields' function will return a list of selected demographic fields associated with
-     * the passed in program Id.
+     * The 'getPatientSections' function will return a list of sections created for the passed in programId.
      * 
-     * @param programId     The id of the program to retrieve demographic fields
+     * @param programId The id that will contain the selected program
      * 
-     * @return This function will return a list of data elements
+     * @return  This function will return a list of program patient sections.
+     * @throws Exception 
      */
     @Override
-    public List<programDemoDataElements> getProgramDemoFields(Integer programId) throws Exception {
-        Query query = sessionFactory.getCurrentSession().createQuery("from programDemoDataElements where programId = :programId");
+    public List<programPatientSections> getPatientSections(Integer programId) throws Exception {
+        Query query = sessionFactory.getCurrentSession().createQuery("from programPatientSections where programId = :programId");
         query.setParameter("programId", programId);
         
         return query.list();
     }
     
     /**
-     * The 'deleteDemoFields' function will remove all data fields saved for the passed in program.
+     * The 'getPatientFieldsByProgramId' function will return a list of patient fields associated with
+     * the passed in program Id.
+     * 
+     * @param programId     The id of the program to retrieve demographic fields
+     *  
+     * @return This function will return a list of data elements
+     */
+    @Override
+    public List<programPatientFields> getPatientFieldsByProgramId(Integer programId) throws Exception {
+        Query query = sessionFactory.getCurrentSession().createQuery("from programPatientFields where programId = :programId");
+        query.setParameter("programId", programId);
+        
+        return query.list();
+    }
+    
+    /**
+     * The 'getPatientSectionById' function will return the details for the clicked section.
+     * 
+     * @param sectionId The id of the selected section.
+     * @return
+     * @throws Exception 
+     */
+    @Override
+    public programPatientSections getPatientSectionById(Integer sectionId) throws Exception {
+        return (programPatientSections) sessionFactory.getCurrentSession().get(programPatientSections.class, sectionId); 
+    }
+    
+    
+    /**
+     * The 'getPatientFields' function will return a list of patient fields associated with
+     * the passed in program Id and section.
+     * 
+     * @param programId     The id of the program to retrieve demographic fields
+     * @param sectionId The id that will contain the selected section
+     *  
+     * @return This function will return a list of data elements
+     */
+    @Override
+    public List<programPatientFields> getPatientFields(Integer programId, Integer sectionId) throws Exception {
+        Query query = sessionFactory.getCurrentSession().createQuery("from programPatientFields where programId = :programId and sectionId = :sectionId");
+        query.setParameter("programId", programId);
+        query.setParameter("sectionId", sectionId);
+        
+        return query.list();
+    }
+    
+    /**
+     * The 'deletePatientFields' function will remove all patient fields for the passed in program and section.
      * 
      * @param programId The id that will contain the selected program
+     * @param sectionId The id that will contain the selected section
      * 
      * @throws Exception 
      */
     @Override
-    public void deleteDemoFields(Integer programId) throws Exception {
-        Query deleteTranslations = sessionFactory.getCurrentSession().createQuery("delete from programDemoDataElements where programId = :programId");
-        deleteTranslations.setParameter("programId", programId);
-        deleteTranslations.executeUpdate();
+    public void deletePatientFields(Integer programId, Integer sectionId) throws Exception {
+        Query deleteFields = sessionFactory.getCurrentSession().createQuery("delete from programPatientFields where programId = :programId and sectionId = :sectionId");
+        deleteFields.setParameter("programId", programId);
+        deleteFields.setParameter("sectionId", sectionId);
+        deleteFields.executeUpdate();
     }
     
     /**
-     * The 'saveDemoFields' function will save all selected demo fields for the passed in program.
+     * The 'savePatientFields' function will save all selected patient fields for the passed in program.
      * 
      * @param field         The programDemoDataElemets object to save
      * @throws Exception 
      */
     @Override
-    public void saveDemoFields(programDemoDataElements field) throws Exception {
+    public void savePatientFields(programPatientFields field) throws Exception {
         sessionFactory.getCurrentSession().save(field);
     }
     
@@ -315,7 +364,7 @@ public class programDAOImpl implements programDAO {
      * @return This function will return a list of data elements
      */
     @Override
-    public List<programHealthDataElements> getProgramHealthFields(Integer programId) throws Exception {
+    public List<programEngagementFields> getProgramHealthFields(Integer programId) throws Exception {
         Query query = sessionFactory.getCurrentSession().createQuery("from programHealthDataElements where programId = :programId");
         query.setParameter("programId", programId);
         
@@ -339,11 +388,11 @@ public class programDAOImpl implements programDAO {
     /**
      * The 'saveHealthFields' function will save all selected health fields for the passed in program.
      * 
-     * @param field         The programHealthDataElements object to save
+     * @param field         The programEngagementFields object to save
      * @throws Exception 
      */
     @Override
-    public void saveHealthFields(programHealthDataElements field) throws Exception {
+    public void saveHealthFields(programEngagementFields field) throws Exception {
         sessionFactory.getCurrentSession().save(field);
     }
     
@@ -449,88 +498,88 @@ public class programDAOImpl implements programDAO {
     }
     
     /**
-     * The 'getProgramMPIAlgorithms' function will return a list of the programs in the system.
+     * The 'getProgramMCIAlgorithms' function will return a list of the programs in the system.
      * 
      * @return The function will return a list of progams in the system
      */
     @Override
-    public List<programMPI> getProgramMPIAlgorithms(Integer programId) throws Exception {
+    public List<programMCIAlgorithms> getProgramMCIAlgorithms(Integer programId) throws Exception {
         Query query = sessionFactory.getCurrentSession().createQuery("from programMPI where programId = :programId order by id asc");
         query.setParameter("programId", programId);
 
-        List<programMPI> MPIList = query.list();
+        List<programMCIAlgorithms> MPIList = query.list();
         return MPIList;
     }
     
     /**
-     * The 'getProgramMPIFields' function will get a list of fields associated to teach MPI Algorithm.
+     * The 'getProgramMCIFields' function will get a list of fields associated to teach MCI Algorithm.
      * 
      * @param mpiId The id of the MPI Algorithm
      * @return  This function will return a list of MPI Fields
      * @throws Exception 
      */
     @Override
-    public List<programMPIFields> getProgramMPIFields(Integer mpiId) throws Exception {
-        Query query = sessionFactory.getCurrentSession().createQuery("from programMPIFields where mpiId = :mpiId order by id asc");
-        query.setParameter("mpiId", mpiId);
+    public List<programMCIFields> getProgramMCIFields(Integer mciId) throws Exception {
+        Query query = sessionFactory.getCurrentSession().createQuery("from programMCIFields where mciId = :mciId order by id asc");
+        query.setParameter("mciId", mciId);
 
-        List<programMPIFields> fieldList = query.list();
+        List<programMCIFields> fieldList = query.list();
         return fieldList;
     }
     
     /**
-     * The 'createMPIAlgorithm' function will create the new MPI Algorithm
+     * The 'createMCIAlgorithm' function will create the new MCI Algorithm
      * 
-     * @param newMPIAlgorithm   The object that holds the new algorithm
+     * @param newMCIAlgorithm   The object that holds the new algorithm
      * 
      * @return This function will return the id from the new algorithm
      */
     @Override
-    public Integer createMPIAlgorithm(programMPI newMPIAlgorithm) throws Exception {
+    public Integer createMCIAlgorithm(programMCIAlgorithms newMCIAlgorithm) throws Exception {
         Integer lastId = null;
 
-        lastId = (Integer) sessionFactory.getCurrentSession().save(newMPIAlgorithm);
+        lastId = (Integer) sessionFactory.getCurrentSession().save(newMCIAlgorithm);
 
         return lastId;
     }
     
     /**
-     * The 'updateMPIAlgorithm' function will update the selected MPI Algorithm
+     * The 'updateMCIAlgorithm' function will update the selected MCI Algorithm
      * 
-     * @param MPIAlgorithm   The object that holds the selected algorithm
+     * @param MCIAlgorithm   The object that holds the selected algorithm
      * 
      * @return This function will not return anything
      */
     @Override
-    public void updateMPIAlgorithm(programMPI MPIAlgorithm) throws Exception {
-        sessionFactory.getCurrentSession().update(MPIAlgorithm);
+    public void updateMCIAlgorithm(programMCIAlgorithms MCIAlgorithm) throws Exception {
+        sessionFactory.getCurrentSession().update(MCIAlgorithm);
     }
     
     
     /**
-     * The 'createMPIAlgorithmFields' function will save the fields associated to the MPI 
+     * The 'createMCIAlgorithmFields' function will save the fields associated to the MCI 
      * algorithm.
      * 
      * 
      */
     @Override
-    public void createMPIAlgorithmFields(programMPIFields newField) throws Exception {
+    public void createMCIAlgorithmFields(programMCIFields newField) throws Exception {
         sessionFactory.getCurrentSession().save(newField);
     }
     
     /**
-     * The 'getMPIAlgorithm' function will return the details of the passed in mpi algorithm.
+     * The 'getMCIAlgorithm' function will return the details of the passed in MCI algorithm.
      * 
-     * @param mpiId The id of the selected MPI algorithm
+     * @param mciId The id of the selected MCI algorithm
      * @return
      * @throws Exception 
      */
     @Override
-    public programMPI getMPIAlgorithm(Integer mpiId) throws Exception {
-        Query query = sessionFactory.getCurrentSession().createQuery("from programMPI where id = :mpiId");
-        query.setParameter("mpiId", mpiId);
+    public programMCIAlgorithms getMCIAlgorithm(Integer mciId) throws Exception {
+        Query query = sessionFactory.getCurrentSession().createQuery("from programMCIAlgorithms where id = :mciId");
+        query.setParameter("mciId", mciId);
 
-        return (programMPI) query.uniqueResult();
+        return (programMCIAlgorithms) query.uniqueResult();
     }
 
     /**

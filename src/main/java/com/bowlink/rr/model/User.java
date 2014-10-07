@@ -43,12 +43,6 @@ public class User {
 
     @NotEmpty
     @NoHtml
-    @Size(min = 4, max = 15)
-    @Column(name = "USERNAME", nullable = false)
-    private String username;
-
-    @NotEmpty
-    @NoHtml
     @Column(name = "PASSWORD", nullable = false)
     private String password;
     
@@ -56,6 +50,9 @@ public class User {
     @NoHtml
     @Column(name = "EMAIL", nullable = false)
     private String email;
+    
+    @Column(name = "TYPEID", nullable = false)
+    private Integer typeId = 0;
     
     @Column(name = "ROLEID", nullable = false)
     private int roleId = 2;
@@ -93,14 +90,6 @@ public class User {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public String getPassword() {
@@ -166,7 +155,13 @@ public class User {
     public void setTimesloggedIn(Long timesloggedIn) {
         this.timesloggedIn = timesloggedIn;
     }
+
+    public Integer getTypeId() {
+        return typeId;
+    }
+
+    public void setTypeId(Integer typeId) {
+        this.typeId = typeId;
+    }
     
-    
-   
 }

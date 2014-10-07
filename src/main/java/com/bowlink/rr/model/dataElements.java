@@ -18,8 +18,8 @@ import javax.persistence.Table;
  * @author chadmccue
  */
 @Entity
-@Table(name = "DEMOGRAPHICDATAELEMENTS")
-public class demoDataElements {
+@Table(name = "DATAELEMENTS")
+public class dataElements {
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
