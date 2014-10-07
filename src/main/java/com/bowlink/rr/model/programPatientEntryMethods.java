@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  *
@@ -19,6 +20,9 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "PROGRAM_PATIENTENTRYMETHODS")
 public class programPatientEntryMethods {
+    
+    @Transient
+    String surveyTitle = "";
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -34,7 +38,7 @@ public class programPatientEntryMethods {
     @Column(name = "BTNVALUE", nullable = true)
     private String btnValue = "";
     
-    @Column(name = "DSPPOS", nullable = true)
+    @Column(name = "DISPLAYPOS", nullable = true)
     private int dspPos = 1;
 
     public int getId() {
@@ -76,7 +80,13 @@ public class programPatientEntryMethods {
     public void setDspPos(int dspPos) {
         this.dspPos = dspPos;
     }
-    
-    
+
+    public String getSurveyTitle() {
+        return surveyTitle;
+    }
+
+    public void setSurveyTitle(String surveyTitle) {
+        this.surveyTitle = surveyTitle;
+    }
     
 }

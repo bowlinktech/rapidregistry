@@ -6,16 +6,16 @@
 
 package com.bowlink.rr.dao;
 
-import com.bowlink.rr.model.programPatientSharing;
 import com.bowlink.rr.model.program;
 import com.bowlink.rr.model.programActivityCodes;
 import com.bowlink.rr.model.programPatientFields;
 import com.bowlink.rr.model.programEngagementFields;
 import com.bowlink.rr.model.programMCIAlgorithms;
 import com.bowlink.rr.model.programMCIFields;
-import com.bowlink.rr.model.programModules;
 import com.bowlink.rr.model.programReports;
 import com.bowlink.rr.model.programAdmin;
+import com.bowlink.rr.model.programAvailableTables;
+import com.bowlink.rr.model.programPatientEntryMethods;
 import com.bowlink.rr.model.programPatientSections;
 import java.util.List;
 import org.springframework.stereotype.Repository;
@@ -41,17 +41,11 @@ public interface programDAO {
     
     List<program> getOtherPrograms(Integer programId) throws Exception;
     
-    List<Integer> getSharedPrograms(Integer programId) throws Exception;
-     
-    void savePatientSharing(programPatientSharing newpatientshare) throws Exception;
+    List<programPatientEntryMethods> getPatientEntryMethods(Integer programId) throws Exception;
     
-    void deletePatientSharing(Integer programId) throws Exception;
+    List<programAvailableTables> getAvailableTablesForSurveys(Integer programId) throws Exception;
     
-    List<Integer> getProgramModules(Integer programId) throws Exception;
-    
-    void saveProgramModules(programModules module) throws Exception;
-    
-    void deleteProgramModules(Integer programId) throws Exception;
+    void saveProgramAvailableTables(programAvailableTables availableTable) throws Exception;
     
     /** Patient Fields **/
     

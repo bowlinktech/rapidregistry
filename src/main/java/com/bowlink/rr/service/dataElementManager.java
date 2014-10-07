@@ -45,6 +45,9 @@ public interface dataElementManager {
     
     @SuppressWarnings("rawtypes")
     List getInformationTables();
+    
+    @SuppressWarnings("rawtypes")
+    List getAllTables();
 
     @SuppressWarnings("rawtypes")
     List getTableColumns(String tableName);

@@ -7,16 +7,16 @@
 package com.bowlink.rr.dao.impl;
 
 import com.bowlink.rr.dao.programDAO;
-import com.bowlink.rr.model.programPatientSharing;
 import com.bowlink.rr.model.program;
 import com.bowlink.rr.model.programActivityCodes;
 import com.bowlink.rr.model.programPatientFields;
 import com.bowlink.rr.model.programEngagementFields;
 import com.bowlink.rr.model.programMCIAlgorithms;
 import com.bowlink.rr.model.programMCIFields;
-import com.bowlink.rr.model.programModules;
 import com.bowlink.rr.model.programReports;
 import com.bowlink.rr.model.programAdmin;
+import com.bowlink.rr.model.programAvailableTables;
+import com.bowlink.rr.model.programPatientEntryMethods;
 import com.bowlink.rr.model.programPatientSections;
 import java.util.ArrayList;
 import java.util.List;
@@ -147,7 +147,7 @@ public class programDAOImpl implements programDAO {
      * 
      * @param programId     The id of the program not to return
      * 
-     * @return This function will returna a list of program objects.
+     * @return This function will returns a list of program objects.
      */
     @Override
     public List<program> getOtherPrograms(Integer programId) throws Exception {
@@ -158,112 +158,6 @@ public class programDAOImpl implements programDAO {
         
     }
     
-    /**
-     * The 'getSharedPrograms' function will return a list of programs the passed in program is sharing
-     * patient data with.
-     * 
-     * @param programId     The id of the program to search shared programs
-     * 
-     * @return This function will return a list of shared program Ids
-     */
-    @Override
-    public List<Integer> getSharedPrograms(Integer programId) throws Exception {
-        
-        List<Integer> sharedPrograms = new ArrayList<Integer>();
-        
-        Query query = sessionFactory.getCurrentSession().createQuery("from programPatientSharing where programId = :programId");
-        query.setParameter("programId", programId);
-
-        List<programPatientSharing> programList = query.list();
-        
-        if(programList.size() > 0) {
-            for(programPatientSharing sharedProgram : programList) {
-                sharedPrograms.add(sharedProgram.getSharingProgramId());
-            }
-        }
-        
-        return sharedPrograms;
-        
-    }
-    
-    /**
-     * The '/savePatientSharing' function will save the patient sharing between the selected program and list of other
-     * programs
-     * 
-     * @param newpatientshare   The object holding the patientshare
-     */
-    @Override
-    public void savePatientSharing(programPatientSharing newpatientshare) throws Exception {
-       sessionFactory.getCurrentSession().save(newpatientshare);
-    }
-    
-    /**
-     * The 'deletePatientSharing' function will remove all the patient sharing for the selected program
-     * 
-     * @param programId The id of the selected program to delete all patient sharing.
-     */
-    @Override
-    public void deletePatientSharing(Integer programId) throws Exception {
-        
-         /** Need to first delete current associations **/
-        Query q1 = sessionFactory.getCurrentSession().createQuery("delete from programPatientSharing where programId = :programId");
-        q1.setParameter("programId", programId);
-        q1.executeUpdate();
-    }
-    
-    
-    /**
-     * The 'getProgramModules' function will return a list of modules the passed in program is using
-     * 
-     * @param programId     The id of the program to search shared programs
-     * 
-     * @return This function will return a list of module Ids
-     */
-    @Override
-    public List<Integer> getProgramModules(Integer programId) throws Exception {
-        
-        List<Integer> usedModules = new ArrayList<Integer>();
-        
-        Query query = sessionFactory.getCurrentSession().createQuery("from programModules where programId = :programId");
-        query.setParameter("programId", programId);
-
-        List<programModules> moduleList = query.list();
-        
-        if(moduleList.size() > 0) {
-            for(programModules module : moduleList) {
-                usedModules.add(module.getModuleId());
-            }
-        }
-        
-        return usedModules;
-        
-    }
-    
-    /**
-     * The '/saveProgramModules' function will save the list of associated program modules
-     * programs
-     * 
-     * @param newpatientshare   The object holding the patientshare
-     */
-    @Override
-    public void saveProgramModules(programModules module) throws Exception {
-       sessionFactory.getCurrentSession().save(module);
-    }
-    
-    
-    /**
-     * The 'deleteProgramModules' function will remove all the modules for the selected program
-     * 
-     * @param programId The id of the selected program to delete all modules.
-     */
-    @Override
-    public void deleteProgramModules(Integer programId) throws Exception {
-        
-         /** Need to first delete current associations **/
-        Query q1 = sessionFactory.getCurrentSession().createQuery("delete from programModules where programId = :programId");
-        q1.setParameter("programId", programId);
-        q1.executeUpdate();
-    }
     
     /**
      * The 'getPatientSections' function will return a list of sections created for the passed in programId.
@@ -626,7 +520,7 @@ public class programDAOImpl implements programDAO {
      * selected program.
      * 
      * @param programId The id of the selected program
-     * @param adminid   The id of hte selected admin
+     * @param adminid   The id of the selected admin
      * 
      * @throws Exception 
      */
@@ -636,5 +530,54 @@ public class programDAOImpl implements programDAO {
         removeAdminProgram.setParameter("adminid", adminid);
         removeAdminProgram.setParameter("programId", programId);
         removeAdminProgram.executeUpdate();
+    }
+    
+    
+    /**
+     * The 'getPatientEntryMethods' function will return the patient entry methods entered for a program.
+     * 
+     * @param programId The id of the selected program.
+     * 
+     * @return  This function will return a list of entry method objects
+     * @throws Exception 
+     */
+    @Override
+    public List<programPatientEntryMethods> getPatientEntryMethods(Integer programId) throws Exception {
+        Query query = sessionFactory.getCurrentSession().createQuery("from programPatientEntryMethods where programId = :programId");
+        query.setParameter("programId", programId);
+
+        List<programPatientEntryMethods> entryMethods = query.list();
+        return entryMethods;
+    }
+    
+    /**
+     * The 'getAvailableTablesForSurveys' function will return the list of tables available for surveys to auto populate from.
+     * 
+     * @param programId The id of the selected program
+     * @return
+     * @throws Exception 
+     */
+    @Override
+    public List<programAvailableTables> getAvailableTablesForSurveys(Integer programId) throws Exception {
+        Query query = sessionFactory.getCurrentSession().createQuery("from programAvailableTables where programId = :programId");
+        query.setParameter("programId", programId);
+
+        List<programAvailableTables> availableTables = query.list();
+        return availableTables;
+    }
+    
+    /**
+     * The 'saveProgramAvailableTables" function will create/edit the passed in table .
+     *
+     * @Table	programs
+     *
+     * @param	availableTable	This will hold the table object from the form
+     *
+     * @return the function does not return any values
+     *
+     */
+    @Override
+    public void saveProgramAvailableTables(programAvailableTables availableTable) throws Exception {
+        sessionFactory.getCurrentSession().saveOrUpdate(availableTable);
     }
 }

@@ -16,6 +16,8 @@ import com.bowlink.rr.model.programMCIFields;
 import com.bowlink.rr.model.programModules;
 import com.bowlink.rr.model.programReports;
 import com.bowlink.rr.model.programAdmin;
+import com.bowlink.rr.model.programAvailableTables;
+import com.bowlink.rr.model.programPatientEntryMethods;
 import com.bowlink.rr.model.programPatientSections;
 import java.util.List;
 
@@ -39,20 +41,11 @@ public interface programManager {
     
     List<program> getOtherPrograms(Integer programId) throws Exception;
     
-    List<Integer> getSharedPrograms(Integer programId) throws Exception;
+    List<programPatientEntryMethods> getPatientEntryMethods(Integer programId) throws Exception;
     
-    void savePatientSharing(programPatientSharing newpatientshare) throws Exception;
+    List<programAvailableTables> getAvailableTablesForSurveys(Integer programId) throws Exception;
     
-    void deletePatientSharing(Integer programId) throws Exception;
-    
-    
-    /** Program Modules **/
-    
-    List<Integer> getProgramModules(Integer programId) throws Exception;
-    
-    void saveProgramModules(programModules module) throws Exception;
-    
-    void deleteProgramModules(Integer programId) throws Exception;
+    void saveProgramAvailableTables(programAvailableTables availableTable) throws Exception;
     
     
     /** Patient Fields **/

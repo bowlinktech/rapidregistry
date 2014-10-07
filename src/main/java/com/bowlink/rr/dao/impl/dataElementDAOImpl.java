@@ -308,6 +308,18 @@ public class dataElementDAOImpl implements dataElementDAO {
     }
     
     /**
+     * The 'getAllTables' function will return a list of all available tables where we can associate fields to an actual table and column.
+     */
+    @Override
+    @SuppressWarnings("rawtypes")
+    @Transactional
+    public List getAllTables() {
+        Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT distinct table_name FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'rapidregistry' ");
+
+        return query.list();
+    }
+    
+    /**
      * The 'getTableColumns' function will return a list of columns from the passed in table name
      *
      */

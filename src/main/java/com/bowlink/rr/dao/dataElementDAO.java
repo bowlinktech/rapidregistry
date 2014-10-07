@@ -47,6 +47,9 @@ public interface dataElementDAO {
     
     @SuppressWarnings("rawtypes")
     List getInformationTables();
+    
+    @SuppressWarnings("rawtypes")
+    List getAllTables();
 
     @SuppressWarnings("rawtypes")
     List getTableColumns(String tableName);

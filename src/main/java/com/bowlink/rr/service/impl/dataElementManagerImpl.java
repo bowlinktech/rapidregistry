@@ -254,6 +254,13 @@ public class dataElementManagerImpl implements dataElementManager {
     @SuppressWarnings("rawtypes")
     @Override
     @Transactional
+    public List getAllTables() {
+        return dataElementDAO.getAllTables();
+    }
+    
+    @SuppressWarnings("rawtypes")
+    @Override
+    @Transactional
     public List getTableColumns(String tableName) {
         return dataElementDAO.getTableColumns(tableName);
     }

@@ -7,7 +7,6 @@
 package com.bowlink.rr.service.impl;
 
 import com.bowlink.rr.dao.programDAO;
-import com.bowlink.rr.model.programPatientSharing;
 import com.bowlink.rr.model.program;
 import com.bowlink.rr.model.programActivityCodes;
 import com.bowlink.rr.model.programPatientFields;
@@ -17,6 +16,8 @@ import com.bowlink.rr.model.programMCIFields;
 import com.bowlink.rr.model.programModules;
 import com.bowlink.rr.model.programReports;
 import com.bowlink.rr.model.programAdmin;
+import com.bowlink.rr.model.programAvailableTables;
+import com.bowlink.rr.model.programPatientEntryMethods;
 import com.bowlink.rr.model.programPatientSections;
 import com.bowlink.rr.service.programManager;
 import java.util.List;
@@ -88,41 +89,6 @@ public class programManagerImpl implements programManager {
         return programDAO.getOtherPrograms(programId);
     }
     
-    @Override
-    @Transactional
-    public  List<Integer> getSharedPrograms(Integer programId) throws Exception {
-        return programDAO.getSharedPrograms(programId);
-    }
-    
-    @Override
-    @Transactional
-    public void savePatientSharing(programPatientSharing newpatientshare) throws Exception {
-        programDAO.savePatientSharing(newpatientshare);
-    }
-    
-    @Override
-    @Transactional
-    public void deletePatientSharing(Integer programId) throws Exception {
-        programDAO.deletePatientSharing(programId);
-    }
-    
-    @Override
-    @Transactional
-    public List<Integer> getProgramModules(Integer programId) throws Exception {
-        return programDAO.getProgramModules(programId);
-    }
-    
-    @Override
-    @Transactional
-    public void saveProgramModules(programModules module) throws Exception {
-        programDAO.saveProgramModules(module);
-    }
-    
-    @Override
-    @Transactional
-    public void deleteProgramModules(Integer programId) throws Exception {
-        programDAO.deleteProgramModules(programId);
-    }
     
     @Override
     @Transactional
@@ -272,6 +238,24 @@ public class programManagerImpl implements programManager {
     @Transactional
     public void removeAdminProgram(Integer programId, Integer adminid) throws Exception {
         programDAO.removeAdminProgram(programId, adminid);
+    }
+    
+    @Override
+    @Transactional
+    public List<programPatientEntryMethods> getPatientEntryMethods(Integer programId) throws Exception {
+        return programDAO.getPatientEntryMethods(programId);
+    }
+    
+    @Override
+    @Transactional
+    public List<programAvailableTables> getAvailableTablesForSurveys(Integer programId) throws Exception {
+        return programDAO.getAvailableTablesForSurveys(programId);
+    }
+    
+    @Override
+    @Transactional
+    public void saveProgramAvailableTables(programAvailableTables availableTable) throws Exception {
+        programDAO.saveProgramAvailableTables(availableTable);
     }
 
 }

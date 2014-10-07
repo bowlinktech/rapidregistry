@@ -24,7 +24,7 @@ public class CustomAuthenticationHandler extends SimpleUrlAuthenticationSuccessH
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
         String programAdminTargetUrl = "/programAdmin";
-        String sysAdminTargetUrl = "/sysAdmin/programs/";
+        String sysAdminTargetUrl = "/sysAdmin/programs";
         Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
 
         usermanager.setLastLogin(authentication.getName());

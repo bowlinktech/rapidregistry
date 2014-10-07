@@ -4,23 +4,20 @@ import com.bowlink.rr.model.User;
 import com.bowlink.rr.model.activityCodes;
 import com.bowlink.rr.model.crosswalks;
 import com.bowlink.rr.model.dataElements;
-import com.bowlink.rr.model.modules;
-import com.bowlink.rr.model.programPatientSharing;
 import com.bowlink.rr.model.program;
 import com.bowlink.rr.model.programActivityCodes;
 import com.bowlink.rr.model.programAdmin;
+import com.bowlink.rr.model.programAvailableTables;
 import com.bowlink.rr.model.programPatientFields;
 import com.bowlink.rr.model.programEngagementFields;
 import com.bowlink.rr.model.programMCIAlgorithms;
 import com.bowlink.rr.model.programMCIFields;
-import com.bowlink.rr.model.programModules;
 import com.bowlink.rr.model.programPatientEntryMethods;
 import com.bowlink.rr.model.programPatientSections;
 import com.bowlink.rr.model.programReports;
 import com.bowlink.rr.model.reports;
 import com.bowlink.rr.service.activityCodeManager;
 import com.bowlink.rr.service.dataElementManager;
-import com.bowlink.rr.service.moduleManager;
 import com.bowlink.rr.service.programManager;
 import com.bowlink.rr.service.reportManager;
 import com.bowlink.rr.service.userManager;
@@ -60,9 +57,6 @@ public class programController {
 
     @Autowired
     programManager programmanager;
-
-    @Autowired
-    moduleManager modulemanager;
 
     @Autowired
     dataElementManager dataelementmanager;
@@ -186,7 +180,8 @@ public class programController {
 
         ModelAndView mav = new ModelAndView();
         mav.setViewName("/details");
-
+        
+        session.setAttribute("programName", programName);
         program programDetails = programmanager.getProgramByName(programName);
 
         mav.addObject("id", programDetails.getId());
@@ -194,12 +189,22 @@ public class programController {
         
         /* Get the list of patient entry methods */
         List<programPatientEntryMethods> entryMethods = programmanager.getPatientEntryMethods(programDetails.getId());
+        
+        for(programPatientEntryMethods entryMethod : entryMethods) {
+            
+            if(entryMethod.getSurveyId() > 0) {
+                /* Get the survey title */
+                entryMethod.setSurveyTitle("SURVEY TITLE HERE");
+            }
+        }
         mav.addObject("entryMethods", entryMethods);
         
         /* Get the list of avaiable table for survey */
+        List<programAvailableTables> availableTables = programmanager.getAvailableTablesForSurveys(programDetails.getId());
+        mav.addObject("availableTables", availableTables);
 
         session.setAttribute("programId", programDetails.getId());
-
+        
         return mav;
 
     }
@@ -254,173 +259,79 @@ public class programController {
 
     }
 
+    
     /**
-     * The '/{programName}/patient-sharing' GET request will display the patient sharing page.
+     * The '/availableTables' request will display the form to create/edit a program table association available for surveys to pull off of.
      *
-     * @param programName	The {programName} will be the program name with spaces removed.
-     *
-     * @return	Will return the program details page.
-     *
+     * @param request
+     * @param response
+     * @param session
+     * @param redirectAttr
+     * @return
      * @throws Exception
-     *
      */
-    @RequestMapping(value = "/{programName}/patient-sharing", method = RequestMethod.GET)
-    public ModelAndView programPatientSharing(HttpSession session) throws Exception {
+    @RequestMapping(value = "/availableTables", method = RequestMethod.GET)
+    public @ResponseBody ModelAndView availableTables(@RequestParam Integer id, HttpServletRequest request, HttpServletResponse response, HttpSession session, RedirectAttributes redirectAttr) throws Exception {
+        
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/sysAdmin/programs/availableTables");
+        
+        programAvailableTables availableTable;
+        
+        if(id > 0) {
+            availableTable = new programAvailableTables();
+            mav.addObject("modalTitle", "Modify Available Survey Table");
+        }
+        else {
+            availableTable = new programAvailableTables();
+            availableTable.setProgramId((Integer) session.getAttribute("programId"));
+            mav.addObject("modalTitle", "Save Available Survey Table");
+        }
+        mav.addObject("programAvailableTables", availableTable);
+         
+        /* Get a list of tables in the system */
+        //Get the list of available information tables
+        @SuppressWarnings("rawtypes")
+        List tables = dataelementmanager.getAllTables();
+        mav.addObject("tables", tables);
+        
+        mav.addObject("programName", session.getAttribute("programName"));
+
+        return mav;
+    }
+    
+    
+    /**
+     * The '/saveAvailableTables' POST request will submit the new program once all required fields are checked, the system will also check to make sure the program name is not already in use.
+     *
+     * @param program	The object holding the program form fields
+     * @param result	The validation result
+     * @param redirectAttr	The variable that will hold values that can be read after the redirect
+     * @param action	The variable that holds which button was pressed
+     *
+     * @return	Will return the organization list page on "Save & Close" Will return the organization details page on "Save" Will return the organization create page on error
+     * @throws Exception
+     */
+    @RequestMapping(value = "/saveAvailableTables", method = RequestMethod.POST)
+    public @ResponseBody ModelAndView saveNewProgram(@Valid programAvailableTables programAvailableTables, BindingResult result, @RequestParam String action, HttpSession session) throws Exception {
+
+        if (result.hasErrors()) {
+            ModelAndView mav = new ModelAndView();
+            mav.setViewName("/sysAdmin/programs/availableTables");
+            return mav;
+        }
+        
+        programmanager.saveProgramAvailableTables(programAvailableTables);
 
         ModelAndView mav = new ModelAndView();
-        mav.setViewName("/patientSharing");
-        mav.addObject("id", session.getAttribute("programId"));
-
-        program programDetails = programmanager.getProgramById((Integer) session.getAttribute("programId"));
-        mav.addObject("programDetails", programDetails);
-
-        /* Get a list of programs the program is sharing with */
-        List<Integer> sharingWith = programmanager.getSharedPrograms((Integer) session.getAttribute("programId"));
-
-        /* Get a list of other programs */
-        List<program> availPrograms = programmanager.getOtherPrograms((Integer) session.getAttribute("programId"));
-
-        if (!sharingWith.isEmpty()) {
-            for (program program : availPrograms) {
-
-                if (sharingWith.contains(program.getId())) {
-                    program.setSharing(true);
-                }
-            }
-        }
-
-        mav.addObject("availPrograms", availPrograms);
-
+        mav.setViewName("/sysAdmin/programs/availableTables");
+        mav.addObject("programName", session.getAttribute("programName"));
+        mav.addObject("success", "tableSaved");
+        
         return mav;
 
     }
-
-    /**
-     * The '/{programName}/patient-sharing' POST request will save the patient sharing form.
-     *
-     * @param List<Imteger>	The list of programIds to share with.
-     *
-     * @return	Will return the program details page.
-     *
-     * @throws Exception
-     *
-     */
-    @RequestMapping(value = "/{programName}/patient-sharing", method = RequestMethod.POST)
-    public ModelAndView saveprogramPatientSharing(@RequestParam List<Integer> programIds, @RequestParam String action, RedirectAttributes redirectAttr, HttpSession session) throws Exception {
-
-        Integer selProgramId = (Integer) session.getAttribute("programId");
-
-        if (programIds.isEmpty()) {
-            programmanager.deletePatientSharing(selProgramId);
-        } else {
-            programmanager.deletePatientSharing(selProgramId);
-
-            for (Integer programId : programIds) {
-
-                programPatientSharing newpatientshare = new programPatientSharing();
-
-                newpatientshare.setProgramId(selProgramId);
-                newpatientshare.setSharingProgramId(programId);
-
-                programmanager.savePatientSharing(newpatientshare);
-            }
-        }
-
-        redirectAttr.addFlashAttribute("savedStatus", "updatedpatientsharing");
-
-        if (action.equals("save")) {
-            ModelAndView mav = new ModelAndView(new RedirectView("patient-sharing"));
-            return mav;
-        } else {
-            ModelAndView mav = new ModelAndView(new RedirectView("../../programs/"));
-            return mav;
-        }
-
-    }
-
-    /**
-     * The '/{programName}/program-modules' GET request will display the page to associate modules to a program.
-     *
-     * @param programName	The {programName} will be the program name with spaces removed.
-     *
-     * @return	Will return the program modules page.
-     *
-     * @throws Exception
-     *
-     */
-    @RequestMapping(value = "/{programName}/program-modules", method = RequestMethod.GET)
-    public ModelAndView programModules(HttpSession session) throws Exception {
-
-        ModelAndView mav = new ModelAndView();
-        mav.setViewName("/programModules");
-        mav.addObject("id", session.getAttribute("programId"));
-
-        program programDetails = programmanager.getProgramById((Integer) session.getAttribute("programId"));
-        mav.addObject("programDetails", programDetails);
-
-        /* Get a list of modules the program uses */
-        List<Integer> usedModules = programmanager.getProgramModules((Integer) session.getAttribute("programId"));
-
-        /* Get a list of other modules */
-        List<modules> availModules = modulemanager.getAllModules();
-
-        if (!usedModules.isEmpty()) {
-            for (modules module : availModules) {
-
-                if (usedModules.contains(module.getId())) {
-                    module.setUseModule(true);
-                }
-            }
-        }
-
-        mav.addObject("availModules", availModules);
-
-        return mav;
-
-    }
-
-    /**
-     * The '/{programName}/program-modules' POST request will save the program module form.
-     *
-     * @param List<Imteger>	The list of moduleIds to use.
-     *
-     * @return	Will return the program details page.
-     *
-     * @throws Exception
-     *
-     */
-    @RequestMapping(value = "/{programName}/program-modules", method = RequestMethod.POST)
-    public ModelAndView saveprogramModules(@RequestParam List<Integer> moduleIds, @RequestParam String action, RedirectAttributes redirectAttr, HttpSession session) throws Exception {
-
-        Integer selProgramId = (Integer) session.getAttribute("programId");
-
-        if (moduleIds.isEmpty()) {
-            programmanager.deleteProgramModules(selProgramId);
-        } else {
-            programmanager.deleteProgramModules(selProgramId);
-
-            for (Integer moduleId : moduleIds) {
-
-                programModules module = new programModules();
-
-                module.setProgramId(selProgramId);
-                module.setModuleId(moduleId);
-
-                programmanager.saveProgramModules(module);
-            }
-        }
-
-        redirectAttr.addFlashAttribute("savedStatus", "updatedprogrammodules");
-
-        if (action.equals("save")) {
-            ModelAndView mav = new ModelAndView(new RedirectView("program-modules"));
-            return mav;
-        } else {
-            ModelAndView mav = new ModelAndView(new RedirectView("../../programs/"));
-            return mav;
-        }
-
-    }
+    
 
     /**
      * The '/{programName}/patient-detail-sections' GET request will display the page that will list the patient detail sections to a program.
