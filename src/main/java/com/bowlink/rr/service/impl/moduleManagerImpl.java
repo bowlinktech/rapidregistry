@@ -8,6 +8,7 @@ package com.bowlink.rr.service.impl;
 
 import com.bowlink.rr.dao.moduleDAO;
 import com.bowlink.rr.model.modules;
+import com.bowlink.rr.model.programModules;
 import com.bowlink.rr.service.moduleManager;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,24 @@ public class moduleManagerImpl implements moduleManager {
     @Transactional
     public List<modules> getAllModules() throws Exception {
         return moduleDAO.getAllModules();
+    }
+    
+    @Override
+    @Transactional
+    public List<Integer> getModulesByProgram(Integer programId) throws Exception {
+        return moduleDAO.getModulesByProgram(programId);
+    }
+    
+    @Override
+    @Transactional
+    public void saveProgramModules(programModules module) throws Exception {
+        moduleDAO.saveProgramModules(module);
+    }
+    
+    @Override
+    @Transactional
+    public void deleteProgramModules(Integer programId) throws Exception {
+        moduleDAO.deleteProgramModules(programId);
     }
     
 }

@@ -3,18 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.bowlink.rr.model;
 
 import java.util.Date;
-import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import org.springframework.format.annotation.DateTimeFormat;
 
 /**
@@ -22,11 +19,8 @@ import org.springframework.format.annotation.DateTimeFormat;
  * @author chadmccue
  */
 @Entity
-@Table(name = "PROGRAMMPIALGORITHMS")
-public class programMPI {
-    
-    @Transient
-    private List<programMPIFields> fields = null;
+@Table(name = "PROGRAM_PATIENTSECTIONS")
+public class programPatientSections {
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -34,13 +28,13 @@ public class programMPI {
     private int id;
     
     @Column(name = "PROGRAMID", nullable = false)
-    private Integer programId = null;
+    private int programId;
     
-    @Column(name = "STATUS", nullable = false)
-    private boolean status = false;
+    @Column(name = "SECTIONNAME", nullable = true)
+    private String sectionName = "";
     
-    @Column(name = "ACTION", nullable = false)
-    private Integer action = 3;
+    @Column(name = "DSPPOS", nullable = true)
+    private int dspPos = 1;
     
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
     @Column(name = "DATECREATED", nullable = true)
@@ -54,28 +48,28 @@ public class programMPI {
         this.id = id;
     }
 
-    public Integer getProgramId() {
+    public int getProgramId() {
         return programId;
     }
 
-    public void setProgramId(Integer programId) {
+    public void setProgramId(int programId) {
         this.programId = programId;
     }
 
-    public boolean getStatus() {
-        return status;
+    public String getSectionName() {
+        return sectionName;
     }
 
-    public void setStatus(boolean status) {
-        this.status = status;
+    public void setSectionName(String sectionName) {
+        this.sectionName = sectionName;
     }
 
-    public Integer getAction() {
-        return action;
+    public int getDspPos() {
+        return dspPos;
     }
 
-    public void setAction(Integer action) {
-        this.action = action;
+    public void setDspPos(int dspPos) {
+        this.dspPos = dspPos;
     }
 
     public Date getDateCreated() {
@@ -85,15 +79,5 @@ public class programMPI {
     public void setDateCreated(Date dateCreated) {
         this.dateCreated = dateCreated;
     }
-
-    public List<programMPIFields> getFields() {
-        return fields;
-    }
-
-    public void setFields(List<programMPIFields> fields) {
-        this.fields = fields;
-    }
-    
-    
     
 }

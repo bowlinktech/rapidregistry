@@ -71,16 +71,16 @@ public class userDAOImpl implements userDAO {
     }
 
     /**
-     * The 'getUserByUserName' function will return a single user object based on a username passed in.
+     * The 'emailAddress' function will return a single user object based on a email address passed in.
      *
-     * @param	username	This will used to query the username field of the users table
+     * @param	emailAddress	This will used to query the email field of the users table
      *
      * @return	The function will return a user object
      */
     @Override
-    public User getUserByUserName(String username) {
+    public User getUserByEmail(String emailAddress) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(User.class);
-        criteria.add(Restrictions.like("username", username));
+        criteria.add(Restrictions.like("email", emailAddress));
         return (User) criteria.uniqueResult();
     }
 
@@ -94,7 +94,7 @@ public class userDAOImpl implements userDAO {
     @Override
     public Long findTotalLogins(int userId) {
 
-        Query query = sessionFactory.getCurrentSession().createQuery("select count(id) as totalLogins from userLogin where userId = :userId");
+        Query query = sessionFactory.getCurrentSession().createQuery("select count(id) as totalLogins from userLogin where systemUserId = :userId");
         query.setParameter("userId", userId);
 
         Long totalLogins = (Long) query.uniqueResult();
@@ -110,9 +110,9 @@ public class userDAOImpl implements userDAO {
      *
      */
     @Override
-    public void setLastLogin(String username) {
-        Query q1 = sessionFactory.getCurrentSession().createQuery("insert into userLogin (userId)" + "select id from User where username = :username");
-        q1.setParameter("username", username);
+    public void setLastLogin(String emailAddress) {
+        Query q1 = sessionFactory.getCurrentSession().createQuery("insert into userLogin (systemUserId)" + "select id from User where email = :emailAddress");
+        q1.setParameter("emailAddress", emailAddress);
         q1.executeUpdate();
 
     }
@@ -214,11 +214,11 @@ public class userDAOImpl implements userDAO {
      */
     @Override
     public void deleteUser(Integer userId) {
-        Query removeuserLogins = sessionFactory.getCurrentSession().createQuery("delete from userLogin where userId = :userId");
+        Query removeuserLogins = sessionFactory.getCurrentSession().createQuery("delete from userLogin where systemUserId = :userId");
         removeuserLogins.setParameter("userId", userId);
         removeuserLogins.executeUpdate();
         
-        Query removeAdminProgram = sessionFactory.getCurrentSession().createQuery("delete from programAdmin where userId = :userId");
+        Query removeAdminProgram = sessionFactory.getCurrentSession().createQuery("delete from programAdmin where systemUserId = :userId");
         removeAdminProgram.setParameter("userId", userId);
         removeAdminProgram.executeUpdate();
         

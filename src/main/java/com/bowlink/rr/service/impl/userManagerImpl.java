@@ -46,8 +46,8 @@ public class userManagerImpl implements userManager {
 
     @Override
     @Transactional
-    public User getUserByUserName(String username) {
-        return userDAO.getUserByUserName(username);
+    public User getUserByEmail(String emailAddress) {
+        return userDAO.getUserByEmail(emailAddress);
     }
 
     @Override
@@ -58,8 +58,8 @@ public class userManagerImpl implements userManager {
 
     @Override
     @Transactional
-    public void setLastLogin(String username) {
-        userDAO.setLastLogin(username);
+    public void setLastLogin(String emailAddress) {
+        userDAO.setLastLogin(emailAddress);
     }
 
     @Override

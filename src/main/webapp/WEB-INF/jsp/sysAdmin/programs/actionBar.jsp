@@ -11,10 +11,10 @@
                         <a href="javascript:void(0);" title="Progam Details" class="unstyled-link">
                             <c:choose>
                                 <c:when test="${not empty id}">
-                                    Edit Progam
+                                    Program Details
                                 </c:when>
                                 <c:otherwise>
-                                    Create New Progam
+                                    Create New Program
                                 </c:otherwise>
                             </c:choose>
                         </a>
@@ -55,9 +55,6 @@
                     <li role="menuitem"><a href="javascript:void(0);" id="saveDetails" title="Save Form" role="button"><span class="glyphicon glyphicon-ok icon-stacked"></span> Save </a></li>
                     <li role="menuitem"><a href="javascript:void(0);" id="saveCloseDetails" title="Save &amp; Close" role="button"><span class="glyphicon glyphicon-floppy-disk icon-stacked"></span> Save &amp; Close</a></li>
                 </c:when>
-                 <c:when test="${param['page'] == 'list'}">
-                    <li role="menuitem"><a href="create" title="Create New Program" role="button"><span class="glyphicon icon-stacked glyphicon glyphicon-plus"></span>Create New</a></li>
-                 </c:when>
           </c:choose>
         </ul>
     </div>

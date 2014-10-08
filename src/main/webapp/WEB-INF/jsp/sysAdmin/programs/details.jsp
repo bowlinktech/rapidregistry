@@ -5,38 +5,46 @@
 <div class="main clearfix" role="main">
 
     <div class="col-md-12">
-
         <c:if test="${not empty savedStatus}" >
             <div class="alert alert-success" role="alert">
                 <strong>Success!</strong> 
                 <c:choose><c:when test="${savedStatus == 'updated'}">The program has been successfully updated!</c:when><c:otherwise>The program has been successfully created!</c:otherwise></c:choose>
-                    </div>
+            </div>
         </c:if>
+        <c:if test="${not empty param.msg}" >
+            <div class="alert alert-success">
+                <strong>Success!</strong> 
+                <c:choose>
+                    <c:when test="${param.msg == 'tablesaved'}">The table has been associated to this program!</c:when>
+                </c:choose>
+            </div>
+        </c:if>
+    </div>
 
-        <form:form id="program" commandName="program"  method="post" role="form">
-            <input type="hidden" id="action" name="action" value="save" />
-            <form:hidden path="id" id="id" />
-            <form:hidden path="dateCreated" />
-
-            <section class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Details</h3>
-                </div>
-                <div class="panel-body">
-                    <div class="form-container">
+    <div class="col-md-6">
+        <section class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Details</h3>
+            </div>
+            <div class="panel-body">
+                <div class="form-container">
+                    <form:form id="program" commandName="program"  method="post" role="form">
+                        <input type="hidden" id="action" name="action" value="save" />
+                        <form:hidden path="id" id="id" />
+                        <form:hidden path="dateCreated" />
                         <spring:bind path="programName">
                             <div class="form-group ${status.error ? 'has-error' : '' } ${not empty existingProgram ? 'has-error' : ''}">
                                 <label class="control-label" for="programName">Program Name *</label>
                                 <form:input path="programName" id="programName" class="form-control" type="text" maxLength="55" />
                                 <form:errors path="programName" cssClass="control-label" element="label" />
                                 <c:if test="${not empty existingProgram}">${existingProgram}</c:if>
-                            </div>
+                                </div>
                         </spring:bind>
                         <spring:bind path="programDesc">
                             <div class="form-group ${status.error ? 'has-error' : '' }">
-                                <label class="control-label" for="programDesc">Program Desc</label>
+                                <label class="control-label" for="programDesc">Program Description</label>
                                 <form:textarea path="programDesc" id="programDesc" class="form-control" rows="15" />
-                           </div>
+                            </div>
                         </spring:bind>  
                         <spring:bind path="emailAddress">
                             <div class="form-group ${status.error ? 'has-error' : '' }">
@@ -46,11 +54,122 @@
                                 <h6>(This email address will be used in the FROM field when emails are sent from this program)</h6>
                             </div>
                         </spring:bind>
-                    </div>
+                    </form:form>
                 </div>
-            </section>
-        </form:form>
+            </div>
+        </section>
+    </div>
+
+    <div class="col-md-6">
+        <section class="panel panel-default">
+            <div class="panel-heading">
+                <div class="pull-right">
+                    <a href="#entryMethodModal" data-toggle="modal" class="btn btn-primary btn-xs btn-action" id="createNewEntryMethod" title="Add New Patient Entry Method">Add New Patient Entry Method</a>
+                </div>
+                <h3 class="panel-title">Patient Entry Methods</h3>
+            </div>
+            <div class="panel-body">
+                <div class="form-container scrollable">
+                    <table class="table table-striped table-hover responsive">
+                        <thead>
+                            <tr>
+                                <th scope="col">Button Value</th>
+                                <th scope="col">Selected Survey</th>
+                                <th scope="col">Display Position</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <c:choose>
+                                <c:when test="${entryMethods.size() > 0}">
+                                    <c:forEach items="${entryMethods}" var="entryMethod">
+                                        <tr>
+                                            <td scope="row">
+                                                ${entryMethod.btnValue}
+                                            </td>
+                                            <td>
+                                                ${entryMethod.surveyTitle}
+                                            </td>
+                                            <td>
+                                                ${entryMethod.dspPos}
+                                            </td>
+                                            <td>
+                                                <div class="pull-right">
+                                                    <a href="#entryMethodModal" data-toggle="modal" class="btn btn-link editEntryMethod" rel="${entryMethod.id}" title="Edit this entry method">
+                                                        <span class="glyphicon glyphicon-edit"></span>
+                                                        Edit
+                                                    </a>
+                                                    <a href="javascript:void(0);"  class="btn btn-link deleteEntryMethod" rel="${entryMethod.id}" title="Delete this entry method">
+                                                        <span class="glyphicon glyphicon-remove"></span>
+                                                        Delete
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
+                                </c:when>
+                                <c:otherwise><tr><td scope="row" colspan="4" style="text-align:center">No Entry Methods Found</td></c:otherwise>
+                                </c:choose>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </section>
+
+        <section class="panel panel-default">
+            <div class="panel-heading">
+                <div class="pull-right">
+                    <a href="#surveyTableModal" data-toggle="modal" class="btn btn-primary btn-xs btn-action" id="createNewSurveyTable" title="Add New Table">Add New Table</a>
+                </div>
+                <h3 class="panel-title">Available Tables for Survey Drop Down Questions</h3>
+            </div>
+            <div class="panel-body">
+                <div class="form-container scrollable">
+                    <table class="table table-striped table-hover responsive">
+                        <thead>
+                            <tr>
+                                <th scope="col">Table Name</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <c:choose>
+                                <c:when test="${availableTables.size() > 0}">
+                                    <c:forEach items="${availableTables}" var="availableTable">
+                                        <tr>
+                                            <td scope="row">
+                                                ${availableTable.tableName}
+                                            </td>
+                                            <td>
+                                                <div class="pull-right">
+                                                    <a href="#availTableModal" data-toggle="modal" class="btn btn-link editTable" rel="${availableTable.id}" title="Edit">
+                                                        <span class="glyphicon glyphicon-edit"></span>
+                                                        Edit
+                                                    </a>
+                                                    <a href="javascript:void(0);"  class="btn btn-link deleteTable" rel="${availableTable.id}" title="Delete">
+                                                        <span class="glyphicon glyphicon-remove"></span>
+                                                        Delete
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
+                                </c:when>
+                                <c:otherwise><tr><td scope="row" colspan="2" style="text-align:center">No Associated Tables Found</td></c:otherwise>
+                                </c:choose>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </section>
+
+
     </div>
 </div>
 
+<!-- Program Entry Method modal -->
+<div class="modal fade" id="entryMethodModal" role="dialog" tabindex="-1" aria-labeledby="Add New Patient Entry Method" aria-hidden="true" aria-describedby="Add New Patient Entry Method"></div>
+<div class="modal fade" id="surveyTableModal" role="dialog" tabindex="-1" aria-labeledby="Add New Table" aria-hidden="true" aria-describedby="Add New Table"></div>
 

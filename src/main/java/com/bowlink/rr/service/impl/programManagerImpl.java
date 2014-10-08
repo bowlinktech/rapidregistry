@@ -7,16 +7,18 @@
 package com.bowlink.rr.service.impl;
 
 import com.bowlink.rr.dao.programDAO;
-import com.bowlink.rr.model.patientSharing;
 import com.bowlink.rr.model.program;
 import com.bowlink.rr.model.programActivityCodes;
-import com.bowlink.rr.model.programDemoDataElements;
-import com.bowlink.rr.model.programHealthDataElements;
-import com.bowlink.rr.model.programMPI;
-import com.bowlink.rr.model.programMPIFields;
+import com.bowlink.rr.model.programPatientFields;
+import com.bowlink.rr.model.programEngagementFields;
+import com.bowlink.rr.model.programMCIAlgorithms;
+import com.bowlink.rr.model.programMCIFields;
 import com.bowlink.rr.model.programModules;
 import com.bowlink.rr.model.programReports;
 import com.bowlink.rr.model.programAdmin;
+import com.bowlink.rr.model.programAvailableTables;
+import com.bowlink.rr.model.programPatientEntryMethods;
+import com.bowlink.rr.model.programPatientSections;
 import com.bowlink.rr.service.programManager;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,63 +89,46 @@ public class programManagerImpl implements programManager {
         return programDAO.getOtherPrograms(programId);
     }
     
+    
     @Override
     @Transactional
-    public  List<Integer> getSharedPrograms(Integer programId) throws Exception {
-        return programDAO.getSharedPrograms(programId);
+    public List<programPatientSections> getPatientSections(Integer programId) throws Exception {
+        return getPatientSections(programId);
     }
     
     @Override
     @Transactional
-    public void savePatientSharing(patientSharing newpatientshare) throws Exception {
-        programDAO.savePatientSharing(newpatientshare);
+    public List<programPatientFields> getPatientFieldsByProgramId(Integer programId) throws Exception {
+        return getPatientFieldsByProgramId(programId);
     }
     
     @Override
     @Transactional
-    public void deletePatientSharing(Integer programId) throws Exception {
-        programDAO.deletePatientSharing(programId);
+    public programPatientSections getPatientSectionById(Integer sectionId) throws Exception {
+        return getPatientSectionById(sectionId);
     }
     
     @Override
     @Transactional
-    public List<Integer> getProgramModules(Integer programId) throws Exception {
-        return programDAO.getProgramModules(programId);
+    public List<programPatientFields> getPatientFields(Integer programId, Integer sectionId) throws Exception {
+        return programDAO.getPatientFields(programId, sectionId);
     }
     
     @Override
     @Transactional
-    public void saveProgramModules(programModules module) throws Exception {
-        programDAO.saveProgramModules(module);
+    public void deletePatientFields(Integer programId, Integer sectionId) throws Exception {
+        programDAO.deletePatientFields(programId, sectionId);
     }
     
     @Override
     @Transactional
-    public void deleteProgramModules(Integer programId) throws Exception {
-        programDAO.deleteProgramModules(programId);
+    public void savePatientFields(programPatientFields field) throws Exception {
+        programDAO.savePatientFields(field);
     }
     
     @Override
     @Transactional
-    public List<programDemoDataElements> getProgramDemoFields(Integer programId) throws Exception {
-        return programDAO.getProgramDemoFields(programId);
-    }
-    
-    @Override
-    @Transactional
-    public void deleteDemoFields(Integer programId) throws Exception {
-        programDAO.deleteDemoFields(programId);
-    }
-    
-    @Override
-    @Transactional
-    public void saveDemoFields(programDemoDataElements field) throws Exception {
-        programDAO.saveDemoFields(field);
-    }
-    
-    @Override
-    @Transactional
-    public List<programHealthDataElements> getProgramHealthFields(Integer programId) throws Exception {
+    public List<programEngagementFields> getProgramHealthFields(Integer programId) throws Exception {
         return programDAO.getProgramHealthFields(programId);
     }
     
@@ -155,7 +140,7 @@ public class programManagerImpl implements programManager {
     
     @Override
     @Transactional
-    public void saveHealthFields(programHealthDataElements field) throws Exception {
+    public void saveHealthFields(programEngagementFields field) throws Exception {
         programDAO.saveHealthFields(field);
     }
     
@@ -197,38 +182,38 @@ public class programManagerImpl implements programManager {
     
     @Override
     @Transactional
-    public List<programMPI> getProgramMPIAlgorithms(Integer programId) throws Exception {
-        return programDAO.getProgramMPIAlgorithms(programId);
+    public List<programMCIAlgorithms> getProgramMCIAlgorithms(Integer programId) throws Exception {
+        return programDAO.getProgramMCIAlgorithms(programId);
     }
     
     @Override
     @Transactional
-    public List<programMPIFields> getProgramMPIFields(Integer mpiId) throws Exception {
-        return programDAO.getProgramMPIFields(mpiId);
+    public List<programMCIFields> getProgramMCIFields(Integer mciId) throws Exception {
+        return programDAO.getProgramMCIFields(mciId);
     }
     
     @Override
     @Transactional
-    public Integer createMPIAlgorithm(programMPI newMPIAlgorithm) throws Exception {
-        return programDAO.createMPIAlgorithm(newMPIAlgorithm);
+    public Integer createMCIAlgorithm(programMCIAlgorithms newMCIAlgorithm) throws Exception {
+        return programDAO.createMCIAlgorithm(newMCIAlgorithm);
     }
     
     @Override
     @Transactional
-    public void updateMPIAlgorithm(programMPI MPIAlgorithm) throws Exception {
-        programDAO.updateMPIAlgorithm(MPIAlgorithm);
+    public void updateMCIAlgorithm(programMCIAlgorithms MCIAlgorithm) throws Exception {
+        programDAO.updateMCIAlgorithm(MCIAlgorithm);
     }
     
     @Override
     @Transactional
-    public void createMPIAlgorithmFields(programMPIFields newField) throws Exception {
-        programDAO.createMPIAlgorithmFields(newField);
+    public void createMCIAlgorithmFields(programMCIFields newField) throws Exception {
+        programDAO.createMCIAlgorithmFields(newField);
     }
     
     @Override
     @Transactional
-    public programMPI getMPIAlgorithm(Integer mpiId) throws Exception {
-        return programDAO.getMPIAlgorithm(mpiId);
+    public programMCIAlgorithms getMCIAlgorithm(Integer mciId) throws Exception {
+        return programDAO.getMCIAlgorithm(mciId);
     }
     
     @Override
@@ -253,6 +238,24 @@ public class programManagerImpl implements programManager {
     @Transactional
     public void removeAdminProgram(Integer programId, Integer adminid) throws Exception {
         programDAO.removeAdminProgram(programId, adminid);
+    }
+    
+    @Override
+    @Transactional
+    public List<programPatientEntryMethods> getPatientEntryMethods(Integer programId) throws Exception {
+        return programDAO.getPatientEntryMethods(programId);
+    }
+    
+    @Override
+    @Transactional
+    public List<programAvailableTables> getAvailableTablesForSurveys(Integer programId) throws Exception {
+        return programDAO.getAvailableTablesForSurveys(programId);
+    }
+    
+    @Override
+    @Transactional
+    public void saveProgramAvailableTables(programAvailableTables availableTable) throws Exception {
+        programDAO.saveProgramAvailableTables(availableTable);
     }
 
 }

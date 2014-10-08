@@ -21,8 +21,8 @@ import org.springframework.format.annotation.DateTimeFormat;
  * @author chadmccue
  */
 @Entity
-@Table(name = "PROGRAMPATIENTDEMOFIELDS")
-public class programDemoDataElements {
+@Table(name = "PROGRAM_PATIENTFIELDS")
+public class programPatientFields {
     
     @Transient
     private String fieldName;
@@ -40,6 +40,9 @@ public class programDemoDataElements {
     
     @Column(name = "PROGRAMID", nullable = false)
     private int programId;
+    
+    @Column(name = "SECTIONID", nullable = false)
+    private int sectionId = 0;
     
     @Column(name = "FIELDID", nullable = false)
     private int fieldId = 0;
@@ -59,6 +62,12 @@ public class programDemoDataElements {
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
     @Column(name = "DATECREATED", nullable = true)
     private Date dateCreated = new Date();
+    
+    @Column(name = "FIELDDISPLAYNAME", nullable = true)
+    private String fieldDisplayname = "";
+    
+    @Column(name = "DATAGRIDCOLUMN", nullable = false)
+    private boolean dataGridColumn = false;
 
     public int getId() {
         return id;
@@ -147,7 +156,29 @@ public class programDemoDataElements {
     public void setValidationName(String validationName) {
         this.validationName = validationName;
     }
-    
-    
+
+    public String getFieldDisplayname() {
+        return fieldDisplayname;
+    }
+
+    public void setFieldDisplayname(String fieldDisplayname) {
+        this.fieldDisplayname = fieldDisplayname;
+    }
+
+    public int getSectionId() {
+        return sectionId;
+    }
+
+    public void setSectionId(int sectionId) {
+        this.sectionId = sectionId;
+    }
+
+    public boolean isDataGridColumn() {
+        return dataGridColumn;
+    }
+
+    public void setDataGridColumn(boolean dataGridColumn) {
+        this.dataGridColumn = dataGridColumn;
+    }
     
 }

@@ -8,8 +8,7 @@ package com.bowlink.rr.service.impl;
 
 import com.bowlink.rr.dao.dataElementDAO;
 import com.bowlink.rr.model.crosswalks;
-import com.bowlink.rr.model.demoDataElements;
-import com.bowlink.rr.model.healthDataElements;
+import com.bowlink.rr.model.dataElements;
 import com.bowlink.rr.reference.fileSystem;
 import com.bowlink.rr.service.dataElementManager;
 import java.io.BufferedReader;
@@ -44,14 +43,8 @@ public class dataElementManagerImpl implements dataElementManager {
     
     @Override
     @Transactional
-    public List<demoDataElements> getDemoDataElements() throws Exception {
-        return dataElementDAO.getDemoDataElements();
-    }
-    
-    @Override
-    @Transactional
-    public List<healthDataElements> getHealthDataElements() throws Exception {
-        return dataElementDAO.getHealthDataElements();
+    public List<dataElements> getdataElements() throws Exception {
+        return dataElementDAO.getdataElements();
     }
     
     @Override
@@ -68,14 +61,8 @@ public class dataElementManagerImpl implements dataElementManager {
     
     @Override
     @Transactional
-    public String getDemoFieldName(int fieldId) {
-        return dataElementDAO.getDemoFieldName(fieldId);
-    }
-    
-    @Override
-    @Transactional
-    public String getHealthFieldName(int fieldId) {
-        return dataElementDAO.getHealthFieldName(fieldId);
+    public String getfieldName(int fieldId) {
+        return dataElementDAO.getfieldName(fieldId);
     }
     
     @Override
@@ -267,32 +254,28 @@ public class dataElementManagerImpl implements dataElementManager {
     @SuppressWarnings("rawtypes")
     @Override
     @Transactional
+    public List getAllTables() {
+        return dataElementDAO.getAllTables();
+    }
+    
+    @SuppressWarnings("rawtypes")
+    @Override
+    @Transactional
     public List getTableColumns(String tableName) {
         return dataElementDAO.getTableColumns(tableName);
     }
     
     @Override
     @Transactional
-    public void saveDemoField(demoDataElements formField) throws Exception {
-        dataElementDAO.saveDemoField(formField);
+    public void saveField(dataElements formField) throws Exception {
+        dataElementDAO.saveField(formField);
     }
+    
     
     @Override
     @Transactional
-    public void saveHealthField(healthDataElements formField) throws Exception {
-        dataElementDAO.saveHealthField(formField);
-    }
-    
-    @Override
-    @Transactional
-    public demoDataElements getDemoFieldDetails(Integer fieldId) throws Exception {
-        return dataElementDAO.getDemoFieldDetails(fieldId);
-    }
-    
-    @Override
-    @Transactional
-    public healthDataElements getHealthFieldDetails(Integer fieldId) throws Exception {
-        return dataElementDAO.getHealthFieldDetails(fieldId);
+    public dataElements getFieldDetails(Integer fieldId) throws Exception {
+        return dataElementDAO.getFieldDetails(fieldId);
     }
     
  }

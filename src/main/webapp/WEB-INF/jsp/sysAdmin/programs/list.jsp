@@ -23,24 +23,29 @@
                 <div class="alert alert-success">
                     <strong>Success!</strong> 
                     <c:choose>
-                        <c:when test="${param.msg == 'updated'}">The program fields have been successfully updated!</c:when>
-                        <c:when test="${param.msg == 'created'}">The crosswalk has been successfully added!</c:when>
+                        <c:when test="${param.msg == 'created'}">The program has been successfully added!</c:when>
                     </c:choose>
                 </div>
             </c:when>
         </c:choose>
 
         <section class="panel panel-default">
+            <div class="panel-heading">
+                <div class="pull-right">
+                    <a href="#newProgramModal" data-toggle="modal" class="btn btn-primary btn-xs btn-action" id="createNewProgram" title="Add New Program">Add New Program</a>
+                </div>
+                <h3 class="panel-title">System Users</h3>
+            </div>
             <div class="panel-body">
 
                 <div class="form-container scrollable"><br />
                     <table class="table table-striped table-hover table-default" <c:if test="${not empty programList}">id="dataTable"</c:if>>
-                            <thead>
-                                <tr>
-                                    <th scope="col">Program Name ${result}</th>
-                                    <th scope="col" class="center-text"># of Program Admins</th>
-                                    <th scope="col" class="center-text">Date Created</th>
-                                    <th scope="col"></th>
+                        <thead>
+                            <tr>
+                                <th scope="col">Program Name ${result}</th>
+                                <th scope="col" class="center-text"># of Program Admins</th>
+                                <th scope="col" class="center-text">Date Created</th>
+                                <th scope="col"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -49,14 +54,14 @@
                                     <c:forEach var="program" items="${programList}">
                                         <tr>
                                             <td scope="row">
-                                                <a href="${fn:toLowerCase(fn:replace(program.programName, ' ', '-'))}/" title="Edit this program">${program.programName}</a>
+                                                <a href="programs/${fn:toLowerCase(fn:replace(program.programName, ' ', '-'))}/" title="Edit this program">${program.programName}</a>
                                             </td>
                                             <td class="center-text">
                                                 ${program.totalProgramAdmins}
                                             </td>
                                             <td class="center-text"><fmt:formatDate value="${program.dateCreated}" type="date" pattern="M/dd/yyyy" /></td>
                                             <td class="actions-col">
-                                                <a href="${fn:toLowerCase(fn:replace(program.programName, ' ', '-'))}/" class="btn btn-link" title="Edit this program" role="button">
+                                                <a href="programs/${fn:toLowerCase(fn:replace(program.programName, ' ', '-'))}/" class="btn btn-link" title="Edit this program" role="button">
                                                     <span class="glyphicon glyphicon-edit"></span>
                                                     Edit
                                                 </a>
@@ -75,3 +80,6 @@
         </section>
     </div>
 </div>
+
+<!-- Provider Address modal -->
+<div class="modal fade" id="newProgramModal" role="dialog" tabindex="-1" aria-labeledby="Add New Program" aria-hidden="true" aria-describedby="Add New Program"></div>

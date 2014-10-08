@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.bowlink.rr.model;
 
 import javax.persistence.Column;
@@ -12,13 +11,18 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
 /**
  *
  * @author chadmccue
  */
 @Entity
-@Table(name = "PROGRAM_MODULES")
-public class programModules {
+@Table(name = "PROGRAM_PATIENTENTRYMETHODS")
+public class programPatientEntryMethods {
+    
+    @Transient
+    String surveyTitle = "";
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -26,16 +30,16 @@ public class programModules {
     private int id;
     
     @Column(name = "PROGRAMID", nullable = false)
-    private Integer programId = null;
+    private int programId;
     
-    @Column(name = "MODULEID", nullable = false)
-    private Integer moduleId = null;
+    @Column(name = "SURVEYID", nullable = false)
+    private Integer surveyId = 0;
     
-    @Column(name = "DSPPOS", nullable = true)
+    @Column(name = "BTNVALUE", nullable = true)
+    private String btnValue = "";
+    
+    @Column(name = "DISPLAYPOS", nullable = true)
     private int dspPos = 1;
-    
-    @Column(name = "DISPLAYNAME", nullable = true)
-    private String displayName = "";
 
     public int getId() {
         return id;
@@ -45,20 +49,28 @@ public class programModules {
         this.id = id;
     }
 
-    public Integer getProgramId() {
+    public int getProgramId() {
         return programId;
     }
 
-    public void setProgramId(Integer programId) {
+    public void setProgramId(int programId) {
         this.programId = programId;
     }
 
-    public Integer getModuleId() {
-        return moduleId;
+    public Integer getSurveyId() {
+        return surveyId;
     }
 
-    public void setModuleId(Integer moduleId) {
-        this.moduleId = moduleId;
+    public void setSurveyId(Integer surveyId) {
+        this.surveyId = surveyId;
+    }
+
+    public String getBtnValue() {
+        return btnValue;
+    }
+
+    public void setBtnValue(String btnValue) {
+        this.btnValue = btnValue;
     }
 
     public int getDspPos() {
@@ -69,12 +81,12 @@ public class programModules {
         this.dspPos = dspPos;
     }
 
-    public String getDisplayName() {
-        return displayName;
+    public String getSurveyTitle() {
+        return surveyTitle;
     }
 
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
+    public void setSurveyTitle(String surveyTitle) {
+        this.surveyTitle = surveyTitle;
     }
     
 }

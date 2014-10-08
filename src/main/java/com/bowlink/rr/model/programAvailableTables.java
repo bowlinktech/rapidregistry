@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.bowlink.rr.model;
 
 import javax.persistence.Column;
@@ -18,8 +17,8 @@ import javax.persistence.Table;
  * @author chadmccue
  */
 @Entity
-@Table(name = "PROGRAM_REPORTS")
-public class programReports {
+@Table(name = "PROGRAM_AVAILABLETABLESFORSURVEY")
+public class programAvailableTables {
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -27,10 +26,10 @@ public class programReports {
     private int id;
     
     @Column(name = "PROGRAMID", nullable = false)
-    private Integer programId = null;
+    private int programId;
     
-    @Column(name = "REPORTID", nullable = false)
-    private Integer reportId = null;
+    @Column(name = "TABLENAME", nullable = true)
+    private String tableName = "";
 
     public int getId() {
         return id;
@@ -40,20 +39,20 @@ public class programReports {
         this.id = id;
     }
 
-    public Integer getProgramId() {
+    public int getProgramId() {
         return programId;
     }
 
-    public void setProgramId(Integer programId) {
+    public void setProgramId(int programId) {
         this.programId = programId;
     }
 
-    public Integer getReportId() {
-        return reportId;
+    public String getTableName() {
+        return tableName;
     }
 
-    public void setReportId(Integer reportId) {
-        this.reportId = reportId;
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
     }
     
 }

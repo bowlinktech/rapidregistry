@@ -50,6 +50,11 @@
                             </select>
                             <span id="fieldMsg" class="control-label"></span>
                         </div>
+                            <div id="fieldDisplayDiv" class="form-group ${status.error ? 'has-error' : '' }">
+                            <label class="control-label" for="fieldDisplayName">Field Display Name</label>
+                            <input type="text" id="fieldDisplayName" name="fieldDisplayName" class="form-control half" />
+                            <span id="ffieldDisplayMsg" class="control-label"></span>
+                        </div>
                         <div id="crosswalkDiv" class="form-group">
                             <label class="control-label" for="Crosswalk">Field  Crosswalk</label>
                             <select id="crosswalk" class="form-control half">

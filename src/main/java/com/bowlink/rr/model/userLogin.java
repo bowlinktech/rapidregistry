@@ -22,8 +22,8 @@ public class userLogin {
     private int id;
 
     @NotEmpty
-    @Column(name = "USERID", nullable = false)
-    private int userId;
+    @Column(name = "SYSTEMUSERID", nullable = false)
+    private int systemUserId;
 
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
     @Column(name = "DATECREATED", nullable = true)
@@ -37,12 +37,12 @@ public class userLogin {
         this.id = id;
     }
 
-    public int getUserId() {
-        return userId;
+    public int getsystemUserId() {
+        return systemUserId;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setsystemUserId(int systemUserId) {
+        this.systemUserId = systemUserId;
     }
 
     public Date getDateCreated() {

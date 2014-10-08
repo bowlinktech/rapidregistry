@@ -20,8 +20,8 @@ import org.springframework.format.annotation.DateTimeFormat;
  * @author chadmccue
  */
 @Entity
-@Table(name = "PATIENTSHARING")
-public class patientSharing {
+@Table(name = "PROGRAM_PATIENTSHARING")
+public class programPatientSharing {
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

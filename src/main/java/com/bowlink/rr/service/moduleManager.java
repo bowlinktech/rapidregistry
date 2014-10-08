@@ -7,6 +7,7 @@
 package com.bowlink.rr.service;
 
 import com.bowlink.rr.model.modules;
+import com.bowlink.rr.model.programModules;
 import java.util.List;
 
 /**
@@ -18,5 +19,11 @@ public interface moduleManager {
     Integer createModule(modules module) throws Exception;
     
     List<modules> getAllModules() throws Exception;
+    
+    List<Integer> getModulesByProgram(Integer programId) throws Exception;
+    
+    void saveProgramModules(programModules module) throws Exception;
+    
+    void deleteProgramModules(Integer programId) throws Exception;
     
 }
