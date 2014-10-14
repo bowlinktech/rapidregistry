@@ -16,10 +16,12 @@ import com.bowlink.rr.model.programPatientEntryMethods;
 import com.bowlink.rr.model.programPatientSections;
 import com.bowlink.rr.model.programReports;
 import com.bowlink.rr.model.reports;
+import com.bowlink.rr.model.surveys;
 import com.bowlink.rr.service.activityCodeManager;
 import com.bowlink.rr.service.dataElementManager;
 import com.bowlink.rr.service.programManager;
 import com.bowlink.rr.service.reportManager;
+import com.bowlink.rr.service.surveyManager;
 import com.bowlink.rr.service.userManager;
 import java.util.Iterator;
 import java.util.List;
@@ -69,6 +71,9 @@ public class programController {
     
     @Autowired
     userManager usermanager;
+    
+    @Autowired
+    surveyManager surveymanager;
 
     private static List<programPatientFields> patientFields = null;
 
@@ -258,6 +263,93 @@ public class programController {
         }
 
     }
+    
+    /**
+     * The '/entryMethodForm' request will display the form to create/edit a program table association available for surveys to pull off of.
+     *
+     *  @param session
+     * @param redirectAttr
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/entryMethodForm", method = RequestMethod.GET)
+    public @ResponseBody ModelAndView entryMethodForm(@RequestParam Integer id, HttpSession session, RedirectAttributes redirectAttr) throws Exception {
+        
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/sysAdmin/programs/patientEntryForm");
+        
+        programPatientEntryMethods patientEntryMethod;
+        
+        if(id > 0) {
+            Integer maxDspPos = programmanager.getPatientEntryMethods((Integer) session.getAttribute("programId")).size();
+            patientEntryMethod = programmanager.getpatientEntryMethodDetails(id);
+            mav.addObject("modalTitle", "Modify Patient Entry Method");
+            mav.addObject("maxDspPos",maxDspPos);
+        }
+        else {
+            patientEntryMethod = new programPatientEntryMethods();
+            patientEntryMethod.setProgramId((Integer) session.getAttribute("programId"));
+            mav.addObject("modalTitle", "Save Patient Entry Method");
+            mav.addObject("maxDspPos",1);
+        }
+        mav.addObject("programPatientEntryMethods", patientEntryMethod);
+         
+        /* Get a list of surveys in the system */
+        @SuppressWarnings("rawtypes")
+        List<surveys> surveys = surveymanager.getActiveSurveys((Integer) session.getAttribute("programId"));
+        mav.addObject("surveys", surveys);
+        
+        mav.addObject("programName", session.getAttribute("programName"));
+
+        return mav;
+    }     
+    
+    /**
+     * The '/saveEntryMethod' POST request will submit the new program patient entry method.
+     *
+     * @param program	The object holding the patient entry form fields
+     * @param result	The validation result
+     * @param redirectAttr	The variable that will hold values that can be read after the redirect
+     * @param action	The variable that holds which button was pressed
+     *
+     * @throws Exception
+     */
+    @RequestMapping(value = "/saveEntryMethod", method = RequestMethod.POST)
+    public @ResponseBody ModelAndView saveEntryMethod(@Valid programPatientEntryMethods programPatientEntryMethods, BindingResult result, @RequestParam String action, HttpSession session) throws Exception {
+
+        if (result.hasErrors()) {
+            ModelAndView mav = new ModelAndView();
+            mav.setViewName("/sysAdmin/programs/patientEntryForm");
+            return mav;
+        }
+        
+        programmanager.saveProgramPatientEntryMethod(programPatientEntryMethods);
+
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/sysAdmin/programs/patientEntryForm");
+        mav.addObject("programName", session.getAttribute("programName"));
+        mav.addObject("success", "entrySaved");
+        
+        return mav;
+
+    }
+    
+    /**
+     * The '/deleteEntryMethod' POST request will remove the passed in patient entry method for the program.
+     * 
+     * @param id The id of the program entry method.
+     * @param session
+     * @return
+     * @throws Exception 
+     */
+    @RequestMapping(value = "/deleteEntryMethod", method = RequestMethod.POST)
+    public @ResponseBody String deleteEntryMethod(@RequestParam Integer id, HttpSession session) throws Exception {
+
+        programmanager.deletePatientEntryMethod(id);
+
+        return (String) session.getAttribute("programName");
+
+    }
 
     
     /**
@@ -279,7 +371,7 @@ public class programController {
         programAvailableTables availableTable;
         
         if(id > 0) {
-            availableTable = new programAvailableTables();
+            availableTable = programmanager.getProgramAvailableTable(id);
             mav.addObject("modalTitle", "Modify Available Survey Table");
         }
         else {
@@ -302,18 +394,17 @@ public class programController {
     
     
     /**
-     * The '/saveAvailableTables' POST request will submit the new program once all required fields are checked, the system will also check to make sure the program name is not already in use.
+     * The '/saveAvailableTables' POST request will submit the program available tables for survey form.
      *
      * @param program	The object holding the program form fields
      * @param result	The validation result
      * @param redirectAttr	The variable that will hold values that can be read after the redirect
      * @param action	The variable that holds which button was pressed
      *
-     * @return	Will return the organization list page on "Save & Close" Will return the organization details page on "Save" Will return the organization create page on error
      * @throws Exception
      */
     @RequestMapping(value = "/saveAvailableTables", method = RequestMethod.POST)
-    public @ResponseBody ModelAndView saveNewProgram(@Valid programAvailableTables programAvailableTables, BindingResult result, @RequestParam String action, HttpSession session) throws Exception {
+    public @ResponseBody ModelAndView saveAvailableTable(@Valid programAvailableTables programAvailableTables, BindingResult result, @RequestParam String action, HttpSession session) throws Exception {
 
         if (result.hasErrors()) {
             ModelAndView mav = new ModelAndView();
@@ -329,6 +420,23 @@ public class programController {
         mav.addObject("success", "tableSaved");
         
         return mav;
+
+    }
+    
+    /**
+     * The '/deleteAvailableTable' POST request will remove the passed in available table for the program.
+     * 
+     * @param id The id of the program available table association.
+     * @param session
+     * @return
+     * @throws Exception 
+     */
+    @RequestMapping(value = "/deleteAvailableTable", method = RequestMethod.POST)
+    public @ResponseBody String deleteAvailableTable(@RequestParam Integer id, HttpSession session) throws Exception {
+
+        programmanager.deleteProgramAvailableTable(id);
+
+        return (String) session.getAttribute("programName");
 
     }
     

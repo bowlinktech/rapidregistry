@@ -257,5 +257,36 @@ public class programManagerImpl implements programManager {
     public void saveProgramAvailableTables(programAvailableTables availableTable) throws Exception {
         programDAO.saveProgramAvailableTables(availableTable);
     }
+    
+    @Override
+    @Transactional
+    public programAvailableTables getProgramAvailableTable(Integer id) throws Exception {
+        return programDAO.getProgramAvailableTable(id);
+    }
+    
+    @Override
+    @Transactional
+    public void deleteProgramAvailableTable(Integer id) throws Exception {
+        programDAO.deleteProgramAvailableTable(id);
+    }
+    
+    
+    @Override
+    @Transactional
+    public programPatientEntryMethods getpatientEntryMethodDetails(Integer id) throws Exception {
+        return programDAO.getpatientEntryMethodDetails(id);
+    }
+    
+    @Override
+    @Transactional
+    public void saveProgramPatientEntryMethod(programPatientEntryMethods entryMethod) throws Exception {
+        programDAO.saveProgramPatientEntryMethod(entryMethod);
+    }
+    
+    @Override
+    @Transactional
+    public void deletePatientEntryMethod(Integer id) throws Exception {
+        programDAO.deletePatientEntryMethod(id);
+    }
 
 }

@@ -45,7 +45,17 @@ public interface programDAO {
     
     List<programAvailableTables> getAvailableTablesForSurveys(Integer programId) throws Exception;
     
+    programAvailableTables getProgramAvailableTable(Integer id) throws Exception;
+    
     void saveProgramAvailableTables(programAvailableTables availableTable) throws Exception;
+    
+    void deleteProgramAvailableTable(Integer id) throws Exception;
+    
+    programPatientEntryMethods getpatientEntryMethodDetails(Integer id) throws Exception;
+    
+    void saveProgramPatientEntryMethod(programPatientEntryMethods entryMethod) throws Exception;
+    
+    void deletePatientEntryMethod(Integer id) throws Exception;
     
     /** Patient Fields **/
     

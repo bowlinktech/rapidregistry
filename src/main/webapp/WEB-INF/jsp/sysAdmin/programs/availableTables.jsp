@@ -13,7 +13,7 @@
         <div class="modal-body">
             <form:form id="availableTable" commandName="programAvailableTables"  method="post" role="form">
                 <input type="hidden" id="action" name="action" value="save" />
-                <input type="text" id="progamNameURL" value="${programName}" />
+                <input type="hidden" id="progamNameURL" value="${programName}" />
                 <form:hidden path="id" id="id" />
                 <form:hidden path="programId" />
                  <div class="form-group">
@@ -21,9 +21,9 @@
                         <div id="tableNameDiv" class="form-group ${status.error ? 'has-error' : '' }">
                             <label class="control-label" for="tableName">Table Name *</label>
                             <form:select path="tableName" id="tableName" class="form-control half tableName">
-                                <option value="0" label=" - Select - " ></option>
+                                <option value="0" label=" - Select - " >- Select Table - </option>
                                 <c:forEach items="${tables}" varStatus="tname">
-                                    <option value="${tables[tname.index]}" <c:if test="${fn:toLowerCase(availableTable.tableName) == fn:toLowerCase(tables[tname.index])}">selected</c:if>>${tables[tname.index]}</option>
+                                    <option value="${tables[tname.index]}" <c:if test="${fn:toLowerCase(programAvailableTables.tableName) == fn:toLowerCase(tables[tname.index])}">selected</c:if>>${tables[tname.index]}</option>
                                 </c:forEach>
                             </form:select>
                            <span id="tableNameMsg" class="control-label" ></span>         

@@ -16,6 +16,9 @@
                 <strong>Success!</strong> 
                 <c:choose>
                     <c:when test="${param.msg == 'tablesaved'}">The table has been associated to this program!</c:when>
+                    <c:when test="${param.msg == 'tabledeleted'}">The table association has been removed for this program!</c:when>
+                    <c:when test="${param.msg == 'entrysaved'}">The patient entry method has been associated to this program!</c:when>
+                    <c:when test="${param.msg == 'entrydeleted'}">The patient entry method has been removed for this program!</c:when>
                 </c:choose>
             </div>
         </c:if>
@@ -75,7 +78,7 @@
                             <tr>
                                 <th scope="col">Button Value</th>
                                 <th scope="col">Selected Survey</th>
-                                <th scope="col">Display Position</th>
+                                <th scope="col" class="center-text">Display Position</th>
                                 <th scope="col"></th>
                             </tr>
                         </thead>
@@ -88,9 +91,14 @@
                                                 ${entryMethod.btnValue}
                                             </td>
                                             <td>
-                                                ${entryMethod.surveyTitle}
+                                                <c:choose>
+                                                    <c:when test="${entryMethod.surveyTitle != ''}">
+                                                        ${entryMethod.surveyTitle}
+                                                    </c:when>
+                                                    <c:otherwise>N/A</c:otherwise>
+                                                </c:choose>
                                             </td>
-                                            <td>
+                                            <td class="center-text">
                                                 ${entryMethod.dspPos}
                                             </td>
                                             <td>
@@ -143,7 +151,7 @@
                                             </td>
                                             <td>
                                                 <div class="pull-right">
-                                                    <a href="#availTableModal" data-toggle="modal" class="btn btn-link editTable" rel="${availableTable.id}" title="Edit">
+                                                    <a href="#surveyTableModal" data-toggle="modal" class="btn btn-link editTable" rel="${availableTable.id}" title="Edit">
                                                         <span class="glyphicon glyphicon-edit"></span>
                                                         Edit
                                                     </a>

@@ -5,6 +5,7 @@
  */
 package com.bowlink.rr.model;
 
+import com.bowlink.rr.validator.NoHtml;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,6 +13,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.validation.constraints.Min;
+import org.hibernate.validator.constraints.NotEmpty;
 
 /**
  *
@@ -35,9 +38,12 @@ public class programPatientEntryMethods {
     @Column(name = "SURVEYID", nullable = false)
     private Integer surveyId = 0;
     
+    @NotEmpty
+    @NoHtml
     @Column(name = "BTNVALUE", nullable = true)
     private String btnValue = "";
     
+    @Min(1)
     @Column(name = "DISPLAYPOS", nullable = true)
     private int dspPos = 1;
 

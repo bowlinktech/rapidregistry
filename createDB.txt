@@ -123,9 +123,9 @@ CREATE TABLE `engagementSurveys` (
   KEY `patientId_idx` (`programPatientId`),
   KEY `fk_engagementSurveys_systemUserId` (`systemUserId`),
   KEY `fk_engagementSurveys_surveyId` (`surveyId`),
-  CONSTRAINT `fk_engagementSurveys_surveyId` FOREIGN KEY (`surveyId`) REFERENCES `surveys` (`id`),
   CONSTRAINT `fk_engagementSurveys_engageId` FOREIGN KEY (`engagementId`) REFERENCES `patientEngagements` (`id`),
   CONSTRAINT `fk_engagementSurveys_patientId` FOREIGN KEY (`programPatientId`) REFERENCES `programPatients` (`id`),
+  CONSTRAINT `fk_engagementSurveys_surveyId` FOREIGN KEY (`surveyId`) REFERENCES `surveys` (`id`),
   CONSTRAINT `fk_engagementSurveys_systemUserId` FOREIGN KEY (`systemUserId`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -154,8 +154,8 @@ CREATE TABLE `excludedDays` (
   PRIMARY KEY (`id`),
   KEY `programId_idx` (`programId`),
   KEY `calendarId_idx` (`inactiveDayCalendarId`),
-  CONSTRAINT `fk_excludedDays_programId` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`),
-  CONSTRAINT `fk_excludedDays` FOREIGN KEY (`inactiveDayCalendarId`) REFERENCES `inactiveDayCalendar` (`id`)
+  CONSTRAINT `fk_excludedDays` FOREIGN KEY (`inactiveDayCalendarId`) REFERENCES `inactiveDayCalendar` (`id`),
+  CONSTRAINT `fk_excludedDays_programId` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -243,8 +243,8 @@ CREATE TABLE `inactiveDays` (
   PRIMARY KEY (`id`),
   KEY `programId_idx` (`programId`),
   KEY `calendarId_idx` (`inactiveDayCalendarID`),
-  CONSTRAINT `fk_inactiveDays_programId` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`),
-  CONSTRAINT `fk_inactiveDays` FOREIGN KEY (`inactiveDayCalendarID`) REFERENCES `inactiveDayCalendar` (`id`)
+  CONSTRAINT `fk_inactiveDays` FOREIGN KEY (`inactiveDayCalendarID`) REFERENCES `inactiveDayCalendar` (`id`),
+  CONSTRAINT `fk_inactiveDays_programId` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -344,7 +344,7 @@ CREATE TABLE `lu_frequencies` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(45) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -686,9 +686,9 @@ CREATE TABLE `modifiedFields` (
   KEY `patientId_idx` (`programPatientId`),
   KEY `fieldId_idx` (`fieldId`),
   KEY `fk_modifiedFields_userId` (`systemUserId`),
-  CONSTRAINT `fk_modifiedFields_userId` FOREIGN KEY (`systemUserId`) REFERENCES `users` (`id`),
   CONSTRAINT `fk_modifiedFields_fieldId` FOREIGN KEY (`fieldId`) REFERENCES `dataElements` (`id`),
-  CONSTRAINT `fk_modifiedFields_patientId` FOREIGN KEY (`programPatientId`) REFERENCES `programPatients` (`id`)
+  CONSTRAINT `fk_modifiedFields_patientId` FOREIGN KEY (`programPatientId`) REFERENCES `programPatients` (`id`),
+  CONSTRAINT `fk_modifiedFields_userId` FOREIGN KEY (`systemUserId`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -752,10 +752,10 @@ CREATE TABLE `patientActivities` (
   KEY `patientId_idx` (`programPatientId`),
   KEY `fk_patientActivities_codeId` (`activityCodeId`),
   KEY `fk_patientActivities_surveyId` (`surveyId`),
-  CONSTRAINT `fk_patientActivities_surveyId` FOREIGN KEY (`surveyId`) REFERENCES `surveys` (`id`),
   CONSTRAINT `fk_patientActivities_codeId` FOREIGN KEY (`activityCodeId`) REFERENCES `lu_activityCodes` (`id`),
   CONSTRAINT `fk_patientActivities_engageId` FOREIGN KEY (`engagementId`) REFERENCES `patientEngagements` (`id`),
-  CONSTRAINT `fk_patientActivities_patientId` FOREIGN KEY (`programPatientId`) REFERENCES `programPatients` (`id`)
+  CONSTRAINT `fk_patientActivities_patientId` FOREIGN KEY (`programPatientId`) REFERENCES `programPatients` (`id`),
+  CONSTRAINT `fk_patientActivities_surveyId` FOREIGN KEY (`surveyId`) REFERENCES `surveys` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -787,9 +787,9 @@ CREATE TABLE `patientCounselingAppts` (
   KEY `engagementId_idx` (`engagementId`),
   KEY `patientId_idx` (`programPatientId`),
   KEY `_fk_patientCounselingAppts_codeId` (`activityCodeId`),
-  CONSTRAINT `_fk_patientCounselingAppts_codeId` FOREIGN KEY (`activityCodeId`) REFERENCES `lu_activityCodes` (`id`),
   CONSTRAINT `fk_patientCounselingAppts_engageId` FOREIGN KEY (`engagementId`) REFERENCES `patientEngagements` (`id`),
-  CONSTRAINT `fk_patientCounselingAppts_patientId` FOREIGN KEY (`programPatientId`) REFERENCES `programPatients` (`id`)
+  CONSTRAINT `fk_patientCounselingAppts_patientId` FOREIGN KEY (`programPatientId`) REFERENCES `programPatients` (`id`),
+  CONSTRAINT `_fk_patientCounselingAppts_codeId` FOREIGN KEY (`activityCodeId`) REFERENCES `lu_activityCodes` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -852,9 +852,9 @@ CREATE TABLE `patientEngagements` (
   KEY `patientId_idx` (`programPatientId`),
   KEY `fk_patientEngagements_programId` (`programId`),
   KEY `fk_patientEngagements_userId` (`systemUserId`),
-  CONSTRAINT `fk_patientEngagements_userId` FOREIGN KEY (`systemUserId`) REFERENCES `users` (`id`),
   CONSTRAINT `fk_patientEngagements_patientId` FOREIGN KEY (`programPatientId`) REFERENCES `programPatients` (`id`),
-  CONSTRAINT `fk_patientEngagements_programId` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`)
+  CONSTRAINT `fk_patientEngagements_programId` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`),
+  CONSTRAINT `fk_patientEngagements_userId` FOREIGN KEY (`systemUserId`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -954,35 +954,6 @@ CREATE TABLE `programOrgHierarchy_details` (
 LOCK TABLES `programOrgHierarchy_details` WRITE;
 /*!40000 ALTER TABLE `programOrgHierarchy_details` DISABLE KEYS */;
 /*!40000 ALTER TABLE `programOrgHierarchy_details` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `programPatientEngagementFields`
---
-
-DROP TABLE IF EXISTS `programPatientEngagementFields`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `programPatientEngagementFields` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `programId` int(11) NOT NULL,
-  `fieldId` int(11) NOT NULL,
-  `requiredField` bit(1) NOT NULL DEFAULT b'0',
-  `validationId` int(11) NOT NULL,
-  `crosswalkId` int(11) DEFAULT '0',
-  `dspPos` int(11) NOT NULL DEFAULT '1',
-  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `programPatientEngagementFields`
---
-
-LOCK TABLES `programPatientEngagementFields` WRITE;
-/*!40000 ALTER TABLE `programPatientEngagementFields` DISABLE KEYS */;
-/*!40000 ALTER TABLE `programPatientEngagementFields` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -1663,71 +1634,6 @@ LOCK TABLES `programUploads` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `program_activityCodeSchduletoDo`
---
-
-DROP TABLE IF EXISTS `program_activityCodeSchduletoDo`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `program_activityCodeSchduletoDo` (
-  `id` int(11) NOT NULL DEFAULT '0',
-  `activityCodeScheduleId` int(11) NOT NULL,
-  `activityCodeId` int(11) NOT NULL,
-  `action` smallint(255) NOT NULL DEFAULT '1' COMMENT '1 = Add,  2 = Remvoe',
-  `howManyBefore4` int(255) NOT NULL,
-  `howManyTypeIdBefore4` int(255) NOT NULL,
-  `howManyAfter4` int(255) NOT NULL,
-  `howManyTypeIdAfter4` int(255) NOT NULL,
-  `staffMemberId` int(11) NOT NULL,
-  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  KEY `scheduleId_idx` (`activityCodeScheduleId`),
-  KEY `fk_activityCodeSchduleToDo_activityCode` (`activityCodeId`),
-  KEY `fk_activityCodeSchduleToDo_howmanybefore4` (`howManyTypeIdBefore4`),
-  KEY `fk_activityCodeSchduleToDo_howmanyafter4` (`howManyTypeIdAfter4`),
-  CONSTRAINT `fk_activityCodeSchduleToDo_howmanyafter4` FOREIGN KEY (`howManyTypeIdAfter4`) REFERENCES `lu_howManyTypes` (`id`),
-  CONSTRAINT `fk_activityCodeSchduleToDo` FOREIGN KEY (`activityCodeScheduleId`) REFERENCES `program_activityCodeSchedule` (`id`),
-  CONSTRAINT `fk_activityCodeSchduleToDo_activityCode` FOREIGN KEY (`activityCodeId`) REFERENCES `lu_activityCodes` (`id`),
-  CONSTRAINT `fk_activityCodeSchduleToDo_howmanybefore4` FOREIGN KEY (`howManyTypeIdBefore4`) REFERENCES `lu_howManyTypes` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `program_activityCodeSchduletoDo`
---
-
-LOCK TABLES `program_activityCodeSchduletoDo` WRITE;
-/*!40000 ALTER TABLE `program_activityCodeSchduletoDo` DISABLE KEYS */;
-/*!40000 ALTER TABLE `program_activityCodeSchduletoDo` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `program_activityCodeSchedule`
---
-
-DROP TABLE IF EXISTS `program_activityCodeSchedule`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `program_activityCodeSchedule` (
-  `id` int(11) NOT NULL DEFAULT '0',
-  `programActivityCodeId` int(11) NOT NULL,
-  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  KEY `programactivityid_idx` (`programActivityCodeId`),
-  CONSTRAINT `fk_programActivityCodeSchedule` FOREIGN KEY (`programActivityCodeId`) REFERENCES `program_activityCodes` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `program_activityCodeSchedule`
---
-
-LOCK TABLES `program_activityCodeSchedule` WRITE;
-/*!40000 ALTER TABLE `program_activityCodeSchedule` DISABLE KEYS */;
-/*!40000 ALTER TABLE `program_activityCodeSchedule` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `program_activityCodes`
 --
 
@@ -1757,6 +1663,32 @@ LOCK TABLES `program_activityCodes` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `program_availableTablesForSurvey`
+--
+
+DROP TABLE IF EXISTS `program_availableTablesForSurvey`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `program_availableTablesForSurvey` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `programId` int(11) NOT NULL,
+  `tableName` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `program_availableTablesForSurvey`
+--
+
+LOCK TABLES `program_availableTablesForSurvey` WRITE;
+/*!40000 ALTER TABLE `program_availableTablesForSurvey` DISABLE KEYS */;
+INSERT INTO `program_availableTablesForSurvey` VALUES (13,1,'lu_genders');
+/*!40000 ALTER TABLE `program_availableTablesForSurvey` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `program_engagementFields`
 --
 
@@ -1781,11 +1713,11 @@ CREATE TABLE `program_engagementFields` (
   KEY `fk_programEngagementFields_fieldId` (`fieldId`),
   KEY `fk_programEngagementFields_crosswalkId` (`crosswalkId`),
   KEY `fk_programEngagementFields_validationId` (`validationId`),
-  CONSTRAINT `fk_programEngagementFields_validationId` FOREIGN KEY (`validationId`) REFERENCES `lu_validationtypes` (`id`),
   CONSTRAINT `fk_programEngagementFields_crosswalkId` FOREIGN KEY (`crosswalkId`) REFERENCES `crosswalks` (`id`),
   CONSTRAINT `fk_programEngagementFields_fieldId` FOREIGN KEY (`fieldId`) REFERENCES `dataElements` (`id`),
   CONSTRAINT `fk_programEngagementFields_programId` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`),
-  CONSTRAINT `fk_programEngagementFields_section` FOREIGN KEY (`sectionId`) REFERENCES `program_engagementSections` (`id`)
+  CONSTRAINT `fk_programEngagementFields_section` FOREIGN KEY (`sectionId`) REFERENCES `program_engagementSections` (`id`),
+  CONSTRAINT `fk_programEngagementFields_validationId` FOREIGN KEY (`validationId`) REFERENCES `lu_validationtypes` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1955,8 +1887,8 @@ CREATE TABLE `program_modules` (
   PRIMARY KEY (`id`),
   KEY `programId_idx` (`programId`),
   KEY `fk_programModules_moduleId` (`moduleId`),
-  CONSTRAINT `fk_programModules_moduleId` FOREIGN KEY (`moduleId`) REFERENCES `lu_programModules` (`id`),
-  CONSTRAINT `fk_programModules` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`)
+  CONSTRAINT `fk_programModules` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`),
+  CONSTRAINT `fk_programModules_moduleId` FOREIGN KEY (`moduleId`) REFERENCES `lu_programModules` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1977,15 +1909,15 @@ DROP TABLE IF EXISTS `program_patientEntryMethods`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `program_patientEntryMethods` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `programId` int(11) NOT NULL,
   `surveyId` int(11) NOT NULL,
-  `btnValue` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `btnValue` varchar(15) COLLATE utf8_unicode_ci NOT NULL,
   `displayPos` int(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `programId_idx` (`programId`),
   CONSTRAINT `fk_programPatientEntryMethods_programId` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2022,11 +1954,11 @@ CREATE TABLE `program_patientFields` (
   KEY `fk_programPatientFields_fieldId` (`fieldId`),
   KEY `fk_programPatientFields_crosswalkId` (`crosswalkId`),
   KEY `fk_programPatientFields_validationId` (`validationId`),
-  CONSTRAINT `fk_programPatientFields_validationId` FOREIGN KEY (`validationId`) REFERENCES `lu_validationtypes` (`id`),
   CONSTRAINT `fk_programPatientFields_crosswalkId` FOREIGN KEY (`crosswalkId`) REFERENCES `crosswalks` (`id`),
   CONSTRAINT `fk_programPatientFields_fieldId` FOREIGN KEY (`fieldId`) REFERENCES `dataElements` (`id`),
   CONSTRAINT `fk_programPatientFields_programId` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`),
-  CONSTRAINT `fk_programPatientFields_sectionId` FOREIGN KEY (`sectionId`) REFERENCES `program_patientSections` (`id`)
+  CONSTRAINT `fk_programPatientFields_sectionId` FOREIGN KEY (`sectionId`) REFERENCES `program_patientSections` (`id`),
+  CONSTRAINT `fk_programPatientFields_validationId` FOREIGN KEY (`validationId`) REFERENCES `lu_validationtypes` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2142,8 +2074,8 @@ CREATE TABLE `program_patientSharing` (
   PRIMARY KEY (`id`),
   KEY `programId_idx` (`programId`),
   KEY `fk_patientSharing_sharedProgramId` (`sharingProgramId`),
-  CONSTRAINT `fk_patientSharing_sharedProgramId` FOREIGN KEY (`sharingProgramId`) REFERENCES `programs` (`id`),
-  CONSTRAINT `fk_patientSharing_programId` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`)
+  CONSTRAINT `fk_patientSharing_programId` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`),
+  CONSTRAINT `fk_patientSharing_sharedProgramId` FOREIGN KEY (`sharingProgramId`) REFERENCES `programs` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2200,8 +2132,8 @@ CREATE TABLE `program_reports` (
   PRIMARY KEY (`id`),
   KEY `programId_idx` (`programId`),
   KEY `fk_programReports_reportId` (`reportId`),
-  CONSTRAINT `fk_programReports_reportId` FOREIGN KEY (`reportId`) REFERENCES `cannedReports` (`id`),
-  CONSTRAINT `fk_programReports_programId` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`)
+  CONSTRAINT `fk_programReports_programId` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`),
+  CONSTRAINT `fk_programReports_reportId` FOREIGN KEY (`reportId`) REFERENCES `cannedReports` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2228,7 +2160,7 @@ CREATE TABLE `programs` (
   `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `emailAddress` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2237,6 +2169,7 @@ CREATE TABLE `programs` (
 
 LOCK TABLES `programs` WRITE;
 /*!40000 ALTER TABLE `programs` DISABLE KEYS */;
+INSERT INTO `programs` VALUES (1,'MA Quitline','This is the Massachusetts quit-line.','2014-10-06 11:28:22','chadmccue05@gmail.com'),(4,'NH Quitline',NULL,'2014-10-06 01:38:33','test@test.com');
 /*!40000 ALTER TABLE `programs` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2283,7 +2216,7 @@ CREATE TABLE `rel_userLogins` (
   PRIMARY KEY (`id`),
   KEY `userId_idx` (`systemUserId`),
   CONSTRAINT `userId` FOREIGN KEY (`systemUserId`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2503 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2525 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2292,6 +2225,7 @@ CREATE TABLE `rel_userLogins` (
 
 LOCK TABLES `rel_userLogins` WRITE;
 /*!40000 ALTER TABLE `rel_userLogins` DISABLE KEYS */;
+INSERT INTO `rel_userLogins` VALUES (2503,1,'2014-10-06 11:28:15'),(2504,1,'2014-10-06 12:46:52'),(2505,1,'2014-10-06 13:24:35'),(2506,1,'2014-10-06 13:31:54'),(2507,1,'2014-10-06 13:33:15'),(2508,1,'2014-10-06 13:38:30'),(2509,1,'2014-10-07 11:36:08'),(2510,1,'2014-10-07 11:38:27'),(2511,1,'2014-10-07 11:48:23'),(2512,1,'2014-10-07 12:33:57'),(2513,1,'2014-10-07 12:44:14'),(2514,1,'2014-10-07 13:30:58'),(2515,1,'2014-10-07 13:46:33'),(2516,1,'2014-10-07 14:36:53'),(2517,1,'2014-10-07 14:45:35'),(2518,1,'2014-10-14 10:54:30'),(2519,1,'2014-10-14 11:11:47'),(2520,1,'2014-10-14 11:28:41'),(2521,1,'2014-10-14 12:14:55'),(2522,1,'2014-10-14 12:21:06'),(2523,1,'2014-10-14 13:23:44'),(2524,1,'2014-10-14 13:29:14');
 /*!40000 ALTER TABLE `rel_userLogins` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2339,8 +2273,8 @@ CREATE TABLE `storage_insuranceInfo` (
   PRIMARY KEY (`id`),
   KEY `engagementId_idx` (`engagementId`),
   KEY `fk_storage_insuranceInfo_public` (`publicInsurance`),
-  CONSTRAINT `fk_storage_insuranceInfo_public` FOREIGN KEY (`publicInsurance`) REFERENCES `lu_insuranceCarriers` (`id`),
-  CONSTRAINT `fk_storage_insuranceInfo_engageId` FOREIGN KEY (`engagementId`) REFERENCES `patientEngagements` (`id`)
+  CONSTRAINT `fk_storage_insuranceInfo_engageId` FOREIGN KEY (`engagementId`) REFERENCES `patientEngagements` (`id`),
+  CONSTRAINT `fk_storage_insuranceInfo_public` FOREIGN KEY (`publicInsurance`) REFERENCES `lu_insuranceCarriers` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2377,8 +2311,8 @@ CREATE TABLE `storage_patientAddressInfo` (
   KEY `patientId_idx` (`programpatientId`),
   KEY `fk_storage_patientAddress_phonetype` (`phoneType1`),
   KEY `fk_storage_patientAddressInfo_phonetype2` (`phoneType2`),
-  CONSTRAINT `fk_storage_patientAddressInfo_phonetype2` FOREIGN KEY (`phoneType2`) REFERENCES `lu_phoneTypes` (`id`),
   CONSTRAINT `fk_storage_patientAddress` FOREIGN KEY (`programpatientId`) REFERENCES `programPatients` (`id`),
+  CONSTRAINT `fk_storage_patientAddressInfo_phonetype2` FOREIGN KEY (`phoneType2`) REFERENCES `lu_phoneTypes` (`id`),
   CONSTRAINT `fk_storage_patientAddress_phonetype` FOREIGN KEY (`phoneType1`) REFERENCES `lu_phoneTypes` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -2434,12 +2368,12 @@ CREATE TABLE `storage_patients` (
   KEY `martialStatusFK_idx` (`maritalStatusId`),
   KEY `hispanicFK_idx` (`hispanicId`),
   KEY `patientFK_idx` (`programpatientId`),
-  CONSTRAINT `raceFK` FOREIGN KEY (`raceId`) REFERENCES `lu_races` (`id`),
   CONSTRAINT `genderFK` FOREIGN KEY (`genderId`) REFERENCES `lu_genders` (`id`),
   CONSTRAINT `hispanicFK` FOREIGN KEY (`hispanicId`) REFERENCES `lu_hispanics` (`id`),
   CONSTRAINT `lauguageFK` FOREIGN KEY (`primaryLanguageId`) REFERENCES `lu_languages` (`id`),
   CONSTRAINT `martialStatusFK` FOREIGN KEY (`maritalStatusId`) REFERENCES `lu_maritalStatuses` (`id`),
-  CONSTRAINT `patientFK` FOREIGN KEY (`programpatientId`) REFERENCES `programPatients` (`id`)
+  CONSTRAINT `patientFK` FOREIGN KEY (`programpatientId`) REFERENCES `programPatients` (`id`),
+  CONSTRAINT `raceFK` FOREIGN KEY (`raceId`) REFERENCES `lu_races` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2468,8 +2402,8 @@ CREATE TABLE `storage_tobaccoUse` (
   PRIMARY KEY (`id`),
   KEY `engagementId_idx` (`engagementId`),
   KEY `fk_storage_tobaccoUse_typeId` (`type`),
-  CONSTRAINT `fk_storage_tobaccoUse_typeId` FOREIGN KEY (`type`) REFERENCES `lu_tobaccoTypes` (`id`),
-  CONSTRAINT `fk_storage_tobaccoUse_engageId` FOREIGN KEY (`engagementId`) REFERENCES `patientEngagements` (`id`)
+  CONSTRAINT `fk_storage_tobaccoUse_engageId` FOREIGN KEY (`engagementId`) REFERENCES `patientEngagements` (`id`),
+  CONSTRAINT `fk_storage_tobaccoUse_typeId` FOREIGN KEY (`type`) REFERENCES `lu_tobaccoTypes` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2611,7 +2545,6 @@ CREATE TABLE `survey_questions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `hide` bit(1) NOT NULL DEFAULT b'0',
   `required` bit(1) NOT NULL DEFAULT b'0',
-  `readOnly` bit(1) NOT NULL DEFAULT b'0',
   `dspQuestionId` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `question` text COLLATE utf8_unicode_ci NOT NULL,
   `surveyPageId` int(11) NOT NULL,
@@ -2677,7 +2610,9 @@ CREATE TABLE `surveys` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `programId` int(11) NOT NULL,
   `status` bit(1) NOT NULL DEFAULT b'1',
-  `requieEngagement` bit(1) NOT NULL DEFAULT b'1',
+  `requireEngagement` bit(1) NOT NULL DEFAULT b'1',
+  `allowEngagement` varchar(45) COLLATE utf8_unicode_ci DEFAULT 'b''1''',
+  `duplicatesAllowed` varchar(45) COLLATE utf8_unicode_ci DEFAULT 'b''1''',
   `title` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `doneButtonText` varchar(30) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'Done',
   `nextButtonText` varchar(30) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'Next',
@@ -2687,6 +2622,7 @@ CREATE TABLE `surveys` (
   `activityCodeId` int(11) DEFAULT '0',
   `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `dateModified` datetime DEFAULT CURRENT_TIMESTAMP,
+  `surveyscol` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `surveyId_idx` (`id`),
   KEY `programId_idx` (`programId`)
@@ -2745,8 +2681,8 @@ CREATE TABLE `user_permissions` (
   PRIMARY KEY (`id`),
   KEY `userId_idx` (`systemUserId`),
   KEY `fk_userPermissions_moduleId` (`moduleId`),
-  CONSTRAINT `fk_userPermissions_moduleId` FOREIGN KEY (`moduleId`) REFERENCES `lu_programModules` (`id`),
-  CONSTRAINT `fk_userPermissions` FOREIGN KEY (`systemUserId`) REFERENCES `users` (`id`)
+  CONSTRAINT `fk_userPermissions` FOREIGN KEY (`systemUserId`) REFERENCES `users` (`id`),
+  CONSTRAINT `fk_userPermissions_moduleId` FOREIGN KEY (`moduleId`) REFERENCES `lu_programModules` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2777,7 +2713,7 @@ CREATE TABLE `user_programs` (
   KEY `fk_userPrograms_programId` (`programId`),
   CONSTRAINT `fk_userPrograms_programId` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`),
   CONSTRAINT `fk_userPrograms_userid` FOREIGN KEY (`systemUserId`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2859,7 +2795,6 @@ CREATE TABLE `users` (
   `status` bit(1) NOT NULL DEFAULT b'1',
   `firstName` varchar(55) COLLATE utf8_unicode_ci NOT NULL,
   `lastName` varchar(55) COLLATE utf8_unicode_ci NOT NULL,
-  `username` varchar(15) COLLATE utf8_unicode_ci NOT NULL,
   `password` varchar(15) COLLATE utf8_unicode_ci DEFAULT NULL,
   `email` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `createdBy` int(11) NOT NULL DEFAULT '0',
@@ -2869,7 +2804,7 @@ CREATE TABLE `users` (
   KEY `userRoleId_idx` (`roleId`),
   KEY `userId_idx` (`id`),
   CONSTRAINT `userRoleId` FOREIGN KEY (`roleId`) REFERENCES `user_roles` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2878,7 +2813,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,0,1,'','Chad','McCue','admin','!sysadmin!','chadmccue05@gmail.com',0,'2014-08-07 10:56:34',NULL);
+INSERT INTO `users` VALUES (1,0,1,'','Chad','McCue','!sysadmin!','chadmccue05@gmail.com',0,'2014-08-07 10:56:34',NULL);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2895,4 +2830,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-10-06  9:34:57
+-- Dump completed on 2014-10-14 13:51:13

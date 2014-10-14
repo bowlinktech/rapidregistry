@@ -6,14 +6,12 @@
 
 package com.bowlink.rr.service;
 
-import com.bowlink.rr.model.programPatientSharing;
 import com.bowlink.rr.model.program;
 import com.bowlink.rr.model.programActivityCodes;
 import com.bowlink.rr.model.programPatientFields;
 import com.bowlink.rr.model.programEngagementFields;
 import com.bowlink.rr.model.programMCIAlgorithms;
 import com.bowlink.rr.model.programMCIFields;
-import com.bowlink.rr.model.programModules;
 import com.bowlink.rr.model.programReports;
 import com.bowlink.rr.model.programAdmin;
 import com.bowlink.rr.model.programAvailableTables;
@@ -45,7 +43,17 @@ public interface programManager {
     
     List<programAvailableTables> getAvailableTablesForSurveys(Integer programId) throws Exception;
     
+    programAvailableTables getProgramAvailableTable(Integer id) throws Exception;
+    
     void saveProgramAvailableTables(programAvailableTables availableTable) throws Exception;
+    
+    void deleteProgramAvailableTable(Integer id) throws Exception;
+    
+    programPatientEntryMethods getpatientEntryMethodDetails(Integer id) throws Exception;
+    
+    void saveProgramPatientEntryMethod(programPatientEntryMethods entryMethod) throws Exception;
+    
+    void deletePatientEntryMethod(Integer id) throws Exception;
     
     
     /** Patient Fields **/

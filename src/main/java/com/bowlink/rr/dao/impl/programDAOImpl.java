@@ -26,6 +26,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -580,4 +581,67 @@ public class programDAOImpl implements programDAO {
     public void saveProgramAvailableTables(programAvailableTables availableTable) throws Exception {
         sessionFactory.getCurrentSession().saveOrUpdate(availableTable);
     }
+    
+    
+    /**
+     * The 'getProgramAvailableTable' function will return the saved table for the passed in id.
+     * 
+     * @param id The selected survey table id
+     * @return
+     * @throws Exception 
+     */
+    @Override
+    public programAvailableTables getProgramAvailableTable(Integer id) throws Exception {
+        return (programAvailableTables) sessionFactory.getCurrentSession().get(programAvailableTables.class, id); 
+    }
+    
+    /**
+     * The 'deleteProgramAvaiableTable' function will remove the association between the program and the table
+     * 
+     * @param id The association id for the program and the table.
+     * @throws Exception 
+     */
+    @Override
+    public void deleteProgramAvailableTable(Integer id) throws Exception {
+        Query removeProgramTable = sessionFactory.getCurrentSession().createQuery("delete from programAvailableTables where id = :Id");
+        removeProgramTable.setParameter("Id", id);
+        removeProgramTable.executeUpdate();
+    }
+    
+    /**
+     * The 'getpatientEntryMethod' function will return the entry method for the clicked item.
+     * 
+     * @param id The id of the clicked entry method.
+     * @return  This function will return a programPatientEntryMethods object
+     * @throws Exception 
+     */
+    @Override
+    public programPatientEntryMethods getpatientEntryMethodDetails(Integer id) throws Exception {
+        return (programPatientEntryMethods) sessionFactory.getCurrentSession().get(programPatientEntryMethods.class, id); 
+    }
+    
+    /**
+     * The 'saveProgramPatientEntryMethod' function will save the passed in entry method.
+     * 
+     * @param entryMethod   The object holding the entry method values.
+     * @throws Exception 
+     */
+    @Override
+    public void saveProgramPatientEntryMethod(programPatientEntryMethods entryMethod) throws Exception {
+        sessionFactory.getCurrentSession().saveOrUpdate(entryMethod);
+    }
+    
+    /**
+     * The 'deletePatientEntryMethod' function will remove the clicked program patient entry method.
+     * 
+     * @param id    The id of the clicked patient entry method.
+     * @throws Exception 
+     */
+    @Override
+    public void deletePatientEntryMethod(Integer id) throws Exception {
+        Query removeEntryMethod = sessionFactory.getCurrentSession().createQuery("delete from programPatientEntryMethods where id = :Id");
+        removeEntryMethod.setParameter("Id", id);
+        removeEntryMethod.executeUpdate();
+    }
+    
 }
