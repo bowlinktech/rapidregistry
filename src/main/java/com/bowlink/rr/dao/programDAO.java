@@ -57,21 +57,6 @@ public interface programDAO {
     
     void deletePatientEntryMethod(Integer id) throws Exception;
     
-    /** Patient Fields **/
-    
-    List<programPatientSections> getPatientSections(Integer programId) throws Exception;
-    
-    List<programPatientFields> getPatientFieldsByProgramId(Integer programId) throws Exception;
-    
-    programPatientSections getPatientSectionById(Integer sectionId) throws Exception;
-    
-    List<programPatientFields> getPatientFields(Integer programId, Integer sectionId) throws Exception;
-    
-    void deletePatientFields(Integer programId, Integer SectionId) throws Exception;
-    
-    void savePatientFields(programPatientFields field) throws Exception;
-    
-    
     /** Engagement Fields **/
     
     List<programEngagementFields> getProgramHealthFields(Integer programId) throws Exception;

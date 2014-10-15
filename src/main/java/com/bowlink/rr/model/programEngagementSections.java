@@ -30,6 +30,9 @@ public class programEngagementSections {
     @Column(name = "PROGRAMID", nullable = false)
     private int programId;
     
+    @Column(name = "STATUS", nullable = false)
+    private boolean status = true;
+    
     @Column(name = "SECTIONNAME", nullable = true)
     private String sectionName = "";
     
@@ -46,6 +49,14 @@ public class programEngagementSections {
 
     public void setId(int id) {
         this.id = id;
+    }
+    
+    public boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
     }
 
     public int getProgramId() {

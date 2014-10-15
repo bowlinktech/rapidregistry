@@ -54,14 +54,14 @@
                                     <c:forEach var="program" items="${programList}">
                                         <tr>
                                             <td scope="row">
-                                                <a href="programs/${fn:toLowerCase(fn:replace(program.programName, ' ', '-'))}/" title="Edit this program">${program.programName}</a>
+                                                <a href="programs/${fn:toLowerCase(fn:replace(program.programName, ' ', '-'))}/details" title="Edit this program">${program.programName}</a>
                                             </td>
                                             <td class="center-text">
                                                 ${program.totalProgramAdmins}
                                             </td>
                                             <td class="center-text"><fmt:formatDate value="${program.dateCreated}" type="date" pattern="M/dd/yyyy" /></td>
                                             <td class="actions-col">
-                                                <a href="programs/${fn:toLowerCase(fn:replace(program.programName, ' ', '-'))}/" class="btn btn-link" title="Edit this program" role="button">
+                                                <a href="programs/${fn:toLowerCase(fn:replace(program.programName, ' ', '-'))}/details" class="btn btn-link" title="Edit this program" role="button">
                                                     <span class="glyphicon glyphicon-edit"></span>
                                                     Edit
                                                 </a>

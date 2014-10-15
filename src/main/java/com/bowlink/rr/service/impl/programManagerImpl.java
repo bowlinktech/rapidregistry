@@ -92,42 +92,6 @@ public class programManagerImpl implements programManager {
     
     @Override
     @Transactional
-    public List<programPatientSections> getPatientSections(Integer programId) throws Exception {
-        return getPatientSections(programId);
-    }
-    
-    @Override
-    @Transactional
-    public List<programPatientFields> getPatientFieldsByProgramId(Integer programId) throws Exception {
-        return getPatientFieldsByProgramId(programId);
-    }
-    
-    @Override
-    @Transactional
-    public programPatientSections getPatientSectionById(Integer sectionId) throws Exception {
-        return getPatientSectionById(sectionId);
-    }
-    
-    @Override
-    @Transactional
-    public List<programPatientFields> getPatientFields(Integer programId, Integer sectionId) throws Exception {
-        return programDAO.getPatientFields(programId, sectionId);
-    }
-    
-    @Override
-    @Transactional
-    public void deletePatientFields(Integer programId, Integer sectionId) throws Exception {
-        programDAO.deletePatientFields(programId, sectionId);
-    }
-    
-    @Override
-    @Transactional
-    public void savePatientFields(programPatientFields field) throws Exception {
-        programDAO.savePatientFields(field);
-    }
-    
-    @Override
-    @Transactional
     public List<programEngagementFields> getProgramHealthFields(Integer programId) throws Exception {
         return programDAO.getProgramHealthFields(programId);
     }
