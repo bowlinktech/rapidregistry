@@ -31,7 +31,6 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -69,10 +68,7 @@ public class programController {
     @Autowired
     surveyManager surveymanager;
 
-    private static List<programPatientFields> patientFields = null;
-
-    private static List<programEngagementFields> engagementFields = null;
-
+    
     /**
      * The '' request will serve up the administrator dashboard after a successful login.
      *
@@ -284,7 +280,8 @@ public class programController {
             patientEntryMethod = new programPatientEntryMethods();
             patientEntryMethod.setProgramId((Integer) session.getAttribute("programId"));
             mav.addObject("modalTitle", "Save Patient Entry Method");
-            mav.addObject("maxDspPos",1);
+            Integer maxDspPos = programmanager.getPatientEntryMethods((Integer) session.getAttribute("programId")).size()+1;
+            mav.addObject("maxDspPos",maxDspPos);
         }
         mav.addObject("programPatientEntryMethods", patientEntryMethod);
          

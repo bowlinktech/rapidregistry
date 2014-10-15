@@ -5,6 +5,7 @@
  */
 package com.bowlink.rr.model;
 
+import com.bowlink.rr.validator.NoHtml;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
 
 /**
@@ -33,6 +35,8 @@ public class programEngagementSections {
     @Column(name = "STATUS", nullable = false)
     private boolean status = true;
     
+    @NotEmpty
+    @NoHtml
     @Column(name = "SECTIONNAME", nullable = true)
     private String sectionName = "";
     

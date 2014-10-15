@@ -5,6 +5,8 @@
  */
 package com.bowlink.rr.service;
 
+import com.bowlink.rr.model.programEngagementFields;
+import com.bowlink.rr.model.programEngagementSections;
 import com.bowlink.rr.model.programPatientFields;
 import com.bowlink.rr.model.programPatientSections;
 import java.util.List;
@@ -27,5 +29,23 @@ public interface programFormsManager {
     
     void savePatientFields(programPatientFields field) throws Exception;
     
+    void savePatientSection(programPatientSections patientSection) throws Exception;
     
+    programPatientSections getPatientSectionBydspPos(Integer dspPos, Integer programId);
+    
+    List<programEngagementSections> getEngagementSections(Integer programId) throws Exception;
+    
+    List<programEngagementFields> getEngagementFieldsByProgramId(Integer programId) throws Exception;
+    
+    programEngagementSections getEngagementSectionById(Integer sectionId) throws Exception;
+    
+    List<programEngagementFields> getEngagementFields(Integer programId, Integer sectionId) throws Exception;
+    
+    void deleteEngagementFields(Integer programId, Integer SectionId) throws Exception;
+    
+    void saveEngagementFields(programEngagementFields field) throws Exception;
+    
+    void saveEngagementSection(programEngagementSections engagementSection) throws Exception;
+    
+    programEngagementSections getEngagementSectionBydspPos(Integer dspPos, Integer programId);
 }

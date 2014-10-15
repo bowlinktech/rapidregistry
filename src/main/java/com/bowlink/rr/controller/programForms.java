@@ -9,23 +9,31 @@ import com.bowlink.rr.model.crosswalks;
 import com.bowlink.rr.model.dataElements;
 import com.bowlink.rr.model.program;
 import com.bowlink.rr.model.programEngagementFields;
+import com.bowlink.rr.model.programEngagementSections;
+import com.bowlink.rr.model.programPatientEntryMethods;
 import com.bowlink.rr.model.programPatientFields;
 import com.bowlink.rr.model.programPatientSections;
+import com.bowlink.rr.model.surveys;
+import com.bowlink.rr.service.dataElementManager;
 import com.bowlink.rr.service.programFormsManager;
 import com.bowlink.rr.service.programManager;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  *
@@ -40,6 +48,13 @@ public class programForms {
     
     @Autowired
     programFormsManager programformsmanager;
+    
+    @Autowired
+    dataElementManager dataelementmanager;
+    
+    private static List<programPatientFields> patientFields = null;
+
+    private static List<programEngagementFields> engagementFields = null;
     
     /**
      * The '/{programName}/patient-detail-sections' GET request will display the page that will list the patient detail sections to a program.
@@ -75,10 +90,183 @@ public class programForms {
         else if ("engagement-sections".equals(section)) {
            mav.addObject("pageTitle", "Engagement Sections");
            
+           List<programEngagementSections> engagementSections = programformsmanager.getEngagementSections((Integer) session.getAttribute("programId"));
+           mav.addObject("sections", engagementSections); 
+          
            mav.setViewName("/engagementformsections");
         }
 
         mav.addObject("sectionName", section);
+        return mav;
+
+    }
+    
+    /**
+     * The '/sectionForm' request will display the form to create/edit a program patient detail section.
+     *
+     * @param session
+     * @param redirectAttr
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/sectionForm", method = RequestMethod.GET)
+    public @ResponseBody ModelAndView sectionForm(@RequestParam Integer id, @RequestParam String section, HttpSession session, RedirectAttributes redirectAttr) throws Exception {
+        
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/sysAdmin/programs/forms/sectionForm");
+        
+        if("patient-sections".equals(section)) {
+            programPatientSections patientSection;
+            
+            if(id > 0) {
+                Integer maxDspPos = programformsmanager.getPatientSections((Integer) session.getAttribute("programId")).size();
+                patientSection = programformsmanager.getPatientSectionById(id);
+                mav.addObject("modalTitle", "Modify Patient Detail Section");
+                mav.addObject("maxDspPos", maxDspPos);
+            }
+            else {
+                patientSection = new programPatientSections();
+                patientSection.setProgramId((Integer) session.getAttribute("programId"));
+                
+                mav.addObject("modalTitle", "Create New Patient Detail Section");
+                Integer maxDspPos = programformsmanager.getPatientSections((Integer) session.getAttribute("programId")).size()+1;
+                mav.addObject("maxDspPos", maxDspPos);
+            }
+            
+            mav.addObject("sectionDetails", patientSection);
+        }
+        
+        /* Engagement Form Sections */
+        else if ("engagement-sections".equals(section)) {
+            programEngagementSections engagementSection;
+            
+            if(id > 0) {
+                Integer maxDspPos = programformsmanager.getEngagementSections((Integer) session.getAttribute("programId")).size();
+                engagementSection = programformsmanager.getEngagementSectionById(id);
+                mav.addObject("modalTitle", "Modify Engagement Detail Section");
+                mav.addObject("maxDspPos", maxDspPos);
+            }
+            else {
+                engagementSection = new programEngagementSections();
+                engagementSection.setProgramId((Integer) session.getAttribute("programId"));
+                
+                mav.addObject("modalTitle", "Create New Engagement Detail Section");
+                
+                Integer maxDspPos = programformsmanager.getEngagementSections((Integer) session.getAttribute("programId")).size()+1;
+                mav.addObject("maxDspPos", maxDspPos);
+            }
+            
+            mav.addObject("sectionDetails", engagementSection);
+        }
+        
+        mav.addObject("programName", session.getAttribute("programName"));
+        mav.addObject("section", section);
+
+        return mav;
+    }    
+    
+    /**
+     * The '/savePatienSection' POST request will submit the patient detail section.
+     *
+     * @param program	The object holding the patient section form fields
+     * @param result	The validation result
+     * @param redirectAttr	The variable that will hold values that can be read after the redirect
+     * @param action	The variable that holds which button was pressed
+     *
+     * @throws Exception
+     */
+    @RequestMapping(value = "/savePatienSection", method = RequestMethod.POST)
+    public @ResponseBody ModelAndView savePatienSection(@Valid @ModelAttribute(value = "sectionDetails") programPatientSections sectionDetails, BindingResult result, @RequestParam String action, @RequestParam String section, @RequestParam Integer currdspPos, HttpSession session) throws Exception {
+
+        if (result.hasErrors()) {
+            ModelAndView mav = new ModelAndView();
+            mav.setViewName("/sysAdmin/programs/forms/sectionForm");
+            
+            if(sectionDetails.getId() > 0) {
+                Integer maxDspPos = programformsmanager.getPatientSections((Integer) session.getAttribute("programId")).size();
+                mav.addObject("modalTitle", "Modify Patient Detail Section");
+                mav.addObject("maxDspPos", maxDspPos);
+            }
+            else {
+                mav.addObject("modalTitle", "Create New Patient Detail Section");
+                mav.addObject("maxDspPos", 1);
+            }
+            mav.addObject("programName", session.getAttribute("programName"));
+            mav.addObject("section", section);
+            
+            return mav;
+        }
+        
+        /* Check to see if dspPos changed, if so need to update the old dsp Pos */
+        if(sectionDetails.getDspPos() != currdspPos) {
+            programPatientSections foundSection = programformsmanager.getPatientSectionBydspPos(sectionDetails.getDspPos(), (Integer) session.getAttribute("programId"));
+            if(foundSection != null) {
+                foundSection.setDspPos(currdspPos);
+                programformsmanager.savePatientSection(foundSection);
+            }
+        }
+        
+        programformsmanager.savePatientSection(sectionDetails);
+
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/sysAdmin/programs/forms/sectionForm");
+        mav.addObject("programName", session.getAttribute("programName"));
+        mav.addObject("sectionName", section);
+        mav.addObject("success", "sectionSaved");
+        
+        return mav;
+
+    }
+    
+    /**
+     * The '/saveEngagementSection' POST request will submit the engagement detail section.
+     *
+     * @param program	The object holding the engagement section form fields
+     * @param result	The validation result
+     * @param redirectAttr	The variable that will hold values that can be read after the redirect
+     * @param action	The variable that holds which button was pressed
+     *
+     * @throws Exception
+     */
+    @RequestMapping(value = "/saveEngagementSection", method = RequestMethod.POST)
+    public @ResponseBody ModelAndView saveEngagementSection(@Valid @ModelAttribute(value = "sectionDetails") programEngagementSections sectionDetails, BindingResult result, @RequestParam String action, @RequestParam String section, @RequestParam Integer currdspPos, HttpSession session) throws Exception {
+
+        if (result.hasErrors()) {
+            ModelAndView mav = new ModelAndView();
+            mav.setViewName("/sysAdmin/programs/forms/sectionForm");
+            
+            if(sectionDetails.getId() > 0) {
+                Integer maxDspPos = programformsmanager.getEngagementSections((Integer) session.getAttribute("programId")).size();
+                mav.addObject("modalTitle", "Modify Patient Detail Section");
+                mav.addObject("maxDspPos", maxDspPos);
+            }
+            else {
+                mav.addObject("modalTitle", "Create New Engagement Section");
+                mav.addObject("maxDspPos", 1);
+            }
+            mav.addObject("programName", session.getAttribute("programName"));
+            mav.addObject("section", section);
+            
+            return mav;
+        }
+        
+        /* Check to see if dspPos changed, if so need to update the old dsp Pos */
+        if(sectionDetails.getDspPos() != currdspPos) {
+            programEngagementSections foundSection = programformsmanager.getEngagementSectionBydspPos(sectionDetails.getDspPos(), (Integer) session.getAttribute("programId"));
+            if(foundSection != null) {
+                foundSection.setDspPos(currdspPos);
+                programformsmanager.saveEngagementSection(foundSection);
+            }
+        }
+        
+        programformsmanager.saveEngagementSection(sectionDetails);
+
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/sysAdmin/programs/forms/sectionForm");
+        mav.addObject("programName", session.getAttribute("programName"));
+        mav.addObject("sectionName", section);
+        mav.addObject("success", "sectionSaved");
+        
         return mav;
 
     }
@@ -111,7 +299,7 @@ public class programForms {
         program programDetails = programmanager.getProgramById((Integer) session.getAttribute("programId"));
         mav.addObject("programDetails", programDetails);
         
-        programPatientSections sectionDetails = programmanager.getPatientSectionById(sectionId);
+        programPatientSections sectionDetails = programformsmanager.getPatientSectionById(sectionId);
         mav.addObject("sectionDetails", sectionDetails);
         
 
@@ -150,7 +338,7 @@ public class programForms {
          */
         if (reload == false) {
             //Need to get a list of existing translations
-            List<programPatientFields> patientFields = programmanager.getPatientFields((Integer) session.getAttribute("programId"), sectionId);
+            List<programPatientFields> patientFields = programformsmanager.getPatientFields((Integer) session.getAttribute("programId"), sectionId);
 
             String fieldName;
             String crosswalkName;
@@ -333,11 +521,11 @@ public class programForms {
 
         //Delete all the data translations before creating
         //This will help with the jquery removing translations
-        programmanager.deletePatientFields((Integer) session.getAttribute("programId"), sectionId);
+        programformsmanager.deletePatientFields((Integer) session.getAttribute("programId"), sectionId);
 
         //Loop through the list of translations
         for (programPatientFields field : patientFields) {
-            programmanager.savePatientFields(field);
+            programformsmanager.savePatientFields(field);
         }
 
         return 1;

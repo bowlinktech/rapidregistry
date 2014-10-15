@@ -1,18 +1,21 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="s" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <div class="main clearfix" role="main">
     <div class="row-fluid">
         <div class="col-md-12">
-            <c:if test="${not empty savedStatus}" >
-                <div class="alert alert-success" role="alert">
-                    <strong>Success!</strong> 
-                    <c:choose>
-                        <c:when test="${savedStatus == 'updatedpatientsection'}">The patient section has been successfully updated.</c:when>
-                    </c:choose>
-                </div>
-            </c:if>
+            <c:choose>
+                <c:when test="${not empty param.msg}" >
+                    <div class="alert alert-success">
+                        <strong>Success!</strong> 
+                        <c:choose>
+                            <c:when test="${param.msg == 'sectionsaved'}">The section has been successfully saved!</c:when>
+                        </c:choose>
+                    </div>
+                </c:when>
+            </c:choose>
             <section class="panel panel-default">
                 <div class="panel-body">
                     <dt>
@@ -28,7 +31,7 @@
           <section class="panel panel-default">
             <div class="panel-heading">
                 <div class="pull-right">
-                    <a href="#newProgramModal" data-toggle="modal" class="btn btn-primary btn-xs btn-action" id="createNewsection" rel="${sectionName}" title="Add New Section">Add New Section</a>
+                    <a href="#sectionModal" data-toggle="modal" class="btn btn-primary btn-xs btn-action" id="createNewsection" rel="${sectionName}" title="Add New Section">Add New Section</a>
                 </div>
                 <h3 class="panel-title">${pageTitle}</h3>
             </div>
@@ -60,7 +63,7 @@
                                             </td>
                                             <td class="center-text"><fmt:formatDate value="${section.dateCreated}" type="date" pattern="M/dd/yyyy" /></td>
                                             <td class="actions-col">
-                                                <a href="#sectionModal" data-toggle="modal" class="btn btn-link editsection" rel="${section.id}" title="Edit this section">
+                                                <a href="#sectionModal" data-toggle="modal" class="btn btn-link editsection" rel="${section.id}" rel2="${sectionName}" title="Edit this section">
                                                     <span class="glyphicon glyphicon-edit"></span>
                                                     Edit
                                                 </a>
@@ -88,3 +91,5 @@
     </div>
  </div>
 </div>
+<!-- Provider Address modal -->
+<div class="modal fade" id="sectionModal" role="dialog" tabindex="-1" aria-labeledby="Add New Section" aria-hidden="true" aria-describedby="Add New Section"></div>

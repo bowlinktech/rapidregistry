@@ -1,10 +1,10 @@
 CREATE DATABASE  IF NOT EXISTS `rapidregistry` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `rapidregistry`;
--- MySQL dump 10.13  Distrib 5.6.19, for osx10.7 (i386)
+-- MySQL dump 10.13  Distrib 5.6.17, for osx10.6 (i386)
 --
 -- Host: 127.0.0.1    Database: rapidregistry
 -- ------------------------------------------------------
--- Server version	5.6.13
+-- Server version	5.6.20
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -787,9 +787,9 @@ CREATE TABLE `patientCounselingAppts` (
   KEY `engagementId_idx` (`engagementId`),
   KEY `patientId_idx` (`programPatientId`),
   KEY `_fk_patientCounselingAppts_codeId` (`activityCodeId`),
+  CONSTRAINT `_fk_patientCounselingAppts_codeId` FOREIGN KEY (`activityCodeId`) REFERENCES `lu_activityCodes` (`id`),
   CONSTRAINT `fk_patientCounselingAppts_engageId` FOREIGN KEY (`engagementId`) REFERENCES `patientEngagements` (`id`),
-  CONSTRAINT `fk_patientCounselingAppts_patientId` FOREIGN KEY (`programPatientId`) REFERENCES `programPatients` (`id`),
-  CONSTRAINT `_fk_patientCounselingAppts_codeId` FOREIGN KEY (`activityCodeId`) REFERENCES `lu_activityCodes` (`id`)
+  CONSTRAINT `fk_patientCounselingAppts_patientId` FOREIGN KEY (`programPatientId`) REFERENCES `programPatients` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1716,7 +1716,7 @@ CREATE TABLE `program_engagementFields` (
   CONSTRAINT `fk_programEngagementFields_crosswalkId` FOREIGN KEY (`crosswalkId`) REFERENCES `crosswalks` (`id`),
   CONSTRAINT `fk_programEngagementFields_fieldId` FOREIGN KEY (`fieldId`) REFERENCES `dataElements` (`id`),
   CONSTRAINT `fk_programEngagementFields_programId` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`),
-  CONSTRAINT `fk_programEngagementFields_section` FOREIGN KEY (`sectionId`) REFERENCES `program_engagementSections` (`id`),
+  CONSTRAINT `fk_programEngagementFields_sectionid` FOREIGN KEY (`sectionId`) REFERENCES `program_engagementSections` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_programEngagementFields_validationId` FOREIGN KEY (`validationId`) REFERENCES `lu_validationtypes` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1738,16 +1738,16 @@ DROP TABLE IF EXISTS `program_engagementSections`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `program_engagementSections` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `programId` int(11) NOT NULL,
-  `status` varchar(45) COLLATE utf8_unicode_ci DEFAULT 'b''1''',
+  `status` bit(1) DEFAULT b'1',
   `sectionName` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `dspPos` int(255) DEFAULT NULL,
   `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `programId_idx` (`programId`),
   CONSTRAINT `fk_programEngagementSections` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1756,6 +1756,7 @@ CREATE TABLE `program_engagementSections` (
 
 LOCK TABLES `program_engagementSections` WRITE;
 /*!40000 ALTER TABLE `program_engagementSections` DISABLE KEYS */;
+INSERT INTO `program_engagementSections` VALUES (1,1,'','Insurance Information',1,'2014-10-15 00:56:10');
 /*!40000 ALTER TABLE `program_engagementSections` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1830,8 +1831,8 @@ CREATE TABLE `program_mciFields` (
   PRIMARY KEY (`id`),
   KEY `mciid_idx` (`mciId`),
   KEY `fk_programMPIFields_fieldId` (`fieldId`),
-  CONSTRAINT `fk_programMPIFields_fieldId` FOREIGN KEY (`fieldId`) REFERENCES `dataElements` (`id`),
-  CONSTRAINT `fk_programMPIFields__mciId` FOREIGN KEY (`mciId`) REFERENCES `program_mciAlgorithms` (`id`)
+  CONSTRAINT `fk_programMPIFields__mciId` FOREIGN KEY (`mciId`) REFERENCES `program_mciAlgorithms` (`id`),
+  CONSTRAINT `fk_programMPIFields_fieldId` FOREIGN KEY (`fieldId`) REFERENCES `dataElements` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1959,7 +1960,7 @@ CREATE TABLE `program_patientFields` (
   CONSTRAINT `fk_programPatientFields_crosswalkId` FOREIGN KEY (`crosswalkId`) REFERENCES `crosswalks` (`id`),
   CONSTRAINT `fk_programPatientFields_fieldId` FOREIGN KEY (`fieldId`) REFERENCES `dataElements` (`id`),
   CONSTRAINT `fk_programPatientFields_programId` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`),
-  CONSTRAINT `fk_programPatientFields_sectionId` FOREIGN KEY (`sectionId`) REFERENCES `program_patientSections` (`id`),
+  CONSTRAINT `fk_programPatientFields_sectionId` FOREIGN KEY (`sectionId`) REFERENCES `program_patientSections` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_programPatientFields_validationId` FOREIGN KEY (`validationId`) REFERENCES `lu_validationtypes` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -2041,16 +2042,16 @@ DROP TABLE IF EXISTS `program_patientSections`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `program_patientSections` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `programId` int(11) NOT NULL,
-  `status` varchar(45) COLLATE utf8_unicode_ci DEFAULT 'b''1''',
+  `status` bit(1) DEFAULT b'1',
   `sectionName` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `dspPos` int(255) DEFAULT NULL,
   `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `programId_idx` (`programId`),
   CONSTRAINT `fk_programPatientSections_programId` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2059,6 +2060,7 @@ CREATE TABLE `program_patientSections` (
 
 LOCK TABLES `program_patientSections` WRITE;
 /*!40000 ALTER TABLE `program_patientSections` DISABLE KEYS */;
+INSERT INTO `program_patientSections` VALUES (2,1,'','Client Contact Information',2,'2014-10-15 00:08:20'),(3,1,'','Test Section',1,'2014-10-15 00:52:24');
 /*!40000 ALTER TABLE `program_patientSections` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2219,7 +2221,7 @@ CREATE TABLE `rel_userLogins` (
   PRIMARY KEY (`id`),
   KEY `userId_idx` (`systemUserId`),
   CONSTRAINT `userId` FOREIGN KEY (`systemUserId`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2527 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2542 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2228,7 +2230,7 @@ CREATE TABLE `rel_userLogins` (
 
 LOCK TABLES `rel_userLogins` WRITE;
 /*!40000 ALTER TABLE `rel_userLogins` DISABLE KEYS */;
-INSERT INTO `rel_userLogins` VALUES (2503,1,'2014-10-06 11:28:15'),(2504,1,'2014-10-06 12:46:52'),(2505,1,'2014-10-06 13:24:35'),(2506,1,'2014-10-06 13:31:54'),(2507,1,'2014-10-06 13:33:15'),(2508,1,'2014-10-06 13:38:30'),(2509,1,'2014-10-07 11:36:08'),(2510,1,'2014-10-07 11:38:27'),(2511,1,'2014-10-07 11:48:23'),(2512,1,'2014-10-07 12:33:57'),(2513,1,'2014-10-07 12:44:14'),(2514,1,'2014-10-07 13:30:58'),(2515,1,'2014-10-07 13:46:33'),(2516,1,'2014-10-07 14:36:53'),(2517,1,'2014-10-07 14:45:35'),(2518,1,'2014-10-14 10:54:30'),(2519,1,'2014-10-14 11:11:47'),(2520,1,'2014-10-14 11:28:41'),(2521,1,'2014-10-14 12:14:55'),(2522,1,'2014-10-14 12:21:06'),(2523,1,'2014-10-14 13:23:44'),(2524,1,'2014-10-14 13:29:14'),(2525,1,'2014-10-14 14:00:32'),(2526,1,'2014-10-14 14:05:03');
+INSERT INTO `rel_userLogins` VALUES (2503,1,'2014-10-06 11:28:15'),(2504,1,'2014-10-06 12:46:52'),(2505,1,'2014-10-06 13:24:35'),(2506,1,'2014-10-06 13:31:54'),(2507,1,'2014-10-06 13:33:15'),(2508,1,'2014-10-06 13:38:30'),(2509,1,'2014-10-07 11:36:08'),(2510,1,'2014-10-07 11:38:27'),(2511,1,'2014-10-07 11:48:23'),(2512,1,'2014-10-07 12:33:57'),(2513,1,'2014-10-07 12:44:14'),(2514,1,'2014-10-07 13:30:58'),(2515,1,'2014-10-07 13:46:33'),(2516,1,'2014-10-07 14:36:53'),(2517,1,'2014-10-07 14:45:35'),(2518,1,'2014-10-14 10:54:30'),(2519,1,'2014-10-14 11:11:47'),(2520,1,'2014-10-14 11:28:41'),(2521,1,'2014-10-14 12:14:55'),(2522,1,'2014-10-14 12:21:06'),(2523,1,'2014-10-14 13:23:44'),(2524,1,'2014-10-14 13:29:14'),(2525,1,'2014-10-14 14:00:32'),(2526,1,'2014-10-14 14:05:03'),(2527,1,'2014-10-15 09:05:12'),(2528,1,'2014-10-15 09:08:57'),(2529,1,'2014-10-15 10:03:14'),(2530,1,'2014-10-15 10:21:54'),(2531,1,'2014-10-15 10:44:44'),(2532,1,'2014-10-15 11:26:55'),(2533,1,'2014-10-15 11:45:01'),(2534,1,'2014-10-15 11:56:52'),(2535,1,'2014-10-15 12:08:15'),(2536,1,'2014-10-15 12:35:11'),(2537,1,'2014-10-15 12:37:40'),(2538,1,'2014-10-15 12:41:07'),(2539,1,'2014-10-15 12:47:54'),(2540,1,'2014-10-15 12:52:17'),(2541,1,'2014-10-15 12:56:00');
 /*!40000 ALTER TABLE `rel_userLogins` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2821,6 +2823,10 @@ INSERT INTO `users` VALUES (1,0,1,'','Chad','McCue','!sysadmin!','chadmccue05@g
 UNLOCK TABLES;
 
 --
+-- Dumping events for database 'rapidregistry'
+--
+
+--
 -- Dumping routines for database 'rapidregistry'
 --
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -2833,4 +2839,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-10-14 21:21:30
+-- Dump completed on 2014-10-15 13:20:29
