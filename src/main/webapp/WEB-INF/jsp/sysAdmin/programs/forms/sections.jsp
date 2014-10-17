@@ -12,6 +12,8 @@
                         <strong>Success!</strong> 
                         <c:choose>
                             <c:when test="${param.msg == 'sectionsaved'}">The section has been successfully saved!</c:when>
+                            <c:when test="${param.msg == 'sectiondeleted'}">The section has been successfully removed!</c:when>
+                            <c:when test="${param.msg == 'fieldssaved'}">The fields have been successfully saved!</c:when>
                         </c:choose>
                     </div>
                 </c:when>
@@ -67,14 +69,14 @@
                                                     <span class="glyphicon glyphicon-edit"></span>
                                                     Edit
                                                 </a>
-                                                <a href="fields?s=${section.id}"  class="btn btn-link" title="View fields for this section.">
+                                                <a href="${sectionName}/fields?s=${section.id}"  class="btn btn-link" title="View fields for this section.">
                                                     <span class="glyphicon glyphicon-align-justify"></span>
                                                     Fields
                                                 </a>
-                                                <a href="javascript:void(0);"  class="btn btn-link deleteSection" rel="${entryMethod.id}" title="Delete this entry method">
+                                                <%--<a href="javascript:void(0);"  class="btn btn-link deleteSection" rel="${entryMethod.id}" rel2="${sectionName}" title="Delete this entry method">
                                                     <span class="glyphicon glyphicon-remove"></span>
                                                     Delete
-                                                </a>
+                                                </a>--%>
                                             </td>
                                         </tr>
                                     </c:forEach>

@@ -31,6 +31,9 @@
                     <c:when test="${param['page'] == 'engagementsections'}">
                         <a href="javascript:void(0);" title="Engagement Details Sections" class="unstyled-link">Engagement Details Sections</a>
                     </c:when>
+                    <c:when test="${param['page'] == 'fields'}">
+                        <a href="javascript:void(0);" title="Patient Detail Sections" class="unstyled-link">Section Fields</a>
+                    </c:when>    
                     <c:when test="${param['page'] == 'activitycodes'}">
                         <a href="javascript:void(0);" title="Activity Codes" class="unstyled-link">Activity Codes</a>
                     </c:when>
@@ -51,7 +54,7 @@
         </div>
         <ul class="nav navbar-nav navbar-right navbar-actions" role="menu">
             <c:choose>
-                <c:when test="${param['page'] == 'details' && param['page'] == 'sharing' && param['page'] == 'modules' }">
+                <c:when test="${param['page'] == 'details' || param['page'] == 'sharing' || param['page'] == 'modules' || param['page'] == 'fields' }">
                     <li role="menuitem"><a href="javascript:void(0);" id="saveDetails" title="Save Form" role="button"><span class="glyphicon glyphicon-ok icon-stacked"></span> Save </a></li>
                     <li role="menuitem"><a href="javascript:void(0);" id="saveCloseDetails" title="Save &amp; Close" role="button"><span class="glyphicon glyphicon-floppy-disk icon-stacked"></span> Save &amp; Close</a></li>
                 </c:when>

@@ -17,7 +17,7 @@ require(['./main'], function () {
         //This function will launch the new system user overlay with a blank screen
         $(document).on('click', '#createNewProgram', function() {
             $.ajax({
-                url: 'create',
+                url: 'programs/create',
                 type: "GET",
                 success: function(data) {
                     $("#newProgramModal").html(data);
@@ -32,7 +32,7 @@ require(['./main'], function () {
             var formData = $("#program").serialize();
 
             $.ajax({
-                url: 'create',
+                url: 'programs/create',
                 data: formData,
                 type: "POST",
                 async: false,

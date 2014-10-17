@@ -25,6 +25,8 @@ public interface programFormsDAO {
     
     List<programPatientFields> getPatientFields(Integer programId, Integer sectionId) throws Exception;
     
+    List<programPatientFields> getAllPatientFields(Integer programId) throws Exception;
+    
     void deletePatientFields(Integer programId, Integer SectionId) throws Exception;
     
     void savePatientFields(programPatientFields field) throws Exception;
@@ -48,5 +50,7 @@ public interface programFormsDAO {
     void saveEngagementSection(programEngagementSections engagementSection) throws Exception;
     
     programEngagementSections getEngagementSectionBydspPos(Integer dspPos, Integer programId);
+    
+    programPatientFields getPatientFieldById(Integer fieldId) throws Exception;
     
 }

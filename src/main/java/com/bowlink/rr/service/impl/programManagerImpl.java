@@ -18,7 +18,9 @@ import com.bowlink.rr.model.programReports;
 import com.bowlink.rr.model.programAdmin;
 import com.bowlink.rr.model.programAvailableTables;
 import com.bowlink.rr.model.programPatientEntryMethods;
+import com.bowlink.rr.model.programPatientSearchFields;
 import com.bowlink.rr.model.programPatientSections;
+import com.bowlink.rr.model.programPatientSummaryFields;
 import com.bowlink.rr.service.programManager;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,25 +89,6 @@ public class programManagerImpl implements programManager {
     @Transactional
     public List<program> getOtherPrograms(Integer programId) throws Exception {
         return programDAO.getOtherPrograms(programId);
-    }
-    
-    
-    @Override
-    @Transactional
-    public List<programEngagementFields> getProgramHealthFields(Integer programId) throws Exception {
-        return programDAO.getProgramHealthFields(programId);
-    }
-    
-    @Override
-    @Transactional
-    public void deleteHealthFields(Integer programId) throws Exception {
-        programDAO.deleteHealthFields(programId);
-    }
-    
-    @Override
-    @Transactional
-    public void saveHealthFields(programEngagementFields field) throws Exception {
-        programDAO.saveHealthFields(field);
     }
     
     @Override
@@ -252,5 +235,40 @@ public class programManagerImpl implements programManager {
     public void deletePatientEntryMethod(Integer id) throws Exception {
         programDAO.deletePatientEntryMethod(id);
     }
+    
+    @Override
+    @Transactional
+    public List<programPatientSearchFields> getProgramSearchFields(Integer programId) throws Exception {
+        return programDAO.getProgramSearchFields(programId);
+    }
 
+    @Override
+    @Transactional
+    public void saveProgramPatientSearchField(programPatientSearchFields searchField) throws Exception {
+        programDAO.saveProgramPatientSearchField(searchField);
+    }
+    
+    @Override
+    @Transactional
+    public void deleteProgramPatientSearchField(Integer id) throws Exception {
+        programDAO.deleteProgramPatientSearchField(id);
+    }
+    
+    @Override
+    @Transactional
+    public List<programPatientSummaryFields> getProgramSummaryFields(Integer programId) throws Exception {
+        return programDAO.getProgramSummaryFields(programId);
+    }
+
+    @Override
+    @Transactional
+    public void saveProgramPatientSummaryField(programPatientSummaryFields summaryField) throws Exception {
+        programDAO.saveProgramPatientSummaryField(summaryField);
+    }
+    
+    @Override
+    @Transactional
+    public void deleteProgramPatientSummaryField(Integer id) throws Exception {
+        programDAO.deleteProgramPatientSummaryField(id);
+    }
 }

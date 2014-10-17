@@ -70,6 +70,18 @@ public class programFormsDAOImpl implements programFormsDAO {
         return (programPatientSections) sessionFactory.getCurrentSession().get(programPatientSections.class, sectionId); 
     }
     
+    /**
+     * The 'getPatientFieldById' function will return the details of a passed in patient field.
+     * 
+     * @param fieldId The fieldId is the id for the passed in patient field
+     * @return This function will return a single programPatientFields object
+     * @throws Exception 
+     */
+    @Override
+    public programPatientFields getPatientFieldById(Integer fieldId) throws Exception {
+        return (programPatientFields) sessionFactory.getCurrentSession().get(programPatientFields.class, fieldId); 
+    }
+    
     
     /**
      * The 'getPatientFields' function will return a list of patient fields associated with
@@ -85,6 +97,22 @@ public class programFormsDAOImpl implements programFormsDAO {
         Query query = sessionFactory.getCurrentSession().createQuery("from programPatientFields where programId = :programId and sectionId = :sectionId");
         query.setParameter("programId", programId);
         query.setParameter("sectionId", sectionId);
+        
+        return query.list();
+    }
+    
+    /**
+     * The 'getAllPatientFields' function will return a list of patient fields associated with
+     * the passed in program Id.
+     * 
+     * @param programId     The id of the program to retrieve demographic fields
+     *  
+     * @return This function will return a list of data elements
+     */
+    @Override
+    public List<programPatientFields> getAllPatientFields(Integer programId) throws Exception {
+        Query query = sessionFactory.getCurrentSession().createQuery("from programPatientFields where programId = :programId");
+        query.setParameter("programId", programId);
         
         return query.list();
     }

@@ -16,12 +16,15 @@ import com.bowlink.rr.model.programReports;
 import com.bowlink.rr.model.programAdmin;
 import com.bowlink.rr.model.programAvailableTables;
 import com.bowlink.rr.model.programPatientEntryMethods;
+import com.bowlink.rr.model.programPatientSearchFields;
+import com.bowlink.rr.model.programPatientSummaryFields;
 import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -156,46 +159,6 @@ public class programDAOImpl implements programDAO {
         
     }
     
-    /**
-     * The 'getProgramHealthFields' function will return a list of selected health fields associated with
-     * the passed in program Id.
-     * 
-     * @param programId     The id of the program to retrieve demographic fields
-     * 
-     * @return This function will return a list of data elements
-     */
-    @Override
-    public List<programEngagementFields> getProgramHealthFields(Integer programId) throws Exception {
-        Query query = sessionFactory.getCurrentSession().createQuery("from programHealthDataElements where programId = :programId");
-        query.setParameter("programId", programId);
-        
-        return query.list();
-    }
-    
-    /**
-     * The 'deleteHealthFields' function will remove all health data fields saved for the passed in program.
-     * 
-     * @param programId The id that will contain the selected program
-     * 
-     * @throws Exception 
-     */
-    @Override
-    public void deleteHealthFields(Integer programId) throws Exception {
-        Query deleteTranslations = sessionFactory.getCurrentSession().createQuery("delete from programHealthDataElements where programId = :programId");
-        deleteTranslations.setParameter("programId", programId);
-        deleteTranslations.executeUpdate();
-    }
-    
-    /**
-     * The 'saveHealthFields' function will save all selected health fields for the passed in program.
-     * 
-     * @param field         The programEngagementFields object to save
-     * @throws Exception 
-     */
-    @Override
-    public void saveHealthFields(programEngagementFields field) throws Exception {
-        sessionFactory.getCurrentSession().save(field);
-    }
     
     /**
      * The 'getUsedActivityCodes' function will check to see if the passed in activity code is associated with the
@@ -546,6 +509,96 @@ public class programDAOImpl implements programDAO {
     @Override
     public void deletePatientEntryMethod(Integer id) throws Exception {
         Query removeEntryMethod = sessionFactory.getCurrentSession().createQuery("delete from programPatientEntryMethods where id = :Id");
+        removeEntryMethod.setParameter("Id", id);
+        removeEntryMethod.executeUpdate();
+    }
+    
+    /**
+     * The 'getProgramSearchFields' will return the list of fields set up for the patient search.
+     * 
+     * @param programId The programId is the id of the selected program.
+     * 
+     * @return  This function will return a list of patient search fields
+     * @throws Exception 
+     */
+    @Override
+    public List<programPatientSearchFields> getProgramSearchFields(Integer programId) throws Exception {
+        
+        String sqlQuery = "select a.id, a.programId, a.fieldId, a.sectionFieldId, a.dspPos, a.dateCreated, b.fieldDisplayName from program_patientSearchFields a inner join program_patientFields b on b.id = a.sectionFieldId where a.programId = " + programId;
+        
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery) 
+        .setResultTransformer(Transformers.aliasToBean(programPatientSearchFields.class)
+        );
+        
+        return query.list();
+        
+    }
+    
+    /**
+     * The 'saveProgramPatientSearchField' function will save the passed in patient search field.
+     * 
+     * @param searchField   The object holding the patient search field values.
+     * @throws Exception 
+     */
+    @Override
+    public void saveProgramPatientSearchField(programPatientSearchFields searchField) throws Exception {
+        sessionFactory.getCurrentSession().saveOrUpdate(searchField);
+    }
+    
+    /**
+     * The 'deleteProgramPatientSearchField' function will remove the clicked program patient search field.
+     * 
+     * @param id    The id of the clicked patient search field.
+     * @throws Exception 
+     */
+    @Override
+    public void deleteProgramPatientSearchField(Integer id) throws Exception {
+        Query removeEntryMethod = sessionFactory.getCurrentSession().createQuery("delete from programPatientSearchFields where id = :Id");
+        removeEntryMethod.setParameter("Id", id);
+        removeEntryMethod.executeUpdate();
+    }
+    
+    /**
+     * The 'programPatientSummaryFields' will return the list of fields set up for the patient summary.
+     * 
+     * @param programId The programId is the id of the selected program.
+     * 
+     * @return  This function will return a list of patient summary fields
+     * @throws Exception 
+     */
+    @Override
+    public List<programPatientSummaryFields> getProgramSummaryFields(Integer programId) throws Exception {
+        
+        String sqlQuery = "select a.id, a.programId, a.fieldId, a.sectionFieldId, a.dspPos, a.dateCreated, b.fieldDisplayName from program_patientSummaryFields a inner join program_patientFields b on b.id = a.sectionFieldId where a.programId = " + programId;
+        
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery) 
+        .setResultTransformer(Transformers.aliasToBean(programPatientSummaryFields.class)
+        );
+        
+        return query.list();
+        
+    }
+    
+    /**
+     * The 'saveProgramPatientSummaryField' function will save the passed in patient summary field.
+     * 
+     * @param searchField   The object holding the patient summary field values.
+     * @throws Exception 
+     */
+    @Override
+    public void saveProgramPatientSummaryField(programPatientSummaryFields summaryField) throws Exception {
+        sessionFactory.getCurrentSession().saveOrUpdate(summaryField);
+    }
+    
+    /**
+     * The 'deleteProgramPatientSummaryField' function will remove the clicked program patient summary field.
+     * 
+     * @param id    The id of the clicked patient summary field.
+     * @throws Exception 
+     */
+    @Override
+    public void deleteProgramPatientSummaryField(Integer id) throws Exception {
+        Query removeEntryMethod = sessionFactory.getCurrentSession().createQuery("delete from programPatientSummaryFields where id = :Id");
         removeEntryMethod.setParameter("Id", id);
         removeEntryMethod.executeUpdate();
     }

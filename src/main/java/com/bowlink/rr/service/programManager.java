@@ -16,7 +16,9 @@ import com.bowlink.rr.model.programReports;
 import com.bowlink.rr.model.programAdmin;
 import com.bowlink.rr.model.programAvailableTables;
 import com.bowlink.rr.model.programPatientEntryMethods;
+import com.bowlink.rr.model.programPatientSearchFields;
 import com.bowlink.rr.model.programPatientSections;
+import com.bowlink.rr.model.programPatientSummaryFields;
 import java.util.List;
 
 /**
@@ -55,14 +57,17 @@ public interface programManager {
     
     void deletePatientEntryMethod(Integer id) throws Exception;
     
+    List<programPatientSearchFields> getProgramSearchFields(Integer programId) throws Exception;
     
-    /** Engagement Fields **/
+    void saveProgramPatientSearchField(programPatientSearchFields searchField) throws Exception;
     
-    List<programEngagementFields> getProgramHealthFields(Integer programId) throws Exception;
+    void deleteProgramPatientSearchField(Integer id) throws Exception;
     
-    void deleteHealthFields(Integer programId) throws Exception;
+    List<programPatientSummaryFields> getProgramSummaryFields(Integer programId) throws Exception;
     
-    void saveHealthFields(programEngagementFields field) throws Exception;
+    void saveProgramPatientSummaryField(programPatientSummaryFields summaryField) throws Exception;
+    
+    void deleteProgramPatientSummaryField(Integer id) throws Exception;
     
     boolean getUsedActivityCodes (Integer programId, Integer codeId) throws Exception;
     

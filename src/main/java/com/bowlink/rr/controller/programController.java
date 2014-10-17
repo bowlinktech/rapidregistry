@@ -11,11 +11,14 @@ import com.bowlink.rr.model.programEngagementFields;
 import com.bowlink.rr.model.programMCIAlgorithms;
 import com.bowlink.rr.model.programMCIFields;
 import com.bowlink.rr.model.programPatientEntryMethods;
+import com.bowlink.rr.model.programPatientSearchFields;
+import com.bowlink.rr.model.programPatientSummaryFields;
 import com.bowlink.rr.model.programReports;
 import com.bowlink.rr.model.reports;
 import com.bowlink.rr.model.surveys;
 import com.bowlink.rr.service.activityCodeManager;
 import com.bowlink.rr.service.dataElementManager;
+import com.bowlink.rr.service.programFormsManager;
 import com.bowlink.rr.service.programManager;
 import com.bowlink.rr.service.reportManager;
 import com.bowlink.rr.service.surveyManager;
@@ -67,6 +70,9 @@ public class programController {
     
     @Autowired
     surveyManager surveymanager;
+    
+    @Autowired
+    programFormsManager programformsmanager;
 
     
     /**
@@ -197,7 +203,16 @@ public class programController {
         /* Get the list of avaiable table for survey */
         List<programAvailableTables> availableTables = programmanager.getAvailableTablesForSurveys(programDetails.getId());
         mav.addObject("availableTables", availableTables);
+        
+        /* Get the list of patient search fields */
+        List<programPatientSearchFields> searchFields = programmanager.getProgramSearchFields(programDetails.getId());
+        mav.addObject("searchFields", searchFields);
 
+        /* Get the list of patient summary fields */
+        List<programPatientSummaryFields> summaryFields = programmanager.getProgramSummaryFields(programDetails.getId());
+        mav.addObject("summaryFields", summaryFields);
+
+        
         session.setAttribute("programId", programDetails.getId());
         
         return mav;
@@ -431,7 +446,166 @@ public class programController {
 
     }
     
+    /**
+     * The '/patientSearchFieldForm' request will display the form to add a new patient search field.
+     *
+     * @param request
+     * @param response
+     * @param session
+     * @param redirectAttr
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/patientSearchFieldForm", method = RequestMethod.GET)
+    public @ResponseBody ModelAndView patientSearchFieldForm(HttpServletRequest request, HttpServletResponse response, HttpSession session, RedirectAttributes redirectAttr) throws Exception {
+        
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/sysAdmin/programs/patientSearchFieldForm");
+        
+        programPatientSearchFields searchField = new programPatientSearchFields();
+        searchField.setProgramId((Integer) session.getAttribute("programId"));
+        mav.addObject("modalTitle", "Add New Patient Search Field");
+        
+        Integer maxDspPos = programmanager.getProgramSearchFields((Integer) session.getAttribute("programId")).size()+1;
+        mav.addObject("maxDspPos",maxDspPos);
+        
+        mav.addObject("programPatientSearchFields", searchField);
+         
+        /* Get a list of tables in the system */
+        //Get the list of available information tables
+        List<programPatientFields> existingPatientFields = programformsmanager.getAllPatientFields((Integer) session.getAttribute("programId"));
+        mav.addObject("availablePatientFields", existingPatientFields);      
+        
+        mav.addObject("programName", session.getAttribute("programName"));
 
+        return mav;
+    }
+    
+    /**
+     * The '/savePatientSearch' POST request will submit the program available tables for survey form.
+     *
+     * @param program	The object holding the program form fields
+     * @param result	The validation result
+     * @param redirectAttr	The variable that will hold values that can be read after the redirect
+     * @param action	The variable that holds which button was pressed
+     *
+     * @throws Exception
+     */
+    @RequestMapping(value = "/savePatientSearch", method = RequestMethod.POST)
+    public @ResponseBody ModelAndView savePatientSearch(@Valid programPatientSearchFields programPatientSearchFields, BindingResult result, @RequestParam String action, HttpSession session) throws Exception {
+        
+        /* Get the original field id */
+        programPatientFields patientField = programformsmanager.getPatientFieldById(programPatientSearchFields.getSectionFieldId());
+        programPatientSearchFields.setFieldId(patientField.getFieldId());
+        
+        programmanager.saveProgramPatientSearchField(programPatientSearchFields);
+
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/sysAdmin/programs/patientSearchFieldForm");
+        mav.addObject("programName", session.getAttribute("programName"));
+        mav.addObject("success", "fieldSaved");
+        
+        return mav;
+
+    }
+    
+    /**
+     * The '/deletePatientSearchField' POST request will remove the passed in patient search field for the program.
+     * 
+     * @param id The id of the program search field association.
+     * @param session
+     * @return
+     * @throws Exception 
+     */
+    @RequestMapping(value = "/deletePatientSearchField", method = RequestMethod.POST)
+    public @ResponseBody String deletePatientSearchField(@RequestParam Integer id, HttpSession session) throws Exception {
+
+        programmanager.deleteProgramPatientSearchField(id);
+
+        return (String) session.getAttribute("programName");
+
+    }
+    
+    /**
+     * The '/patientSummaryFieldForm' request will display the form to add a new patient summary field.
+     *
+     * @param request
+     * @param response
+     * @param session
+     * @param redirectAttr
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/patientSummaryFieldForm", method = RequestMethod.GET)
+    public @ResponseBody ModelAndView patientSummaryFieldForm(HttpServletRequest request, HttpServletResponse response, HttpSession session, RedirectAttributes redirectAttr) throws Exception {
+        
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/sysAdmin/programs/patientSummaryFieldForm");
+        
+        programPatientSummaryFields summaryField = new programPatientSummaryFields();
+        summaryField.setProgramId((Integer) session.getAttribute("programId"));
+        mav.addObject("modalTitle", "Add New Patient Summary Field");
+        
+        Integer maxDspPos = programmanager.getProgramSummaryFields((Integer) session.getAttribute("programId")).size()+1;
+        mav.addObject("maxDspPos",maxDspPos);
+        
+        mav.addObject("programPatientSummaryFields", summaryField);
+         
+        /* Get a list of tables in the system */
+        //Get the list of available information tables
+        List<programPatientFields> existingPatientFields = programformsmanager.getAllPatientFields((Integer) session.getAttribute("programId"));
+        mav.addObject("availablePatientFields", existingPatientFields);      
+        
+        mav.addObject("programName", session.getAttribute("programName"));
+
+        return mav;
+    }
+    
+    /**
+     * The '/savePatientSummary' POST request will submit the program patient summary field.
+     *
+     * @param program	The object holding the program form fields
+     * @param result	The validation result
+     * @param redirectAttr	The variable that will hold values that can be read after the redirect
+     * @param action	The variable that holds which button was pressed
+     *
+     * @throws Exception
+     */
+    @RequestMapping(value = "/savePatientSummary", method = RequestMethod.POST)
+    public @ResponseBody ModelAndView savePatientSummary(@Valid programPatientSummaryFields programPatientSummaryFields, BindingResult result, @RequestParam String action, HttpSession session) throws Exception {
+
+        /* Get the original field id */
+        programPatientFields patientField = programformsmanager.getPatientFieldById(programPatientSummaryFields.getSectionFieldId());
+        programPatientSummaryFields.setFieldId(patientField.getFieldId());
+        programmanager.saveProgramPatientSummaryField(programPatientSummaryFields);
+
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/sysAdmin/programs/patientSummaryFieldForm");
+        mav.addObject("programName", session.getAttribute("programName"));
+        mav.addObject("success", "fieldSaved");
+        
+        return mav;
+
+    }
+    
+    /**
+     * The '/deletePatientSummaryField' POST request will remove the passed in patient summary field for the program.
+     * 
+     * @param id The id of the program summary field association.
+     * @param session
+     * @return
+     * @throws Exception 
+     */
+    @RequestMapping(value = "/deletePatientSummaryField", method = RequestMethod.POST)
+    public @ResponseBody String deletePatientSummaryField(@RequestParam Integer id, HttpSession session) throws Exception {
+
+        programmanager.deleteProgramPatientSummaryField(id);
+
+        return (String) session.getAttribute("programName");
+
+    }
+    
+    
     /**
      * The '/{programName}/activity-codes' GET request will display the program activity code page.
      *

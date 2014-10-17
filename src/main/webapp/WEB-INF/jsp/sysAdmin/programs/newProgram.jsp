@@ -14,6 +14,19 @@
                 <input type="hidden" id="action" name="action" value="save" />
                 <form:hidden path="id" id="id" />
                 <form:hidden path="dateCreated" />
+                <spring:bind path="status">
+                    <div class="form-group ${status.error ? 'has-error' : '' }">
+                        <label class="control-label" for="status">Status *</label>
+                        <div>
+                            <label class="radio-inline">
+                                <form:radiobutton id="status" path="status" value="true" /> Active
+                            </label>
+                            <label class="radio-inline">
+                                <form:radiobutton id="status" path="status" value="false" /> Inactive
+                            </label>
+                        </div>
+                    </div>
+                </spring:bind> 
                 <spring:bind path="programName">
                     <div class="form-group ${status.error ? 'has-error' : '' } ${not empty existingProgram ? 'has-error' : ''}">
                         <label class="control-label" for="programName">Program Name *</label>

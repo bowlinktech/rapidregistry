@@ -44,7 +44,6 @@
                         <div id="displayPosDiv" class="form-group ${status.error ? 'has-error' : '' }">
                             <label class="control-label" for="dspPos">Display Position * </label>
                             <form:select path="dspPos" id="dspPos" class="form-control half">
-                                <option value="0" label=" - Select - " >- Select Display Position -</option>
                                 <c:forEach varStatus="lIndex" begin="1" end="${maxDspPos}">
                                     <option value="${lIndex.index}" <c:if test="${sectionDetails.dspPos == lIndex.index}">selected</c:if>>${lIndex.index}</option>
                                 </c:forEach>

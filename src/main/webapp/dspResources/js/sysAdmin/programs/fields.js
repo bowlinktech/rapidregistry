@@ -18,29 +18,6 @@ require(['./main'], function () {
             populateCrosswalks(page);
         });
 
-        //The function that will be called when the "Save" button
-        //is clicked
-        $('#saveDetails').click(function() {
-           $.ajax({
-                url: '../saveProgramDemoFields',
-                type: "POST",
-                success: function(data) {
-                    window.location.href = "demo-data-elements?msg=updated";
-                }
-            });
-        });
-
-        //The function that will be called when the "Next Step" button
-        //is clicked
-        $('#saveCloseDetails').click(function() {
-             $.ajax({
-                url: '../saveProgramDemoFields',
-                type: "POST",
-                success: function(data) {
-                    window.location.href = "../?msg=updated";
-                }
-            });
-        });
 
         //This function will launch the crosswalk overlay with the selected
         //crosswalk details
@@ -139,7 +116,7 @@ require(['./main'], function () {
         
         //Set the field display name on change
         $(document).on('change', '#field', function() {
-            var selectedFieldText = $('#field').find(":selected").text();
+            var selectedFieldText = $('#field').find(":selected").attr("rel");
             $('#fieldDisplayName').val(selectedFieldText);
             
         });
@@ -150,12 +127,13 @@ require(['./main'], function () {
         $(document).on('click', '#submitFieldButton', function() {
             var selectedField = $('#field').val();
             var selectedCW = $('#crosswalk').val();
-            var selectedFieldText = $('#field').find(":selected").text();
+            var selectedFieldText = $('#field').find(":selected").attr("rel");
             var selectedCWText = $('#crosswalk').find(":selected").text();
             var selectedValidation = $('#fieldValidation').val();
             var selectedValidationText = $('#fieldValidation').find(":selected").text();
             var required = $('#requiredField').val();
             var fieldDisplayName = $('#fieldDisplayName').val();
+            var dataGridColumn = $('#dataGridColumn').val();
 
             //Remove all error classes and error messages
             $('div').removeClass("has-error");
@@ -171,11 +149,15 @@ require(['./main'], function () {
             }
             
             if (errorFound == 0) {
+                
+                var sectionId = $('#sectionId').val();
+                var section = $('#sectionName').val();
+                
                 $.ajax({
-                    url: "../setDemographicField",
-                    type: "GET",
-                    data: {'fieldId': selectedField, 'fieldText': selectedFieldText, 'fieldDisplayName': fieldDisplayName, 'cw': selectedCW, 'CWText': selectedCWText, 'validationId': selectedValidation
-                        , 'validationName': selectedValidationText, 'requiredField': required
+                    url: "../setField.do",
+                    type: "POST",
+                    data: {'fieldId': selectedField, 'sectionId': sectionId, 'fieldText': selectedFieldText, 'fieldDisplayName': fieldDisplayName, 'cw': selectedCW, 'CWText': selectedCWText, 'validationId': selectedValidation
+                        , 'validationName': selectedValidationText, 'requiredField': required, 'dataGridColumn' : dataGridColumn, 'section' : section
                     },
                     success: function(data) {
                         $('#fieldMsgDiv').show();
@@ -200,12 +182,14 @@ require(['./main'], function () {
             //Store the current position
             var currDspPos = $(this).attr('rel');
             var newDspPos = $(this).val();
+            var section = $('#sectionName').val();
 
             $('.displayOrder').each(function() {
                 if ($(this).attr('rel') == newDspPos) {
                     //Need to update the saved process order
                     $.ajax({
-                        url: '../updateFieldDspOrder?fieldType=demo&currdspOrder=' + currDspPos + '&newdspOrder=' + newDspPos,
+                        url: '../updateFieldDspOrder.do',
+                        data: {'section' : section, 'currdspOrder' : currDspPos,  'newdspOrder': newDspPos},
                         type: "POST",
                         success: function(data) {
                             $('#fieldMsgDiv').show();
@@ -228,10 +212,12 @@ require(['./main'], function () {
         $(document).on('click', '.removeField', function() {
             var currPos = $(this).attr('rel2');
             var fieldId = $(this).attr('rel');
+            var section = $('#sectionName').val();
 
             //Need to remove the translation
             $.ajax({
-                url: '../removeField?fieldType=demo&fieldId=' + fieldId + '&dspOrder=' + currPos,
+                url: '../removeField.do',
+                data: {'section' : section, 'fieldId' : fieldId, 'dspOrder' : currPos },
                 type: "POST",
                 success: function(data) {
                     $('#fieldMsgDiv').show();
@@ -241,16 +227,52 @@ require(['./main'], function () {
 
         });
         
+        //Funciton that will save the section fields to the DB
+        $(document).on('click', '#saveDetails', function() {
+            
+            var sectionId = $('#sectionId').val();
+            var section = $('#sectionName').val();
+            
+            $.ajax({
+               url: '../saveSectionFields.do',
+               data: {'section' : section, 'sectionId' : sectionId},
+               type: "POST",
+               success: function(data) {
+                   window.location.href = "/sysAdmin/programs/"+$('#progamNameURL').val()+"/forms/"+section+"/fields?s="+sectionId+"&msg=fieldssaved";
+                }
+            });
+            
+        });
+        
+        //The function that will be called when the "Next Step" button
+        //is clicked
+        $('#saveCloseDetails').click(function() {
+            var sectionId = $('#sectionId').val();
+            var section = $('#sectionName').val();
+            
+            $.ajax({
+               url: '../saveSectionFields.do',
+               data: {'section' : section, 'sectionId' : sectionId},
+                type: "POST",
+                success: function(data) {
+                    window.location.href = "../"+section+"?msg=fieldssaved";
+                }
+            });
+        });
+        
     });
 });
 
 
 function populateFields(reload) {
     
+    var sectionId = $('#sectionId').val();
+    var section = $('#sectionName').val();
+    
     $.ajax({
-        url: '../getDemographicFields.do',
+        url: '../getFields.do',
         type: "GET",
-        data: {'reload': reload, 'categoryId': 1},
+        data: {'reload': reload, 'section': section, 'sectionId': sectionId},
         success: function(data) {
             $("#existingFields").html(data);
         }

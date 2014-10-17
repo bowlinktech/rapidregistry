@@ -38,6 +38,9 @@ public class program {
     @Column(name = "ID", nullable = false)
     private int id;
     
+    @Column(name = "STATUS", nullable = false)
+    private boolean status = true;
+    
     @NotEmpty
     @NoHtml
     @Column(name = "PROGRAMNAME", nullable = false)
@@ -63,6 +66,14 @@ public class program {
 
     public void setId(int id) {
         this.id = id;
+    }
+    
+    public boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
     }
 
     public String getProgramName() {

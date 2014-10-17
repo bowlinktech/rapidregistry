@@ -52,6 +52,12 @@ public class programFormsManagerImpl implements programFormsManager {
     
     @Override
     @Transactional
+    public List<programPatientFields> getAllPatientFields(Integer programId) throws Exception {
+        return programFormsDAO.getAllPatientFields(programId);
+    }
+    
+    @Override
+    @Transactional
     public void deletePatientFields(Integer programId, Integer sectionId) throws Exception {
         programFormsDAO.deletePatientFields(programId, sectionId);
     }
@@ -120,5 +126,11 @@ public class programFormsManagerImpl implements programFormsManager {
     @Transactional
     public programEngagementSections getEngagementSectionBydspPos(Integer dspPos, Integer programId) {
         return programFormsDAO.getEngagementSectionBydspPos(dspPos, programId);
+    }
+    
+    @Override
+    @Transactional
+    public programPatientFields getPatientFieldById(Integer fieldId) throws Exception {
+        return programFormsDAO.getPatientFieldById(fieldId);
     }
 }

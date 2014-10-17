@@ -1,6 +1,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %> 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <div class="main clearfix" role="main">
 
@@ -19,6 +20,8 @@
                     <c:when test="${param.msg == 'tabledeleted'}">The table association has been removed for this program!</c:when>
                     <c:when test="${param.msg == 'entrysaved'}">The patient entry method has been associated to this program!</c:when>
                     <c:when test="${param.msg == 'entrydeleted'}">The patient entry method has been removed for this program!</c:when>
+                    <c:when test="${param.msg == 'fieldsaved'}">The patient search field has been associated to this program!</c:when>
+                    <c:when test="${param.msg == 'fielddeleted'}">The patient search field has been removed for this program!</c:when>
                 </c:choose>
             </div>
         </c:if>
@@ -35,6 +38,19 @@
                         <input type="hidden" id="action" name="action" value="save" />
                         <form:hidden path="id" id="id" />
                         <form:hidden path="dateCreated" />
+                        <spring:bind path="status">
+                            <div class="form-group ${status.error ? 'has-error' : '' }">
+                                <label class="control-label" for="status">Status *</label>
+                                <div>
+                                    <label class="radio-inline">
+                                        <form:radiobutton id="status" path="status" value="true" /> Active
+                                    </label>
+                                    <label class="radio-inline">
+                                        <form:radiobutton id="status" path="status" value="false" /> Inactive
+                                    </label>
+                                </div>
+                            </div>
+                        </spring:bind> 
                         <spring:bind path="programName">
                             <div class="form-group ${status.error ? 'has-error' : '' } ${not empty existingProgram ? 'has-error' : ''}">
                                 <label class="control-label" for="programName">Program Name *</label>
@@ -151,10 +167,6 @@
                                             </td>
                                             <td>
                                                 <div class="pull-right">
-                                                    <a href="#surveyTableModal" data-toggle="modal" class="btn btn-link editTable" rel="${availableTable.id}" title="Edit">
-                                                        <span class="glyphicon glyphicon-edit"></span>
-                                                        Edit
-                                                    </a>
                                                     <a href="javascript:void(0);"  class="btn btn-link deleteTable" rel="${availableTable.id}" title="Delete">
                                                         <span class="glyphicon glyphicon-remove"></span>
                                                         Delete
@@ -172,6 +184,106 @@
                 </div>
             </div>
         </section>
+        
+        <section class="panel panel-default">
+            <div class="panel-heading">
+                <div class="pull-right">
+                    <a href="#searchFieldsModal" data-toggle="modal" class="btn btn-primary btn-xs btn-action" id="createNewSearchField" title="Add New Search Field">Add Search Field</a>
+                </div>
+                <h3 class="panel-title">Available Fields for Patient Search</h3>
+            </div>
+            <div class="panel-body">
+                <div class="form-container scrollable">
+                    <table class="table table-striped table-hover responsive">
+                        <thead>
+                            <tr>
+                                <th scope="col">Field Name</th>
+                                <th scope="col" class="center-text">Display Position</th>
+                                <th scope="col" class="center-text">Date Created</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <c:choose>
+                                <c:when test="${searchFields.size() > 0}">
+                                    <c:forEach items="${searchFields}" var="field">
+                                        <tr>
+                                            <td scope="row">
+                                                ${field.fieldDisplayName}
+                                            </td>
+                                            <td class="center-text">
+                                                ${field.dspPos}
+                                            </td>
+                                            <td class="center-text"><fmt:formatDate value="${field.dateCreated}" type="date" pattern="M/dd/yyyy" /></td>
+                                            <td>
+                                                <div class="pull-right">
+                                                    <a href="javascript:void(0);"  class="btn btn-link deleteField" rel="${field.id}" title="Delete">
+                                                        <span class="glyphicon glyphicon-remove"></span>
+                                                        Delete
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
+                                </c:when>
+                                <c:otherwise><tr><td scope="row" colspan="4" style="text-align:center">No Search Fields Found</td></c:otherwise>
+                            </c:choose>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </section>
+        
+        <section class="panel panel-default">
+            <div class="panel-heading">
+                <div class="pull-right">
+                    <a href="#summaryFieldsModal" data-toggle="modal" class="btn btn-primary btn-xs btn-action" id="createNewSummaryField" title="Add New Summary Field">Add Summary Field</a>
+                </div>
+                <h3 class="panel-title">Available Fields for Patient Summary</h3>
+            </div>
+            <div class="panel-body">
+                <div class="form-container scrollable">
+                    <table class="table table-striped table-hover responsive">
+                        <thead>
+                            <tr>
+                                <th scope="col">Field Name</th>
+                                <th scope="col" class="center-text">Display Position</th>
+                                <th scope="col" class="center-text">Date Created</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <c:choose>
+                                <c:when test="${summaryFields.size() > 0}">
+                                    <c:forEach items="${summaryFields}" var="field">
+                                        <tr>
+                                            <td scope="row">
+                                                ${field.fieldDisplayName}
+                                            </td>
+                                            <td class="center-text">
+                                                ${field.dspPos}
+                                            </td>
+                                            <td class="center-text"><fmt:formatDate value="${field.dateCreated}" type="date" pattern="M/dd/yyyy" /></td>
+                                            <td>
+                                                <div class="pull-right">
+                                                    <a href="javascript:void(0);"  class="btn btn-link deleteSummaryField" rel="${field.id}" title="Delete">
+                                                        <span class="glyphicon glyphicon-remove"></span>
+                                                        Delete
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
+                                </c:when>
+                                <c:otherwise><tr><td scope="row" colspan="4" style="text-align:center">No Summary Fields Found</td></c:otherwise>
+                            </c:choose>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </section>
 
 
     </div>
@@ -180,4 +292,5 @@
 <!-- Program Entry Method modal -->
 <div class="modal fade" id="entryMethodModal" role="dialog" tabindex="-1" aria-labeledby="Add New Patient Entry Method" aria-hidden="true" aria-describedby="Add New Patient Entry Method"></div>
 <div class="modal fade" id="surveyTableModal" role="dialog" tabindex="-1" aria-labeledby="Add New Table" aria-hidden="true" aria-describedby="Add New Table"></div>
-
+<div class="modal fade" id="searchFieldsModal" role="dialog" tabindex="-1" aria-labeledby="Add New Search Field" aria-hidden="true" aria-describedby="Add New Search Field"></div>
+<div class="modal fade" id="summaryFieldsModal" role="dialog" tabindex="-1" aria-labeledby="Add New Search Field" aria-hidden="true" aria-describedby="Add New Summary Field"></div>

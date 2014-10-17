@@ -10,10 +10,8 @@ import com.bowlink.rr.model.dataElements;
 import com.bowlink.rr.model.program;
 import com.bowlink.rr.model.programEngagementFields;
 import com.bowlink.rr.model.programEngagementSections;
-import com.bowlink.rr.model.programPatientEntryMethods;
 import com.bowlink.rr.model.programPatientFields;
 import com.bowlink.rr.model.programPatientSections;
-import com.bowlink.rr.model.surveys;
 import com.bowlink.rr.service.dataElementManager;
 import com.bowlink.rr.service.programFormsManager;
 import com.bowlink.rr.service.programManager;
@@ -218,6 +216,7 @@ public class programForms {
 
     }
     
+    
     /**
      * The '/saveEngagementSection' POST request will submit the engagement detail section.
      *
@@ -273,28 +272,37 @@ public class programForms {
     
     
     /**
-     * The '/{programName}/{sectionId}/{sectionName}/fields' GET request will display the page that will list the fields 
+     * The '/fields' GET request will display the page that will list the fields 
      * for the selected section and program.
      *
-     * @param programName	The {programName} will be the program name with spaces removed.
-     * @param sectionid     The {sectionId} will be the id of the selected section
-     * @param sectionName   The {sectionName} will be the section name with spaces removed.
+     * @param s	The id of the selected section
      *
      * @return	Will return the program modules page.
      *
      * @throws Exception
      *
      */
-    @RequestMapping(value = "/{programName}/{sectionId}/{sectionName}/fields", method = RequestMethod.GET)
-    public ModelAndView programPatientSectionFields(@PathVariable String programName, @PathVariable Integer sectionId, @PathVariable String sectionName, HttpSession session) throws Exception {
-
-        //Set the data translations array to get ready to hold data
-        patientFields = new CopyOnWriteArrayList<programPatientFields>();
-
+    @RequestMapping(value = "/{section}/fields", method = RequestMethod.GET)
+    public ModelAndView programSectionFields(@PathVariable String section, @RequestParam(value = "s", required = true) Integer sectionId, HttpSession session) throws Exception {
+        
         ModelAndView mav = new ModelAndView();
-        mav.setViewName("/patientFields");
         mav.addObject("id", session.getAttribute("programId"));
+        mav.addObject("programName", session.getAttribute("programName"));
+        
+        /* Patient Form Sections */        
+        if("patient-sections".equals(section)) {
+            patientFields = new CopyOnWriteArrayList<programPatientFields>();
+            mav.setViewName("/patientFields");
+        }
+        
+        /* Engagement Form Sections */
+        else if ("engagement-sections".equals(section)) {
+           engagementFields  = new CopyOnWriteArrayList<programEngagementFields>(); 
+           mav.setViewName("/engagmentFields");
+        }
+
         mav.addObject("sectionId", sectionId);
+        mav.addObject("sectionName", section);
 
         program programDetails = programmanager.getProgramById((Integer) session.getAttribute("programId"));
         mav.addObject("programDetails", programDetails);
@@ -322,123 +330,206 @@ public class programForms {
     }
 
     /**
-     * The '/getPatientFields.do' function will return the list of existing patient fields set up for the selected program and section.
+     * The '/getFields.do' function will return the list of existing fields set up for the selected program and section.
      *
      * @Return list of data fields
      */
-    @RequestMapping(value = "/getPatientFields.do", method = RequestMethod.GET)
+    @RequestMapping(value = "/getFields.do", method = RequestMethod.GET)
     public @ResponseBody
-    ModelAndView getDemographicFields(@RequestParam(value = "reload", required = true) boolean reload, HttpSession session, @RequestParam(value = "sectionId", required = true) Integer sectionId) throws Exception {
+    ModelAndView getFields(@RequestParam(value = "reload", required = true) boolean reload, HttpSession session, @RequestParam(value = "section", required = true) String section, @RequestParam(value = "sectionId", required = true) Integer sectionId) throws Exception {
 
         ModelAndView mav = new ModelAndView();
-        mav.setViewName("/sysAdmin/programs/dataElements/existingFields");
+        mav.setViewName("/sysAdmin/programs/forms/existingFields");
 
         /**
          * only get the saved translations if reload == 0 We only want to retrieve the saved ones on initial load
          */
         if (reload == false) {
-            //Need to get a list of existing translations
-            List<programPatientFields> patientFields = programformsmanager.getPatientFields((Integer) session.getAttribute("programId"), sectionId);
-
+            
             String fieldName;
             String crosswalkName;
             String validationName;
+            
+            /* Patient Form Sections */        
+            if("patient-sections".equals(section)) {
+                //Need to get a list of existing patient fields
+                List<programPatientFields> existingPatientFields = programformsmanager.getPatientFields((Integer) session.getAttribute("programId"), sectionId);
+                
+                for (programPatientFields field : existingPatientFields) {
+                    //Get the field name by id
+                    fieldName = dataelementmanager.getfieldName(field.getFieldId());
+                    field.setFieldName(fieldName);
 
-            for (programPatientFields field : patientFields) {
-                //Get the field name by id
-                fieldName = dataelementmanager.getfieldName(field.getFieldId());
-                field.setFieldName(fieldName);
+                    //Get the crosswalk name by id
+                    if (field.getCrosswalkId() != 0) {
+                        crosswalkName = dataelementmanager.getCrosswalkName(field.getCrosswalkId());
+                        field.setCwName(crosswalkName);
+                    }
 
-                //Get the crosswalk name by id
-                if (field.getCrosswalkId() != 0) {
-                    crosswalkName = dataelementmanager.getCrosswalkName(field.getCrosswalkId());
-                    field.setCwName(crosswalkName);
+                    //Get the macro name by id
+                    if (field.getValidationId() > 0) {
+                        validationName = dataelementmanager.getValidationName(field.getValidationId());
+                        field.setValidationName(validationName);
+                    }
+
+                    patientFields.add(field);
                 }
+                
+                mav.addObject("existingFields", patientFields);
+            }
+            
+            /* Engagement Form Sections */
+            else if ("engagement-sections".equals(section)) {
+                //Need to get a list of existing engagement fields
+                List<programEngagementFields> existingEngagementFields = programformsmanager.getEngagementFields((Integer) session.getAttribute("programId"), sectionId);
 
-                //Get the macro name by id
-                if (field.getValidationId() > 0) {
-                    validationName = dataelementmanager.getValidationName(field.getValidationId());
-                    field.setValidationName(validationName);
+                for (programEngagementFields field : existingEngagementFields) {
+                    //Get the field name by id
+                    fieldName = dataelementmanager.getfieldName(field.getFieldId());
+                    field.setFieldName(fieldName);
+
+                    //Get the crosswalk name by id
+                    if (field.getCrosswalkId() != 0) {
+                        crosswalkName = dataelementmanager.getCrosswalkName(field.getCrosswalkId());
+                        field.setCwName(crosswalkName);
+                    }
+
+                    //Get the macro name by id
+                    if (field.getValidationId() > 0) {
+                        validationName = dataelementmanager.getValidationName(field.getValidationId());
+                        field.setValidationName(validationName);
+                    }
+
+                    engagementFields.add(field);
                 }
-
-                patientFields.add(field);
+                
+                mav.addObject("existingFields", engagementFields);
+                
             }
         }
 
-        mav.addObject("existingFields", patientFields);
-
+        else {
+            
+            /* Patient Form Sections */        
+            if("patient-sections".equals(section)) {
+                mav.addObject("existingFields", patientFields);
+            }
+            
+            /* Engagement Form Sections */
+            else if ("engagement-sections".equals(section)) {
+                mav.addObject("existingFields", engagementFields);
+            }
+            
+        }
+        
         return mav;
 
     }
 
     /**
-     * The '/setPatientField' function will handle taking in a selected field, selected crosswalk and selected validation type and add it to an array of translations. This array will be used when the form is submitted to associate to the existing program.
+     * The '/setField.do' function will handle taking in a selected field, selected crosswalk and selected validation type and add it to an array of fields. This array will be used when the form is 
+     * submitted to associate to the existing program and section.
      *
      * @param fieldId This will hold the id of the selected field
-     * @param cw This will hold the id of the selected crosswalk
+     * @param sectionId This will hold the id of the selected program section
      * @param fieldText This will hold the text value of the selected field (used for display purposes)
+     * @param fieldDisplayName This will hold the text value of how the program will display the field
+     * @param cw This will hold the id of the selected crosswalk
      * @param CWText This will hold the text value of the selected crosswalk (used for display purposes)
      * @param validationId This will hold the id of the selected validation type
      * @param validationName This will hold the name of the selected validation type
+     * @param requiredfield This will hold value if the field is required or not
+     * @param dataGridColumn This will hold the value if the field will be displayed as column in the data grid
+     * @param section   This will hold the name of the passed in section
      *
      * @Return	This function will return the existing translations view that will display the table of newly selected translations
      */
-    @RequestMapping(value = "/setPatientField{params}", method = RequestMethod.GET)
+    @RequestMapping(value = "/setField.do", method = RequestMethod.POST)
     public @ResponseBody
-    ModelAndView setDemographicField(
+    ModelAndView setField(
             @RequestParam(value = "fieldId", required = true) Integer fieldId, @RequestParam(value = "sectionId", required = true) Integer sectionId, @RequestParam(value = "fieldText", required = true) String fieldText,
             @RequestParam(value = "fieldDisplayName", required = true) String fieldDisplayName,
             @RequestParam(value = "cw", required = true) Integer cw, @RequestParam(value = "CWText", required = true) String cwText,
             @RequestParam(value = "validationId", required = true) Integer validationId, @RequestParam(value = "validationName", required = true) String validationName,
             @RequestParam(value = "requiredField", required = true) boolean requiredField, 
-            @RequestParam(value = "dataGridColumn", required = true) boolean dataGridColumn, HttpSession session
+            @RequestParam(value = "dataGridColumn", required = true) boolean dataGridColumn,
+            @RequestParam(value = "section", required = true) String section,
+            HttpSession session
     ) throws Exception {
 
-        int dspPos = patientFields.size() + 1;
+        int dspPos;
 
         if (cw == null) {
             cw = 0;
             cwText = null;
         }
-
-        programPatientFields field = new programPatientFields();
-        field.setProgramId((Integer) session.getAttribute("programId"));
-        field.setSectionId(sectionId);
-        field.setCrosswalkId(cw);
-        field.setCwName(cwText);
-        field.setFieldId(fieldId);
-        field.setFieldName(fieldText);
-        field.setFieldDisplayname(fieldDisplayName);
-        field.setValidationId(validationId);
-        field.setValidationName(validationName);
-        field.setRequiredField(requiredField);
-        field.setDspPos(dspPos);
-        field.setDataGridColumn(dataGridColumn);
-
-        patientFields.add(field);
-
+        
         ModelAndView mav = new ModelAndView();
-        mav.setViewName("/sysAdmin/programs/dataElements/existingFields");
-        mav.addObject("existingFields", patientFields);
+        mav.setViewName("/sysAdmin/programs/forms/existingFields");
+        
+        /* Patient Form Sections */   
+        if("patient-sections".equals(section)) {
+            dspPos = patientFields.size() + 1;
+            
+            programPatientFields field = new programPatientFields();
+            field.setProgramId((Integer) session.getAttribute("programId"));
+            field.setSectionId(sectionId);
+            field.setCrosswalkId(cw);
+            field.setCwName(cwText);
+            field.setFieldId(fieldId);
+            field.setFieldName(fieldText);
+            field.setFieldDisplayname(fieldDisplayName);
+            field.setValidationId(validationId);
+            field.setValidationName(validationName);
+            field.setRequiredField(requiredField);
+            field.setDspPos(dspPos);
+            field.setDataGridColumn(dataGridColumn);
+
+            patientFields.add(field);
+            mav.addObject("existingFields", patientFields);
+        }
+        
+        /* Engagement Form Sections */
+        else if ("engagement-sections".equals(section)) {
+            dspPos = engagementFields.size() + 1;
+            
+            programEngagementFields field = new programEngagementFields();
+            field.setProgramId((Integer) session.getAttribute("programId"));
+            field.setSectionId(sectionId);
+            field.setCrosswalkId(cw);
+            field.setCwName(cwText);
+            field.setFieldId(fieldId);
+            field.setFieldName(fieldText);
+            field.setFieldDisplayname(fieldDisplayName);
+            field.setValidationId(validationId);
+            field.setValidationName(validationName);
+            field.setRequiredField(requiredField);
+            field.setDspPos(dspPos);
+            field.setDataGridColumn(dataGridColumn);
+            
+            engagementFields.add(field);
+            mav.addObject("existingFields", engagementFields);
+        }
 
         return mav;
     }
 
 
     /**
-     * The 'removeField{params}' function will handle removing a field from demoFields array.
+     * The '/removeField.do' function will handle removing a field from fields array.
      *
-     * @param fieldType This will hold either DEMO or HEALTH
+     * @param   section This will hold the section name (patient-sections) or (engagement-sections)
      * @param	fieldId This will hold the field that is being removed
      * @param	processOrder This will hold the process order of the field to be removed so we remove the correct field number as the same field could be in the list with different crosswalks
      *
      * @Return	1	The function will simply return a 1 back to the ajax call
      */
-    @RequestMapping(value = "/removeField{params}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/removeField.do", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
-    Integer removeField(@RequestParam(value = "fieldType", required = true) String fieldType, @RequestParam(value = "fieldId", required = true) Integer fieldId, @RequestParam(value = "dspOrder", required = true) Integer dspOrder) throws Exception {
+    Integer removeField(@RequestParam(value = "section", required = true) String section, @RequestParam(value = "fieldId", required = true) Integer fieldId, @RequestParam(value = "dspOrder", required = true) Integer dspOrder) throws Exception {
 
-        if ("patient".equals(fieldType)) {
+        /* Patient Form Sections */
+        if ("patient-sections".equals(section)) {
             Iterator<programPatientFields> it = patientFields.iterator();
 
             int currdspOrder;
@@ -452,7 +543,10 @@ public class programForms {
                     field.setDspPos(currdspOrder - 1);
                 }
             }
-        } else {
+        } 
+        
+        /* Engagement Form Sections */
+        else if ("engagement-sections".equals(section)) {
             Iterator<programEngagementFields> it = engagementFields.iterator();
 
             int currdspOrder;
@@ -471,20 +565,22 @@ public class programForms {
         return 1;
     }
 
+    
     /**
-     * The 'updateFieldDspOrder{params}' function will handle updating the field display position.
+     * The '/updateFieldDspOrder.do' function will handle updating the field display position.
      *
-     * @param fieldType This will hold either DEMO or HEALTH
+     * @param   section This will hold the section name (patient-sections) or (engagement-sections)
      * @param	fieldId This will hold the field that is being removed
      * @param	processOrder This will hold the process order of the field to be removed so we remove the correct field number as the same field could be in the list with different crosswalks
      *
      * @Return	1	The function will simply return a 1 back to the ajax call
      */
-    @RequestMapping(value = "/updateFieldDspOrder{params}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/updateFieldDspOrder.do", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
-    Integer updateTranslationProcessOrder(@RequestParam(value = "fieldType", required = true) String fieldType, @RequestParam(value = "currdspOrder", required = true) Integer currdspOrder, @RequestParam(value = "newdspOrder", required = true) Integer newdspOrder) throws Exception {
+    Integer updateTranslationProcessOrder(@RequestParam(value = "section", required = true) String section, @RequestParam(value = "currdspOrder", required = true) Integer currdspOrder, @RequestParam(value = "newdspOrder", required = true) Integer newdspOrder) throws Exception {
 
-        if ("demo".equals(fieldType)) {
+        /* Patient Form Sections */
+        if ("patient-sections".equals(section)) {
             Iterator<programPatientFields> it = patientFields.iterator();
 
             while (it.hasNext()) {
@@ -495,7 +591,10 @@ public class programForms {
                     field.setDspPos(currdspOrder);
                 }
             }
-        } else {
+        } 
+        
+        /* Engagement Form Sections */
+        else if ("engagement-sections".equals(section)) {
             Iterator<programEngagementFields> it = engagementFields.iterator();
 
             while (it.hasNext()) {
@@ -511,23 +610,39 @@ public class programForms {
         return 1;
     }
 
+    
     /**
-     * The '/saveProgramPatientFields' POST request will submit the selected fields and save it to the data base.
+     * The '/saveSectionFields.do' POST request will submit the selected fields and save it to the data base.
      *
      */
-    @RequestMapping(value = "/saveProgramPatientFields", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/saveSectionFields.do", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
-    Integer saveProgramPatientFields(@RequestParam(value = "sectionId", required = true) Integer sectionId, HttpSession session) throws Exception {
+    Integer saveSectionFields(@RequestParam(value = "section", required = true) String section, @RequestParam(value = "sectionId", required = true) Integer sectionId, HttpSession session) throws Exception {
 
-        //Delete all the data translations before creating
-        //This will help with the jquery removing translations
-        programformsmanager.deletePatientFields((Integer) session.getAttribute("programId"), sectionId);
+        /* Patient Form Sections */   
+        if("patient-sections".equals(section)) {
+            //Delete all the data translations before creating
+            //This will help with the jquery removing translations
+            programformsmanager.deletePatientFields((Integer) session.getAttribute("programId"), sectionId);
 
-        //Loop through the list of translations
-        for (programPatientFields field : patientFields) {
-            programformsmanager.savePatientFields(field);
+            //Loop through the list of translations
+            for (programPatientFields field : patientFields) {
+                programformsmanager.savePatientFields(field);
+            }
         }
+        
+        /* Engagement Form Sections */
+        else if ("engagement-sections".equals(section)) {
+            //Delete all the data translations before creating
+            //This will help with the jquery removing translations
+            programformsmanager.deleteEngagementFields((Integer) session.getAttribute("programId"), sectionId);
 
+            //Loop through the list of translations
+            for (programEngagementFields field : engagementFields) {
+                programformsmanager.saveEngagementFields(field);
+            }
+        }
+            
         return 1;
     }
     
