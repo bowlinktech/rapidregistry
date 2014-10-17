@@ -1,20 +1,13 @@
 package com.bowlink.rr.controller;
 
 import com.bowlink.rr.model.User;
-import com.bowlink.rr.model.activityCodes;
 import com.bowlink.rr.model.program;
-import com.bowlink.rr.model.programActivityCodes;
 import com.bowlink.rr.model.programAdmin;
 import com.bowlink.rr.model.programAvailableTables;
 import com.bowlink.rr.model.programPatientFields;
-import com.bowlink.rr.model.programEngagementFields;
-import com.bowlink.rr.model.programMCIAlgorithms;
-import com.bowlink.rr.model.programMCIFields;
 import com.bowlink.rr.model.programPatientEntryMethods;
 import com.bowlink.rr.model.programPatientSearchFields;
 import com.bowlink.rr.model.programPatientSummaryFields;
-import com.bowlink.rr.model.programReports;
-import com.bowlink.rr.model.reports;
 import com.bowlink.rr.model.surveys;
 import com.bowlink.rr.service.activityCodeManager;
 import com.bowlink.rr.service.dataElementManager;
@@ -34,6 +27,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -605,209 +599,212 @@ public class programController {
 
     }
     
-    
     /**
-     * The '/{programName}/activity-codes' GET request will display the program activity code page.
+     * The '/{programName}/program-admins' GET request will display the program administrators.
      *
      * @param programName	The {programName} will be the program name with spaces removed.
      *
-     * @return	Will return the program details page.
+     * @return	Will return the program admin list page.
      *
      * @throws Exception
      *
-     
-    @RequestMapping(value = "/{programName}/activity-codes", method = RequestMethod.GET)
-    public ModelAndView programActivityCodes(HttpSession session) throws Exception {
+     */
+    @RequestMapping(value = "/{programName}/program-admins", method = RequestMethod.GET)
+    public ModelAndView getprogramAdministrators(HttpSession session) throws Exception {
 
         ModelAndView mav = new ModelAndView();
-        mav.setViewName("/activitycodes");
+        mav.setViewName("/administrators");
         mav.addObject("id", session.getAttribute("programId"));
 
         program programDetails = programmanager.getProgramById((Integer) session.getAttribute("programId"));
         mav.addObject("programDetails", programDetails);
 
-        List<activityCodes> activityCodes = activitycodemanager.getActivityCodes(0);
-
-        for (activityCodes code : activityCodes) {
-
-            boolean codeBeingUsed = programmanager.getUsedActivityCodes((Integer) session.getAttribute("programId"), code.getId());
-
-            code.setSelected(codeBeingUsed);
-
+        /* Get a list of Adminsitrators */
+        List<programAdmin> administrators = programmanager.getProgramAdministrators((Integer) session.getAttribute("programId"));
+        
+        List<User> programAdministrators = null;
+        programAdministrators = new CopyOnWriteArrayList<User>();
+        
+        if(!administrators.isEmpty()) {
+            
+            for(programAdmin admin : administrators) {
+                User userDetails = usermanager.getUserById(admin.getsystemUserId());
+                userDetails.setTimesloggedIn(usermanager.findTotalLogins(admin.getsystemUserId()));
+           
+                programAdministrators.add(userDetails);
+            }
         }
-
-        mav.addObject("availactivityCodes", activityCodes);
+        
+        mav.addObject("programAdministrators", programAdministrators);
 
         return mav;
 
     }
-*/
-    /**
-     * The '/{programName}/activity-codes' GET request will display the program activity code page.
-     *
-     * @param programName	The {programName} will be the program name with spaces removed.
-     * @param action
-     * @param activityCodeList
-     * @param redirectAttr
-     * @param session
-     * @return
-     * @throws Exception
     
-    @RequestMapping(value = "/{programName}/activity-codes", method = RequestMethod.POST)
-    public ModelAndView saveProgramActivityCodes(@RequestParam String action, @RequestParam(value = "activityCodeList", required = false) List<Integer> activityCodeList, RedirectAttributes redirectAttr, HttpSession session) throws Exception {
-
-        if (activityCodeList == null) {
-            programmanager.removeProgramActivityCodes((Integer) session.getAttribute("programId"));
-        } else {
-            programmanager.removeProgramActivityCodes((Integer) session.getAttribute("programId"));
-
-            for (Integer code : activityCodeList) {
-                programActivityCodes newCodeAssoc = new programActivityCodes();
-                newCodeAssoc.setCodeId(code);
-                newCodeAssoc.setProgramId((Integer) session.getAttribute("programId"));
-
-                programmanager.saveProgramActivityCode(newCodeAssoc);
-            }
-
-        }
-
-        redirectAttr.addFlashAttribute("savedStatus", "codesupdated");
-
-        if (action.equals("save")) {
-            ModelAndView mav = new ModelAndView(new RedirectView("activity-codes"));
-            return mav;
-        } else {
-            ModelAndView mav = new ModelAndView(new RedirectView("../../programs/"));
-            return mav;
-        }
-
-    }
-*/
     /**
-     * The '/{programName}/canned-reports' GET request will display the page to associate canned reports to a program.
+     * The '/{programName}/administrator.create' GET request will be used to create a new program Administrator
      *
-     * @param programName	The {programName} will be the program name with spaces removed.
+     * @return The blank program administrator page
      *
-     * @return	Will return the program reports page.
-     *
-     * @throws Exception
-     *
-     
-    @RequestMapping(value = "/{programName}/canned-reports", method = RequestMethod.GET)
-    public ModelAndView programReports(HttpSession session) throws Exception {
-
+     * @Objects (1) An object that will hold the blank program admin form.
+     */
+    @RequestMapping(value = "/{programName}/administrator.create", method = RequestMethod.GET)
+    @ResponseBody public ModelAndView newAdministratorForm(HttpSession session) throws Exception {
         ModelAndView mav = new ModelAndView();
-        mav.setViewName("/programReports");
-        mav.addObject("id", session.getAttribute("programId"));
+        mav.setViewName("/sysAdmin/programs/programAdmins/details");
 
-        program programDetails = programmanager.getProgramById((Integer) session.getAttribute("programId"));
-        mav.addObject("programDetails", programDetails);
-
-        List<Integer> useReports = programmanager.getProgramReports((Integer) session.getAttribute("programId"));
-
-        List<reports> availReports = reportmanager.getAllReports();
-
-        if (!useReports.isEmpty()) {
-            for (reports report : availReports) {
-
-                if (useReports.contains(report.getId())) {
-                    report.setUseReport(true);
-                }
-            }
-        }
-
-        mav.addObject("availReports", availReports);
+        //Create a new blank provider.
+        User user = new User();
+        user.setRoleId(2);
+       
+        mav.addObject("btnValue", "Create");
+        mav.addObject("admindetails", user);
+        
+        List<User> availableUsers = usermanager.getProgramAdmins();
+        mav.addObject("availableUsers", availableUsers);
 
         return mav;
-
     }
-    */
-
-    /**
-     * The '/{programName}/canned-reports' POST request will save the program report form.
-     *
-     * @param List<Imteger>	The list of reportIds to use.
-     *
-     * @return	Will return the program details page.
-     *
-     * @throws Exception
-     *
     
-    @RequestMapping(value = "/{programName}/canned-reports", method = RequestMethod.POST)
-    public ModelAndView saveprogramReports(@RequestParam List<Integer> reportIds, @RequestParam String action, RedirectAttributes redirectAttr, HttpSession session) throws Exception {
-
-        Integer selProgramId = (Integer) session.getAttribute("programId");
-
-        if (reportIds.isEmpty()) {
-            programmanager.deleteProgramReports(selProgramId);
-        } else {
-            programmanager.deleteProgramReports(selProgramId);
-
-            for (Integer reportId : reportIds) {
-
-                programReports report = new programReports();
-
-                report.setProgramId(selProgramId);
-                report.setReportId(reportId);
-
-                programmanager.saveProgramReports(report);
-            }
-        }
-
-        redirectAttr.addFlashAttribute("savedStatus", "updatedprogramreports");
-
-        if (action.equals("save")) {
-            ModelAndView mav = new ModelAndView(new RedirectView("canned-reports"));
-            return mav;
-        } else {
-            ModelAndView mav = new ModelAndView(new RedirectView("../../programs/"));
-            return mav;
-        }
-
-    }
-    */
     /**
-     * The '/{programName}/mci-algorithms' GET request will display the program MCI Algorithms.
+     * The '/{programName}/create_programadmin' POST request will handle submitting the new program administrator.
      *
-     * @param programName	The {programName} will be the program name with spaces removed.
+     * @param admindetails    The object containing the program administrator form fields
+     * @param result        The validation result
+     * @param redirectAttr	The variable that will hold values that can be read after the redirect
      *
-     * @return	Will return the MPI Algorithms page.
-     *
-     * @throws Exception
-     *
+     * @return	Will return the program administrators list page on "Save" Will return the program administrator form page on error
      
-    @RequestMapping(value = "/{programName}/mci-algorithms", method = RequestMethod.GET)
-    public ModelAndView programMCIAlgorithms(HttpSession session) throws Exception {
-
-        ModelAndView mav = new ModelAndView();
-        mav.setViewName("/mcialgorithms");
-        mav.addObject("id", session.getAttribute("programId"));
-
-        program programDetails = programmanager.getProgramById((Integer) session.getAttribute("programId"));
-        mav.addObject("programDetails", programDetails);
+     * @throws Exception
+     */
+    @RequestMapping(value = "/{programName}/create_programadmin", method = RequestMethod.POST)
+    public @ResponseBody
+    ModelAndView saveAdminProram(@Valid @ModelAttribute(value = "admindetails") User admindetails, BindingResult result, HttpSession session) throws Exception {
 
         
-        List<programMCIAlgorithms> mciAlgorithms = programmanager.getProgramMCIAlgorithms((Integer) session.getAttribute("programId"));
-        
-        if(!mciAlgorithms.isEmpty()) {
-            for(programMCIAlgorithms mci : mciAlgorithms) {
-                List<programMCIFields> fields = programmanager.getProgramMCIFields(mci.getId());
-                
-                for(programMCIFields field : fields) {
-                    //Get the field name by id
-                    String fieldName = dataelementmanager.getfieldName(field.getFieldId());
-                    field.setFieldName(fieldName);
-                }
-                
-                mci.setFields(fields);
-            }
+        if (result.hasErrors()) {
+            ModelAndView mav = new ModelAndView();
+            mav.setViewName("/sysAdmin/programs/programAdmins/details");
+            List<User> availableUsers = usermanager.getProgramAdmins();
+            mav.addObject("availableUsers", availableUsers);
+            mav.addObject("btnValue", "Create");
+            return mav;
         }
         
-        mav.addObject("mpiAlgorithms", mciAlgorithms);
+        
+        Integer adminId = usermanager.createUser(admindetails);
+
+        programAdmin adminprogram = new programAdmin();
+        adminprogram.setProgramId((Integer) session.getAttribute("programId"));
+        adminprogram.setsystemUserId(adminId);
+        
+        programmanager.saveAdminProgram(adminprogram);
+
+        ModelAndView mav = new ModelAndView("/sysAdmin/programs/programAdmins/details");
+        mav.addObject("success", "adminCreated");
+        return mav;
+    }
+    
+    /**
+     * The '/{programName}/administrator.edit' GET request will be used to edit the selected program Administrator
+     *
+     * @return The program administrator page
+     *
+     * @Objects (1) An object that will hold the selected program admin details
+     */
+    @RequestMapping(value = "/{programName}/administrator.edit", method = RequestMethod.GET)
+    @ResponseBody public ModelAndView editAdministratorForm(@RequestParam Integer adminId, HttpSession session) throws Exception {
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/sysAdmin/programs/programAdmins/details");
+
+        //Create a new blank provider.
+        User userDetails = usermanager.getUserById(adminId);
+       
+        userDetails.setTimesloggedIn(usermanager.findTotalLogins(adminId));
+        
+        mav.addObject("btnValue", "Update");
+        mav.addObject("admindetails", userDetails);
+        
+        List<User> availableUsers = usermanager.getProgramAdmins();
+        mav.addObject("availableUsers", availableUsers);
 
         return mav;
-
     }
-    */
+    
+    /**
+     * The '/{programName}/update_programadmin' POST request will handle submitting the program administrator changes.
+     *
+     * @param admindetails    The object containing the program administrator form fields
+     * @param result        The validation result
+     * @param redirectAttr	The variable that will hold values that can be read after the redirect
+     *
+     * @return	Will return the program administrators list page on "Save" Will return the program administrator form page on error
+     
+     * @throws Exception
+     */
+    @RequestMapping(value = "/{programName}/update_programadmin", method = RequestMethod.POST)
+    public @ResponseBody
+    ModelAndView updateProgramAdmin(@Valid @ModelAttribute(value = "admindetails") User admindetails, BindingResult result, HttpSession session) throws Exception {
 
+        
+        if (result.hasErrors()) {
+            ModelAndView mav = new ModelAndView();
+            mav.setViewName("/sysAdmin/programs/programAdmins/details");
+            List<User> availableUsers = usermanager.getProgramAdmins();
+            mav.addObject("availableUsers", availableUsers);
+            mav.addObject("btnValue", "Update");
+            return mav;
+        }
+        
+        usermanager.updateUser(admindetails);
+
+        ModelAndView mav = new ModelAndView("/sysAdmin/programs/programAdmins/details");
+        mav.addObject("success", "adminUpdated");
+        return mav;
+    }
+    
+    
+    /**
+     * The '/{programName}/administrator.associateToProgram' POST request will be used to associate the selected admin to the
+     * program
+     *
+     * @return The program administrator page
+     *
+     * @Objects (1) An object that will hold the selected program admin details
+     */
+    @RequestMapping(value = "/{programName}/administrator.associateToProgram", method = RequestMethod.POST)
+    @ResponseBody public ModelAndView associateAdminToProgram(@RequestParam Integer adminId, HttpSession session) throws Exception {
+        
+        //Create a new blank provider.
+        programAdmin details = new programAdmin();
+        details.setProgramId((Integer) session.getAttribute("programId"));
+        details.setsystemUserId(adminId);
+       
+        programmanager.saveAdminProgram(details);
+        
+        //Create a new blank provider.
+        User userDetails = usermanager.getUserById(adminId);
+       
+        ModelAndView mav = new ModelAndView("/sysAdmin/programs/programAdmins/details");
+        mav.addObject("success", "adminUpdated");
+        mav.addObject("admindetails", userDetails);
+        return mav;
+    }
+    
+    /**
+     * The '/{programName}/administrator.removeFromProgram' POST request will remove the association between the selected
+     * admin and the program
+     *
+     * @return The program administrator list page
+     *
+     */
+    @RequestMapping(value = "/{programName}/administrator.removeFromProgram", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody Integer removeProgramAssociation(@RequestParam Integer adminId, HttpSession session) throws Exception {
+        
+        //Create a new blank provider.
+        programmanager.removeAdminProgram((Integer) session.getAttribute("programId"), adminId);
+       
+        return 1;
+    }
+    
 }

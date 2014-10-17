@@ -7,17 +7,12 @@
 package com.bowlink.rr.dao;
 
 import com.bowlink.rr.model.program;
-import com.bowlink.rr.model.programActivityCodes;
-import com.bowlink.rr.model.programPatientFields;
-import com.bowlink.rr.model.programEngagementFields;
 import com.bowlink.rr.model.programMCIAlgorithms;
 import com.bowlink.rr.model.programMCIFields;
-import com.bowlink.rr.model.programReports;
 import com.bowlink.rr.model.programAdmin;
 import com.bowlink.rr.model.programAvailableTables;
 import com.bowlink.rr.model.programPatientEntryMethods;
 import com.bowlink.rr.model.programPatientSearchFields;
-import com.bowlink.rr.model.programPatientSections;
 import com.bowlink.rr.model.programPatientSummaryFields;
 import java.util.List;
 import org.springframework.stereotype.Repository;
@@ -70,32 +65,6 @@ public interface programDAO {
     void saveProgramPatientSummaryField(programPatientSummaryFields summaryField) throws Exception;
     
     void deleteProgramPatientSummaryField(Integer id) throws Exception;
-    
-    boolean getUsedActivityCodes (Integer programId, Integer codeId) throws Exception;
-    
-    void saveProgramActivityCode(programActivityCodes newCodeAssoc) throws Exception;
-    
-    void removeProgramActivityCodes(Integer programId) throws Exception;
-    
-    List<Integer> getProgramReports(Integer programId) throws Exception;
-    
-    void saveProgramReports(programReports report) throws Exception;
-    
-    void deleteProgramReports(Integer programId) throws Exception;
-    
-    List<programMCIAlgorithms> getProgramMCIAlgorithms(Integer programId) throws Exception;
-    
-    List<programMCIFields> getProgramMCIFields(Integer mciId) throws Exception;
-    
-    Integer createMCIAlgorithm(programMCIAlgorithms newMCIAlgorithm) throws Exception;
-    
-    void updateMCIAlgorithm(programMCIAlgorithms MCIAlgorithm) throws Exception;
-    
-    void createMCIAlgorithmFields(programMCIFields newField) throws Exception;
-    
-    programMCIAlgorithms getMCIAlgorithm(Integer mpiId) throws Exception;
-    
-    void removeAlgorithmField(Integer algorithmFieldId) throws Exception;
     
     List<programAdmin> getProgramAdministrators(Integer programId) throws Exception;
     

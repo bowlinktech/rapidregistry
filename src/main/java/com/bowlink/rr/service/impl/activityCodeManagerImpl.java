@@ -8,6 +8,7 @@ package com.bowlink.rr.service.impl;
 
 import com.bowlink.rr.dao.activityCodeDAO;
 import com.bowlink.rr.model.activityCodes;
+import com.bowlink.rr.model.programActivityCodes;
 import com.bowlink.rr.service.activityCodeManager;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,25 @@ public class activityCodeManagerImpl implements activityCodeManager {
     @Transactional
     public void updateActivityCode(activityCodes codeDetails) throws Exception {
         activityCodeDAO.updateActivityCode(codeDetails);
+    }
+    
+     
+    @Override
+    @Transactional
+    public boolean getActivityCodesByProgram (Integer programId, Integer codeId) throws Exception {
+        return activityCodeDAO.getActivityCodesByProgram(programId, codeId);
+    }
+    
+    @Override
+    @Transactional
+    public void saveProgramActivityCode(programActivityCodes newCodeAssoc) throws Exception {
+        activityCodeDAO.saveProgramActivityCode(newCodeAssoc);
+    }
+    
+    @Override
+    @Transactional
+    public void removeProgramActivityCodes(Integer programId) throws Exception {
+        activityCodeDAO.removeProgramActivityCodes(programId);
     }
     
 }

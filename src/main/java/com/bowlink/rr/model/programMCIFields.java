@@ -19,7 +19,7 @@ import javax.persistence.Transient;
  * @author chadmccue
  */
 @Entity
-@Table(name = "PROGRAMMPIFIELDS")
+@Table(name = "PROGRAM_MCIFIELDS")
 public class programMCIFields {
     
     @Transient

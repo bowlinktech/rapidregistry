@@ -8,18 +8,10 @@ package com.bowlink.rr.service.impl;
 
 import com.bowlink.rr.dao.programDAO;
 import com.bowlink.rr.model.program;
-import com.bowlink.rr.model.programActivityCodes;
-import com.bowlink.rr.model.programPatientFields;
-import com.bowlink.rr.model.programEngagementFields;
-import com.bowlink.rr.model.programMCIAlgorithms;
-import com.bowlink.rr.model.programMCIFields;
-import com.bowlink.rr.model.programModules;
-import com.bowlink.rr.model.programReports;
 import com.bowlink.rr.model.programAdmin;
 import com.bowlink.rr.model.programAvailableTables;
 import com.bowlink.rr.model.programPatientEntryMethods;
 import com.bowlink.rr.model.programPatientSearchFields;
-import com.bowlink.rr.model.programPatientSections;
 import com.bowlink.rr.model.programPatientSummaryFields;
 import com.bowlink.rr.service.programManager;
 import java.util.List;
@@ -90,85 +82,7 @@ public class programManagerImpl implements programManager {
     public List<program> getOtherPrograms(Integer programId) throws Exception {
         return programDAO.getOtherPrograms(programId);
     }
-    
-    @Override
-    @Transactional
-    public boolean getUsedActivityCodes (Integer programId, Integer codeId) throws Exception {
-        return programDAO.getUsedActivityCodes(programId, codeId);
-    }
-    
-    @Override
-    @Transactional
-    public void saveProgramActivityCode(programActivityCodes newCodeAssoc) throws Exception {
-        programDAO.saveProgramActivityCode(newCodeAssoc);
-    }
-    
-    @Override
-    @Transactional
-    public void removeProgramActivityCodes(Integer programId) throws Exception {
-        programDAO.removeProgramActivityCodes(programId);
-    }
-    
-    @Override
-    @Transactional
-    public List<Integer> getProgramReports(Integer programId) throws Exception {
-        return programDAO.getProgramReports(programId);
-    }
-    
-    @Override
-    @Transactional
-    public void saveProgramReports(programReports report) throws Exception {
-        programDAO.saveProgramReports(report);
-    }
-    
-    @Override
-    @Transactional
-    public void deleteProgramReports(Integer programId) throws Exception {
-        programDAO.deleteProgramReports(programId);
-    }
-    
-    @Override
-    @Transactional
-    public List<programMCIAlgorithms> getProgramMCIAlgorithms(Integer programId) throws Exception {
-        return programDAO.getProgramMCIAlgorithms(programId);
-    }
-    
-    @Override
-    @Transactional
-    public List<programMCIFields> getProgramMCIFields(Integer mciId) throws Exception {
-        return programDAO.getProgramMCIFields(mciId);
-    }
-    
-    @Override
-    @Transactional
-    public Integer createMCIAlgorithm(programMCIAlgorithms newMCIAlgorithm) throws Exception {
-        return programDAO.createMCIAlgorithm(newMCIAlgorithm);
-    }
-    
-    @Override
-    @Transactional
-    public void updateMCIAlgorithm(programMCIAlgorithms MCIAlgorithm) throws Exception {
-        programDAO.updateMCIAlgorithm(MCIAlgorithm);
-    }
-    
-    @Override
-    @Transactional
-    public void createMCIAlgorithmFields(programMCIFields newField) throws Exception {
-        programDAO.createMCIAlgorithmFields(newField);
-    }
-    
-    @Override
-    @Transactional
-    public programMCIAlgorithms getMCIAlgorithm(Integer mciId) throws Exception {
-        return programDAO.getMCIAlgorithm(mciId);
-    }
-    
-    @Override
-    @Transactional
-    public void removeAlgorithmField(Integer algorithmFieldId) throws Exception {
-        programDAO.removeAlgorithmField(algorithmFieldId);
-    }
-    
+   
     @Override
     @Transactional
     public List<programAdmin> getProgramAdministrators(Integer programId) throws Exception {

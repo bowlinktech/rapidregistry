@@ -6,6 +6,7 @@
 
 package com.bowlink.rr.service;
 
+import com.bowlink.rr.model.programReports;
 import com.bowlink.rr.model.reports;
 import java.util.List;
 
@@ -22,5 +23,12 @@ public interface reportManager {
     reports getReportById(Integer reportId) throws Exception;
     
     void updateReport(reports reportDetails) throws Exception;
+    
+    List<Integer> getProgramReports(Integer programId) throws Exception;
+    
+    void saveProgramReports(programReports report) throws Exception;
+    
+    void deleteProgramReports(Integer programId) throws Exception;
+    
     
 }

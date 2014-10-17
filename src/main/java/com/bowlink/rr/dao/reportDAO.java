@@ -6,6 +6,7 @@
 
 package com.bowlink.rr.dao;
 
+import com.bowlink.rr.model.programReports;
 import com.bowlink.rr.model.reports;
 import java.util.List;
 import org.springframework.stereotype.Repository;
@@ -24,4 +25,11 @@ public interface reportDAO {
     reports getReportById(Integer reportId) throws Exception;
     
     void updateReport(reports reportDetails) throws Exception;
+    
+    List<Integer> getProgramReports(Integer programId) throws Exception;
+    
+    void saveProgramReports(programReports report) throws Exception;
+    
+    void deleteProgramReports(Integer programId) throws Exception;
+    
 }

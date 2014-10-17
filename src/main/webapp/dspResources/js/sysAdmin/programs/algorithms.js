@@ -14,10 +14,10 @@ require(['./main'], function () {
 
         $("input:text,form").attr("autocomplete", "off");
         
-        //This function will launch the new MPI Algorithm overlay with a blank screen
+        //This function will launch the new MCI Algorithm overlay with a blank screen
         $(document).on('click', '#createNewAlgorithm', function() {
             $.ajax({
-                url: 'algorithm.create',
+                url: 'mci-algorithms/algorithm.create',
                 type: "GET",
                 success: function(data) {
                     $("#algorithmDetailsModal").html(data);
@@ -39,23 +39,23 @@ require(['./main'], function () {
         //submit the new user fields from the modal window.
         $(document).on('click', '#submitButton', function(event) {
            
-            var formData = $("#mpidetailsform").serialize();
+            var formData = $("#mcidetailsform").serialize();
 
             var actionValue = $(this).attr('rel').toLowerCase();
 
             $.ajax({
-                url: actionValue+'_mpialgorithm',
+                url: 'mci-algorithms/'+actionValue+'_mcialgorithm',
                 data: formData,
                 type: "POST",
                 async: false,
                 success: function(data) {
 
                     if (data.indexOf('algorithmUpdated') != -1) {
-                        window.location.href = "mpi-algorithms?msg=updated";
+                        window.location.href = "mci-algorithms?msg=updated";
 
                     }
                     else if (data.indexOf('algorithmCreated') != -1) {
-                        window.location.href = "mpi-algorithms?msg=created";
+                        window.location.href = "mci-algorithms?msg=created";
 
                     }
                     else {
@@ -70,11 +70,11 @@ require(['./main'], function () {
 
 
         $(document).on('click', '.editAlgorithm', function() {
-            var mpiId = $(this).attr('rel');
+            var mciId = $(this).attr('rel');
             
             $.ajax({
-                url: 'algorithm.edit',
-                data: {'mpiId': mpiId},
+                url: 'mci-algorithms/algorithm.edit',
+                data: {'mciId': mciId},
                 type: "GET",
                 success: function(data) {
                     $("#algorithmDetailsModal").html(data);
@@ -86,7 +86,7 @@ require(['./main'], function () {
             var fieldId = $(this).attr('rel');
             
             $.ajax({
-                url: 'removeAlgorithmField.do',
+                url: 'mci-algorithms/removeAlgorithmField.do',
                 data: {'algorithmfieldId': fieldId},
                 type: "POST",
                 success: function(data) {
@@ -94,8 +94,23 @@ require(['./main'], function () {
                 }
             });
         });
-
-
+        
+        $(document).on('click', '.deleteAlgorithm', function() {
+            var id = $(this).attr('rel');
+            
+            
+            if(confirm("Are you sure you want to remvoe this MCI algorithm?")) {
+                $.ajax({
+                    url: 'mci-algorithms/removeAlgorithm.do',
+                    data: {'algorithmId': id},
+                    type: "POST",
+                    success: function(data) {
+                        window.location.href = "mci-algorithms?msg=deleted";
+                    }
+                });
+            }
+        });
+        
     });
 });
 

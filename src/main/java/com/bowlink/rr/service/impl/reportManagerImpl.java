@@ -7,6 +7,7 @@
 package com.bowlink.rr.service.impl;
 
 import com.bowlink.rr.dao.reportDAO;
+import com.bowlink.rr.model.programReports;
 import com.bowlink.rr.model.reports;
 import com.bowlink.rr.service.reportManager;
 import java.util.List;
@@ -49,6 +50,24 @@ public class reportManagerImpl implements reportManager {
     @Transactional
     public void updateReport(reports reportDetails) throws Exception {
         reportDAO.updateReport(reportDetails);
+    }
+    
+    @Override
+    @Transactional
+    public List<Integer> getProgramReports(Integer programId) throws Exception {
+        return reportDAO.getProgramReports(programId);
+    }
+    
+    @Override
+    @Transactional
+    public void saveProgramReports(programReports report) throws Exception {
+        reportDAO.saveProgramReports(report);
+    }
+    
+    @Override
+    @Transactional
+    public void deleteProgramReports(Integer programId) throws Exception {
+        reportDAO.deleteProgramReports(programId);
     }
     
 }

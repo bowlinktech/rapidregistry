@@ -9,7 +9,7 @@
             <h3 class="panel-title"><c:choose><c:when test="${btnValue == 'Update'}">Update</c:when><c:when test="${btnValue == 'Create'}">Add</c:when></c:choose> MPI Algorithm ${success}</h3>
         </div>
         <div class="modal-body">
-            <form:form id="mpidetailsform" commandName="mpidetails" modelAttribute="mpidetails"  method="post" role="form">
+            <form:form id="mcidetailsform" commandName="mcidetails" modelAttribute="mcidetails"  method="post" role="form">
                 <form:hidden path="id" id="id" />
                 <form:hidden path="programId" id="programId" />
                 <form:hidden path="dateCreated" />
@@ -43,7 +43,7 @@
                             </div>
                         </div>
                    </div>   
-                    <c:if test="${!selFields.isEmpty()}">
+                    <c:if test="${not empty selFields}">
                        <div class="form-group">
                         <section class="panel panel-default">
                              <div class="panel-heading">

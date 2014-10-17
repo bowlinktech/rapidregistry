@@ -2,7 +2,10 @@ package com.bowlink.rr.controller;
 
 
 import com.bowlink.rr.model.activityCodes;
+import com.bowlink.rr.model.program;
+import com.bowlink.rr.model.programActivityCodes;
 import com.bowlink.rr.service.activityCodeManager;
+import com.bowlink.rr.service.programManager;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -30,8 +34,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
  * @author chadmccue
  */
 @Controller
-@RequestMapping("/sysAdmin/activity-codes")
+@RequestMapping(value={"/sysAdmin/activity-codes","/sysAdmin/programs/{programName}/activity-codes"})
 public class activityCodeController {
+    
+    @Autowired
+    programManager programmanager;
     
     @Autowired
     activityCodeManager activitycodemanager;
@@ -45,7 +52,7 @@ public class activityCodeController {
      * @return	the activity code list page view
      * @throws Exception
      */
-    @RequestMapping(value = "", method = RequestMethod.GET)
+    @RequestMapping(value = "list", method = RequestMethod.GET)
     public ModelAndView listActivityCodes(HttpServletRequest request, HttpServletResponse response, HttpSession session, RedirectAttributes redirectAttr) throws Exception {
 
         ModelAndView mav = new ModelAndView();
@@ -158,6 +165,84 @@ public class activityCodeController {
         ModelAndView mav = new ModelAndView("/sysAdmin/activityCodes/details");
         mav.addObject("success", "codeUpdated");
         return mav;
+    }
+    
+    
+    /**
+     * The '/{programName}/activity-codes' GET request will display the program activity code page.
+     *
+     * @param programName	The {programName} will be the program name with spaces removed.
+     *
+     * @return	Will return the program details page.
+     *
+     * @throws Exception
+     *
+    */ 
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public ModelAndView programActivityCodes(HttpSession session) throws Exception {
+
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/programActivityCodes");
+        mav.addObject("id", session.getAttribute("programId"));
+
+        program programDetails = programmanager.getProgramById((Integer) session.getAttribute("programId"));
+        mav.addObject("programDetails", programDetails);
+
+        List<activityCodes> activityCodes = activitycodemanager.getActivityCodes(0);
+
+        for (activityCodes code : activityCodes) {
+
+            boolean codeBeingUsed = activitycodemanager.getActivityCodesByProgram((Integer) session.getAttribute("programId"), code.getId());
+
+            code.setSelected(codeBeingUsed);
+
+        }
+
+        mav.addObject("availactivityCodes", activityCodes);
+
+        return mav;
+
+    }
+
+    /**
+     * The '/{programName}/activity-codes' GET request will display the program activity code page.
+     *
+     * @param programName	The {programName} will be the program name with spaces removed.
+     * @param action
+     * @param activityCodeList
+     * @param redirectAttr
+     * @param session
+     * @return
+     * @throws Exception
+    */
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    public ModelAndView saveProgramActivityCodes(@RequestParam String action, @RequestParam(value = "activityCodeList", required = false) List<Integer> activityCodeList, RedirectAttributes redirectAttr, HttpSession session) throws Exception {
+
+        if (activityCodeList == null) {
+            activitycodemanager.removeProgramActivityCodes((Integer) session.getAttribute("programId"));
+        } else {
+            activitycodemanager.removeProgramActivityCodes((Integer) session.getAttribute("programId"));
+
+            for (Integer code : activityCodeList) {
+                programActivityCodes newCodeAssoc = new programActivityCodes();
+                newCodeAssoc.setCodeId(code);
+                newCodeAssoc.setProgramId((Integer) session.getAttribute("programId"));
+
+                activitycodemanager.saveProgramActivityCode(newCodeAssoc);
+            }
+
+        }
+
+        redirectAttr.addFlashAttribute("savedStatus", "codesupdated");
+
+        if (action.equals("save")) {
+            ModelAndView mav = new ModelAndView(new RedirectView("activity-codes"));
+            return mav;
+        } else {
+            ModelAndView mav = new ModelAndView(new RedirectView("../../programs"));
+            return mav;
+        }
+
     }
     
 }

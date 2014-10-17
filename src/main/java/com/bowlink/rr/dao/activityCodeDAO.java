@@ -7,6 +7,7 @@
 package com.bowlink.rr.dao;
 
 import com.bowlink.rr.model.activityCodes;
+import com.bowlink.rr.model.programActivityCodes;
 import java.util.List;
 
 /**
@@ -22,5 +23,11 @@ public interface activityCodeDAO {
     void createActivityCode(activityCodes codeDetails) throws Exception;
     
     void updateActivityCode(activityCodes codeDetails) throws Exception;
+    
+    boolean getActivityCodesByProgram (Integer programId, Integer codeId) throws Exception;
+    
+    void saveProgramActivityCode(programActivityCodes newCodeAssoc) throws Exception;
+    
+    void removeProgramActivityCodes(Integer programId) throws Exception;
     
 }

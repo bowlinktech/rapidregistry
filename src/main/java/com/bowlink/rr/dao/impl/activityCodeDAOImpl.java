@@ -8,6 +8,7 @@ package com.bowlink.rr.dao.impl;
 
 import com.bowlink.rr.dao.activityCodeDAO;
 import com.bowlink.rr.model.activityCodes;
+import com.bowlink.rr.model.programActivityCodes;
 import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -95,6 +96,54 @@ public class activityCodeDAOImpl implements activityCodeDAO {
         activityCodes codeDetails = (activityCodes) criteria.uniqueResult(); 
         
         return codeDetails;
+    }
+    
+    /**
+     * The 'getActivityCodesByProgram' function will check to see if the passed in activity code is associated with the
+     * passed in program Id
+     * 
+     * @param codeId    The id of the activity code passed in.
+     * @param programId The id of the program to search on
+     * @return  This function will return either true or false.
+     * @throws Exception 
+     */
+    @Override
+    public boolean getActivityCodesByProgram(Integer programId, Integer codeId) throws Exception {
+        Query query = sessionFactory.getCurrentSession().createQuery("from programActivityCodes where programId = :programId and codeId = :codeId");
+        query.setParameter("programId", programId);
+        query.setParameter("codeId", codeId);
+        
+        if(query.list().isEmpty()) {
+            return false;
+        }
+        else {
+            return true;
+        }
+        
+    }
+    
+    /**
+     * The 'saveProgramActivityCode' function will save the associated activity codes to the passed in 
+     * program.
+     * 
+     * @param   newCodeAssoc    The new activity code and program object
+     */
+    @Override
+    public void saveProgramActivityCode(programActivityCodes newCodeAssoc) throws Exception {
+        sessionFactory.getCurrentSession().save(newCodeAssoc);
+    }
+    
+    /**
+     * The 'removeProgramActivityCodes' function will remove the associated activity codes with the passed in
+     * program.
+     * 
+     * @param programId     The id of the passed in program
+     */
+    @Override
+    public void removeProgramActivityCodes(Integer programId) throws Exception {
+        Query deleteActivityCodes = sessionFactory.getCurrentSession().createQuery("delete from programActivityCodes where programId = :programId");
+        deleteActivityCodes.setParameter("programId", programId);
+        deleteActivityCodes.executeUpdate();
     }
     
 }

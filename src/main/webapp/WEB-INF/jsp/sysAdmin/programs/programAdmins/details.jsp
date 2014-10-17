@@ -9,7 +9,7 @@
             <h3 class="panel-title"><c:choose><c:when test="${btnValue == 'Update'}">Update</c:when><c:when test="${btnValue == 'Create'}">Add</c:when></c:choose> Program Administrator ${success}</h3>
          </div>
          <div class="modal-body">
-            <c:if test="${btnValue == 'Create'}">
+            <c:if test="${btnValue == 'Create' && not empty availableUsers}">
                 <p>
                     Please choose from the existing list of program administrators to associate to this program or click the button below to add a new
                     program administrator into the system.
@@ -32,10 +32,12 @@
                      </div>   
                  </div>
             </c:if>
-             <div id="detailForm" ${btnValue == 'Create' ? 'style="display:none;' : '' }>
+             <div id="detailForm" ${btnValue == 'Create' && not empty availableUsers ? 'style="display:none;"' : '' }>
                  <form:form id="admindetailsform" commandName="admindetails" modelAttribute="admindetails"  method="post" role="form">
                     <form:hidden path="id" id="id" />
                     <form:hidden path="roleId" />
+                    <form:hidden path="typeId" />
+                    <form:hidden path="createdBy" />
                     <form:hidden path="dateCreated" />
                     <div class="form-container">
                         <div class="form-group">
@@ -69,14 +71,6 @@
                                 <form:input path="email" id="email" class="form-control" type="text"  maxLength="255" />
                                 <form:errors path="email" cssClass="control-label" element="label" />
                             </div>
-                        </spring:bind>
-                        <spring:bind path="username">
-                            <div class="form-group ${status.error ? 'has-error' : '' } ${not empty existingUsername ? 'has-error' : ''}">
-                                <label class="control-label" for="username">Username *</label>
-                                <form:input path="username" id="username" class="form-control" type="text" maxLength="15" />
-                                <form:errors path="username" cssClass="control-label" element="label" />
-                                <c:if test="${not empty existingUsername}"><span class="control-label">${existingUsername}</span></c:if>
-                                </div>
                         </spring:bind>
                         <spring:bind path="password">
                             <div id="passwordDiv" class="form-group ${status.error ? 'has-error' : '' }">
