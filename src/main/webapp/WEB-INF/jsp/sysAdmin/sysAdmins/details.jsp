@@ -46,14 +46,6 @@
                             <form:errors path="email" cssClass="control-label" element="label" />
                         </div>
                     </spring:bind>
-                    <spring:bind path="username">
-                        <div class="form-group ${status.error ? 'has-error' : '' } ${not empty existingUsername ? 'has-error' : ''}">
-                            <label class="control-label" for="username">Username *</label>
-                            <form:input path="username" id="username" class="form-control" type="text" maxLength="15" />
-                            <form:errors path="username" cssClass="control-label" element="label" />
-                            <c:if test="${not empty existingUsername}"><span class="control-label">${existingUsername}</span></c:if>
-                            </div>
-                    </spring:bind>
                     <spring:bind path="password">
                         <div id="passwordDiv" class="form-group ${status.error ? 'has-error' : '' }">
                             <label class="control-label" for="password">Password *</label>

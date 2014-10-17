@@ -17,7 +17,7 @@ require(['./main'], function () {
         //This function will launch the new program administrator overlay with a blank screen
         $(document).on('click', '#createNewAdmin', function() {
             $.ajax({
-                url: 'system-admins/administrator.create',
+                url: 'administrator.create',
                 type: "GET",
                 success: function(data) {
                     $("#sysAdminModal").html(data);
@@ -34,7 +34,7 @@ require(['./main'], function () {
             var actionValue = $(this).attr('rel').toLowerCase();
 
             $.ajax({
-                url: 'system-admins/'+actionValue+'_systemadmin',
+                url: actionValue+'_systemadmin',
                 data: formData,
                 type: "POST",
                 async: false,
@@ -63,7 +63,7 @@ require(['./main'], function () {
             var adminId = $(this).attr('rel');
             
             $.ajax({
-                url: 'system-admins/administrator.edit',
+                url: 'administrator.edit',
                 data: {'adminId': adminId},
                 type: "GET",
                 success: function(data) {
@@ -82,7 +82,7 @@ require(['./main'], function () {
                 var selAdminId = $(this).attr('rel');
                 
                  $.ajax({
-                    url: 'system-admins/administrator.remove',
+                    url: 'administrator.remove',
                     data: {'adminId': selAdminId},
                     type: "POST",
                     success: function(data) {

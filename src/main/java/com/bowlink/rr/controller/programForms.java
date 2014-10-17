@@ -293,12 +293,20 @@ public class programForms {
         if("patient-sections".equals(section)) {
             patientFields = new CopyOnWriteArrayList<programPatientFields>();
             mav.setViewName("/patientFields");
+            
+            programPatientSections sectionDetails = programformsmanager.getPatientSectionById(sectionId);
+            mav.addObject("sectionDetails", sectionDetails);
+        
         }
         
         /* Engagement Form Sections */
         else if ("engagement-sections".equals(section)) {
            engagementFields  = new CopyOnWriteArrayList<programEngagementFields>(); 
-           mav.setViewName("/engagmentFields");
+           mav.setViewName("/engagementFields");
+           
+           programEngagementSections sectionDetails = programformsmanager.getEngagementSectionById(sectionId);
+            mav.addObject("sectionDetails", sectionDetails);
+        
         }
 
         mav.addObject("sectionId", sectionId);
@@ -306,9 +314,6 @@ public class programForms {
 
         program programDetails = programmanager.getProgramById((Integer) session.getAttribute("programId"));
         mav.addObject("programDetails", programDetails);
-        
-        programPatientSections sectionDetails = programformsmanager.getPatientSectionById(sectionId);
-        mav.addObject("sectionDetails", sectionDetails);
         
 
         /**
