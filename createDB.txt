@@ -272,7 +272,7 @@ CREATE TABLE `lu_activityCodes` (
   `dateCreated` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `activityCodeid_idx` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -281,6 +281,7 @@ CREATE TABLE `lu_activityCodes` (
 
 LOCK TABLES `lu_activityCodes` WRITE;
 /*!40000 ALTER TABLE `lu_activityCodes` DISABLE KEYS */;
+INSERT INTO `lu_activityCodes` VALUES (1,'94858','Adding a new patient.','2014-10-17 02:58:57');
 /*!40000 ALTER TABLE `lu_activityCodes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -884,7 +885,7 @@ CREATE TABLE `programOrgHierarchy` (
   PRIMARY KEY (`id`),
   KEY `programId_idx` (`programId`),
   CONSTRAINT `fk_programOrgHierarchy` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -893,6 +894,7 @@ CREATE TABLE `programOrgHierarchy` (
 
 LOCK TABLES `programOrgHierarchy` WRITE;
 /*!40000 ALTER TABLE `programOrgHierarchy` DISABLE KEYS */;
+INSERT INTO `programOrgHierarchy` VALUES (1,1,'Networks',1,'2014-10-20 11:28:49'),(2,1,'Institutions',2,'2014-10-20 11:29:03'),(3,1,'Departments',3,'2014-10-20 11:29:23');
 /*!40000 ALTER TABLE `programOrgHierarchy` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -905,12 +907,12 @@ DROP TABLE IF EXISTS `programOrgHierarchy_assoc`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `programOrgHierarchy_assoc` (
   `id` int(11) NOT NULL,
-  `hierarchyId` int(11) NOT NULL,
+  `programHierarchyId` int(11) NOT NULL,
   `associatedWith` int(255) NOT NULL,
   `dspPos` int(255) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `heirarchyId_idx` (`hierarchyId`),
-  CONSTRAINT `fk_programOrgHierarchyAssoc_id` FOREIGN KEY (`hierarchyId`) REFERENCES `programOrgHierarchy` (`id`)
+  KEY `heirarchyId_idx` (`programHierarchyId`),
+  CONSTRAINT `fk_programOrgHierarchyAssoc_id` FOREIGN KEY (`programHierarchyId`) REFERENCES `programOrgHierarchy` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1651,7 +1653,7 @@ CREATE TABLE `program_activityCodes` (
   KEY `fk_programActivityCodes_codeId` (`codeId`),
   CONSTRAINT `fk_programActivityCodes_codeId` FOREIGN KEY (`codeId`) REFERENCES `lu_activityCodes` (`id`),
   CONSTRAINT `fk_programActivityCodes_progId` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1660,6 +1662,7 @@ CREATE TABLE `program_activityCodes` (
 
 LOCK TABLES `program_activityCodes` WRITE;
 /*!40000 ALTER TABLE `program_activityCodes` DISABLE KEYS */;
+INSERT INTO `program_activityCodes` VALUES (1,1,1,'2014-10-17 15:00:17');
 /*!40000 ALTER TABLE `program_activityCodes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1920,7 +1923,7 @@ CREATE TABLE `program_patientEntryMethods` (
   PRIMARY KEY (`id`),
   KEY `programId_idx` (`programId`),
   CONSTRAINT `fk_programPatientEntryMethods_programId` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2116,8 +2119,8 @@ CREATE TABLE `program_patientSummaryFields` (
   KEY `fk_programPatientSummaryFields_fieldId_idx` (`fieldId`),
   KEY `fk_programPatientSummaryFields_sectionFieldId_idx` (`sectionFieldId`),
   CONSTRAINT `fk_programPatientSummaryFields_fieldId` FOREIGN KEY (`fieldId`) REFERENCES `dataElements` (`id`),
-  CONSTRAINT `fk_programPatientSummaryFields_sectionFieldId` FOREIGN KEY (`sectionFieldId`) REFERENCES `program_patientFields` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_programPatientSummaryFields_programId` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`)
+  CONSTRAINT `fk_programPatientSummaryFields_programId` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`),
+  CONSTRAINT `fk_programPatientSummaryFields_sectionFieldId` FOREIGN KEY (`sectionFieldId`) REFERENCES `program_patientFields` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2230,7 +2233,7 @@ CREATE TABLE `rel_userLogins` (
   PRIMARY KEY (`id`),
   KEY `userId_idx` (`systemUserId`),
   CONSTRAINT `userId` FOREIGN KEY (`systemUserId`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2554 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2586 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2239,7 +2242,7 @@ CREATE TABLE `rel_userLogins` (
 
 LOCK TABLES `rel_userLogins` WRITE;
 /*!40000 ALTER TABLE `rel_userLogins` DISABLE KEYS */;
-INSERT INTO `rel_userLogins` VALUES (2503,1,'2014-10-06 11:28:15'),(2504,1,'2014-10-06 12:46:52'),(2505,1,'2014-10-06 13:24:35'),(2506,1,'2014-10-06 13:31:54'),(2507,1,'2014-10-06 13:33:15'),(2508,1,'2014-10-06 13:38:30'),(2509,1,'2014-10-07 11:36:08'),(2510,1,'2014-10-07 11:38:27'),(2511,1,'2014-10-07 11:48:23'),(2512,1,'2014-10-07 12:33:57'),(2513,1,'2014-10-07 12:44:14'),(2514,1,'2014-10-07 13:30:58'),(2515,1,'2014-10-07 13:46:33'),(2516,1,'2014-10-07 14:36:53'),(2517,1,'2014-10-07 14:45:35'),(2518,1,'2014-10-14 10:54:30'),(2519,1,'2014-10-14 11:11:47'),(2520,1,'2014-10-14 11:28:41'),(2521,1,'2014-10-14 12:14:55'),(2522,1,'2014-10-14 12:21:06'),(2523,1,'2014-10-14 13:23:44'),(2524,1,'2014-10-14 13:29:14'),(2525,1,'2014-10-14 14:00:32'),(2526,1,'2014-10-14 14:05:03'),(2527,1,'2014-10-15 09:05:12'),(2528,1,'2014-10-15 09:08:57'),(2529,1,'2014-10-15 10:03:14'),(2530,1,'2014-10-15 10:21:54'),(2531,1,'2014-10-15 10:44:44'),(2532,1,'2014-10-15 11:26:55'),(2533,1,'2014-10-15 11:45:01'),(2534,1,'2014-10-15 11:56:52'),(2535,1,'2014-10-15 12:08:15'),(2536,1,'2014-10-15 12:35:11'),(2537,1,'2014-10-15 12:37:40'),(2538,1,'2014-10-15 12:41:07'),(2539,1,'2014-10-15 12:47:54'),(2540,1,'2014-10-15 12:52:17'),(2541,1,'2014-10-15 12:56:00'),(2542,1,'2014-10-16 13:44:33'),(2543,1,'2014-10-17 09:42:17'),(2544,1,'2014-10-17 10:23:09'),(2545,1,'2014-10-17 10:30:05'),(2546,1,'2014-10-17 10:40:55'),(2547,1,'2014-10-17 11:05:23'),(2548,1,'2014-10-17 11:08:15'),(2549,1,'2014-10-17 11:18:46'),(2550,1,'2014-10-17 11:41:40'),(2551,1,'2014-10-17 12:22:03'),(2552,1,'2014-10-17 12:45:36'),(2553,1,'2014-10-17 12:53:16');
+INSERT INTO `rel_userLogins` VALUES (2503,1,'2014-10-06 11:28:15'),(2504,1,'2014-10-06 12:46:52'),(2505,1,'2014-10-06 13:24:35'),(2506,1,'2014-10-06 13:31:54'),(2507,1,'2014-10-06 13:33:15'),(2508,1,'2014-10-06 13:38:30'),(2509,1,'2014-10-07 11:36:08'),(2510,1,'2014-10-07 11:38:27'),(2511,1,'2014-10-07 11:48:23'),(2512,1,'2014-10-07 12:33:57'),(2513,1,'2014-10-07 12:44:14'),(2514,1,'2014-10-07 13:30:58'),(2515,1,'2014-10-07 13:46:33'),(2516,1,'2014-10-07 14:36:53'),(2517,1,'2014-10-07 14:45:35'),(2518,1,'2014-10-14 10:54:30'),(2519,1,'2014-10-14 11:11:47'),(2520,1,'2014-10-14 11:28:41'),(2521,1,'2014-10-14 12:14:55'),(2522,1,'2014-10-14 12:21:06'),(2523,1,'2014-10-14 13:23:44'),(2524,1,'2014-10-14 13:29:14'),(2525,1,'2014-10-14 14:00:32'),(2526,1,'2014-10-14 14:05:03'),(2527,1,'2014-10-15 09:05:12'),(2528,1,'2014-10-15 09:08:57'),(2529,1,'2014-10-15 10:03:14'),(2530,1,'2014-10-15 10:21:54'),(2531,1,'2014-10-15 10:44:44'),(2532,1,'2014-10-15 11:26:55'),(2533,1,'2014-10-15 11:45:01'),(2534,1,'2014-10-15 11:56:52'),(2535,1,'2014-10-15 12:08:15'),(2536,1,'2014-10-15 12:35:11'),(2537,1,'2014-10-15 12:37:40'),(2538,1,'2014-10-15 12:41:07'),(2539,1,'2014-10-15 12:47:54'),(2540,1,'2014-10-15 12:52:17'),(2541,1,'2014-10-15 12:56:00'),(2542,1,'2014-10-16 13:44:33'),(2543,1,'2014-10-17 09:42:17'),(2544,1,'2014-10-17 10:23:09'),(2545,1,'2014-10-17 10:30:05'),(2546,1,'2014-10-17 10:40:55'),(2547,1,'2014-10-17 11:05:23'),(2548,1,'2014-10-17 11:08:15'),(2549,1,'2014-10-17 11:18:46'),(2550,1,'2014-10-17 11:41:40'),(2551,1,'2014-10-17 12:22:03'),(2552,1,'2014-10-17 12:45:36'),(2553,1,'2014-10-17 12:53:16'),(2554,1,'2014-10-17 12:58:01'),(2555,1,'2014-10-17 13:03:13'),(2556,1,'2014-10-17 13:33:36'),(2557,1,'2014-10-17 13:36:20'),(2558,1,'2014-10-17 13:38:28'),(2559,1,'2014-10-17 13:40:03'),(2560,1,'2014-10-17 13:49:26'),(2561,1,'2014-10-17 13:59:31'),(2562,1,'2014-10-17 14:01:24'),(2563,1,'2014-10-17 14:02:45'),(2564,1,'2014-10-17 14:10:59'),(2565,1,'2014-10-17 14:13:02'),(2566,1,'2014-10-17 14:25:02'),(2567,1,'2014-10-17 14:30:08'),(2568,1,'2014-10-17 14:38:10'),(2569,1,'2014-10-17 14:41:51'),(2570,1,'2014-10-17 14:45:37'),(2571,1,'2014-10-20 09:48:06'),(2572,1,'2014-10-20 10:35:55'),(2573,1,'2014-10-20 10:37:44'),(2574,1,'2014-10-20 10:39:59'),(2575,1,'2014-10-20 10:41:57'),(2576,1,'2014-10-20 11:15:32'),(2577,1,'2014-10-20 11:18:59'),(2578,1,'2014-10-20 11:21:55'),(2579,1,'2014-10-20 11:24:32'),(2580,1,'2014-10-20 11:26:02'),(2581,1,'2014-10-20 11:41:28'),(2582,1,'2014-10-20 11:53:40'),(2583,1,'2014-10-20 11:57:47'),(2584,1,'2014-10-20 12:18:06'),(2585,1,'2014-10-20 12:44:46');
 /*!40000 ALTER TABLE `rel_userLogins` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2727,7 +2730,7 @@ CREATE TABLE `user_programs` (
   KEY `fk_userPrograms_programId` (`programId`),
   CONSTRAINT `fk_userPrograms_programId` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`),
   CONSTRAINT `fk_userPrograms_userid` FOREIGN KEY (`systemUserId`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2736,6 +2739,7 @@ CREATE TABLE `user_programs` (
 
 LOCK TABLES `user_programs` WRITE;
 /*!40000 ALTER TABLE `user_programs` DISABLE KEYS */;
+INSERT INTO `user_programs` VALUES (1,2,1,0,'2014-10-17 14:56:10');
 /*!40000 ALTER TABLE `user_programs` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2818,7 +2822,7 @@ CREATE TABLE `users` (
   KEY `userRoleId_idx` (`roleId`),
   KEY `userId_idx` (`id`),
   CONSTRAINT `userRoleId` FOREIGN KEY (`roleId`) REFERENCES `user_roles` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2827,7 +2831,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,0,1,'','Chad','McCue','!sysadmin!','chadmccue05@gmail.com',0,'2014-08-07 10:56:34',NULL);
+INSERT INTO `users` VALUES (1,0,1,'','Chad','McCue','!sysadmin!','chadmccue05@gmail.com',0,'2014-08-07 10:56:34',NULL),(2,0,2,'','Test','Admin','test','test@test.com',0,'2014-10-17 02:56:00',NULL);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2844,4 +2848,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-10-17 12:54:50
+-- Dump completed on 2014-10-20 13:26:05
