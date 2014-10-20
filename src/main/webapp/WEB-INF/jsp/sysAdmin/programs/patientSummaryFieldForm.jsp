@@ -16,6 +16,7 @@
                     <form:form id="summaryField" commandName="programPatientSummaryFields"  method="post" role="form">
                         <input type="hidden" id="action" name="action" value="save" />
                         <input type="hidden" id="progamNameURL" value="${programName}" />
+                        <input type="hidden" name="currdspPos" value="${programPatientSummaryFields.dspPos}" />
                         <form:hidden path="id" id="id" />
                         <form:hidden path="programId" />
                         <form:hidden path="dateCreated" />

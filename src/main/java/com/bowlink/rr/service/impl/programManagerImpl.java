@@ -109,6 +109,12 @@ public class programManagerImpl implements programManager {
     
     @Override
     @Transactional
+    public programPatientEntryMethods getPatientEntryMethodBydspPos(Integer dspPos,Integer programId) throws Exception {
+        return programDAO.getPatientEntryMethodBydspPos(dspPos, programId);
+    }
+    
+    @Override
+    @Transactional
     public List<programAvailableTables> getAvailableTablesForSurveys(Integer programId) throws Exception {
         return programDAO.getAvailableTablesForSurveys(programId);
     }
@@ -155,6 +161,12 @@ public class programManagerImpl implements programManager {
     public List<programPatientSearchFields> getProgramSearchFields(Integer programId) throws Exception {
         return programDAO.getProgramSearchFields(programId);
     }
+    
+    @Override
+    @Transactional
+    public programPatientSearchFields getPatientSearchFieldBydspPos(Integer dspPos,Integer programId) throws Exception {
+        return programDAO.getPatientSearchFieldBydspPos(dspPos, programId);
+    }
 
     @Override
     @Transactional
@@ -172,6 +184,12 @@ public class programManagerImpl implements programManager {
     @Transactional
     public List<programPatientSummaryFields> getProgramSummaryFields(Integer programId) throws Exception {
         return programDAO.getProgramSummaryFields(programId);
+    }
+    
+    @Override
+    @Transactional
+    public programPatientSummaryFields getPatientSummaryFieldBydspPos(Integer dspPos,Integer programId) throws Exception {
+        return programDAO.getPatientSummaryFieldBydspPos(dspPos, programId);
     }
 
     @Override

@@ -6,7 +6,7 @@
     <div class="modal-content">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h3 class="panel-title"><c:choose><c:when test="${btnValue == 'Update'}">Update</c:when><c:when test="${btnValue == 'Create'}">Add</c:when></c:choose> MPI Algorithm ${success}</h3>
+            <h3 class="panel-title"><c:choose><c:when test="${btnValue == 'Update'}">Update</c:when><c:when test="${btnValue == 'Create'}">Add</c:when></c:choose> MCI Algorithm ${success}</h3>
         </div>
         <div class="modal-body">
             <form:form id="mcidetailsform" commandName="mcidetails" modelAttribute="mcidetails"  method="post" role="form">

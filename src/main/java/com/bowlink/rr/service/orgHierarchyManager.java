@@ -1,0 +1,25 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.bowlink.rr.service;
+
+import com.bowlink.rr.model.programOrgHierarchy;
+import java.util.List;
+
+/**
+ *
+ * @author chadmccue
+ */
+public interface orgHierarchyManager {
+    
+    List<programOrgHierarchy> getProgramOrgHierarchy(Integer programId) throws Exception;
+    
+    programOrgHierarchy getOrgHierarchyById(Integer id) throws Exception;
+    
+    void saveOrgHierarchy(programOrgHierarchy hierarchyDetails) throws Exception;
+    
+    programOrgHierarchy getProgramOrgHierarchyBydspPos(Integer dspPos, Integer programId) throws Exception;
+    
+}

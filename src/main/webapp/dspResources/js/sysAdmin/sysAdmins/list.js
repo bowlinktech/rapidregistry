@@ -41,11 +41,11 @@ require(['./main'], function () {
                 success: function(data) {
 
                     if (data.indexOf('adminUpdated') != -1) {
-                        window.location.href = "system-admins?msg=updated";
+                        window.location.href = "?msg=updated";
 
                     }
                     else if (data.indexOf('adminCreated') != -1) {
-                        window.location.href = "system-admins?msg=created";
+                        window.location.href = "?msg=created";
 
                     }
                     else {

@@ -17,7 +17,7 @@ require(['./main'], function () {
         //This function will launch the new report overlay with a blank screen
         $(document).on('click', '#createNewReport', function() {
             $.ajax({
-                url: 'reports/report.create',
+                url: 'report.create',
                 type: "GET",
                 success: function(data) {
                     $("#reportModal").html(data);
@@ -34,18 +34,18 @@ require(['./main'], function () {
             var actionValue = $(this).attr('rel').toLowerCase();
 
             $.ajax({
-                url: 'reports/'+actionValue+'_report',
+                url: actionValue+'_report',
                 data: formData,
                 type: "POST",
                 async: false,
                 success: function(data) {
 
                     if (data.indexOf('reportUpdated') != -1) {
-                        window.location.href = "reports?msg=updated";
+                        window.location.href = "list?msg=updated";
 
                     }
                     else if (data.indexOf('reportCreated') != -1) {
-                        window.location.href = "reports?msg=created";
+                        window.location.href = "list?msg=created";
 
                     }
                     else {
@@ -63,7 +63,7 @@ require(['./main'], function () {
             var reportId = $(this).attr('rel');
             
             $.ajax({
-                url: 'reports/report.edit',
+                url: 'report.edit',
                 data: {'reportId': reportId},
                 type: "GET",
                 success: function(data) {

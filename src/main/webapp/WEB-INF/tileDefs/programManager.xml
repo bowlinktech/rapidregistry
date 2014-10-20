@@ -137,5 +137,15 @@
         <put-attribute name="jscript" value="/dspResources/js/sysAdmin/programs/admins.js" />
     </definition>
     
+    <definition name="/programOrgHierarchy" extends="base.definition.programAdmin">
+        <put-attribute name="page-id" value="dashboard-details" />
+        <put-attribute name="page-section" value="section-dashboard" />
+        <put-attribute name="header" value="/WEB-INF/jsp/common/sysAdminHeader.jsp?sect=programs" />
+        <put-attribute name="actions" value="/WEB-INF/jsp/sysAdmin/programs/actionBar.jsp?page=hierarchy" />
+        <put-attribute name="menu" value="/WEB-INF/jsp/sysAdmin/programs/menu.jsp?page=hierarchy" />
+        <put-attribute name="body" value="/WEB-INF/jsp/sysAdmin/programs/orgHierarchy/list.jsp" />
+        <put-attribute name="jscript" value="/dspResources/js/sysAdmin/programs/hierarchyList.js" />
+    </definition>
+    
     
 </tiles-definitions>

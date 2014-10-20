@@ -6,7 +6,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
 
-<div class="main clearfix full-width" role="main">
+<div class="main clearfix" role="main">
     <div class="row-fluid">
         <div class="col-md-12">
             <c:choose>
@@ -14,12 +14,19 @@
                     <div class="alert alert-success">
                         <strong>Success!</strong> 
                         <c:choose>
-                            <c:when test="${param.msg == 'updated'}">The data element has been successfully updated!</c:when>
-                            <c:when test="${param.msg == 'created'}">The data element has been successfully added!</c:when>
+                            <c:when test="${param.msg == 'hierarchysaved'}">The program organization hierarchy has been successfully updated!</c:when>
                         </c:choose>
                     </div>
                 </c:when>
             </c:choose>
+            <section class="panel panel-default">
+                <div class="panel-body">
+                    <dt>
+                    <dd><strong>Program Summary:</strong></dd>
+                    <dd><strong>Program Name:</strong> ${programDetails.programName}</dd>
+                    </dt>
+                </div>
+            </section>  
         </div>
     </div>
     <div class="row-fluid">
@@ -27,41 +34,35 @@
             <section class="panel panel-default">
                 <div class="panel-heading">
                     <div class="pull-right">
-                        <a href="#fieldModal" data-toggle="modal" class="btn btn-primary btn-xs btn-action" id="createNewField" title="Create New Field">Create New Field</a>
+                        <a href="#hierarchyDetailsModal" data-toggle="modal" class="btn btn-primary btn-xs btn-action" id="createNewHierarchy" title="Create New Program Organization Hierarchy">Create New Hierarchy</a>
                     </div>
-                    <h3 class="panel-title">Data Elements</h3>
+                    <h3 class="panel-title">Organization Hierarchy</h3>
                 </div>
                 <div class="panel-body">
                     <div class="form-container scrollable"><br />
-                        <table class="table table-striped table-hover table-default" <c:if test="${not empty availableFields}">id="dataTable"</c:if>>
+                        <table class="table table-striped table-hover table-default" <c:if test="${not empty orgHierarchyList}">id="dataTable"</c:if>>
                                 <thead>
                                     <tr>
-                                        <th scope="col">Field Name</th>
-                                        <th scope="col" class="center-text">Status</th>
-                                        <th scope="col">Table Name</th>
-                                        <th scope="col">Table Column</th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col" class="center-text">Display Position</th>
+                                        <th scope="col" class="center-text">Date Created</th>
                                         <th scope="col"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                 <c:choose>
-                                    <c:when test="${not empty availableFields}">
-                                        <c:forEach var="field" items="${availableFields}">
+                                    <c:when test="${not empty orgHierarchyList}">
+                                        <c:forEach var="hierarchy" items="${orgHierarchyList}">
                                             <tr>
                                                 <td>
-                                                    <a href="#fieldModal" data-toggle="modal" rel="${field.id}" class="btn btn-link editField" title="Edit this field" role="button">${field.elementName}</a>
+                                                    ${hierarchy.name}
                                                 </td>
                                                 <td class="center-text">
-                                                    <c:choose><c:when test="${field.status == true}">Active</c:when><c:otherwise>Inactive</c:otherwise></c:choose>
+                                                     ${hierarchy.dspPos}
                                                 </td>
-                                                <td>
-                                                    ${field.saveToTableName}
-                                                </td>
-                                                <td>
-                                                    ${field.saveToTableCol}
-                                                </td>
+                                                <td class="center-text"><fmt:formatDate value="${hierarchy.dateCreated}" type="date" pattern="M/dd/yyyy" /></td>
                                                 <td class="actions-col">
-                                                    <a href="#fieldModal" data-toggle="modal" rel="${field.id}" class="btn btn-link editField" title="Edit this field" role="button">
+                                                    <a href="#hierarchyDetailsModal" data-toggle="modal" rel="${hierarchy.id}" class="btn btn-link editHierarchy" title="Edit this Program Organization Hierarchy" role="button">
                                                         <span class="glyphicon glyphicon-edit"></span>
                                                         Edit
                                                     </a>
@@ -70,7 +71,7 @@
                                         </c:forEach>
                                     </c:when>
                                     <c:otherwise>
-                                        <tr><td colspan="7" class="center-text">There are currently no fields set up.</td></tr>
+                                        <tr><td colspan="7" class="center-text">There are currently no program organization hierarchy set up.</td></tr>
                                     </c:otherwise>
                                 </c:choose>
                             </tbody>
@@ -86,5 +87,5 @@
 
 
 <!-- Algorithm Details modal -->
-<div class="modal fade" id="fieldModal" role="dialog" tabindex="-1" aria-labeledby="Add Field Element" aria-hidden="true" aria-describedby="Add Field Element"></div>
+<div class="modal fade" id="hierarchyDetailsModal" role="dialog" tabindex="-1" aria-labeledby="Add Program Organization Hierarchy" aria-hidden="true" aria-describedby="Add Program Organization Hierarchy"></div>
 

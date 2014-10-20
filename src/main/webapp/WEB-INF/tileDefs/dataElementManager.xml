@@ -17,23 +17,11 @@
     </definition>
     
     <!-- Demo Graphic Fields -->
-    <definition name="/demoFields" extends="base.definition.dataElementManager">
+    <definition name="/dataElements" extends="base.definition.dataElementManager">
         <put-attribute name="page-id" value="dashboard-details" />
         <put-attribute name="page-section" value="section-dashboard" />
         <put-attribute name="header" value="/WEB-INF/jsp/common/sysAdminHeader.jsp?sect=dataelements" />
         <put-attribute name="actions" value="/WEB-INF/jsp/sysAdmin/dataElements/actionBar.jsp?page=demo" />
-        <put-attribute name="menu" value="/WEB-INF/jsp/sysAdmin/dataElements/menu.jsp?page=demo" />
-        <put-attribute name="body" value="/WEB-INF/jsp/sysAdmin/dataElements/list.jsp" />
-        <put-attribute name="jscript" value="/dspResources/js/sysAdmin/dataElements/list.js" />
-    </definition>
-    
-    <!-- Health Graphic Fields -->
-    <definition name="/healthFields" extends="base.definition.dataElementManager">
-        <put-attribute name="page-id" value="dashboard-details" />
-        <put-attribute name="page-section" value="section-dashboard" />
-        <put-attribute name="header" value="/WEB-INF/jsp/common/sysAdminHeader.jsp?sect=dataelements" />
-        <put-attribute name="actions" value="/WEB-INF/jsp/sysAdmin/dataElements/actionBar.jsp?page=health" />
-        <put-attribute name="menu" value="/WEB-INF/jsp/sysAdmin/dataElements/menu.jsp?page=health" />
         <put-attribute name="body" value="/WEB-INF/jsp/sysAdmin/dataElements/list.jsp" />
         <put-attribute name="jscript" value="/dspResources/js/sysAdmin/dataElements/list.js" />
     </definition>

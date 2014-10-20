@@ -17,7 +17,7 @@ require(['./main'], function () {
         //This function will launch the new MPI Algorithm overlay with a blank screen
         $(document).on('click', '#createNewCode', function() {
             $.ajax({
-                url: 'activity-codes/code.create',
+                url: 'code.create',
                 type: "GET",
                 success: function(data) {
                     $("#activityCodeModal").html(data);
@@ -34,18 +34,18 @@ require(['./main'], function () {
             var actionValue = $(this).attr('rel').toLowerCase();
 
             $.ajax({
-                url: 'activity-codes/'+actionValue+'_activityCode',
+                url: actionValue+'_activityCode',
                 data: formData,
                 type: "POST",
                 async: false,
                 success: function(data) {
 
                     if (data.indexOf('codeUpdated') != -1) {
-                        window.location.href = "activity-codes?msg=updated";
+                        window.location.href = "list?msg=updated";
 
                     }
                     else if (data.indexOf('codeCreated') != -1) {
-                        window.location.href = "activity-codes?msg=created";
+                        window.location.href = "list?msg=created";
 
                     }
                     else {
@@ -63,7 +63,7 @@ require(['./main'], function () {
             var codeId = $(this).attr('rel');
             
             $.ajax({
-                url: 'activity-codes/code.edit',
+                url: 'code.edit',
                 data: {'codeId': codeId},
                 type: "GET",
                 success: function(data) {

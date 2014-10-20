@@ -41,23 +41,33 @@ require(['./main'], function() {
             
             var formData = $("#entryMethod").serialize();
             
-            $.ajax({
-               url: '../saveEntryMethod',
-               data: formData,
-               type: "POST",
-               async: false,
-               success: function(data) {
+            if($('#dspPos').val() == 0) {
+                $('#dspPosDiv').addClass("has-error");
+                $('#dspPosMsg').addClass("has-error");
+                $('#dspPosMsg').html('A display position must be selected!');
+            }
+            else {
+            
+                $.ajax({
+                   url: '../saveEntryMethod',
+                   data: formData,
+                   type: "POST",
+                   async: false,
+                   success: function(data) {
 
-                   if (data.indexOf('entrySaved') != -1) {
-                      window.location.href = "/sysAdmin/programs/"+$('#progamNameURL').val()+"/details?msg=entrysaved";
+                       if (data.indexOf('entrySaved') != -1) {
+                          window.location.href = "/sysAdmin/programs/"+$('#progamNameURL').val()+"/details?msg=entrysaved";
+                       }
+                       else {
+                           $("#entryMethodModal").html(data);
+                       }
                    }
-                   else {
-                       $("#entryMethodModal").html(data);
-                   }
-               }
-           });
-           event.preventDefault();
-           return false;
+               });
+               
+               event.preventDefault();
+               return false;
+           }
+           
         });
         
         //Open up the modal to display the selected patient entry method form

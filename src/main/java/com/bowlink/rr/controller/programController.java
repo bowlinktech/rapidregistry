@@ -315,12 +315,21 @@ public class programController {
      * @throws Exception
      */
     @RequestMapping(value = "/saveEntryMethod", method = RequestMethod.POST)
-    public @ResponseBody ModelAndView saveEntryMethod(@Valid programPatientEntryMethods programPatientEntryMethods, BindingResult result, @RequestParam String action, HttpSession session) throws Exception {
+    public @ResponseBody ModelAndView saveEntryMethod(@Valid programPatientEntryMethods programPatientEntryMethods, BindingResult result, @RequestParam String action, @RequestParam Integer currdspPos, HttpSession session) throws Exception {
 
         if (result.hasErrors()) {
             ModelAndView mav = new ModelAndView();
             mav.setViewName("/sysAdmin/programs/patientEntryForm");
             return mav;
+        }
+        
+        /* Check to see if dspPos changed, if so need to update the old dsp Pos */
+        if(programPatientEntryMethods.getDspPos() != currdspPos) {
+            programPatientEntryMethods foundMethod = programmanager.getPatientEntryMethodBydspPos(programPatientEntryMethods.getDspPos(), (Integer) session.getAttribute("programId"));
+            if(foundMethod != null) {
+                foundMethod.setDspPos(currdspPos);
+                programmanager.saveProgramPatientEntryMethod(foundMethod);
+            }
         }
         
         programmanager.saveProgramPatientEntryMethod(programPatientEntryMethods);
@@ -486,11 +495,20 @@ public class programController {
      * @throws Exception
      */
     @RequestMapping(value = "/savePatientSearch", method = RequestMethod.POST)
-    public @ResponseBody ModelAndView savePatientSearch(@Valid programPatientSearchFields programPatientSearchFields, BindingResult result, @RequestParam String action, HttpSession session) throws Exception {
+    public @ResponseBody ModelAndView savePatientSearch(@Valid programPatientSearchFields programPatientSearchFields, BindingResult result, @RequestParam String action, @RequestParam Integer currdspPos, HttpSession session) throws Exception {
         
         /* Get the original field id */
         programPatientFields patientField = programformsmanager.getPatientFieldById(programPatientSearchFields.getSectionFieldId());
         programPatientSearchFields.setFieldId(patientField.getFieldId());
+        
+        /* Check to see if dspPos changed, if so need to update the old dsp Pos */
+        if(programPatientSearchFields.getDspPos() != currdspPos) {
+            programPatientSearchFields searchField = programmanager.getPatientSearchFieldBydspPos(programPatientSearchFields.getDspPos(), (Integer) session.getAttribute("programId"));
+            if(searchField != null) {
+                searchField.setDspPos(currdspPos);
+                programmanager.saveProgramPatientSearchField(searchField);
+            }
+        }
         
         programmanager.saveProgramPatientSearchField(programPatientSearchFields);
 
@@ -566,11 +584,21 @@ public class programController {
      * @throws Exception
      */
     @RequestMapping(value = "/savePatientSummary", method = RequestMethod.POST)
-    public @ResponseBody ModelAndView savePatientSummary(@Valid programPatientSummaryFields programPatientSummaryFields, BindingResult result, @RequestParam String action, HttpSession session) throws Exception {
+    public @ResponseBody ModelAndView savePatientSummary(@Valid programPatientSummaryFields programPatientSummaryFields, BindingResult result, @RequestParam String action, @RequestParam Integer currdspPos, HttpSession session) throws Exception {
 
         /* Get the original field id */
         programPatientFields patientField = programformsmanager.getPatientFieldById(programPatientSummaryFields.getSectionFieldId());
         programPatientSummaryFields.setFieldId(patientField.getFieldId());
+        
+        /* Check to see if dspPos changed, if so need to update the old dsp Pos */
+        if(programPatientSummaryFields.getDspPos() != currdspPos) {
+            programPatientSummaryFields summaryField = programmanager.getPatientSummaryFieldBydspPos(programPatientSummaryFields.getDspPos(), (Integer) session.getAttribute("programId"));
+            if(summaryField != null) {
+                summaryField.setDspPos(currdspPos);
+                programmanager.saveProgramPatientSummaryField(summaryField);
+            }
+        }
+        
         programmanager.saveProgramPatientSummaryField(programPatientSummaryFields);
 
         ModelAndView mav = new ModelAndView();

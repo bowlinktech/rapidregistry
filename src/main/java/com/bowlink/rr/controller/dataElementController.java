@@ -12,6 +12,7 @@ import com.bowlink.rr.service.dataElementManager;
 import com.bowlink.rr.service.programManager;
 import java.util.List;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -48,11 +49,11 @@ public class dataElementController {
      * @throws Exception
      *
      */
-    @RequestMapping(value = "", method = RequestMethod.GET)
+    @RequestMapping(value = "list", method = RequestMethod.GET)
     public ModelAndView dataElements(HttpSession session) throws Exception {
 
         ModelAndView mav = new ModelAndView();
-        mav.setViewName("/demoFields");
+        mav.setViewName("/dataElements");
        
         /**
          * Get a list of all available demographic fields *
@@ -234,21 +235,29 @@ public class dataElementController {
     }
     
     /**
-     * The '/addNewField' GET request will return the new field module
+     * The '/fieldForm' GET request will return the new field module
      * 
      *  
      * @return  The function returns the new field module with a empty messageTypeFormFields
      *          object
      */
-    @RequestMapping(value = "/addNewField", method = RequestMethod.GET)
-    public @ResponseBody ModelAndView addNewField() throws Exception {
+    @RequestMapping(value = "/fieldForm", method = RequestMethod.GET)
+    public @ResponseBody ModelAndView fieldForm(@RequestParam Integer fieldId) throws Exception {
         
         ModelAndView mav = new ModelAndView();
         mav.setViewName("/sysAdmin/dataElements/details");
         
-        dataElements newField = new dataElements();
-        mav.addObject("dataElementFormFields", newField);
-       
+        if(fieldId == 0) {
+            dataElements fieldDetails = new dataElements();
+            mav.addObject("dataElementFormFields", fieldDetails);
+            mav.addObject("modalTitle", "Create New Field");
+        }
+        else {
+            dataElements fieldDetails = dataelementmanager.getFieldDetails(fieldId);
+            mav.addObject("dataElementFormFields", fieldDetails);
+            mav.addObject("modalTitle", "Edit Field");
+        }
+        
 
         //Get the list of available information tables
         @SuppressWarnings("rawtypes")
@@ -259,68 +268,50 @@ public class dataElementController {
     }
     
     /**
-     * The '/addNewField' POST request will submit the new field module
+     * The '/submitFieldForm' POST request will submit the new field module
      * 
      * @param dataElementFormFields      The object containing the new field
      * 
      * @return  The function will reload the mappings page showing the new field
      *          after the field has been successfully added.
      */    
-    @RequestMapping(value = "/addNewField", method = RequestMethod.POST)
-    public ModelAndView submitNewField(@ModelAttribute(value = "dataElementFormFields") dataElements dataElementFormFields, RedirectAttributes redirectAttr) throws Exception {
+    @RequestMapping(value = "/submitFieldForm", method = RequestMethod.POST)
+    public ModelAndView submitNewField(@Valid @ModelAttribute(value = "dataElementFormFields") dataElements dataElementFormFields, BindingResult result, RedirectAttributes redirectAttr) throws Exception {
         
-        dataelementmanager.saveField(dataElementFormFields);
-       
-        redirectAttr.addFlashAttribute("savedStatus", "fieldcreated");
+        if (result.hasErrors()) {
+            ModelAndView mav = new ModelAndView();
+            mav.setViewName("/sysAdmin/dataElements/details");
+            
+            if(dataElementFormFields.getId() == 0) {
+                mav.addObject("modalTitle", "Create New Field");
+            }
+            else {
+                mav.addObject("modalTitle", "Edit Field");
+            }
+            //Get the list of available information tables
+            @SuppressWarnings("rawtypes")
+            List infoTables = dataelementmanager.getInformationTables();
+            mav.addObject("infoTables", infoTables);
+            
+            return mav;
+        }
         
-        ModelAndView mav = new ModelAndView(new RedirectView(""));
-        return mav;
-    }
-    
-    /**
-     * The '/editField' GET request will return the selected field module
-     * 
-     *  
-     * @return  The function returns the new field module with a empty messageTypeFormFields
-     *          object
-     */
-    @RequestMapping(value = "/editField", method = RequestMethod.GET)
-    public @ResponseBody ModelAndView editField(@RequestParam Integer fieldId) throws Exception {
         
         ModelAndView mav = new ModelAndView();
         mav.setViewName("/sysAdmin/dataElements/details");
-         
-        
-        dataElements fieldDetails = dataelementmanager.getFieldDetails(fieldId);
-        mav.addObject("dataElementFormFields", fieldDetails);
-       
-
-        //Get the list of available information tables
-        @SuppressWarnings("rawtypes")
-        List infoTables = dataelementmanager.getInformationTables();
-        mav.addObject("infoTables", infoTables);
-
-        return mav;
-    }
-    
-    /**
-     * The '/editField' POST request will submit the field changes
-     * 
-     * @param dataElementFormFields      The object containing the new field
-     * 
-     * @return  The function will reload the mappings page showing the new field
-     *          after the field has been successfully added.
-     */    
-    @RequestMapping(value = "/editDemoField", method = RequestMethod.POST)
-    public ModelAndView submitDemoFieldChanges(@ModelAttribute(value = "dataElementFormFields") dataElements dataElementFormFields, RedirectAttributes redirectAttr) throws Exception {
         
         dataelementmanager.saveField(dataElementFormFields);
        
-        redirectAttr.addFlashAttribute("savedStatus", "fieldupdated");
-       
-        ModelAndView mav = new ModelAndView(new RedirectView(""));
+        if(dataElementFormFields.getId() > 0) {
+            mav.addObject("success", "fieldUpdated");
+        }
+        else {
+            mav.addObject("success", "fieldCreated");
+        }
+        
         return mav;
     }
+    
     
     /**
      * The '/getTableCols.do' GET request will return a list of columns for the passed in table name

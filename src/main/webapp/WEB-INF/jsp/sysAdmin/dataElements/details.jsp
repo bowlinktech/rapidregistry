@@ -13,11 +13,11 @@
     <div class="modal-content">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h3 class="panel-title">Add New Field</h3>
+            <h3 class="panel-title">Add New Field ${success}</h3>
         </div>
         <div class="modal-body">
             <div class="form-container">
-            <form:form id="newFieldForm" modelAttribute="dataElementFormFields" method="post" role="form">
+            <form:form id="fieldForm" modelAttribute="dataElementFormFields" method="post" role="form">
                 <form:hidden path="id" />
                 <div class="form-group">
                     <spring:bind path="status">
@@ -36,7 +36,7 @@
                         <div id="elementNameDiv" class="form-group ${status.error ? 'has-error' : '' }">
                             <label class="control-label" for="elementName">Element Name *</label>
                             <form:input path="elementName" id="elementName" class="form-control" type="text" maxLength="45" />
-                            <span id="elementNameMsg" class="control-label" ></span>
+                            <form:errors path="elementName" cssClass="control-label" element="label" />
                         </div>
                     </spring:bind>
                 </div>
@@ -45,12 +45,12 @@
                         <div id="saveToTableNameDiv" class="form-group ${status.error ? 'has-error' : '' }">
                             <label class="control-label" for="saveToTableName">Table Name *</label>
                             <form:select path="saveToTableName" id="saveToTableName" class="form-control half tableName">
-                                <option value="0" label=" - Select - " ></option>
+                                <option value="" label=" - Select - " ></option>
                                 <c:forEach items="${infoTables}"  var="infotablenames" varStatus="tname">
                                     <option value="${infoTables[tname.index]}" <c:if test="${fn:toLowerCase(dataElementFormFields.saveToTableName) == fn:toLowerCase(infoTables[tname.index])}">selected</c:if>>${infoTables[tname.index]}</option>
                                 </c:forEach>
                             </form:select>
-                           <span id="saveToTableNameMsg" class="control-label" ></span>         
+                           <form:errors path="saveToTableName" cssClass="control-label" element="label" />      
                         </div>
                     </spring:bind>
                 </div>
@@ -59,14 +59,14 @@
                         <div id="saveToTableColDiv" class="form-group ${status.error ? 'has-error' : '' }">
                             <label class="control-label" for="saveToTableCol">Table Column Name *</label>
                             <form:select path="saveToTableCol" id="saveToTableCol" class="form-control half" rel="${dataElementFormFields.saveToTableCol}">
-                                <option value="0" label=" - Select - " ></option>
+                                <option value="" label=" - Select - " ></option>
                             </form:select>
-                            <span id="saveToTableColMsg" class="control-label" ></span> 
+                            <form:errors path="saveToTableCol" cssClass="control-label" element="label" />     
                         </div>
                     </spring:bind>
                 </div>
                 <div class="form-group">
-                    <input type="button" id="submitNewField" class="btn btn-primary" value="Submit"/>
+                    <input type="button" id="submitField" class="btn btn-primary" value="Submit"/>
                 </div>
             </form:form>
             </div>

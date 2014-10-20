@@ -7,8 +7,6 @@
 package com.bowlink.rr.dao;
 
 import com.bowlink.rr.model.program;
-import com.bowlink.rr.model.programMCIAlgorithms;
-import com.bowlink.rr.model.programMCIFields;
 import com.bowlink.rr.model.programAdmin;
 import com.bowlink.rr.model.programAvailableTables;
 import com.bowlink.rr.model.programPatientEntryMethods;
@@ -40,6 +38,8 @@ public interface programDAO {
     
     List<programPatientEntryMethods> getPatientEntryMethods(Integer programId) throws Exception;
     
+    programPatientEntryMethods getPatientEntryMethodBydspPos(Integer dspPos, Integer programId) throws Exception;
+    
     List<programAvailableTables> getAvailableTablesForSurveys(Integer programId) throws Exception;
     
     programAvailableTables getProgramAvailableTable(Integer id) throws Exception;
@@ -56,11 +56,15 @@ public interface programDAO {
     
     List<programPatientSearchFields> getProgramSearchFields(Integer programId) throws Exception;
     
+    programPatientSearchFields getPatientSearchFieldBydspPos(Integer dspPos, Integer programId) throws Exception;
+    
     void saveProgramPatientSearchField(programPatientSearchFields searchField) throws Exception;
     
     void deleteProgramPatientSearchField(Integer id) throws Exception;
     
     List<programPatientSummaryFields> getProgramSummaryFields(Integer programId) throws Exception;
+    
+    programPatientSummaryFields getPatientSummaryFieldBydspPos(Integer dspPos, Integer programId) throws Exception;
     
     void saveProgramPatientSummaryField(programPatientSummaryFields summaryField) throws Exception;
     

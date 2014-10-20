@@ -216,6 +216,23 @@ public class programDAOImpl implements programDAO {
     }
     
     /**
+     * The 'getPatientEntryMethodBydspPos' function will return the program patient entry method that currently
+     * has the dspPos set to the dspPos passed in.
+     * 
+     * @param dspPos    The display position that we need to find
+     * @param programId The id of the program the entry method being updated belongs to.
+     * @return 
+     */
+    @Override
+    public programPatientEntryMethods getPatientEntryMethodBydspPos(Integer dspPos, Integer programId) {
+        Query query = sessionFactory.getCurrentSession().createQuery("from programPatientEntryMethods where programId = :programId and displayPos = :dspPos");
+        query.setParameter("programId", programId);
+        query.setParameter("dspPos", dspPos);
+        
+        return (programPatientEntryMethods) query.uniqueResult();
+    }
+    
+    /**
      * The 'getAvailableTablesForSurveys' function will return the list of tables available for surveys to auto populate from.
      * 
      * @param programId The id of the selected program
@@ -330,6 +347,23 @@ public class programDAOImpl implements programDAO {
     }
     
     /**
+     * The 'getPatientSearchFieldBydspPos' function will return the program patient search field that currently
+     * has the dspPos set to the dspPos passed in.
+     * 
+     * @param dspPos    The display position that we need to find
+     * @param programId The id of the program the search field being updated belongs to.
+     * @return 
+     */
+    @Override
+    public programPatientSearchFields getPatientSearchFieldBydspPos(Integer dspPos, Integer programId) {
+        Query query = sessionFactory.getCurrentSession().createQuery("from programPatientSearchFields where programId = :programId and dspPos = :dspPos");
+        query.setParameter("programId", programId);
+        query.setParameter("dspPos", dspPos);
+        
+        return (programPatientSearchFields) query.uniqueResult();
+    }
+    
+    /**
      * The 'saveProgramPatientSearchField' function will save the passed in patient search field.
      * 
      * @param searchField   The object holding the patient search field values.
@@ -372,6 +406,23 @@ public class programDAOImpl implements programDAO {
         
         return query.list();
         
+    }
+    
+    /**
+     * The 'getPatientSummaryFieldBydspPos' function will return the program patient summary field that currently
+     * has the dspPos set to the dspPos passed in.
+     * 
+     * @param dspPos    The display position that we need to find
+     * @param programId The id of the program the summary field being updated belongs to.
+     * @return 
+     */
+    @Override
+    public programPatientSummaryFields getPatientSummaryFieldBydspPos(Integer dspPos, Integer programId) {
+        Query query = sessionFactory.getCurrentSession().createQuery("from programPatientSummaryFields where programId = :programId and dspPos = :dspPos");
+        query.setParameter("programId", programId);
+        query.setParameter("dspPos", dspPos);
+        
+        return (programPatientSummaryFields) query.uniqueResult();
     }
     
     /**

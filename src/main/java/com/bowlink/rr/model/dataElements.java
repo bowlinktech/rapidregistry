@@ -6,12 +6,14 @@
 
 package com.bowlink.rr.model;
 
+import com.bowlink.rr.validator.NoHtml;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import org.hibernate.validator.constraints.NotEmpty;
 
 /**
  *
@@ -26,12 +28,18 @@ public class dataElements {
     @Column(name = "ID", nullable = false)
     private int id;
     
+    @NotEmpty
+    @NoHtml
     @Column(name = "ELEMENTNAME", nullable = false)
     private String elementName;
     
+    @NotEmpty
+    @NoHtml
     @Column(name = "SAVETOTABLENAME", nullable = false)
     private String saveToTableName;
     
+    @NotEmpty
+    @NoHtml
     @Column(name = "SAVETOTABLECOL", nullable = false)
     private String saveToTableCol;
     

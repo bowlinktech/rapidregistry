@@ -48,7 +48,10 @@
                     </c:when>  
                     <c:when test="${param['page'] == 'admins'}">
                         <a href="javascript:void(0);" title="Program Admins" class="unstyled-link">Program Admins</a>
-                    </c:when>      
+                    </c:when> 
+                    <c:when test="${param['page'] == 'hierarchy'}">
+                        <a href="javascript:void(0);" title="Program Organizaion Hierarchy" class="unstyled-link">Program Organization Hierarchy</a>
+                    </c:when>
                 </c:choose>
             </h1>
         </div>
