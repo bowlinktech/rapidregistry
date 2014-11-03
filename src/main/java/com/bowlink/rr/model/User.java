@@ -2,6 +2,7 @@ package com.bowlink.rr.model;
 
 import com.bowlink.rr.validator.NoHtml;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,7 +21,22 @@ import org.springframework.format.annotation.DateTimeFormat;
 public class User {
     
     @Transient
-    Long timesloggedIn = null;
+    private Long timesloggedIn = null;
+    
+    @Transient
+    private Date lastLoggedIn = null;
+    
+    @Transient
+    private String staffType = null;
+    
+    @Transient
+    private List<String> registries = null;
+    
+    @Transient
+    private String encryptedId = null;
+    
+    @Transient
+    private String encryptedSecret = null;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -161,6 +177,46 @@ public class User {
 
     public void setTypeId(Integer typeId) {
         this.typeId = typeId;
+    }
+
+    public Date getLastLoggedIn() {
+        return lastLoggedIn;
+    }
+
+    public void setLastLoggedIn(Date lastLoggedIn) {
+        this.lastLoggedIn = lastLoggedIn;
+    }
+
+    public String getStaffType() {
+        return staffType;
+    }
+
+    public void setStaffType(String staffType) {
+        this.staffType = staffType;
+    }
+
+    public List<String> getRegistries() {
+        return registries;
+    }
+
+    public void setRegistries(List<String> registries) {
+        this.registries = registries;
+    }
+
+    public String getEncryptedId() {
+        return encryptedId;
+    }
+
+    public void setEncryptedId(String encryptedId) {
+        this.encryptedId = encryptedId;
+    }
+
+    public String getEncryptedSecret() {
+        return encryptedSecret;
+    }
+
+    public void setEncryptedSecret(String encryptedSecret) {
+        this.encryptedSecret = encryptedSecret;
     }
     
 }

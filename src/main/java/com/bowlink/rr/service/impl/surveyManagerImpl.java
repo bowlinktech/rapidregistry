@@ -29,4 +29,10 @@ public class surveyManagerImpl implements surveyManager {
         return surveyDAO.getActiveSurveys(programId);
     }
     
+    @Override
+    @Transactional
+    public List<surveys> getProgramSurveys(Integer programId) throws Exception {
+        return surveyDAO.getProgramSurveys(programId);
+    }
+    
 }

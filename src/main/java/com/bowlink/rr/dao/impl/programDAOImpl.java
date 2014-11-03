@@ -14,6 +14,7 @@ import com.bowlink.rr.model.programPatientEntryMethods;
 import com.bowlink.rr.model.programPatientSearchFields;
 import com.bowlink.rr.model.programPatientSummaryFields;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
@@ -150,6 +151,46 @@ public class programDAOImpl implements programDAO {
         criteria.add(Restrictions.ne("id", programId));
         
         return criteria.list();
+        
+    }
+    
+    /**
+     * The 'getProgramsByAdministratory' function will return a list of programs associated to the program admin
+     * logging in.
+     * 
+     * @param userId    The id of the program admin.
+     * @return
+     * @throws Exception 
+     */
+    @Override
+    public List<program> getProgramsByAdminisrator(Integer userId) throws Exception {
+        
+        Query query = sessionFactory.getCurrentSession().createQuery("from programAdmin where systemUserId = :systemUserId");
+        query.setParameter("systemUserId", userId);
+        
+        List<programAdmin> adminProgramList = query.list();
+        List<Integer> programIds = null;
+        
+        if(!adminProgramList.isEmpty()) {
+            programIds = new CopyOnWriteArrayList<Integer>();
+            
+            for(programAdmin admin : adminProgramList) {
+                programIds.add(admin.getProgramId());
+            }
+        }
+        
+        List<program> programs = null;
+        
+        if(!programIds.isEmpty()) {
+            
+            Criteria criteria = sessionFactory.getCurrentSession().createCriteria(program.class);
+            criteria.add(Restrictions.in("id", programIds));
+            
+            programs = criteria.list();
+            
+        }
+        
+        return programs;
         
     }
     

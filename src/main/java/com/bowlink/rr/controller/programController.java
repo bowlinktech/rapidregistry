@@ -254,7 +254,8 @@ public class programController {
         redirectAttr.addFlashAttribute("savedStatus", "updated");
 
         if (action.equals("save")) {
-            ModelAndView mav = new ModelAndView(new RedirectView("details"));
+            String programNameHyphens = program.getProgramName().replace(" ", "-").toLowerCase();
+            ModelAndView mav = new ModelAndView(new RedirectView("/sysAdmin/programs/"+programNameHyphens+"/details"));
             return mav;
         } else {
             ModelAndView mav = new ModelAndView(new RedirectView("../../programs"));

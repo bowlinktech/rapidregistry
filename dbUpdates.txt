@@ -1,0 +1,5 @@
+
+
+/* 11-3-14 9:22 AM Chad M */
+ALTER TABLE `rapidregistry`.`programs` 
+ADD COLUMN `url` VARCHAR(255) NULL DEFAULT NULL AFTER `emailAddress`;

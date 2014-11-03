@@ -40,4 +40,18 @@ public class surveyDAOImpl implements surveyDAO {
         return criteria.list();
     }
     
+    /**
+     * The 'getProgramSurveys' function will return a list of surveys for the passed in programId.
+     * 
+     * @param programId The id of the program to return surveys.
+     * @return
+     * @throws Exception 
+     */
+    public List<surveys> getProgramSurveys(Integer programId) throws Exception {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(surveys.class);
+        criteria.add(Restrictions.eq("programId", programId));
+        
+        return criteria.list();
+    }
+    
 }

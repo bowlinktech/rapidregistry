@@ -97,5 +97,24 @@ public class userManagerImpl implements userManager {
     public void deleteUser(Integer userId) {
         userDAO.deleteUser(userId);
     }
+    
+    @Override
+    @Transactional
+    public List<User> getUsersByProgramId(Integer programId) {
+        return userDAO.getUsersByProgramId(programId);
+    }
+    
+    @SuppressWarnings("rawtypes")
+    @Override
+    @Transactional
+    public List getUserTypes() {
+        return userDAO.getUserTypes();
+    }
+    
+    @Override
+    @Transactional
+    public List<User> searchStaffMembers(Integer programId, String firstName, String lastName) throws Exception {
+        return userDAO.searchStaffMembers(programId, firstName, lastName);
+    }
 
 }

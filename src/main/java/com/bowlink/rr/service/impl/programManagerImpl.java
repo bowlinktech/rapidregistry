@@ -82,6 +82,12 @@ public class programManagerImpl implements programManager {
     public List<program> getOtherPrograms(Integer programId) throws Exception {
         return programDAO.getOtherPrograms(programId);
     }
+    
+    @Override
+    @Transactional
+    public List<program> getProgramsByAdminisrator(Integer userId) throws Exception {
+        return programDAO.getProgramsByAdminisrator(userId);
+    }
    
     @Override
     @Transactional

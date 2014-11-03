@@ -36,6 +36,8 @@ public interface programDAO {
     
     List<program> getOtherPrograms(Integer programId) throws Exception;
     
+    List<program> getProgramsByAdminisrator(Integer userId) throws Exception;
+    
     List<programPatientEntryMethods> getPatientEntryMethods(Integer programId) throws Exception;
     
     programPatientEntryMethods getPatientEntryMethodBydspPos(Integer dspPos, Integer programId) throws Exception;

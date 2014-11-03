@@ -16,4 +16,6 @@ public interface surveyManager {
     
     List<surveys> getActiveSurveys(Integer programId) throws Exception;
     
+    List<surveys> getProgramSurveys(Integer programId) throws Exception;
+    
 }

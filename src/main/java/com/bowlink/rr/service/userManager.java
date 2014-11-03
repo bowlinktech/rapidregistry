@@ -37,5 +37,12 @@ public interface userManager {
     List<User> getUsersByRoleId(Integer roleId);
     
     void deleteUser(Integer userId);
+    
+    List<User> getUsersByProgramId(Integer programId);
+    
+    @SuppressWarnings("rawtypes")
+    List getUserTypes();
+    
+    List<User> searchStaffMembers(Integer programId, String firstName, String lastName) throws Exception;
 
 }

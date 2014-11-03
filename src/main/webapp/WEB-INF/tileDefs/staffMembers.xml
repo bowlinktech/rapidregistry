@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+<tiles-definitions>
+    
+    
+    <!-- Definitions -->
+      
+    <definition name="base.definition.programAdmin" template="/WEB-INF/tiles/layout.jsp">
+        <put-attribute name="title" value="Rapid Registry - Program Admin" />
+        <put-attribute name="header" value="/WEB-INF/jsp/common/programAdminheader.jsp" />
+        <put-attribute name="actions" value="" />
+        <put-attribute name="menu" value="" />
+        <put-attribute name="body" value="" />
+        <put-attribute name="footer" value="/WEB-INF/jsp/common/footer.jsp" />
+    </definition>
+    
+    <definition name="/staffMembers" extends="base.definition.programAdmin">
+        <put-attribute name="page-id" value="dashboard-details" />
+        <put-attribute name="page-section" value="section-dashboard" />
+        <put-attribute name="actions" value="/WEB-INF/jsp/programAdmin/actionBar.jsp?page=staff" />
+        <put-attribute name="menu" value="/WEB-INF/jsp/programAdmin/menu.jsp?page=staff" />
+        <put-attribute name="body" value="/WEB-INF/jsp/programAdmin/staff/list.jsp" />
+        <put-attribute name="jscript" value="/dspResources/js/programAdmin/staff/list.js" />
+    </definition>
+    
+    <definition name="/staffMemberDetails" extends="base.definition.programAdmin">
+        <put-attribute name="page-id" value="dashboard-details" />
+        <put-attribute name="page-section" value="section-dashboard" />
+        <put-attribute name="actions" value="/WEB-INF/jsp/programAdmin/actionBar.jsp?page=staffdetails" />
+        <put-attribute name="menu" value="/WEB-INF/jsp/programAdmin/menu.jsp?page=staff" />
+        <put-attribute name="body" value="/WEB-INF/jsp/programAdmin/staff/details.jsp" />
+        <put-attribute name="jscript" value="/dspResources/js/programAdmin/staff/details.js" />
+    </definition>
+    
+</tiles-definitions>

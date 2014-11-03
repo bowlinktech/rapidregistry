@@ -59,6 +59,9 @@ public class program {
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
     @Column(name = "DATECREATED", nullable = true)
     private Date dateCreated = new Date();
+    
+    @Column(name = "URL", nullable = true)
+    private String url;
 
     public int getId() {
         return id;
@@ -124,5 +127,12 @@ public class program {
         this.sharing = sharing;
     }
 
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
     
 }

@@ -73,6 +73,14 @@
                                 <h6>(This email address will be used in the FROM field when emails are sent from this program)</h6>
                             </div>
                         </spring:bind>
+                        <spring:bind path="url">
+                            <div class="form-group ${status.error ? 'has-error' : '' }">
+                                <label class="control-label" for="url">Program URL</label>
+                                <form:input path="url" id="url" class="form-control" type="text" maxLength="255" />
+                                <form:errors path="url" cssClass="control-label" element="label" />
+                                <h6>(This will be the URL to connect to this program)</h6>
+                            </div>
+                        </spring:bind>
                     </form:form>
                 </div>
             </div>

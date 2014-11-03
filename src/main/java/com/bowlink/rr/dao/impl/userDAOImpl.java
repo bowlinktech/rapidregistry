@@ -8,7 +8,10 @@ package com.bowlink.rr.dao.impl;
 
 import com.bowlink.rr.dao.userDAO;
 import com.bowlink.rr.model.User;
+import com.bowlink.rr.model.program;
+import com.bowlink.rr.model.programAdmin;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
@@ -225,5 +228,105 @@ public class userDAOImpl implements userDAO {
         Query removeUser = sessionFactory.getCurrentSession().createQuery("delete from User where id = :userId");
         removeUser.setParameter("userId", userId);
         removeUser.executeUpdate();
+    }
+    
+    /**
+     * The 'getUsersByProgramId' function will return all staff members associated to the selected program.
+     * 
+     * @param programId The id of the selected program.
+     * @return This function will return a list of User objects
+     */
+    @Override
+    public List<User> getUsersByProgramId(Integer programId) {
+        
+        Query query = sessionFactory.getCurrentSession().createQuery("from programAdmin where programId = :programId");
+        query.setParameter("programId", programId);
+        
+        List<programAdmin> programAdminList = query.list();
+        List<Integer> userIds = null;
+        
+        if(!programAdminList.isEmpty()) {
+            userIds = new CopyOnWriteArrayList<Integer>();
+            
+            for(programAdmin program : programAdminList) {
+                userIds.add(program.getsystemUserId());
+            }
+        }
+        
+        List<User> users = null;
+        
+        if(!userIds.isEmpty()) {
+            
+            Criteria criteria = sessionFactory.getCurrentSession().createCriteria(User.class);
+            criteria.add(Restrictions.in("id", userIds));
+            criteria.add(Restrictions.eq("roleId", 3));
+            
+            users = criteria.list();
+            
+        }
+        
+        return users;
+       
+    }
+    
+    /**
+     * The 'getUserTypes' function will return a list of available user types
+     *
+     */
+    @Override
+    @SuppressWarnings("rawtypes")
+    public List getUserTypes() {
+        Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT id, type FROM lu_userTypes order by id asc");
+
+        return query.list();
+    }
+    
+    /**
+     * The 'searchStaffMembers' function will search the program staff members based on the passed in criteria.
+     * 
+     * @param programId The program to find staff members for
+     * @param firstName The first name search field
+     * @param lastName  The last name search field
+     * @return
+     * @throws Exception 
+     */
+    @Override
+    public List<User> searchStaffMembers(Integer programId, String firstName, String lastName) throws Exception {
+        
+        Query query = sessionFactory.getCurrentSession().createQuery("from programAdmin where programId = :programId");
+        query.setParameter("programId", programId);
+        
+        List<programAdmin> programAdminList = query.list();
+        List<Integer> userIds = null;
+        
+        if(!programAdminList.isEmpty()) {
+            userIds = new CopyOnWriteArrayList<Integer>();
+            
+            for(programAdmin program : programAdminList) {
+                userIds.add(program.getsystemUserId());
+            }
+        }
+        
+        List<User> users = null;
+        
+        if(!userIds.isEmpty()) {
+            
+            Criteria criteria = sessionFactory.getCurrentSession().createCriteria(User.class);
+            criteria.add(Restrictions.in("id", userIds));
+            criteria.add(Restrictions.eq("roleId", 3));
+            
+            if(!"".equals(firstName)) {
+                criteria.add(Restrictions.like("firstName", firstName+"%"));
+            }
+            
+            if(!"".equals(lastName)) {
+                criteria.add(Restrictions.like("lastName", lastName+"%"));
+            }
+            
+            users = criteria.list();
+            
+        }
+        
+        return users;
     }
 }
