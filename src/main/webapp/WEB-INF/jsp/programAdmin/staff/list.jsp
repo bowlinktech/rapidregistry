@@ -22,7 +22,56 @@
                 <h3 class="panel-title">Search Staff Members</h3>
             </div>
             <div class="panel-body">
-                
+                <form id="searchForm" action="" method="get">
+                    <input type="hidden" id="clear" name="clear" value="" />
+                    <div class="form-container">
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <div>
+                                    <label class="control-label" for="firstName">First Name</label>
+                                    <input type="text" name="firstname" value="${firstNameSF}" class="form-control" type="text" maxLength="55" />
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="status">Status</label>
+                                <div class="form-group">
+                                    <label class="radio-inline">
+                                        <input type="radio" name="status" value="1" <c:if test="${statusSF == 1}">checked</c:if> /> Active
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="status" value="0" <c:if test="${statusSF == 0}">checked</c:if> /> Inactive
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="status" value="2" <c:if test="${statusSF == 2}">checked</c:if> /> Both
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                               <div>
+                                    <label class="control-label" for="lastName">Last Name</label>
+                                    <input type="text" name="lastName" value="${lastNameSF}" class="form-control" type="text" maxLength="55" />
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <div>
+                                    <label class="control-label" for="typeId">Staff Type</label>
+                                    <select name="typeId" class="form-control half">
+                                        <option value="0" label=" - Select - " >- Select -</option>
+                                        <c:forEach items="${userTypes}"  varStatus="uname">
+                                            <option value="${userTypes[uname.index][0]}" <c:if test="${typeIdSF == userTypes[uname.index][0]}">selected</c:if>>${userTypes[uname.index][1]}</option>
+                                        </c:forEach>
+                                    </select>     
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                          <input type="submit" id="submitButton"  role="button" class="btn btn-primary" value="Search"/>
+                          <input type="button" id="clearButton"  role="button" class="btn btn-primary" value="Clear"/>
+                       </div>
+                    </div>
+                </form>
             </div>
         </section>
 
@@ -43,7 +92,7 @@
                                     <th scope="col" class="center-text">Staff Type</th>
                                     <th scope="col" class="center-text">Date Created</th>
                                     <th scope="col" class="center-text">Last Logged In</th>
-                                    <th scope="col">Registries</th>
+                                    <th scope="col">Programs</th>
                                     <th scope="col"></th>
                                 </tr>
                             </thead>
@@ -62,7 +111,7 @@
                                                 ${staff.staffType}
                                             </td>
                                             <td class="center-text"><fmt:formatDate value="${staff.dateCreated}" type="date" pattern="M/dd/yyyy" /></td>
-                                            <td class="center-text"><fmt:formatDate value="${staff.lastLoggedIn}" type="Both" pattern="M/dd/yyyy hh:mm " /></td>
+                                            <td class="center-text"><fmt:formatDate value="${staff.lastloggedIn}" type="Both" pattern="M/dd/yyyy h:mm a" /></td>
                                             <td>
                                                 
                                             </td>

@@ -9,7 +9,7 @@
         <c:if test="${not empty savedStatus}" >
             <div class="alert alert-success" role="alert">
                 <strong>Success!</strong> 
-                <c:choose><c:when test="${savedStatus == 'updated'}">The program has been successfully updated!</c:when><c:otherwise>The program has been successfully created!</c:otherwise></c:choose>
+                The staff member has been successfully updated!
             </div>
         </c:if>
         <c:if test="${not empty param.msg}" >
@@ -36,8 +36,6 @@
                 <div class="form-container">
                     <form:form id="staffdetails" commandName="staffdetails"  method="post" role="form">
                         <input type="hidden" id="action" name="action" value="save" />
-                        <input type="hidden" name="userId" value="${userId}" />
-                        <input type="hidden" name="v" value="${v}" />
                         <form:hidden path="roleId" />
                         <form:hidden path="createdBy" />
                         <form:hidden path="dateCreated" />
@@ -79,10 +77,11 @@
                             </div>
                         </spring:bind>
                         <spring:bind path="email">
-                            <div class="form-group ${status.error ? 'has-error' : '' }">
-                                <label class="control-label" for="email">Email</label>
+                            <div class="form-group ${status.error || not empty existingUser ? 'has-error' : '' }">
+                                <label class="control-label" for="email">Email *</label>
                                 <form:input path="email" id="email" class="form-control" type="text"  maxLength="255" />
                                 <form:errors path="email" cssClass="control-label" element="label" />
+                                <c:if test="${not empty existingUser}"><span class="control-label has-error">${existingUser}</span></c:if>
                             </div>
                         </spring:bind>
                         <spring:bind path="password">
@@ -107,28 +106,12 @@
         <section class="panel panel-default">
             <div class="panel-heading">
                 <div class="pull-right">
-                    <a href="#registryModal" data-toggle="modal" class="btn btn-primary btn-xs btn-action" id="addRegistry" title="Add A Registry">Add A Registry</a>
+                    <a href="#programModal" data-toggle="modal" class="btn btn-primary btn-xs btn-action" id="addProgram" title="Associate another Program">Associate another Program</a>
                 </div>
-                <h3 class="panel-title">Associated Registries</h3>
+                <h3 class="panel-title">Associated Programs</h3>
             </div>
             <div class="panel-body">
-                <div class="form-container scrollable">
-                    <table class="table table-striped table-hover responsive">
-                        <thead>
-                            <tr>
-                                <th scope="col">Registry</th>
-                                <th scope="col">Modules</th>
-                                <th scope="col" class="center-text">Departments</th>
-                                <th scope="col" class="center-text">Date Created</th>
-                                <th scope="col"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            
-                        </tbody>
-                    </table>
-
-                </div>
+                <div class="form-container scrollable" id="associatedPrograms"></div>
             </div>
         </section>
 
@@ -136,7 +119,4 @@
 </div>
 
 <!-- Program Entry Method modal -->
-<div class="modal fade" id="entryMethodModal" role="dialog" tabindex="-1" aria-labeledby="Add New Patient Entry Method" aria-hidden="true" aria-describedby="Add New Patient Entry Method"></div>
-<div class="modal fade" id="surveyTableModal" role="dialog" tabindex="-1" aria-labeledby="Add New Table" aria-hidden="true" aria-describedby="Add New Table"></div>
-<div class="modal fade" id="searchFieldsModal" role="dialog" tabindex="-1" aria-labeledby="Add New Search Field" aria-hidden="true" aria-describedby="Add New Search Field"></div>
-<div class="modal fade" id="summaryFieldsModal" role="dialog" tabindex="-1" aria-labeledby="Add New Search Field" aria-hidden="true" aria-describedby="Add New Summary Field"></div>
+<div class="modal fade" id="programModal" role="dialog" tabindex="-1" aria-labeledby="Associate another Program" aria-hidden="true" aria-describedby="Associate another Program"></div>

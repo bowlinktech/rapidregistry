@@ -8,6 +8,7 @@ package com.bowlink.rr.service.impl;
 
 import com.bowlink.rr.dao.userDAO;
 import com.bowlink.rr.model.User;
+import com.bowlink.rr.model.userPrograms;
 import com.bowlink.rr.service.userManager;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,8 +114,14 @@ public class userManagerImpl implements userManager {
     
     @Override
     @Transactional
-    public List<User> searchStaffMembers(Integer programId, String firstName, String lastName) throws Exception {
-        return userDAO.searchStaffMembers(programId, firstName, lastName);
+    public List<User> searchStaffMembers(Integer programId, String firstName, String lastName, Integer status, Integer typeId) throws Exception {
+        return userDAO.searchStaffMembers(programId, firstName, lastName, status, typeId);
+    }
+    
+    @Override
+    @Transactional
+    public List<userPrograms> getUserPrograms(Integer userId) throws Exception {
+        return userDAO.getUserPrograms(userId);
     }
 
 }

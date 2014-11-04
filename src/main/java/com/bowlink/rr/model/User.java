@@ -24,9 +24,6 @@ public class User {
     private Long timesloggedIn = null;
     
     @Transient
-    private Date lastLoggedIn = null;
-    
-    @Transient
     private String staffType = null;
     
     @Transient
@@ -61,6 +58,7 @@ public class User {
     @Column(name = "PASSWORD", nullable = false)
     private String password;
     
+    @NotEmpty
     @Email
     @NoHtml
     @Column(name = "EMAIL", nullable = false)
@@ -82,6 +80,9 @@ public class User {
     @NoHtml
     @Column(name = "RESETCODE", nullable = true)
     private String resetCode = null;
+    
+    @Column(name = "LASTLOGGEDIN", nullable = true)
+    private Date lastloggedIn = null;
     
     public int getId() {
         return id;
@@ -179,14 +180,6 @@ public class User {
         this.typeId = typeId;
     }
 
-    public Date getLastLoggedIn() {
-        return lastLoggedIn;
-    }
-
-    public void setLastLoggedIn(Date lastLoggedIn) {
-        this.lastLoggedIn = lastLoggedIn;
-    }
-
     public String getStaffType() {
         return staffType;
     }
@@ -217,6 +210,14 @@ public class User {
 
     public void setEncryptedSecret(String encryptedSecret) {
         this.encryptedSecret = encryptedSecret;
+    }
+
+    public Date getLastloggedIn() {
+        return lastloggedIn;
+    }
+
+    public void setLastloggedIn(Date lastloggedIn) {
+        this.lastloggedIn = lastloggedIn;
     }
     
 }

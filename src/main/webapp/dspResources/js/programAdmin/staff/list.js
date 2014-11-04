@@ -17,7 +17,7 @@ require(['./main'], function () {
         //This function will launch the new program administrator overlay with a blank screen
         $(document).on('click', '#createNewStaffMember', function() {
             $.ajax({
-                url: 'staffmember.create',
+                url: 'staff/staffmember.create',
                 type: "GET",
                 success: function(data) {
                     $("#staffMemberModal").html(data);
@@ -28,33 +28,38 @@ require(['./main'], function () {
         //Function to submit the changes to an existing administrator or 
         //submit the new user fields from the modal window.
         $(document).on('click', '#submitButton', function(event) {
+            
+            //Make sure the staff type is selected
+            if($('#typeId').val() == 0) {
+                $('#typeIdDiv').addClass('has-error');
+                $('#typeIdMsg').addClass('has-error');
+                $('#typeIdMsg').html('The staff type must be selected');
+            }
+            else {
            
-            var formData = $("#staffmemberdetailsform").serialize();
+                var formData = $("#staffmemberdetailsform").serialize();
 
-            var actionValue = $(this).attr('rel').toLowerCase();
+                var actionValue = $(this).attr('rel').toLowerCase();
 
-            $.ajax({
-                url: actionValue+'_staffmember',
-                data: formData,
-                type: "POST",
-                async: false,
-                success: function(data) {
+                $.ajax({
+                    url: 'staff/'+actionValue+'_staffmember',
+                    data: formData,
+                    type: "POST",
+                    async: false,
+                    success: function(data) {
 
-                    if (data.indexOf('staffUpdated') != -1) {
-                        window.location.href = "?msg=updated";
-
+                        if (data.indexOf('?i=') != -1) {
+                            var url = $(data).find('#encryptedURL').val();
+                            window.location.href = "staff/details"+url;
+                        }
+                        else {
+                            $("#staffMemberModal").html(data);
+                        }
                     }
-                    else if (data.indexOf('staffCreated') != -1) {
-                        window.location.href = "?msg=created";
-
-                    }
-                    else {
-                        $("#staffMemberModal").html(data);
-                    }
-                }
-            });
-            event.preventDefault();
-            return false;
+                });
+                event.preventDefault();
+                return false;
+            }
 
         });
 
@@ -78,7 +83,13 @@ require(['./main'], function () {
                 
             }
             
-        })
+        });
+        
+        //Clear search fields
+        $(document).on('click', '#clearButton', function() {
+           $('#clear').val('yes');
+           $('#searchForm').submit();
+       });
         
     });
 });

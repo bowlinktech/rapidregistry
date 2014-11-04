@@ -10,6 +10,8 @@ import com.bowlink.rr.dao.userDAO;
 import com.bowlink.rr.model.User;
 import com.bowlink.rr.model.program;
 import com.bowlink.rr.model.programAdmin;
+import com.bowlink.rr.model.userLogin;
+import com.bowlink.rr.model.userPrograms;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.hibernate.Criteria;
@@ -17,6 +19,7 @@ import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -83,7 +86,7 @@ public class userDAOImpl implements userDAO {
     @Override
     public User getUserByEmail(String emailAddress) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(User.class);
-        criteria.add(Restrictions.like("email", emailAddress));
+        criteria.add(Restrictions.eq("email", emailAddress));
         return (User) criteria.uniqueResult();
     }
 
@@ -117,7 +120,17 @@ public class userDAOImpl implements userDAO {
         Query q1 = sessionFactory.getCurrentSession().createQuery("insert into userLogin (systemUserId)" + "select id from User where email = :emailAddress");
         q1.setParameter("emailAddress", emailAddress);
         q1.executeUpdate();
-
+        
+        /* Update the users last logged in value */
+        Query q2 = sessionFactory.getCurrentSession().createQuery("from userLogin where systemUserId = (select id from User where email = :emailAddress) order by id desc");
+        q2.setParameter("emailAddress", emailAddress);
+        
+        userLogin lastLogin = (userLogin) q2.list().get(0);
+        
+        User user = getUserByEmail(emailAddress);
+        user.setLastloggedIn(lastLogin.getDateCreated());
+        
+        updateUser(user);
     }
 
 
@@ -291,7 +304,7 @@ public class userDAOImpl implements userDAO {
      * @throws Exception 
      */
     @Override
-    public List<User> searchStaffMembers(Integer programId, String firstName, String lastName) throws Exception {
+    public List<User> searchStaffMembers(Integer programId, String firstName, String lastName, Integer status, Integer typeId) throws Exception {
         
         Query query = sessionFactory.getCurrentSession().createQuery("from programAdmin where programId = :programId");
         query.setParameter("programId", programId);
@@ -315,12 +328,25 @@ public class userDAOImpl implements userDAO {
             criteria.add(Restrictions.in("id", userIds));
             criteria.add(Restrictions.eq("roleId", 3));
             
-            if(!"".equals(firstName)) {
+            if(firstName != null && !"".equals(firstName)) {
                 criteria.add(Restrictions.like("firstName", firstName+"%"));
             }
             
-            if(!"".equals(lastName)) {
+            if(lastName != null && !"".equals(lastName)) {
                 criteria.add(Restrictions.like("lastName", lastName+"%"));
+            }
+            
+            if(status != null && status != 2) {
+                if(status == 1) {
+                    criteria.add(Restrictions.eq("status", true));
+                }
+                else {
+                    criteria.add(Restrictions.eq("status", false));
+                }
+            }
+            
+            if(typeId != null && typeId > 0) {
+                criteria.add(Restrictions.eq("typeId", typeId));
             }
             
             users = criteria.list();
@@ -328,5 +354,25 @@ public class userDAOImpl implements userDAO {
         }
         
         return users;
+    }
+    
+    
+    /**
+     * The 'getUserPrograms' function will return the list of associated programs for the selected user.
+     * 
+     * @param userId    The id of the selected user.
+     * @return
+     * @throws Exception 
+     */
+    @Override
+    public List<userPrograms> getUserPrograms(Integer userId) throws Exception {
+        
+        String sqlQuery = "select a.id as assocId, b.programName, a.programId, a.dateCreated from user_programs a inner join programs b on b.id = a.programId where a.systemUserId = " + userId;
+        
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery) 
+        .setResultTransformer(Transformers.aliasToBean(userPrograms.class)
+        );
+        
+        return query.list();
     }
 }

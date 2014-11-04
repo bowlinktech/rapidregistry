@@ -3,3 +3,7 @@
 /* 11-3-14 9:22 AM Chad M */
 ALTER TABLE `rapidregistry`.`programs` 
 ADD COLUMN `url` VARCHAR(255) NULL DEFAULT NULL AFTER `emailAddress`;
+
+/* 11-4-14 2:40 AM Chad M */
+ALTER TABLE `rapidregistry`.`users` 
+ADD COLUMN `lastloggedIn` DATETIME NULL DEFAULT NULL AFTER `resetCode`;

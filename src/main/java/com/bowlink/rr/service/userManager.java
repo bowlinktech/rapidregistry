@@ -6,6 +6,7 @@
 package com.bowlink.rr.service;
 
 import com.bowlink.rr.model.User;
+import com.bowlink.rr.model.userPrograms;
 import java.util.List;
 
 /**
@@ -43,6 +44,8 @@ public interface userManager {
     @SuppressWarnings("rawtypes")
     List getUserTypes();
     
-    List<User> searchStaffMembers(Integer programId, String firstName, String lastName) throws Exception;
+    List<User> searchStaffMembers(Integer programId, String firstName, String lastName, Integer status, Integer typeId) throws Exception;
+    
+    List<userPrograms> getUserPrograms(Integer userId) throws Exception;
 
 }

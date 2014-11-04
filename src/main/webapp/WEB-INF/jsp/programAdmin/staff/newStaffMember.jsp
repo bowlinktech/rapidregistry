@@ -6,11 +6,12 @@
     <div class="modal-content">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h3 class="panel-title"><c:choose><c:when test="${btnValue == 'Update'}">Update</c:when><c:when test="${btnValue == 'Create'}">Add</c:when></c:choose> Program Administrator ${success}</h3>
+            <h3 class="panel-title">Create New Staff Member ${encryptedURL}</h3>
          </div>
          <div class="modal-body">
              <div id="detailForm">
                  <form:form id="staffmemberdetailsform" commandName="staffdetails" modelAttribute="staffdetails"  method="post" role="form">
+                    <input type="hidden" id="encryptedURL" value="${encryptedURL}" />
                     <form:hidden path="id" id="id" />
                     <form:hidden path="roleId" />
                     <form:hidden path="createdBy" />
@@ -33,10 +34,11 @@
                                 <form:select path="typeId" id="typeId" class="form-control half">
                                     <option value="" label=" - Select - " >- Select -</option>
                                     <c:forEach items="${userTypes}"  varStatus="uname">
-                                        <option value="${userTypes[uname.index][0]}" <c:if test="${staffdetails.typeId == userTypes[uname.index][0]}">selected</c:if>>${userTypes[uname.index][1]}</option>
+                                        <option value="${userTypes[uname.index][0]}">${userTypes[uname.index][1]}</option>
                                     </c:forEach>
                                 </form:select>
-                               <form:errors path="typeId" cssClass="control-label" element="label" />      
+                               <form:errors path="typeId" cssClass="control-label" element="label" />   
+                               <span id="typeIdMsg" class="control-label has-error"></span>
                             </div>
                         </spring:bind>
                         <spring:bind path="firstName">
@@ -54,10 +56,11 @@
                             </div>
                         </spring:bind>
                         <spring:bind path="email">
-                            <div class="form-group ${status.error ? 'has-error' : '' }">
-                                <label class="control-label" for="email">Email</label>
+                            <div class="form-group ${status.error || not empty existingUser ? 'has-error' : '' }">
+                                <label class="control-label" for="email">Email *</label>
                                 <form:input path="email" id="email" class="form-control" type="text"  maxLength="255" />
                                 <form:errors path="email" cssClass="control-label" element="label" />
+                                <c:if test="${not empty existingUser}"><span class="control-label has-error">${existingUser}</span></c:if>
                             </div>
                         </spring:bind>
                         <spring:bind path="password">
