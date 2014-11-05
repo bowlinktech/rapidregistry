@@ -28,4 +28,6 @@ public interface moduleDAO {
     
     void deleteProgramModules(Integer programId) throws Exception;
     
+    List<programModules> getUsedModulesByProgram(Integer programId) throws Exception;
+    
 }

@@ -120,3 +120,5 @@
 
 <!-- Program Entry Method modal -->
 <div class="modal fade" id="programModal" role="dialog" tabindex="-1" aria-labeledby="Associate another Program" aria-hidden="true" aria-describedby="Associate another Program"></div>
+<div class="modal fade" id="programModulesModal" role="dialog" tabindex="-1" aria-labeledby="Program Modules" aria-hidden="true" aria-describedby="Program Modules"></div>
+<div class="modal fade" id="programDepartmentsModal" role="dialog" tabindex="-1" aria-labeledby="Program Departments" aria-hidden="true" aria-describedby="Program Departments"></div>

@@ -100,6 +100,23 @@ require(['./main'], function() {
             
         });
         
+        //Modal to view associated program modules
+        $(document).on('click', '.viewModules', function() {
+           var programId = $(this).attr('rel');
+           
+           var i = getUrlParameter('i');
+           var v = getUrlParameter('v');
+           
+           $.ajax({
+                url: 'getProgramModules.do',
+                data: {'i':i, 'v': v, 'programId':programId},
+                type: "GET",
+                success: function(data) {
+                    $('#programModulesModal').html(data);
+                }
+           });
+        });
+        
         
 
     });
@@ -107,19 +124,17 @@ require(['./main'], function() {
 
 
 function getAssociatedPrograms() {
-    var i = getUrlParameter('i');
-    var v = getUrlParameter('v');
+   var i = getUrlParameter('i');
+   var v = getUrlParameter('v');
     
-    alert(v)
-   
-   /*$.ajax({
+   $.ajax({
         url: 'getAssociatedPrograms.do',
         data: {'i':i, 'v': v},
         type: "GET",
         success: function(data) {
             $('#associatedPrograms').html(data);
         }
-    });*/
+    });
     
     
 }

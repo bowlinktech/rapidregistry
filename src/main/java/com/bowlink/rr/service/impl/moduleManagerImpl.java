@@ -58,4 +58,10 @@ public class moduleManagerImpl implements moduleManager {
         moduleDAO.deleteProgramModules(programId);
     }
     
+    @Override
+    @Transactional
+    public  List<programModules> getUsedModulesByProgram(Integer programId) throws Exception {
+        return moduleDAO.getUsedModulesByProgram(programId);
+    }
+    
 }

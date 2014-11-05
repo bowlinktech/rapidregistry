@@ -12,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 /**
  *
  * @author chadmccue
@@ -19,6 +20,9 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "PROGRAM_MODULES")
 public class programModules {
+    
+    @Transient
+    private boolean useModule = false;
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -75,6 +79,14 @@ public class programModules {
 
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
+    }
+
+    public boolean isUseModule() {
+        return useModule;
+    }
+
+    public void setUseModule(boolean useModule) {
+        this.useModule = useModule;
     }
     
 }

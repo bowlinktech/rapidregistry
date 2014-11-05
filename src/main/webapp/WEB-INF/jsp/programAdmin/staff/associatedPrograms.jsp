@@ -10,7 +10,7 @@
     <thead>
         <tr>
             <th scope="col">Program</th>
-            <th scope="col">Modules</th>
+            <th scope="col" class="center-text">Modules</th>
             <th scope="col" class="center-text">Departments</th>
             <th scope="col" class="center-text">Date Created</th>
             <th scope="col"></th>
@@ -25,17 +25,20 @@
                             ${program.programName}
                         </td>
                         <td class="center-text">
-                            <a href="javascript:void(0);" class="btn-link viewModules" rel="${program.id}" title="View Program Modules" role="button">
+                            <a href="#programModulesModal" data-toggle="modal" class="btn-link viewModules" rel="${program.programId}" title="View Program Modules" role="button">
                                 View
                             </a>
                         </td>
                         <td class="center-text">
-                            <a href="javascript:void(0);" class="btn-link viewDepartments" rel="${program.id}" title="View Program Modules" role="button">
+                            <a href="#programDepartmentsModal" data-toggle="modal" class="btn-link viewDepartments" rel="${program.programId}" title="View Program Modules" role="button">
                                 View
                             </a>
                         </td>
                         <td class="center-text">
                             <fmt:formatDate value="${program.dateCreated}" type="date" pattern="M/dd/yyyy h:mm a" />
+                        </td>
+                        <td class="center-text">
+                            Delete
                         </td>
                     </tr>
                 </c:forEach>

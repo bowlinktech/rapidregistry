@@ -9,10 +9,12 @@ package com.bowlink.rr.dao.impl;
 import com.bowlink.rr.dao.moduleDAO;
 import com.bowlink.rr.model.modules;
 import com.bowlink.rr.model.programModules;
+import com.bowlink.rr.model.programPatientSummaryFields;
 import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -82,6 +84,26 @@ public class moduleDAOImpl implements moduleDAO {
         }
         
         return usedModules;
+        
+    }
+    
+    /**
+     * The 'getUsedModulesByProgram' function will return a list of modules the passed in program is using
+     * 
+     * @param programId     The id of the program to search shared programs
+     * 
+     * @return This function will return a list of programModules objects
+     */
+    @Override
+    public List<programModules> getUsedModulesByProgram(Integer programId) throws Exception {
+        
+        String sqlQuery = "select a.id, a.programId, a.moduleId, a.dspPos, b.moduleName as displayName from program_modules a inner join lu_programModules b on b.id = a.moduleId where a.programId = " + programId;
+        
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery) 
+        .setResultTransformer(Transformers.aliasToBean(programModules.class)
+        );
+        
+        return query.list();
         
     }
     

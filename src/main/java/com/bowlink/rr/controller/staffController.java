@@ -6,9 +6,9 @@
 package com.bowlink.rr.controller;
 
 import com.bowlink.rr.model.User;
-import com.bowlink.rr.model.program;
 import com.bowlink.rr.model.programAdmin;
 import com.bowlink.rr.model.userPrograms;
+import com.bowlink.rr.model.programModules;
 import com.bowlink.rr.service.userManager;
 import java.util.List;
 import javax.servlet.http.HttpSession;
@@ -23,10 +23,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import com.bowlink.rr.security.encryptObject;
 import com.bowlink.rr.security.decryptObject;
+import com.bowlink.rr.service.moduleManager;
 import com.bowlink.rr.service.programManager;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
@@ -48,6 +49,9 @@ public class staffController {
     
     @Autowired
     programManager programmanager;
+    
+    @Autowired
+    moduleManager modulemanager;
     
     private String topSecret = "What goes up but never comes down";
     
@@ -223,6 +227,9 @@ public class staffController {
     @RequestMapping(value = "/details", method = RequestMethod.GET)
     public ModelAndView getStaffDetails(@RequestParam String i, @RequestParam String v) throws Exception {
         
+        System.out.println("i: " + i);
+        System.out.println("v: " + v);
+        
         /* Decrypt the url */
         decryptObject decrypt = new decryptObject();
         
@@ -324,19 +331,8 @@ public class staffController {
     @RequestMapping(value = "/getAssociatedPrograms.do", method = RequestMethod.GET)
     public @ResponseBody ModelAndView getAssociatedPrograms(@RequestParam String i, @RequestParam String v) throws Exception {
         
-        System.out.println("i: " + i);
-        System.out.println("v: " + v);
-        
         /* Decrypt the url */
-        decryptObject decrypt = new decryptObject();
-        
-        Object obj = decrypt.decryptObject(i, v);
-        
-        String[] result = obj.toString().split((","));
-        
-        int userId = Integer.parseInt(result[0].substring(4));
-        
-        System.out.println("userId: " + userId);
+        int userId = decryptURLParam(i,v);
         
         /* Get associated programs */
         List<userPrograms> programs = usermanager.getUserPrograms(userId);
@@ -347,6 +343,53 @@ public class staffController {
         
         return mav;
         
+    }
+    
+    
+    /**
+     * 
+     * @param i
+     * @param v
+     * @return
+     * @throws Exception 
+     */
+    @RequestMapping(value = "/getProgramModules.do", method = RequestMethod.GET)
+    public @ResponseBody ModelAndView getProgramModules(@RequestParam String i, @RequestParam String v, HttpSession session) throws Exception {
+        
+        /* Decrypt the url */
+        int userId = decryptURLParam(i,v);
+        
+        /* Get a list of modules for the program */
+        List<programModules> modules = modulemanager.getUsedModulesByProgram((Integer) session.getAttribute("selprogramId"));
+       
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/programAdmin/staff/programModules");
+        mav.addObject("programModules", modules);
+        
+        return mav;
+        
+    }
+    
+    /**
+     * The 'decryptURLParam' will take the encryptd url parameters and return the userid as an integer.
+     * 
+     * @param i The encrypted userId
+     * @param v The encrypted secret.
+     * @return  This function will return the decrypted userid.
+     * @throws Exception 
+     */
+    public int decryptURLParam(@RequestParam String i, @RequestParam String v) throws Exception {
+        
+        /* Decrypt the url */
+        decryptObject decrypt = new decryptObject();
+        
+        Object obj = decrypt.decryptObject(URLDecoder.decode(i, "UTF-8"), URLDecoder.decode(v, "UTF-8"));
+        
+        String[] result = obj.toString().split((","));
+        
+        int userId = Integer.parseInt(result[0].substring(4));
+        
+        return userId;
     }
     
 }
