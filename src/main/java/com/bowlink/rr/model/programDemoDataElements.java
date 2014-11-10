@@ -59,6 +59,9 @@ public class programDemoDataElements {
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
     @Column(name = "DATECREATED", nullable = true)
     private Date dateCreated = new Date();
+    
+    @Column(name = "FIELDDISPLAYNAME", nullable = true)
+    private String fieldDisplayname = "";
 
     public int getId() {
         return id;
@@ -146,6 +149,14 @@ public class programDemoDataElements {
 
     public void setValidationName(String validationName) {
         this.validationName = validationName;
+    }
+
+    public String getFieldDisplayname() {
+        return fieldDisplayname;
+    }
+
+    public void setFieldDisplayname(String fieldDisplayname) {
+        this.fieldDisplayname = fieldDisplayname;
     }
     
     

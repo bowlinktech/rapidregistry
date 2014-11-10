@@ -6,6 +6,7 @@
     <thead>
         <tr>
             <th scope="col">Field</th>
+            <th scope="col">Display Name</th>
             <th scope="col">Crosswalk</th>
             <th scope="col">Field Validation</th>
             <th scope="col" class="center-text">Required</th>
@@ -20,6 +21,9 @@
                     <tr>
                         <td scope="row">
                             ${existingFields[fStatus.index].fieldName} 
+                        </td>
+                        <td>
+                            ${existingFields[fStatus.index].fieldDisplayname} 
                         </td>
                         <td>
                             ${existingFields[fStatus.index].cwName} 
