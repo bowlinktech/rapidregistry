@@ -1,0 +1,4 @@
+context.xml
+/bin
+/target/
+.DS_Store
