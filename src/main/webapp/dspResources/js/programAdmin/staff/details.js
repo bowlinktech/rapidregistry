@@ -24,81 +24,46 @@ require(['./main'], function() {
             $("#staffdetails").submit();
         });
         
-        
-        //Open up the modal to display the patient entry form
-        $(document).on('click', '#createNewEntryMethod', function() {
-            $.ajax({
-                url: '../entryMethodForm',
-                data: {'id':0},
+        //Function to open the new program association modal
+        $(document).on('click', '#addProgram', function() {
+           
+           var i = getUrlParameter('i');
+           var v = getUrlParameter('v');
+           
+           $.ajax({
+                url: 'associateNewProgram.do',
+                data: {'i':i, 'v': v},
                 type: "GET",
                 success: function(data) {
-                    $("#entryMethodModal").html(data);
+                    $('#programModal').html(data);
                 }
-            });
+           }); 
+            
         });
         
-        //Function to submit the changes to an existing user or 
-        //submit the new user fields from the modal window.
-        $(document).on('click', '#submitEntryButton', function(event) {
-            
-            var formData = $("#entryMethod").serialize();
-            
-            if($('#dspPos').val() == 0) {
-                $('#dspPosDiv').addClass("has-error");
-                $('#dspPosMsg').addClass("has-error");
-                $('#dspPosMsg').html('A display position must be selected!');
-            }
-            else {
-            
-                $.ajax({
-                   url: '../saveEntryMethod',
-                   data: formData,
-                   type: "POST",
-                   async: false,
-                   success: function(data) {
+        //Function to show modules and departments for the selected program 
+        $(document).on('change', '.program', function() {
+           var programId = $(this).val();
+           
+           //Get available modules for the selected program
+           $.getJSON('/programAdmin/programs/getProgramAvailableModules.do', {
+                programId: programId, ajax: true
+            }, function(data) {
+                var html = '';
+                var len = data.length;
 
-                       if (data.indexOf('entrySaved') != -1) {
-                          window.location.href = "/sysAdmin/programs/"+$('#progamNameURL').val()+"/details?msg=entrysaved";
-                       }
-                       else {
-                           $("#entryMethodModal").html(data);
-                       }
-                   }
-               });
-               
-               event.preventDefault();
-               return false;
-           }
-           
-        });
-        
-        //Open up the modal to display the selected patient entry method form
-        $(document).on('click', '.editEntryMethod', function() {
-            
-            $.ajax({
-                url: '../entryMethodForm',
-                data: {'id':$(this).attr('rel')},
-                type: "GET",
-                success: function(data) {
-                    $("#entryMethodModal").html(data);
+                for (var i = 0; i < len; i++) {
+                    html += '<option value="' + data[i][0] + '">' + data[i][1] + '</option>';
                 }
+                $('#progamModules').html(html);
+                $('#programModulesDiv').show();
             });
+           
+           //Get available first level org hierarchy
+           
+           
         });
         
-        $(document).on('click', '.deleteEntryMethod', function(event) {
-           
-            if(confirm("Are you sure you want to remove this entry method?")) {
-                $.ajax({
-                    url: '../deleteEntryMethod',
-                    data: {'id':$(this).attr('rel')},
-                    type: "POST",
-                    success: function(data) {
-                        window.location.href = "/sysAdmin/programs/"+data+"/details?msg=entrydeleted";
-                    }
-                });
-            }
-            
-        });
         
         //Modal to view associated program modules
         $(document).on('click', '.viewModules', function() {
@@ -115,6 +80,26 @@ require(['./main'], function() {
                     $('#programModulesModal').html(data);
                 }
            });
+        });
+        
+        //Function to submit the changes to an existing user program modules
+        $(document).on('click', '#submitModuleButton', function(event) {
+            
+            var formData = $("#moduleForm").serialize();
+
+            $.ajax({
+                url: 'saveProgramUserModules.do',
+                data: formData,
+                type: "POST",
+                async: false,
+                success: function(data) {
+                    var url = $(data).find('#encryptedURL').val();
+                    window.location.href = "details"+url+"&msg=moduleAdded";
+                }
+            });
+            event.preventDefault();
+            return false;
+
         });
         
         

@@ -209,4 +209,10 @@ public class programManagerImpl implements programManager {
     public void deleteProgramPatientSummaryField(Integer id) throws Exception {
         programDAO.deleteProgramPatientSummaryField(id);
     }
+    
+    @Override
+    @Transactional
+    public List<program> getAvailbleProgramsForUser(Integer userId) throws Exception {
+        return programDAO.getAvailbleProgramsForUser(userId);
+    }
 }

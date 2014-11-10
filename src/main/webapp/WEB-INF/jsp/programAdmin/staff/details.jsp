@@ -16,12 +16,7 @@
             <div class="alert alert-success">
                 <strong>Success!</strong> 
                 <c:choose>
-                    <c:when test="${param.msg == 'tablesaved'}">The table has been associated to this program!</c:when>
-                    <c:when test="${param.msg == 'tabledeleted'}">The table association has been removed for this program!</c:when>
-                    <c:when test="${param.msg == 'entrysaved'}">The patient entry method has been associated to this program!</c:when>
-                    <c:when test="${param.msg == 'entrydeleted'}">The patient entry method has been removed for this program!</c:when>
-                    <c:when test="${param.msg == 'fieldsaved'}">The patient search field has been associated to this program!</c:when>
-                    <c:when test="${param.msg == 'fielddeleted'}">The patient search field has been removed for this program!</c:when>
+                    <c:when test="${param.msg == 'moduleAdded'}">The module(s) have been saved to the selected program!</c:when>
                 </c:choose>
             </div>
         </c:if>

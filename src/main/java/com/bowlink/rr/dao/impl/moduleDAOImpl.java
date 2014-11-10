@@ -9,7 +9,7 @@ package com.bowlink.rr.dao.impl;
 import com.bowlink.rr.dao.moduleDAO;
 import com.bowlink.rr.model.modules;
 import com.bowlink.rr.model.programModules;
-import com.bowlink.rr.model.programPatientSummaryFields;
+import com.bowlink.rr.model.userProgramModules;
 import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.Query;
@@ -17,6 +17,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -127,10 +128,73 @@ public class moduleDAOImpl implements moduleDAO {
     @Override
     public void deleteProgramModules(Integer programId) throws Exception {
         
-         /** Need to first delete current associations **/
+        /** Need to first delete current associations **/
         Query q1 = sessionFactory.getCurrentSession().createQuery("delete from programModules where programId = :programId");
         q1.setParameter("programId", programId);
         q1.executeUpdate();
+    }
+    
+    /**
+     * The 'getUsedModulesByUser' function will return a list of used modules for a user and program.
+     * 
+     * @param programId The selected program id.
+     * @param userId    The selected user id.
+     * @return
+     * @throws Exception 
+     */
+    @Override
+    public List<userProgramModules> getUsedModulesByUser(Integer programId, Integer userId) throws Exception {
+        Query query = sessionFactory.getCurrentSession().createQuery("from userProgramModules where programId = :programId and systemUserId = :userId");
+        query.setParameter("programId", programId);
+        query.setParameter("userId", userId);
+
+        List<userProgramModules> moduleList = query.list();
+        
+        return moduleList;
+    }
+    
+    
+    /**
+     * The 'removeUsedModulesByUser' function will remove the current list of associated program modules for the selected user and
+     * program.
+     * 
+     * @param programId The selected programId
+     * @param userId    The selected userId
+     * @throws Exception 
+     */
+    @Override
+    public void removeUsedModulesByUser(Integer programId, Integer userId) throws Exception {
+        
+        /** Need to first delete current associations **/
+        Query q1 = sessionFactory.getCurrentSession().createQuery("delete from userProgramModules where programId = :programId and systemUserId = :userId");
+        q1.setParameter("programId", programId);
+        q1.setParameter("userId", userId);
+        q1.executeUpdate();
+    }
+    
+    /**
+     * The 'saveUsedModulesByUser' function will save the selected program modules for the user.
+     * 
+     * @param module    The userProgramModules object
+     * @throws Exception 
+     */
+    @Override
+    public void saveUsedModulesByUser(userProgramModules module) throws Exception {
+         sessionFactory.getCurrentSession().save(module);
+    }
+    
+    
+    /**
+     * The 'getAvailableModules' function will return a list of modules available for the passed in programId
+     *
+     */
+    @Override
+    @SuppressWarnings("rawtypes")
+    public List getAvailableModules(Integer programId) {
+        Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT a.moduleId, b.moduleName from program_modules a inner join lu_programModules b on b.id = a.moduleId where programId = :programId ")
+                .setParameter("programId", programId);
+
+        return query.list();
     }
     
 }

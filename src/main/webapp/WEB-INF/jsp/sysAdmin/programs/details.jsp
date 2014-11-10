@@ -38,7 +38,6 @@
                         <input type="hidden" id="action" name="action" value="save" />
                         <form:hidden path="id" id="id" />
                         <form:hidden path="dateCreated" />
-                        <form:hidden path="lastloggedIn" />
                         <spring:bind path="status">
                             <div class="form-group ${status.error ? 'has-error' : '' }">
                                 <label class="control-label" for="status">Status *</label>

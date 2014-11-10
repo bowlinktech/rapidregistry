@@ -6,9 +6,11 @@
 package com.bowlink.rr.controller;
 
 import com.bowlink.rr.model.User;
+import com.bowlink.rr.model.program;
 import com.bowlink.rr.model.programAdmin;
 import com.bowlink.rr.model.userPrograms;
 import com.bowlink.rr.model.programModules;
+import com.bowlink.rr.model.userProgramModules;
 import com.bowlink.rr.service.userManager;
 import java.util.List;
 import javax.servlet.http.HttpSession;
@@ -227,9 +229,6 @@ public class staffController {
     @RequestMapping(value = "/details", method = RequestMethod.GET)
     public ModelAndView getStaffDetails(@RequestParam String i, @RequestParam String v) throws Exception {
         
-        System.out.println("i: " + i);
-        System.out.println("v: " + v);
-        
         /* Decrypt the url */
         decryptObject decrypt = new decryptObject();
         
@@ -322,10 +321,11 @@ public class staffController {
     
     
     /**
+     * The 'getAssociatedPrograms' GET request will return a list of programs the user is associated with.
      * 
-     * @param i
-     * @param v
-     * @return
+     * @param i The encrypted userId
+     * @param v The encrypted secret
+     * @return  This function will return the associated programs view.
      * @throws Exception 
      */
     @RequestMapping(value = "/getAssociatedPrograms.do", method = RequestMethod.GET)
@@ -345,12 +345,38 @@ public class staffController {
         
     }
     
+    /**
+     * The 'associateNewProgram' GET request will open the new program association modal.
+     * 
+     * @param i The encrypted userId
+     * @param v The encrypted secret
+     * @return  This function will return the new associated programs view.
+     * @throws Exception 
+     */
+    @RequestMapping(value = "/associateNewProgram.do", method = RequestMethod.GET)
+    public @ResponseBody ModelAndView associateNewProgram(@RequestParam String i, @RequestParam String v) throws Exception {
+        
+        /* Decrypt the url */
+        int userId = decryptURLParam(i,v);
+        
+        /* Get associated programs */
+        List<program> programs = programmanager.getAvailbleProgramsForUser(userId);
+        
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/programAdmin/staff/newProgram");
+        mav.addObject("programs", programs);
+        
+        return mav;
+        
+    }
+    
     
     /**
+     * The 'getProgramModules' GET request will return a list of modules associated to the program and check to see if the user has access to the module.
      * 
-     * @param i
-     * @param v
-     * @return
+     * @param i The encrypted userId
+     * @param v The encrypted secret
+     * @return  This function will return the program module model
      * @throws Exception 
      */
     @RequestMapping(value = "/getProgramModules.do", method = RequestMethod.GET)
@@ -361,13 +387,64 @@ public class staffController {
         
         /* Get a list of modules for the program */
         List<programModules> modules = modulemanager.getUsedModulesByProgram((Integer) session.getAttribute("selprogramId"));
+        
+        /* Get a list of modules for the user */
+        List<userProgramModules> userModules = modulemanager.getUsedModulesByUser((Integer) session.getAttribute("selprogramId"), userId);
+        
+        if(!userModules.isEmpty()) {
+            for(userProgramModules usermodule : userModules) {
+                for(programModules module : modules) {
+                    if(Objects.equals(module.getModuleId(), usermodule.getModuleId())) {
+                        module.setUseModule(true);
+                    }
+                }
+            }
+        }
        
         ModelAndView mav = new ModelAndView();
         mav.setViewName("/programAdmin/staff/programModules");
+        mav.addObject("userId", i);
+        mav.addObject("v", v);
         mav.addObject("programModules", modules);
         
         return mav;
         
+    }
+    
+    /**
+     * The 'saveProgramUserModules' POST request will submit the selected program modules for the user and program.
+     * 
+     * @param i The encrypted userId
+     * @param v The encrypted secret
+     * @param modules   The selected program modules.
+     * @return
+     * @throws Exception 
+     */
+    @RequestMapping(value = "/saveProgramUserModules.do", method = RequestMethod.POST)
+    public @ResponseBody ModelAndView saveProgramUserModules(@RequestParam String i, @RequestParam String v, @RequestParam List<Integer> modules, HttpSession session) throws Exception {
+        
+        /* Decrypt the url */
+        int userId = decryptURLParam(i,v);
+        
+        /* Clear out current user modules */
+        modulemanager.removeUsedModulesByUser((Integer) session.getAttribute("selprogramId"), userId);
+        
+        if(!modules.isEmpty()) {
+            for(Integer module : modules) {
+                userProgramModules userModule = new userProgramModules();
+                userModule.setSystemUserId(userId);
+                userModule.setProgramId((Integer) session.getAttribute("selprogramId"));
+                userModule.setModuleId(module);
+                
+                modulemanager.saveUsedModulesByUser(userModule);
+            }
+        }
+        
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/programAdmin/staff/programModules");
+        mav.addObject("encryptedURL", "?i="+i+"&v="+v);
+        
+        return mav;
     }
     
     /**

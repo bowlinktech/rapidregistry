@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
@@ -25,7 +26,7 @@ import org.springframework.web.servlet.view.RedirectView;
  * @author chadmccue
  */
 @Controller
-@RequestMapping("/sysAdmin/programs/{programName}")
+@RequestMapping(value={"/sysAdmin/programs/{programName}","/programAdmin/programs"})
 public class programModules {
     
     @Autowired
@@ -116,6 +117,21 @@ public class programModules {
             return mav;
         }
 
+    }
+    
+    /**
+     * The '/getProgramAvailableModules.do' GET request will return a list of available modules for the passed in program
+     *
+     * @param programId The selected program
+     *
+     * @return The function will return a list of modules.
+     */
+    @SuppressWarnings("rawtypes")
+    @RequestMapping(value = "/getProgramAvailableModules.do", method = RequestMethod.GET)
+    public @ResponseBody List getTableCols(@RequestParam(value = "programId", required = true) Integer programId) throws Exception {
+
+        List modules = modulemanager.getAvailableModules(programId);
+        return modules;
     }
     
 }

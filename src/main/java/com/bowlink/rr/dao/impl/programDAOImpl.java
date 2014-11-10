@@ -22,6 +22,7 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -488,6 +489,46 @@ public class programDAOImpl implements programDAO {
         Query removeEntryMethod = sessionFactory.getCurrentSession().createQuery("delete from programPatientSummaryFields where id = :Id");
         removeEntryMethod.setParameter("Id", id);
         removeEntryMethod.executeUpdate();
+    }
+    
+    
+    /**
+     * The 'getAvailableProgramsForUser' function will return the list of programs not already associated with the passed in userId.
+     * 
+     * @param userId
+     * @return
+     * @throws Exception 
+     */
+    @Override
+    public List<program> getAvailbleProgramsForUser(Integer userId) throws Exception {
+        
+        Query query = sessionFactory.getCurrentSession().createQuery("from programAdmin where systemUserId = :systemUserId");
+        query.setParameter("systemUserId", userId);
+        
+        List<programAdmin> programList = query.list();
+        List<Integer> programIds = null;
+        
+        if(!programList.isEmpty()) {
+            programIds = new CopyOnWriteArrayList<Integer>();
+            
+            for(programAdmin program : programList) {
+                programIds.add(program.getProgramId());
+            }
+        }
+        
+        List<program> programs = null;
+        
+        if(!programIds.isEmpty()) {
+            
+            Criteria criteria = sessionFactory.getCurrentSession().createCriteria(program.class);
+            criteria.add(Restrictions.not(Restrictions.in("id", programIds)));
+            
+            programs = criteria.list();
+            
+        }
+        
+        return programs;
+        
     }
     
 }

@@ -8,6 +8,7 @@ package com.bowlink.rr.dao;
 
 import com.bowlink.rr.model.modules;
 import com.bowlink.rr.model.programModules;
+import com.bowlink.rr.model.userProgramModules;
 import java.util.List;
 import org.springframework.stereotype.Repository;
 
@@ -29,5 +30,13 @@ public interface moduleDAO {
     void deleteProgramModules(Integer programId) throws Exception;
     
     List<programModules> getUsedModulesByProgram(Integer programId) throws Exception;
+    
+    List<userProgramModules> getUsedModulesByUser(Integer programId, Integer userId) throws Exception;
+    
+    void removeUsedModulesByUser(Integer programId, Integer userId) throws Exception;
+    
+    void saveUsedModulesByUser(userProgramModules module) throws Exception;
+    
+    List getAvailableModules(Integer programId) throws Exception;
     
 }
