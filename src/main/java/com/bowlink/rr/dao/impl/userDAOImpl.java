@@ -375,4 +375,35 @@ public class userDAOImpl implements userDAO {
         
         return query.list();
     }
+    
+    /**
+     * The 'removeProgram' function will remove the association with the passed in user and the passed in program
+     * 
+     * @param userId    The id of the user
+     * @param programId The id of the selected program
+     * 
+     * @throws Exception 
+     */
+    @Override
+    public void removeProgram(Integer userId, Integer programId) throws Exception {
+        
+        //Remove the user program module associations
+        Query removeModules = sessionFactory.getCurrentSession().createQuery("delete from userProgramModules where systemUserId = :userId and programId = :programId");
+        removeModules.setParameter("userId", userId);
+        removeModules.setParameter("programId", programId);
+        removeModules.executeUpdate();
+        
+        //Remove the user program assocation
+        Query removeProgram = sessionFactory.getCurrentSession().createQuery("delete from programAdmin where systemUserId = :userId and programId = :programId");
+        removeProgram.setParameter("userId", userId);
+        removeProgram.setParameter("programId", programId);
+        removeProgram.executeUpdate();
+        
+        //Remove the user program assocation
+        Query removeOrgHierarchy = sessionFactory.getCurrentSession().createQuery("delete from userProgramHierarchy where systemUserId = :userId and programId = :programId");
+        removeOrgHierarchy.setParameter("userId", userId);
+        removeOrgHierarchy.setParameter("programId", programId);
+        removeOrgHierarchy.executeUpdate();
+        
+    }
 }

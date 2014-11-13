@@ -7,6 +7,7 @@ package com.bowlink.rr.service.impl;
 
 import com.bowlink.rr.dao.orgHierarchyDAO;
 import com.bowlink.rr.model.programOrgHierarchy;
+import com.bowlink.rr.model.userProgramHierarchy;
 import com.bowlink.rr.service.orgHierarchyManager;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,5 +46,23 @@ public class orgHierarchyManagerImpl implements orgHierarchyManager {
     @Transactional
     public programOrgHierarchy getProgramOrgHierarchyBydspPos(Integer dspPos, Integer programId) throws Exception {
         return orgHierarchyDAO.getProgramOrgHierarchyBydspPos(dspPos, programId);
+    }
+    
+    @Override
+    @Transactional
+    public List getProgramOrgHierarchyItems(Integer programId, Integer level, Integer assocId) throws Exception {
+        return orgHierarchyDAO.getProgramOrgHierarchyItems(programId, level, assocId);
+    }
+    
+    @Override
+    @Transactional
+    public void saveUserProgramHierarchy(userProgramHierarchy hierarchy) throws Exception {
+         orgHierarchyDAO.saveUserProgramHierarchy(hierarchy);
+    }
+    
+    @Override
+    @Transactional
+    public  List<userProgramHierarchy> getUserProgramHierarchy(Integer programId, Integer userId) throws Exception {
+        return orgHierarchyDAO.getUserProgramHierarchy(programId, userId);
     }
 }

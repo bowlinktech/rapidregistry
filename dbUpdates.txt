@@ -1,0 +1,8 @@
+
+
+/** Chad 11-13-2014 @ 1:12 PM **/
+ALTER TABLE `rapidregistry`.`user_authorizedOrgHierarchy` 
+ADD COLUMN `programId` INT NOT NULL AFTER `systemUserId`;
+
+ALTER TABLE `rapidregistry`.`user_authorizedOrgHierarchy` 
+CHANGE COLUMN `id` `id` INT(11) NOT NULL AUTO_INCREMENT ;

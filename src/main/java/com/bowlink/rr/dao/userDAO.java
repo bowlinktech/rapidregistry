@@ -51,4 +51,6 @@ public interface userDAO {
     
     List<userPrograms> getUserPrograms(Integer userId) throws Exception;
     
+    void removeProgram(Integer userId, Integer programId) throws Exception;
+   
 }

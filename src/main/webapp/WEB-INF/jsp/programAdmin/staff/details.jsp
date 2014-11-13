@@ -17,6 +17,8 @@
                 <strong>Success!</strong> 
                 <c:choose>
                     <c:when test="${param.msg == 'moduleAdded'}">The module(s) have been saved to the selected program!</c:when>
+                    <c:when test="${param.msg == 'programAdded'}">The user has been successfully associated to the selected program!</c:when>
+                    <c:when test="${param.msg == 'programRemoved'}">The user has been successfully removed from the selected program!</c:when>
                 </c:choose>
             </div>
         </c:if>

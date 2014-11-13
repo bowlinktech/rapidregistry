@@ -128,10 +128,11 @@ public class programModules {
      */
     @SuppressWarnings("rawtypes")
     @RequestMapping(value = "/getProgramAvailableModules.do", method = RequestMethod.GET)
-    public @ResponseBody List getTableCols(@RequestParam(value = "programId", required = true) Integer programId) throws Exception {
+    public @ResponseBody List getModules(@RequestParam(value = "programId", required = true) Integer programId) throws Exception {
 
         List modules = modulemanager.getAvailableModules(programId);
         return modules;
     }
+    
     
 }

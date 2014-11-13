@@ -6,6 +6,7 @@
 package com.bowlink.rr.service;
 
 import com.bowlink.rr.model.User;
+import com.bowlink.rr.model.programAdmin;
 import com.bowlink.rr.model.userPrograms;
 import java.util.List;
 
@@ -47,5 +48,6 @@ public interface userManager {
     List<User> searchStaffMembers(Integer programId, String firstName, String lastName, Integer status, Integer typeId) throws Exception;
     
     List<userPrograms> getUserPrograms(Integer userId) throws Exception;
-
+    
+    void removeProgram(Integer userId, Integer programId) throws Exception;
 }

@@ -8,6 +8,7 @@ package com.bowlink.rr.service.impl;
 
 import com.bowlink.rr.dao.userDAO;
 import com.bowlink.rr.model.User;
+import com.bowlink.rr.model.programAdmin;
 import com.bowlink.rr.model.userPrograms;
 import com.bowlink.rr.service.userManager;
 import java.util.List;
@@ -122,6 +123,12 @@ public class userManagerImpl implements userManager {
     @Transactional
     public List<userPrograms> getUserPrograms(Integer userId) throws Exception {
         return userDAO.getUserPrograms(userId);
+    }
+    
+    @Override
+    @Transactional
+    public void removeProgram(Integer userId, Integer programId) throws Exception {
+        userDAO.removeProgram(userId, programId);
     }
 
 }
