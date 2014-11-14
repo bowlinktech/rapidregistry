@@ -85,7 +85,6 @@ require(['./main'], function() {
            }
         })
         
-        
         //Function to show modules and departments for the selected program 
         $(document).on('change', '.program', function() {
            var programId = $(this).val();
@@ -109,14 +108,13 @@ require(['./main'], function() {
                 data: {'programId':programId},
                 type: "GET",
                 success: function(data) {
-                    $('#orgHierarchyDiv').html(data);
+                    $('.orgHierarchyDiv').html(data);
                     populateHierarchy(programId, 1, 0, $(data).find(".hierarchyDropBox").first().attr('rel'));
-                    $('#orgHierarchyDiv').show();
+                    $('.orgHierarchyDiv').show();
                 }
             }); 
            
         });
-        
         
         //Modal to view associated program modules
         $(document).on('click', '.viewModules', function() {
@@ -179,11 +177,56 @@ require(['./main'], function() {
         //Function that will control the hierarchy drop boxes
         $(document).on('change', '.hierarchyDropBox', function(event) {
             
-            var boxId = $('#orgHierarchyDiv').find(".hierarchyDropBox").eq($(this).attr('rel3')).attr('rel');
+            var boxId = $('.orgHierarchyDiv').find(".hierarchyDropBox").eq($(this).attr('rel3')).attr('rel');
             var level = eval(($(this).attr('rel3')*1)+1);
             
             populateHierarchy($(this).attr('rel2'), level, $(this).val(), boxId);
         });
+        
+        //Function to submit the selected program to the user
+        $(document).on('click', '#submitDepartmentButton', function(event) {
+            
+            $('.hierarchyDropBox').each(function() {
+                $('#hierarchyValues').val($('#hierarchyValues').val() + "," + $(this).attr('rel') + "-" + $(this).val());
+            });
+            
+            var formData = $("#newProgramDepartmentForm").serialize();
+            
+            $.ajax({
+                url: 'saveProgramUserDepartment.do',
+                data: formData,
+                type: "POST",
+                async: false,
+                success: function(data) {
+                    var url = $(data).find('#encryptedURL').val();
+                    window.location.href = "details"+url+"&msg=departmentAdded";
+                }
+            });
+            
+            
+            event.preventDefault();
+            return false;
+
+        });
+        
+        //Function to remove the department association of a program and user
+        $(document).on('click', '.removeDepartment', function(event) {
+            var i = getUrlParameter('i');
+            var v = getUrlParameter('v');
+            
+            if(confirm("Are you sure you want to remove this department?")) {
+            
+                $.ajax({
+                    url: 'removeUserDepartment.do',
+                    data: {'idList': $(this).attr('rel')},
+                    type: "POST",
+                    success: function(data) {
+                       window.location.href = "details?i="+i+"&v="+v+"&msg=deparmentRemoved";
+                    }
+               }); 
+           }
+        });
+        
 
     });
 });
@@ -195,7 +238,7 @@ function showSelHierarchy(programId) {
         data: {'programId':programId},
         type: "GET",
         success: function(data) {
-            $('.otherorgHierarchyDiv').html(data);
+            $('.orgHierarchyDiv').html(data);
             populateHierarchy(programId, 1, 0, $(data).find(".hierarchyDropBox").first().attr('rel'));
         }
     }); 
@@ -211,6 +254,7 @@ function populateHierarchy(programId, level, assocId, boxId) {
         for (var i = 0; i < len; i++) {
             html += '<option value="' + data[i][0] + '">' + data[i][1] + '</option>';
         }
+        
         $('#hierarchy_'+boxId).html(html);
     });
            

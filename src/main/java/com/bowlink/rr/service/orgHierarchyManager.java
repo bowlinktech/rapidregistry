@@ -29,4 +29,6 @@ public interface orgHierarchyManager {
     
     List<userProgramHierarchy> getUserProgramHierarchy(Integer programId, Integer userId) throws Exception;
     
+    void removeUserProgramHierarchy(Integer Id) throws Exception;
+    
 }

@@ -65,4 +65,10 @@ public class orgHierarchyManagerImpl implements orgHierarchyManager {
     public  List<userProgramHierarchy> getUserProgramHierarchy(Integer programId, Integer userId) throws Exception {
         return orgHierarchyDAO.getUserProgramHierarchy(programId, userId);
     }
+    
+    @Override
+    @Transactional
+    public void removeUserProgramHierarchy(Integer Id) throws Exception {
+        orgHierarchyDAO.removeUserProgramHierarchy(Id);
+    }
 }

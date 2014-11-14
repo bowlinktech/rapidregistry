@@ -142,4 +142,19 @@ public class orgHierarchyDAOImpl implements orgHierarchyDAO {
         
         return query.list();
     }
+    
+    /**
+     * The 'removeUserProgramHierarchy' function will remove the selected hierarchy for the user and program.
+     * 
+     * @param Id
+     * @throws Exception 
+     */
+    @Override
+    public void removeUserProgramHierarchy(Integer Id) throws Exception {
+       
+        Query removeProgram = sessionFactory.getCurrentSession().createQuery("delete from userProgramHierarchy where id = :Id");
+        removeProgram.setParameter("Id", Id);
+        removeProgram.executeUpdate();
+        
+    }
 }
