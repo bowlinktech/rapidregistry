@@ -36,6 +36,11 @@ public class modules {
     @NoHtml
     @Column(name = "MODULENAME", nullable = false)
     private String moduleName;
+    
+    @NotEmpty
+    @NoHtml
+    @Column(name = "DISPLAYNAME", nullable = false)
+    private String displayName;
 
     public int getId() {
         return id;
@@ -59,6 +64,14 @@ public class modules {
 
     public void setUseModule(boolean useModule) {
         this.useModule = useModule;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
     
 }
