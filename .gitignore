@@ -2,3 +2,6 @@ context.xml
 /bin
 /target/
 .DS_Store
+.classpath
+.project
+.settings/org.eclipse.wst.common.component
