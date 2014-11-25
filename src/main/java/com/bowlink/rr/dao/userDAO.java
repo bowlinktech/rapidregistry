@@ -8,7 +8,9 @@ package com.bowlink.rr.dao;
 
 import com.bowlink.rr.model.User;
 import com.bowlink.rr.model.userPrograms;
+
 import java.util.List;
+
 import org.springframework.stereotype.Repository;
 
 /**
@@ -52,5 +54,6 @@ public interface userDAO {
     List<userPrograms> getUserPrograms(Integer userId) throws Exception;
     
     void removeProgram(Integer userId, Integer programId) throws Exception;
-   
+    
+    List<String> getUserRoles (User user) throws Exception;
 }

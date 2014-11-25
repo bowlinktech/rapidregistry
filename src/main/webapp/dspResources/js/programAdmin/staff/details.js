@@ -14,14 +14,17 @@ require(['./main'], function() {
 
         $('#saveDetails').click(function(event) {
             $('#action').val('save');
-
-            $("#staffdetails").submit();
+            if (checkForm()) {
+            	$("#staffdetails").submit();
+            }    
         });
 
         $('#saveCloseDetails').click(function(event) {
             $('#action').val('close');
-
-            $("#staffdetails").submit();
+            /** need to validate drop down & password lengths **/
+            if (checkForm()) {
+            	$("#staffdetails").submit();
+            }
         });
         
         //Function to open the new program association modal
@@ -288,4 +291,46 @@ function getUrlParameter(sParam)
             return sParameterName[1];
         }
     }
+}   
+
+
+function checkForm()
+{
+	
+	 $('div.form-group').removeClass("has-error");
+     $('span.control-label').removeClass("has-error");
+     $('span.control-label').html("");
+     
+    
+	//Make sure the staff type is selected
+    if($('#typeId').val() == 0) {
+        $('#typeIdDiv').addClass('has-error');
+        $('#typeIdMsg').addClass('has-error');
+        $('#typeIdMsg').html('The staff type must be selected');
+        return false;
+    } 
+    var newPassword = $('#password').val();
+    var confirmPassword = $('#confirmPassword').val();
+    
+    if (newPassword.trim().length > 0 || confirmPassword.trim().length > 0) {
+        if(newPassword.length < 5) {
+            $('#passwordDiv').addClass("has-error");
+            $('#passwordMsg').addClass("has-error");
+            $('#passwordMsg').html('The new password must be between 5 and 15 characters.');
+            return false;
+        }
+        if(confirmPassword.length < 5) {
+            $('#confirmPasswordDiv').addClass("has-error");
+            $('#confirmPasswordMsg').addClass("has-error");
+            $('#confirmPasswordMsg').html('The confirm password must be between 5 and 15 characters.');
+            return false;
+        } 
+        if(newPassword != confirmPassword) {
+            $('#confirmPasswordDiv').addClass("has-error");
+            $('#confirmPasswordMsg').addClass("has-error");
+            $('#confirmPasswordMsg').html('The confirm password must be equal to the new password.');
+            return false;
+        } 
+    } 
+    return true;
 }   

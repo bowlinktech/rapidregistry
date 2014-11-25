@@ -28,14 +28,37 @@ require(['./main'], function () {
         //Function to submit the changes to an existing administrator or 
         //submit the new user fields from the modal window.
         $(document).on('click', '#submitButton', function(event) {
+        	
+        	$('div.form-group').removeClass("has-error");
+            $('span.control-label').removeClass("has-error");
+            $('span.control-label').html("");
             
             //Make sure the staff type is selected
             if($('#typeId').val() == 0) {
                 $('#typeIdDiv').addClass('has-error');
                 $('#typeIdMsg').addClass('has-error');
                 $('#typeIdMsg').html('The staff type must be selected');
+                return false;
+            } 
+            
+            var newPassword = $('#password').val();
+            var confirmPassword = $('#confirmPassword').val();
+            
+            if(newPassword.length < 5) {
+                $('#passwordDiv').addClass("has-error");
+                $('#passwordMsg').addClass("has-error");
+                $('#passwordMsg').html('The new password must be between 5 and 15 characters.');
             }
-            else {
+            else if(confirmPassword.length < 5) {
+                $('#confirmPasswordDiv').addClass("has-error");
+                $('#confirmPasswordMsg').addClass("has-error");
+                $('#confirmPasswordMsg').html('The confirm password must be between 5 and 15 characters.');
+            }
+            else if(newPassword != confirmPassword) {
+                $('#confirmPasswordDiv').addClass("has-error");
+                $('#confirmPasswordMsg').addClass("has-error");
+                $('#confirmPasswordMsg').html('The confirm password must be equal to the new password.');
+            } else {
            
                 var formData = $("#staffmemberdetailsform").serialize();
 

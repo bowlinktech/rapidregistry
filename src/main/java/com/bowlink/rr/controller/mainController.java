@@ -4,10 +4,14 @@ import com.bowlink.rr.model.User;
 import com.bowlink.rr.model.mailMessage;
 import com.bowlink.rr.service.emailMessageManager;
 import com.bowlink.rr.service.userManager;
+
+import java.math.BigInteger;
 import java.util.Random;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -170,7 +174,7 @@ public class mainController {
         sb.append("<a href='" + resetURL + randomCode + "'>Click here to reset your password.</a>");
 
         messageDetails.setmessageBody(sb.toString());
-        //messageDetails.setfromEmailAddress("dphuniversaltranslator@gmail.com");
+        messageDetails.setfromEmailAddress("information@health-e-link.com");
 
         emailMessageManager.sendEmail(messageDetails);
 
@@ -214,7 +218,8 @@ public class mainController {
         } else {
             userDetails.setresetCode(null);
             userDetails.setPassword(newPassword);
-
+            userDetails = usermanager.encryptPW(userDetails);
+            
             usermanager.updateUser(userDetails);
 
             redirectAttr.addFlashAttribute("msg", "updated");
@@ -232,20 +237,14 @@ public class mainController {
      */
     public String generateRandomCode() {
 
-        StringBuilder code = new StringBuilder();
-
-        /* Generate a random 6 digit number for a confirmation code */
-        for (int i = 1; i <= 7; i++) {
-            Random rand = new Random();
-            int r = rand.nextInt(8) + 1;
-            code.append(r);
-        }
-
+    	Random random = new Random();
+        String randomCode = new BigInteger(130, random).toString(32);
+       
         /* Check to make sure there is not reset code already generated */
-        User usedCode = usermanager.getUserByResetCode(code.toString());
+        User usedCode = usermanager.getUserByResetCode(randomCode);
 
         if (usedCode == null) {
-            return code.toString();
+            return randomCode;
         } else {
 
             return generateRandomCode();

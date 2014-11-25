@@ -1,0 +1,14 @@
+/** grace 11212014 01:02PM **/
+ALTER TABLE `rapidregistry`.`users` 
+ADD COLUMN `randomSalt` blob NULL AFTER `resetCode`,
+ADD COLUMN `encryptedPw` blob NULL AFTER `randomSalt`;
+
+ALTER TABLE `rapidregistry`.`users` 
+CHANGE COLUMN `resetCode` `resetCode` VARCHAR(50) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL DEFAULT NULL ;
+
+
+RUN JOB TO CHANGE PASSWORD
+
+/** 11.25.2015 12:18AM **/
+ALTER TABLE `rapidregistry`.`users` 
+DROP COLUMN `password`;

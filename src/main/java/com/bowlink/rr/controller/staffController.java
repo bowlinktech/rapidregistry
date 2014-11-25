@@ -202,6 +202,7 @@ public class staffController {
             return mav;
         }
         
+        staffdetails = usermanager.encryptPW(staffdetails);
         Integer adminId = usermanager.createUser(staffdetails);
         
         /* associate user to program */
@@ -314,6 +315,13 @@ public class staffController {
             return mav;
         }
         
+        if (!staffdetails.getPassword().equalsIgnoreCase("")) {
+        	staffdetails = usermanager.encryptPW(staffdetails);
+        } else {
+        	User currentUser = usermanager.getUserById(staffdetails.getId());
+        	staffdetails.setEncryptedPw(currentUser.getEncryptedPw());
+        	staffdetails.setRandomSalt(currentUser.getRandomSalt());
+        }
         usermanager.updateUser(staffdetails);
         
         if (action.equals("save")) {

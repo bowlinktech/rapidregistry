@@ -41,8 +41,8 @@ public class ExceptionControllerAdvice {
         try {
         mailMessage messageDetails = new mailMessage();
         
-        messageDetails.settoEmailAddress("chadmccue05@gmail.com");
-        messageDetails.setfromEmailAddress("chadmccue05@gmail.com");
+        messageDetails.settoEmailAddress("gchan123@yahoo.com");
+        messageDetails.setfromEmailAddress("gchan123@yahoo.com");
         messageDetails.setmessageSubject("Exception Error " + InetAddress.getLocalHost().getHostAddress());
         
         StringBuilder sb = new StringBuilder();

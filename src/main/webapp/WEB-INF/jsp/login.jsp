@@ -40,7 +40,7 @@
             <fieldset name="login-fields" form="form-admin-login" class="basic-clearfix">
                 <div class="form-group ${not empty error ? 'has-error' : '' }">
                     <label class="control-label" for="username">Email Address</label>
-                    <input id="username" name='j_username' class="form-control" type="text" value="genericadmin@rapidregistry.com" autofocus="true" autocomplete="off" />
+                    <input id="username" name='j_username' class="form-control" type="text" value="gchan123@yahoo.com" autofocus="true" autocomplete="off" />
                 </div>
                 <div class="form-group ${not empty error ? 'has-error' : '' }">
                     <label class="control-label" for="password">Password</label>

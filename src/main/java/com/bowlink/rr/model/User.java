@@ -34,6 +34,9 @@ public class User {
     
     @Transient
     private String encryptedSecret = null;
+    
+    @Transient
+    private String password;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -53,10 +56,12 @@ public class User {
     @Column(name = "LASTNAME", nullable = true)
     private String lastName;
 
+    /**
     @NotEmpty
     @NoHtml
     @Column(name = "PASSWORD", nullable = false)
     private String password;
+    **/
     
     @NotEmpty
     @Email
@@ -84,7 +89,29 @@ public class User {
     @Column(name = "LASTLOGGEDIN", nullable = true)
     private Date lastloggedIn = null;
     
-    public int getId() {
+    @Column(name = "randomSalt", nullable = true)
+    private byte [] randomSalt;
+
+    @Column(name = "encryptedPw", nullable = true)
+    private byte [] encryptedPw;
+    
+    public byte[] getRandomSalt() {
+		return randomSalt;
+	}
+
+	public void setRandomSalt(byte[] randomSalt) {
+		this.randomSalt = randomSalt;
+	}
+
+	public byte[] getEncryptedPw() {
+		return encryptedPw;
+	}
+
+	public void setEncryptedPw(byte[] encryptedPw) {
+		this.encryptedPw = encryptedPw;
+	}
+
+	public int getId() {
         return id;
     }
 
