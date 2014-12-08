@@ -74,6 +74,9 @@ public class programEngagementFields {
     
     @Column(name = "SUMMARYFIELD", nullable = false)
     private boolean summaryField = false;
+    
+    @Column(name = "SEARCHDSPPOS", nullable = true)
+    private int searchDspPos = 1;
 
     public int getId() {
         return id;
@@ -203,4 +206,11 @@ public class programEngagementFields {
         this.summaryField = summaryField;
     }
     
+    public int getSearchDspPos() {
+        return searchDspPos;
+    }
+
+    public void setSearchDspPos(int searchDspPos) {
+        this.searchDspPos = searchDspPos;
+    }
 }

@@ -22,3 +22,10 @@ ADD COLUMN `newFieldValue` VARCHAR(255) NULL AFTER `oldFieldValue`;
 /** Chad 12/8/2014 @ 8:28 AM **/
 ALTER TABLE `rapidregistry`.`dataElements` 
 ADD COLUMN `answerType` INT NOT NULL DEFAULT 3 AFTER `status`;
+
+/** Chad 12/8/2014 @ 11:34 AM **/
+ALTER TABLE `rapidregistry`.`program_patientFields` 
+ADD COLUMN `searchDspPos` INT(11) NOT NULL DEFAULT '1' AFTER `summaryField`;
+
+ALTER TABLE `rapidregistry`.`program_engagementFields` 
+ADD COLUMN `searchDspPos` INT(11) NOT NULL DEFAULT '1' AFTER `summaryField`;

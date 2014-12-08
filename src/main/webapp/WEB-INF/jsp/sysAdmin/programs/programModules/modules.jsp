@@ -52,7 +52,7 @@
                                                 <input type="checkbox" name="moduleId" value="${module.id}" ${module.useModule == true ? 'checked="true"' : ''} />
                                             </td>
                                             <td>
-                                                ${module.moduleName}
+                                                ${module.displayName}
                                             </td>
                                         </tr>
                                     </c:forEach>
