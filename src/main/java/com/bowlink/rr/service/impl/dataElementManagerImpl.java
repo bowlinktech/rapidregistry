@@ -278,4 +278,10 @@ public class dataElementManagerImpl implements dataElementManager {
         return dataElementDAO.getFieldDetails(fieldId);
     }
     
+    @SuppressWarnings("rawtypes")
+    @Override
+    @Transactional
+    public List getAnswerTypes() {
+        return dataElementDAO.getAnswerTypes();
+    }
  }

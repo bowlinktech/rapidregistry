@@ -10,7 +10,7 @@
             <th scope="col">Crosswalk</th>
             <th scope="col">Field Validation</th>
             <th scope="col" class="center-text">Required</th>
-            <th scope="col" class="center-text">Show in Data Grid</th>
+            <th scope="col">Show Field In</th>
             <th scope="col" class="center-text"></th>
         </tr>
     </thead>
@@ -34,8 +34,10 @@
                         <td class="center-text">
                             ${existingFields[fStatus.index].requiredField} 
                         </td>
-                        <td class="center-text">
-                            ${existingFields[fStatus.index].dataGridColumn} 
+                        <td>
+                            <c:if test="${existingFields[fStatus.index].dataGridColumn == true}">Data Grid<br /></c:if>
+                            <c:if test="${existingFields[fStatus.index].searchField == true}">Client Search<br /></c:if>
+                            <c:if test="${existingFields[fStatus.index].summaryField == true}">Client Summary</c:if>
                         </td>
                         <td>
                             <select rel="${existingFields[fStatus.index].dspPos}" name="displayOrder" class="displayOrder">

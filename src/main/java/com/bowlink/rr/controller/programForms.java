@@ -459,6 +459,8 @@ public class programForms {
             @RequestParam(value = "requiredField", required = true) boolean requiredField, 
             @RequestParam(value = "dataGridColumn", required = true) boolean dataGridColumn,
             @RequestParam(value = "section", required = true) String section,
+            @RequestParam(value = "searchColumn", required = true) boolean searchColumn,
+            @RequestParam(value = "summaryColumn", required = true) boolean summaryColumn,
             HttpSession session
     ) throws Exception {
 
@@ -489,6 +491,8 @@ public class programForms {
             field.setRequiredField(requiredField);
             field.setDspPos(dspPos);
             field.setDataGridColumn(dataGridColumn);
+            field.setSummaryField(summaryColumn);
+            field.setSearchField(searchColumn);
 
             patientFields.add(field);
             mav.addObject("existingFields", patientFields);
@@ -511,6 +515,8 @@ public class programForms {
             field.setRequiredField(requiredField);
             field.setDspPos(dspPos);
             field.setDataGridColumn(dataGridColumn);
+            field.setSummaryField(summaryColumn);
+            field.setSearchField(searchColumn);
             
             engagementFields.add(field);
             mav.addObject("existingFields", engagementFields);

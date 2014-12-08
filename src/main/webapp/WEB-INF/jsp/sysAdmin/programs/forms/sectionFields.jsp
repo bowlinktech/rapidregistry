@@ -81,12 +81,23 @@
                             </select>
                         </div> 
                         <div class="form-group">
-                            <label class="control-label" for=dataGridColumn">Show field in data grid *</label>
-                            <select id="dataGridColumn" class="form-control half">
-                                <option value="false">False</option>
-                                <option value="true">True</option>
-                            </select>
-                        </div>     
+                            <label class="control-label" for=dataGridColumn">Show field in: *</label>
+                            <%--<div class="checkbox">
+                                <label>
+                                  <input type="checkbox" id="dataGridColumn" name="search" value="true" />  Data Grid
+                                </label>
+                            </div>--%>
+                            <div class="checkbox">
+                                <label>
+                                  <input type="checkbox" id="searchColumn" name="search" value="true" />  Client Search
+                                </label>
+                            </div>
+                            <div class="checkbox">
+                                <label>
+                                  <input type="checkbox" id="summaryColumn" name="summary" value="true" />  Client Summary
+                                </label>
+                            </div>  
+                        </div>  
                         <div class="form-group">
                             <input type="button" id="submitFieldButton"  class="btn btn-primary" value="Add Field"/>
                         </div>

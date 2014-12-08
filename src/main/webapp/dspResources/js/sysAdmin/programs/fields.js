@@ -133,8 +133,10 @@ require(['./main'], function () {
             var selectedValidationText = $('#fieldValidation').find(":selected").text();
             var required = $('#requiredField').val();
             var fieldDisplayName = $('#fieldDisplayName').val();
-            var dataGridColumn = $('#dataGridColumn').val();
-
+            var dataGridColumn = $('#dataGridColumn').is(':checked');
+            var searchColumn = $('#searchColumn').is(':checked');
+            var summaryColumn = $('#summaryColumn').is(':checked');
+            
             //Remove all error classes and error messages
             $('div').removeClass("has-error");
             $('span').html("");
@@ -158,6 +160,7 @@ require(['./main'], function () {
                     type: "POST",
                     data: {'fieldId': selectedField, 'sectionId': sectionId, 'fieldText': selectedFieldText, 'fieldDisplayName': fieldDisplayName, 'cw': selectedCW, 'CWText': selectedCWText, 'validationId': selectedValidation
                         , 'validationName': selectedValidationText, 'requiredField': required, 'dataGridColumn' : dataGridColumn, 'section' : section
+                        , 'searchColumn': searchColumn, 'summaryColumn': summaryColumn
                     },
                     success: function(data) {
                         $('#fieldMsgDiv').show();
@@ -168,9 +171,13 @@ require(['./main'], function () {
                         $('#fieldValidation option:eq("0")').prop('selected', true);
                         $('#requiredField option:eq("0")').prop('selected', true);
                         $('#fieldDisplayName').val("");
+                        $('#dataGridColumn').attr('checked', false); 
+                        $('#searchColumn').attr('checked', false); 
+                        $('#summaryColumn').attr('checked', false); 
                     }
                 });
             }
+
 
         });
 

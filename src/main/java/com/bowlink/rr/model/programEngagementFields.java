@@ -68,6 +68,12 @@ public class programEngagementFields {
     
     @Column(name = "DATAGRIDCOLUMN", nullable = false)
     private boolean dataGridColumn = false;
+    
+    @Column(name = "SEARCHFIELD", nullable = false)
+    private boolean searchField = false;
+    
+    @Column(name = "SUMMARYFIELD", nullable = false)
+    private boolean summaryField = false;
 
     public int getId() {
         return id;
@@ -179,6 +185,22 @@ public class programEngagementFields {
 
     public void setDataGridColumn(boolean dataGridColumn) {
         this.dataGridColumn = dataGridColumn;
+    }
+    
+    public boolean isSearchField() {
+        return searchField;
+    }
+
+    public void setSearchField(boolean searchField) {
+        this.searchField = searchField;
+    }
+
+    public boolean isSummaryField() {
+        return summaryField;
+    }
+
+    public void setSummaryField(boolean summaryField) {
+        this.summaryField = summaryField;
     }
     
 }

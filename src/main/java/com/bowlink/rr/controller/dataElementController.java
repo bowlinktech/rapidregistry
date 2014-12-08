@@ -263,6 +263,11 @@ public class dataElementController {
         @SuppressWarnings("rawtypes")
         List infoTables = dataelementmanager.getInformationTables();
         mav.addObject("infoTables", infoTables);
+        
+        //Get the list of available file answer types
+        @SuppressWarnings("rawtypes")
+        List answerTypes = dataelementmanager.getAnswerTypes();
+        mav.addObject("answerTypes", answerTypes);
 
         return mav;
     }
@@ -292,6 +297,11 @@ public class dataElementController {
             @SuppressWarnings("rawtypes")
             List infoTables = dataelementmanager.getInformationTables();
             mav.addObject("infoTables", infoTables);
+            
+            //Get the list of available file answer types
+            @SuppressWarnings("rawtypes")
+            List answerTypes = dataelementmanager.getAnswerTypes();
+            mav.addObject("answerTypes", answerTypes);
             
             return mav;
         }
