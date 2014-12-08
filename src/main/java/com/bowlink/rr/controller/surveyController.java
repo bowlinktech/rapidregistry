@@ -16,6 +16,8 @@ import com.bowlink.rr.service.surveyManager;
 import com.bowlink.rr.service.userManager;
 
 import java.net.URLEncoder;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -246,10 +248,11 @@ public class surveyController {
         
         Integer programId = (Integer) session.getAttribute("selprogramId");
         survey.setProgramId(programId);
-        
-        
         //update survey in db
         if(survey.getProgramId() == (Integer) session.getAttribute("selprogramId")) {
+        	Date date = new Date();
+        	Timestamp timestamp = new Timestamp(date.getTime());
+        	survey.setDateModified(timestamp);
         	surveymanager.updateSurvey(survey);
         } else {
         	 mav = new ModelAndView(new RedirectView("/programAdmin/details"));
@@ -323,16 +326,61 @@ public class surveyController {
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = "/viewChangeLog", method = RequestMethod.GET)
+    @RequestMapping(value = "/changeLog", method = RequestMethod.GET)
     @ResponseBody public ModelAndView viewChangeLog(HttpSession session, @RequestParam String i) throws Exception {
         ModelAndView mav = new ModelAndView();
         
+        int surveyId = 0;
+        
         /** we check to make sure i is a number **/
+        try {
+        	surveyId = Integer.parseInt(i);
+        } catch (Exception ex) {
+        	//log here
+        	try {
+	        	userActivityLog ua = new userActivityLog();
+	        	ua.setActivityDesc("accessed denied - survey is not numeric");
+	        	ua.setController(controllerName);
+	        	ua.setPageAccessed("/viewChangeLog");
+	        	User userDetails = (User)session.getAttribute("userDetails");
+	        	ua.setSystemUserId(userDetails.getId());
+	            usermanager.insertUserLog (ua);
+        	} catch (Exception ex1) {
+        		ex1.printStackTrace();
+        	}
+        	mav.addObject("notValid", "Survey Id is not valid or you do not have permission.");
+        	return mav;
+        }
         
         
         /** we get the i info and make sure it matches the program id of the survey **/
+        surveys survey = surveymanager.getSurveysById(surveyId);
         
-        mav.setViewName("/programAdmin/surveys/changeLog");
+        
+        Integer programId = (Integer) session.getAttribute("selprogramId");
+        /** make sure session program id matches the survey's programId **/
+        if (survey.getProgramId() != programId) {
+        	try {
+	        	userActivityLog ua = new userActivityLog();
+	        	ua.setActivityDesc("accessed denied");
+	        	ua.setController(controllerName);
+	        	ua.setPageAccessed("/viewChangeLog");
+	        	ua.setSurveyId(surveyId);
+	        	User userDetails = (User)session.getAttribute("userDetails");
+	        	ua.setSystemUserId(userDetails.getId());
+	            usermanager.insertUserLog (ua);
+        	} catch (Exception ex1) {
+        		ex1.printStackTrace();
+        	}
+        	mav.addObject("notValid", "Survey Id is not valid or you do not have permission to view this survey.");
+        	return mav;
+        }
+        
+        /** now we get change logs **/
+        List <SurveyChangeLogs> getSurveyChangeLogs = surveymanager.getSurveyChangeLogs(surveyId);
+        mav.addObject("changeLogs", getSurveyChangeLogs);
+        
+        mav.setViewName("/programAdmin/surveys/changeLogs");
         return mav;
     }
     

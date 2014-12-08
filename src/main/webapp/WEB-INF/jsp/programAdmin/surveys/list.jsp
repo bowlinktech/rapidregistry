@@ -51,7 +51,7 @@
                                             <td class="center-text"><fmt:formatDate value="${survey.dateCreated}" type="Both" pattern="M/dd/yyyy h:mm a" /></td>
                                             <td class="center-text"><fmt:formatDate value="${survey.dateModified}" type="Both" pattern="M/dd/yyyy h:mm a" /></td>
                                             <td class="actions-col">
-                                                <a href="survey/changeLog?i=" class="btn btn-link editSysAdmin" title="View Change Log" role="button">                                                    
+                                                <a href="#changeLogModal" data-toggle="modal" id="viewChangeLogs" title="View" role="button" class="btn-link viewModules" rel="${survey.id}">
                                                     View Change Log
                                                 </a>
                                             </td>
@@ -76,5 +76,5 @@
     </div>
 </div>
 
-<!-- Activity Code Details modal -->
-<div class="modal fade" id="staffMemberModal" role="dialog" tabindex="-1" aria-labeledby="Add Staff Member" aria-hidden="true" aria-describedby="Add Staff Member"></div>
+<!-- Change Log modal -->
+<div class="modal fade" id="changeLogModal" role="dialog" tabindex="-1" aria-labeledby="View Change Log" aria-hidden="true" aria-describedby="View Change Log"></div>

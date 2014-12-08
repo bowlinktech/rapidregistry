@@ -14,8 +14,11 @@ import com.bowlink.rr.model.userProgramModules;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.transform.Transformers;
+import org.hibernate.type.StandardBasicTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -108,6 +111,22 @@ public class surveyDAOImpl implements surveyDAO {
     @Override
     public void saveChangeLogs(SurveyChangeLogs scl) throws Exception {
          sessionFactory.getCurrentSession().save(scl);
+    }
+    
+    
+    @Override
+    @SuppressWarnings("unchecked")
+    public List <SurveyChangeLogs> getSurveyChangeLogs (Integer surveyId) throws Exception {
+    	String sql ="select surveyId, systemUserId, notes, scl.dateCreated, firstName as userFirstName, lastName as userLastName from "
+    			+ " survey_changeLogs scl, users where users.id = scl.systemUserId and surveyId = :surveyId "
+    			+ " order by scl.datecreated desc;";
+    	 Query query = sessionFactory.getCurrentSession().createSQLQuery(sql)
+                .setResultTransformer(Transformers.aliasToBean(SurveyChangeLogs.class)).setParameter("surveyId", surveyId);
+
+		List <SurveyChangeLogs> surveyChangeLogsList = query.list();
+    	
+  
+    	return surveyChangeLogsList;
     }
 	
 }

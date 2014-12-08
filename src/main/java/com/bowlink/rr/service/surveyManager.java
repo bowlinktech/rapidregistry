@@ -32,4 +32,6 @@ public interface surveyManager {
     
     void saveChangeLogs(SurveyChangeLogs scl) throws Exception;
     
+    List <SurveyChangeLogs> getSurveyChangeLogs (Integer surveyId) throws Exception;
+    
 }

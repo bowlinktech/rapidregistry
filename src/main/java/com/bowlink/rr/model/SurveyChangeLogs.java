@@ -44,7 +44,11 @@ public class SurveyChangeLogs {
     private Date dateCreated = new Date();
     
     @Transient
-    private String userName;
+    private String userFirstName;
+    
+    @Transient
+    private String userLastName;
+    
 
 
 	public int getId() {
@@ -87,12 +91,20 @@ public class SurveyChangeLogs {
 		this.dateCreated = dateCreated;
 	}
 
-	public String getUserName() {
-		return userName;
+	public String getUserFirstName() {
+		return userFirstName;
 	}
 
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setUserFirstName(String userFirstName) {
+		this.userFirstName = userFirstName;
+	}
+
+	public String getUserLastName() {
+		return userLastName;
+	}
+
+	public void setUserLastName(String userLastName) {
+		this.userLastName = userLastName;
 	}
     
 }

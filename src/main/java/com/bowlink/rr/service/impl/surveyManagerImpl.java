@@ -74,4 +74,11 @@ public class surveyManagerImpl implements surveyManager {
 		surveyDAO.saveChangeLogs(scl);
 	}
 	
+	@Override
+	@Transactional
+	public List <SurveyChangeLogs> getSurveyChangeLogs (Integer surveyId)  throws Exception {
+		return surveyDAO.getSurveyChangeLogs(surveyId);
+	}
+	
+	
 }
