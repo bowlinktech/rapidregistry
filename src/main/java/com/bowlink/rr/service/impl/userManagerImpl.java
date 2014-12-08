@@ -9,6 +9,7 @@ package com.bowlink.rr.service.impl;
 import com.bowlink.rr.dao.userDAO;
 import com.bowlink.rr.model.User;
 import com.bowlink.rr.model.programAdmin;
+import com.bowlink.rr.model.userActivityLog;
 import com.bowlink.rr.model.userPrograms;
 import com.bowlink.rr.service.userManager;
 
@@ -207,5 +208,11 @@ public class userManagerImpl implements userManager {
     @Override
     public List<String> getUserRoles(User user) throws Exception {
         return userDAO.getUserRoles(user);
+    }
+    
+    @Override
+    @Transactional
+    public void insertUserLog (userActivityLog ual) {
+        userDAO.insertUserLog (ual);
     }
 }

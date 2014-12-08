@@ -10,6 +10,7 @@ import com.bowlink.rr.dao.userDAO;
 import com.bowlink.rr.model.User;
 import com.bowlink.rr.model.program;
 import com.bowlink.rr.model.programAdmin;
+import com.bowlink.rr.model.userActivityLog;
 import com.bowlink.rr.model.userLogin;
 import com.bowlink.rr.model.userPrograms;
 
@@ -429,6 +430,11 @@ public class userDAOImpl implements userDAO {
             ex.printStackTrace();
             return null;
         }
+    }
+    
+    @Override
+    public void insertUserLog (userActivityLog ual) {
+    	sessionFactory.getCurrentSession().save(ual);
     }
 
 }

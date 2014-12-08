@@ -12,7 +12,7 @@ require(['./main'], function () {
             $('.alert').delay(2000).fadeOut(1000);
         }
 
-        $("input:text,form").attr("autocomplete", "off");
+
 
     });
 });

@@ -12,3 +12,34 @@ RUN JOB TO CHANGE PASSWORD
 /** 11.25.2015 12:18AM **/
 ALTER TABLE `rapidregistry`.`users` 
 DROP COLUMN `password`;
+
+
+/** 12/5/2014 2:43AM **/
+ALTER TABLE `rapidregistry`.`surveys` 
+CHANGE COLUMN `allowEngagement` `allowEngagement` BIT(1) NULL DEFAULT 1 ,
+CHANGE COLUMN `duplicatesAllowed` `duplicatesAllowed` BIT(1) NULL DEFAULT 1 ;
+
+/** 12/5/2014 10:17PM **/
+ALTER TABLE `rapidregistry`.`engagementSurveys` 
+CHANGE COLUMN `dateComplated` `dateCompleted` DATETIME NOT NULL ;
+
+ALTER TABLE `rapidregistry`.`engagementSurveys` 
+CHANGE COLUMN `completed` `completed` BIT(1) NOT NULL DEFAULT 0 ;
+
+ALTER TABLE `rapidregistry`.`engagementSurveys` 
+CHANGE COLUMN `id` `id` INT(11) NOT NULL AUTO_INCREMENT ;
+
+ALTER TABLE `rapidregistry`.`engagementSurveys` 
+CHANGE COLUMN `dateCompleted` `dateCompleted` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ;
+
+/** 12/8/2014 1:04AM **/
+CREATE TABLE `rapidregistry`.`user_activityLog` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `systemUserId` INT NOT NULL,
+  `surveyId` INT NULL,
+  `activityDesc` VARCHAR(255) NULL,
+  `pageAccessed` VARCHAR(45) NULL,
+  `controller` VARCHAR(45) NULL,
+  `dateCreated` DATETIME NULL DEFAULT current_timestamp,
+  PRIMARY KEY (`id`));
+

@@ -71,7 +71,8 @@ public class ExceptionControllerAdvice {
         sb.append("Stack Trace: " + Arrays.toString(e.getStackTrace()));
         
         messageDetails.setmessageBody(sb.toString());
-        emailMessageManager.sendEmail(messageDetails); 
+        System.out.println(sb.toString());
+        //emailMessageManager.sendEmail(messageDetails); 
         /*mav.addObject("messageBody",sb.toString());*/
         } catch (Exception ex) {
         	ex.printStackTrace();

@@ -6,6 +6,7 @@
 package com.bowlink.rr.service;
 
 import com.bowlink.rr.model.User;
+import com.bowlink.rr.model.userActivityLog;
 import com.bowlink.rr.model.userPrograms;
 
 import java.security.NoSuchAlgorithmException;
@@ -71,4 +72,6 @@ public interface userManager {
  		   throws NoSuchAlgorithmException, InvalidKeySpecException;
 
     List<String> getUserRoles (User user) throws Exception;
+    
+    void insertUserLog (userActivityLog ual);
 }
