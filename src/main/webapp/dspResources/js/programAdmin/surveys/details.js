@@ -22,7 +22,7 @@ require(['./main'], function () {
         });
         
         /** save and close new survey**/
-        $('#saveCloseNewSurvey').click(function(event) {
+        $('#saveNextNewSurvey').click(function(event) {
             $('#action').val('saveAndClose');
            removeErrorClasses ();
            $('#surveyForm').submit();
@@ -50,7 +50,7 @@ require(['./main'], function () {
         // end of save survey only
         
         
-        $(document).on('click', '#saveCloseSurveyDetails', function() {
+        $(document).on('click', '#saveNextSurveyDetails', function() {
         	$('#action').val('saveAndClose');
             removeErrorClasses ();
             //we makes sure there is a note saved

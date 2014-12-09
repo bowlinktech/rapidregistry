@@ -6,7 +6,9 @@
 package com.bowlink.rr.controller;
 
 
+import com.bowlink.rr.model.AnswerTypes;
 import com.bowlink.rr.model.SurveyChangeLogs;
+import com.bowlink.rr.model.SurveyPages;
 import com.bowlink.rr.model.User;
 import com.bowlink.rr.model.activityCodes;
 import com.bowlink.rr.model.surveys;
@@ -150,11 +152,11 @@ public class surveyController {
         
         if (action.equals("save")) {
             redirectAttr.addFlashAttribute("savedStatus", "updated");
-            mav = new ModelAndView(new RedirectView("/programAdmin/surveys/page"));
+            mav = new ModelAndView(new RedirectView("/programAdmin/surveys/details?i=" + surveyId));
             session.setAttribute("surveyId", surveyId);
             return mav;
         } else {
-            mav = new ModelAndView(new RedirectView("/programAdmin/surveys"));
+            mav = new ModelAndView(new RedirectView("/programAdmin/surveys/page"));
             return mav;
         }
 
@@ -208,7 +210,9 @@ public class surveyController {
 	            mav.addObject("activityCodes", activityCodes);        
 	            mav.addObject("survey", survey);
 	            mav.addObject("surveyTitle", survey.getTitle());
-	            
+	            /** add of pages drop down box **/
+	            List<SurveyPages> surveyPages =  surveymanager.getSurveyPages(survey.getId(), false);
+	            mav.addObject("surveyPages", surveyPages);	            
         	} else {
         		//log here
             	try {
@@ -225,7 +229,7 @@ public class surveyController {
             	}
         	}
         }
-        
+       
         return mav;
     }
     
@@ -258,30 +262,17 @@ public class surveyController {
         	 mav = new ModelAndView(new RedirectView("/programAdmin/details"));
              return mav;
         }
+        
+        
         if (action.equals("save")) {
             redirectAttr.addFlashAttribute("savedStatus", "updated");
-            mav = new ModelAndView(new RedirectView("/programAdmin/surveys/page"));
-            session.setAttribute("surveyId", survey.getId());
+            mav = new ModelAndView(new RedirectView("/programAdmin/surveys/details?i=" + survey.getId()));
+            session.setAttribute("surveyId",survey.getId());
             return mav;
         } else {
-            mav = new ModelAndView(new RedirectView("/programAdmin/surveys"));
+            mav = new ModelAndView(new RedirectView("/programAdmin/surveys/page"));
             return mav;
         }
-
-    }
-    
-    
-    @RequestMapping(value = "/page", method = RequestMethod.GET)
-    public ModelAndView newSurveyPage(HttpServletRequest request, 
-    		HttpServletResponse response, HttpSession session, RedirectAttributes redirectAttr) throws Exception {
-        ModelAndView mav = new ModelAndView();
-        mav.addObject("survey", new surveys ());
-        /* Get the list of programs in the system */
-        List<activityCodes> activityCodes = activitycodemanager.getActivityCodes(0);
-        mav.addObject("activityCodes", activityCodes);
-        mav.addObject("create", "create");
-        mav.setViewName("/surveys/page");
-        return mav;
 
     }
     
@@ -382,6 +373,23 @@ public class surveyController {
         
         mav.setViewName("/programAdmin/surveys/changeLogs");
         return mav;
+    }
+    
+    
+    /** this one is for page 1 of the survey , the rest we will pass the page number if the form**/
+    @RequestMapping(value = "/page", method = RequestMethod.GET)
+    public ModelAndView newSurveyPage(HttpServletRequest request, 
+    		HttpServletResponse response, HttpSession session, RedirectAttributes redirectAttr) throws Exception {
+        
+    	ModelAndView mav = new ModelAndView();
+        
+        /* Get the list of answer types in the system */
+    	List<AnswerTypes>  answerTypeList = surveymanager.getAnswerTypes();
+        mav.addObject("answerTypeList", answerTypeList);    
+        mav.addObject("create", "create");
+        mav.setViewName("/surveys/page");
+        return mav;
+
     }
     
 }

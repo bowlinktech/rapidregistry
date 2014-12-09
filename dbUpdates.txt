@@ -43,3 +43,6 @@ CREATE TABLE `rapidregistry`.`user_activityLog` (
   `dateCreated` DATETIME NULL DEFAULT current_timestamp,
   PRIMARY KEY (`id`));
 
+/** 12-8-2014 11:05PM **/
+ALTER TABLE `rapidregistry`.`survey_questions` 
+ADD COLUMN `questionNum` INT NOT NULL DEFAULT 1 AFTER `dateCreated`;

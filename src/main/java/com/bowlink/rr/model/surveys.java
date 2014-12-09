@@ -6,6 +6,7 @@
 package com.bowlink.rr.model;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -95,6 +96,9 @@ public class surveys {
     
     @Transient
     private String encryptedId;
+    
+    @Transient 
+    private List <SurveyPages> surveyPages;
 
     public int getId() {
         return id;
@@ -239,4 +243,13 @@ public class surveys {
 	public void setEncryptedId(String encryptedId) {
 		this.encryptedId = encryptedId;
 	}
+
+	public List<SurveyPages> getSurveyPages() {
+		return surveyPages;
+	}
+
+	public void setSurveyPages(List<SurveyPages> surveyPages) {
+		this.surveyPages = surveyPages;
+	}
+
 }

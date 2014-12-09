@@ -5,7 +5,10 @@
  */
 package com.bowlink.rr.service;
 
+import com.bowlink.rr.model.AnswerTypes;
 import com.bowlink.rr.model.SurveyChangeLogs;
+import com.bowlink.rr.model.SurveyPages;
+import com.bowlink.rr.model.SurveyQuestions;
 import com.bowlink.rr.model.surveys;
 
 import java.util.List;
@@ -33,5 +36,11 @@ public interface surveyManager {
     void saveChangeLogs(SurveyChangeLogs scl) throws Exception;
     
     List <SurveyChangeLogs> getSurveyChangeLogs (Integer surveyId) throws Exception;
+    
+    List <AnswerTypes> getAnswerTypes () throws Exception;
+    
+    List <SurveyPages> getSurveyPages(Integer surveyId, boolean getQuestions) throws Exception;
+    
+    List <SurveyQuestions> getSurveyQuestions(Integer surveyPageId) throws Exception;
     
 }

@@ -18,10 +18,25 @@
         </c:choose>
         <section class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">
-                <c:if test="${not empty create}">Build a New Survey from Scratch</c:if>
-                <c:if test="${not empty edit}">Modify ${surveyTitle}</c:if>
-                </h3>
+                <c:if test="${not empty create}"><h3 class="panel-title">Build a New Survey from Scratch</h3></c:if>
+                <c:if test="${not empty edit}">
+		                <c:if test="${not empty surveyPages}">
+		                <div class="pull-right">
+							<div class="dropdown pull-right">
+							  <button id="dLabel" type="button" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" role="button" aria-expanded="false">
+							    -- Go to Page --
+							    <span class="caret"></span>
+							  </button>
+		  							<ul class="dropdown-menu" role="menu" aria-labelledby="drop3">	  						 
+		                					<c:forEach var="surveyPage" items="${surveyPages}">
+		                                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">${surveyPage.pageTitle}</a></li>                
+		                                    </c:forEach> 
+									</ul>
+								</div>
+								</div>
+								</c:if>  
+								<h3 class="panel-title">Modify ${surveyTitle}</h3>
+               </c:if>
             </div>
             <div class="panel-body">
             <c:choose>

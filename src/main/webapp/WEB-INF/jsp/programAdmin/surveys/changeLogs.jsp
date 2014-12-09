@@ -6,7 +6,7 @@
     <div class="modal-content">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h3 class="panel-title">Enter Save Note</h3>
+            <h3 class="panel-title">Change Log</h3>
          </div>
          <div class="modal-body">
              <div class="form-container scrollable"><br />

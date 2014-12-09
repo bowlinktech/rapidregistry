@@ -6,7 +6,10 @@
 package com.bowlink.rr.service.impl;
 
 import com.bowlink.rr.dao.surveyDAO;
+import com.bowlink.rr.model.AnswerTypes;
 import com.bowlink.rr.model.SurveyChangeLogs;
+import com.bowlink.rr.model.SurveyPages;
+import com.bowlink.rr.model.SurveyQuestions;
 import com.bowlink.rr.model.surveys;
 import com.bowlink.rr.service.surveyManager;
 
@@ -79,6 +82,23 @@ public class surveyManagerImpl implements surveyManager {
 	public List <SurveyChangeLogs> getSurveyChangeLogs (Integer surveyId)  throws Exception {
 		return surveyDAO.getSurveyChangeLogs(surveyId);
 	}
-	
-	
+
+	@Override
+	@Transactional
+	public List<AnswerTypes> getAnswerTypes() throws Exception {
+		return surveyDAO.getAnswerTypes();
+	}
+
+	@Override
+	@Transactional
+	public List<SurveyPages> getSurveyPages(Integer surveyId, boolean getQuestions) throws Exception {
+		return surveyDAO.getSurveyPages(surveyId, getQuestions) ;
+	}
+
+	@Override
+	public List<SurveyQuestions> getSurveyQuestions(Integer surveyPageId)
+			throws Exception {
+		return surveyDAO.getSurveyQuestions(surveyPageId) ;
+	}
+		
 }

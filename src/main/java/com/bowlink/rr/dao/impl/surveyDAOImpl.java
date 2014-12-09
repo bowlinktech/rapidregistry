@@ -6,16 +6,21 @@
 package com.bowlink.rr.dao.impl;
 
 import com.bowlink.rr.dao.surveyDAO;
+import com.bowlink.rr.model.AnswerTypes;
 import com.bowlink.rr.model.EngagementSurveys;
 import com.bowlink.rr.model.SurveyChangeLogs;
+import com.bowlink.rr.model.SurveyPages;
+import com.bowlink.rr.model.SurveyQuestions;
 import com.bowlink.rr.model.surveys;
 import com.bowlink.rr.model.userProgramModules;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
 import org.hibernate.type.StandardBasicTypes;
@@ -122,11 +127,56 @@ public class surveyDAOImpl implements surveyDAO {
     			+ " order by scl.datecreated desc;";
     	 Query query = sessionFactory.getCurrentSession().createSQLQuery(sql)
                 .setResultTransformer(Transformers.aliasToBean(SurveyChangeLogs.class)).setParameter("surveyId", surveyId);
-
 		List <SurveyChangeLogs> surveyChangeLogsList = query.list();
-    	
-  
     	return surveyChangeLogsList;
     }
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<AnswerTypes> getAnswerTypes() throws Exception {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(AnswerTypes.class);
+        criteria.addOrder(Order.desc("answerType"));
+        return criteria.list();
+
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<SurveyPages> getSurveyPages(Integer surveyId,
+			boolean getQuestions) throws Exception {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SurveyPages.class);
+        criteria.add(Restrictions.eq("surveyId", surveyId));
+        criteria.addOrder(Order.asc("pageNum"));
+        
+        List <SurveyPages> surveyPagesList = criteria.list();
+        List <SurveyPages> surveyPagesListForReturn = surveyPagesList;
+        
+        if (getQuestions) {
+        	surveyPagesListForReturn = new ArrayList<SurveyPages>();
+        	//we populate the survey questions here 
+        	for (SurveyPages sp : surveyPagesList) {
+        		List <SurveyQuestions> sqs = getSurveyQuestions(sp.getId());
+            	sp.setSurveyQuestions(sqs);
+            	surveyPagesListForReturn.add(sp);
+            }
+        }
+        
+        return surveyPagesListForReturn;
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<SurveyQuestions> getSurveyQuestions(Integer surveyPageId)
+			throws Exception {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SurveyQuestions.class);
+        criteria.add(Restrictions.eq("surveyPageId", surveyPageId));
+        criteria.addOrder(Order.asc("questionNum"));      
+        return criteria.list();
+	}
+	
+	
 	
 }
+
+
+
