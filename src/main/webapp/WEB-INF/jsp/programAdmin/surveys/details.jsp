@@ -2,6 +2,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %> 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <div class="main clearfix" role="main">
     <div class="col-md-12">
@@ -18,25 +19,43 @@
         </c:choose>
         <section class="panel panel-default">
             <div class="panel-heading">
-                <c:if test="${not empty create}"><h3 class="panel-title">Build a New Survey from Scratch</h3></c:if>
-                <c:if test="${not empty edit}">
-		                <c:if test="${not empty surveyPages}">
-		                <div class="pull-right">
-							<div class="dropdown pull-right">
-							  <button id="dLabel" type="button" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" role="button" aria-expanded="false">
-							    -- Go to Page --
-							    <span class="caret"></span>
-							  </button>
-		  							<ul class="dropdown-menu" role="menu" aria-labelledby="drop3">	  						 
-		                					<c:forEach var="surveyPage" items="${surveyPages}">
-		                                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">${surveyPage.pageTitle}</a></li>                
-		                                    </c:forEach> 
-									</ul>
-								</div>
-								</div>
-								</c:if>  
-								<h3 class="panel-title">Modify ${surveyTitle}</h3>
+            <div class="dropdown pull-right">
+           		 <c:if test="${not empty edit}">
+		                <div class="btn-group">
+						  <button type="button" class="btn btn-xs dropdown-toggle btn-primary" 
+						  data-toggle="dropdown" aria-expanded="false">
+						    -- Go to Survey Pages -- <span class="caret"></span>
+						  </button>
+						  <ul class="dropdown-menu pull-right" role="menu">
+						  <c:forEach var="surveyPage" items="${surveyPages}">
+						  <li><a class="btn-xs" href="page?s=${survey.id}&p=${surveyPage.pageNum}">${surveyPage.pageTitle}</a></li>		                                    </c:forEach> 
+						    <li class="divider"></li>
+						    <li><a href="page?s=${survey.id}" class="btn-xs">Add a New Page</a></li>
+						  </ul>
+						</div>
+					
                </c:if>
+                <c:if test="${not empty surveys}">
+		                <div class="btn-group">
+						  <button type="button" class="btn btn-xs dropdown-toggle btn-primary" 
+						  data-toggle="dropdown" aria-expanded="false">
+						    -- Change Survey -- <span class="caret"></span>
+						  </button>
+						  <ul class="dropdown-menu pull-right" role="menu">
+						  <c:forEach var="surveyForDropDown" items="${surveys}">
+						<c:if test="${surveyForDropDown.id != survey.id}">
+							<li><a class="btn-xs" href="details?s=${surveyForDropDown.id}">${surveyForDropDown.title}</a></li>	
+						</c:if>
+						</c:forEach> 
+						    <li class="divider"></li>
+						    <li><a href="create" class="btn-xs">Add a New Survey</a></li>
+						  </ul>
+						</div>
+				</c:if>
+               </div>
+               <c:if test="${not empty edit}"><h3 class="panel-title">Modify ${surveyTitle}</h3></c:if>
+               <c:if test="${not empty create}"><h3 class="panel-title">Build a New Survey from Scratch</h3></c:if>
+               
             </div>
             <div class="panel-body">
             <c:choose>
@@ -47,8 +66,7 @@
                     	<form:hidden path="id" />
                     	<form:hidden path="programId" />            	
                         <form:hidden path="dateModified" />
-                        <form:hidden path="dateCreated" />
-                        <form:hidden path="surveysCol" />                       
+                        <form:hidden path="dateCreated" />                      
                     	<div class="form-group">
                     	   <spring:bind path="title">
                         	<div id="titleDiv" class="form-group ${status.error ? 'has-error' : '' }">

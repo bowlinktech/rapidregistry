@@ -17,7 +17,7 @@
                 </div>
             </c:when>
         </c:choose>
-        <section class="panel panel-default">
+		<section class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">Page ${page}</h3>
             </div>
@@ -28,19 +28,40 @@
                             		<label class="control-label" for="confirmPassword">Everything to do with page</label>
                            			 <input id="title" name="title" class="form-control" maxLength="255" autocomplete="off" type="text" value="${title}" />
                             		 <span id="titleMsg" class="control-label"></span>
-                       		 	</div>                     
-                        <div class="form-group">
-                          <input type="submit" id="submitButton"  role="button" class="btn btn-primary" value="Some Page"/>
-                       </div>
-                    </div>
-                </form:form>
-            </div>
-            
-        </section>
+                       		 	</div>  
+                     </div>
+                    
 
-        
-    </div>
-</div>
+		<ul class="nav nav-tabs" data-tabs="tabs">
+		  <li class="active"><a href="#edit" data-toggle="tab">Edit</a></li>
+		  <li><a href="#options" data-toggle="tab">Options</a></li>
+		  <li><a href="#logic" data-toggle="tab">Logic</a></li>
+		  <li><a href="#move" data-toggle="tab">Move</a></li>
+		  <li><a href="#copy" data-toggle="tab">Copy</a></li>
+		</ul>
+		<div class="tab-content">
+			  	<div class="tab-pane active" id="edit">
+					edit
+				</div>
+			 	<div class="tab-pane" id="options">
+					options
+			  	</div>  
+			  	<div class="tab-pane" id="logic">
+					Logic
+			  	</div> 
+			  	<div class="tab-pane" id="move">
+					Move
+			  	</div> 
+			  	<div class="tab-pane" id="copy">
+					Copy
+			  	</div> 
+		</div>
+            
+  	             </form:form>
+            </div>
+		</section>
+		
+
 
 <!-- Activity Code Details modal -->
 <div class="modal fade" id="staffMemberModal" role="dialog" tabindex="-1" aria-labeledby="Add Staff Member" aria-hidden="true" aria-describedby="Add Staff Member"></div>

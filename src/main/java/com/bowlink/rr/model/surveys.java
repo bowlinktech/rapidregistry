@@ -87,10 +87,6 @@ public class surveys {
     @Column(name = "DATEMODIFIED", nullable = true)
     private Date dateModified = new Date();
     
-    @NoHtml
-    @Column(name = "SURVEYSCOL", nullable = true)
-    private String surveysCol = "";
-    
     @Transient
     private Integer timesTaken = 0;
     
@@ -218,14 +214,6 @@ public class surveys {
 
     public void setDateModified(Date dateModified) {
         this.dateModified = dateModified;
-    }
-
-    public String getSurveysCol() {
-        return surveysCol;
-    }
-
-    public void setSurveysCol(String surveysCol) {
-        this.surveysCol = surveysCol;
     }
 
 	public Integer getTimesTaken() {

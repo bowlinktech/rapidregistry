@@ -11,7 +11,7 @@
                         <a href="javascript:void(0);" title="Surveys" class="unstyled-link">Create New Survey</a>
                     </c:when>
                     <c:when test="${param['page'] == 'surveyDetails'}">
-                        <a href="javascript:void(0);" title="Surveys" class="unstyled-link">Survey Details</a>
+                        <a href="javascript:void(0);" title="Surveys" class="unstyled-link">${surveyTitle} Details</a>
                     </c:when>
                     <c:when test="${param['page'] == 'staff'}">
                         <a href="javascript:void(0);" title="Staff Members" class="unstyled-link">Staff Members</a>

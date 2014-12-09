@@ -46,3 +46,14 @@ CREATE TABLE `rapidregistry`.`user_activityLog` (
 /** 12-8-2014 11:05PM **/
 ALTER TABLE `rapidregistry`.`survey_questions` 
 ADD COLUMN `questionNum` INT NOT NULL DEFAULT 1 AFTER `dateCreated`;
+
+
+/**12/9/2014 **/
+ALTER TABLE `rapidregistry`.`surveys` 
+DROP COLUMN `surveyscol`;
+
+ALTER TABLE `rapidregistry`.`survey_pages` 
+DROP INDEX `surveyId_idx` ,
+ADD UNIQUE INDEX `uni_surveyIdPageNum` (`surveyId` ASC, `pageNum` ASC);
+
+

@@ -19,7 +19,7 @@ require(['./main'], function () {
         	
         	$.ajax({
                 url: 'surveys/changeLog',
-                data:{'i':surveyId},
+                data:{'s':surveyId},
                 type: "GET",
                 success: function(data) {
                     $("#changeLogModal").html(data);

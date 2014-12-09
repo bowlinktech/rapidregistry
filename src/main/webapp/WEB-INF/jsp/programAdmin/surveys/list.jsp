@@ -41,7 +41,7 @@
                                     <c:forEach var="survey" items="${surveys}">
                                         <tr>
                                             <td>
-                                                <a href="surveys/details?i=${survey.id}" class="btn-link" title="Edit this survey" role="button">${survey.title}&nbsp;                                               
+                                                <a href="surveys/details?s=${survey.id}" class="btn-link" title="Edit this survey" role="button">${survey.title}&nbsp;                                               
                                                 <br />
                                                 (<c:choose><c:when test="${survey.status == true}">Active</c:when><c:otherwise>Inactive</c:otherwise></c:choose>)</a>
                                             </td>
@@ -56,7 +56,7 @@
                                                 </a>
                                             </td>
                                             <td class="actions-col">
-                                                <a href="surveys/details?i=${survey.id}" class="btn btn-link editSysAdmin" title="Edit" role="button">
+                                                <a href="surveys/details?s=${survey.id}" class="btn btn-link editSysAdmin" title="Edit" role="button">
                                                     <span class="glyphicon glyphicon-edit"></span>
                                                     Edit
                                                 </a>

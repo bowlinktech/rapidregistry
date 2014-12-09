@@ -104,6 +104,9 @@ public class surveyController {
         List<activityCodes> activityCodes = activitycodemanager.getActivityCodes(0);
         mav.addObject("activityCodes", activityCodes);
         mav.addObject("create", "create");
+        /** add drop down for other surveys for this program **/
+        List<surveys> surveys = surveymanager.getProgramSurveys((Integer) session.getAttribute("selprogramId"));
+        mav.addObject("surveys", surveys);	
         mav.setViewName("/surveys/create");
         return mav;
 
@@ -174,7 +177,7 @@ public class surveyController {
      */
     
     @RequestMapping(value = "/details", method = RequestMethod.GET)
-    public ModelAndView viewSurveyDetails(@RequestParam String i,
+    public ModelAndView viewSurveyDetails(@RequestParam String s,
     		HttpSession session, RedirectAttributes redirectAttr, Authentication authentication) throws Exception {
         	ModelAndView mav = new ModelAndView();
         	mav.setViewName("/surveys/details");
@@ -183,7 +186,7 @@ public class surveyController {
         Integer surveyId = 0;
         //see if param is valid
         try {
-        	surveyId = Integer.parseInt(i);
+        	surveyId = Integer.parseInt(s);
         } catch (Exception ex) {
         	//log here
         	try {
@@ -212,7 +215,11 @@ public class surveyController {
 	            mav.addObject("surveyTitle", survey.getTitle());
 	            /** add of pages drop down box **/
 	            List<SurveyPages> surveyPages =  surveymanager.getSurveyPages(survey.getId(), false);
-	            mav.addObject("surveyPages", surveyPages);	            
+	            mav.addObject("surveyPages", surveyPages);	
+	            /** add drop down for other surveys for this program **/
+	            List<surveys> surveys = surveymanager.getProgramSurveys((Integer) session.getAttribute("selprogramId"));
+	            mav.addObject("surveys", surveys);	
+	            
         	} else {
         		//log here
             	try {
@@ -313,19 +320,19 @@ public class surveyController {
     /**
      * This method returns the modal with change logs info
      * @param session
-     * @param i
+     * @param s = surveyId
      * @return
      * @throws Exception
      */
     @RequestMapping(value = "/changeLog", method = RequestMethod.GET)
-    @ResponseBody public ModelAndView viewChangeLog(HttpSession session, @RequestParam String i) throws Exception {
+    @ResponseBody public ModelAndView viewChangeLog(HttpSession session, @RequestParam String s) throws Exception {
         ModelAndView mav = new ModelAndView();
         
         int surveyId = 0;
         
-        /** we check to make sure i is a number **/
+        /** we check to make sure s is a number **/
         try {
-        	surveyId = Integer.parseInt(i);
+        	surveyId = Integer.parseInt(s);
         } catch (Exception ex) {
         	//log here
         	try {
