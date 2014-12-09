@@ -31,7 +31,6 @@
                        		 	</div>  
                      </div>
                     
-
 		<ul class="nav nav-tabs" data-tabs="tabs">
 		  <li class="active"><a href="#edit" data-toggle="tab">Edit</a></li>
 		  <li><a href="#options" data-toggle="tab">Options</a></li>
