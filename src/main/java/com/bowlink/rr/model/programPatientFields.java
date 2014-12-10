@@ -68,6 +68,15 @@ public class programPatientFields {
     
     @Column(name = "DATAGRIDCOLUMN", nullable = false)
     private boolean dataGridColumn = false;
+    
+    @Column(name = "SEARCHFIELD", nullable = false)
+    private boolean searchField = false;
+    
+    @Column(name = "SUMMARYFIELD", nullable = false)
+    private boolean summaryField = false;
+    
+    @Column(name = "SEARCHDSPPOS", nullable = true)
+    private int searchDspPos = 1;
 
     public int getId() {
         return id;
@@ -179,6 +188,30 @@ public class programPatientFields {
 
     public void setDataGridColumn(boolean dataGridColumn) {
         this.dataGridColumn = dataGridColumn;
+    }
+
+    public boolean isSearchField() {
+        return searchField;
+    }
+
+    public void setSearchField(boolean searchField) {
+        this.searchField = searchField;
+    }
+
+    public boolean isSummaryField() {
+        return summaryField;
+    }
+
+    public void setSummaryField(boolean summaryField) {
+        this.summaryField = summaryField;
+    }
+
+    public int getSearchDspPos() {
+        return searchDspPos;
+    }
+
+    public void setSearchDspPos(int searchDspPos) {
+        this.searchDspPos = searchDspPos;
     }
     
 }

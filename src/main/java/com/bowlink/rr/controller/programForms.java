@@ -459,6 +459,8 @@ public class programForms {
             @RequestParam(value = "requiredField", required = true) boolean requiredField, 
             @RequestParam(value = "dataGridColumn", required = true) boolean dataGridColumn,
             @RequestParam(value = "section", required = true) String section,
+            @RequestParam(value = "searchColumn", required = true) boolean searchColumn,
+            @RequestParam(value = "summaryColumn", required = true) boolean summaryColumn,
             HttpSession session
     ) throws Exception {
 
@@ -475,6 +477,15 @@ public class programForms {
         /* Patient Form Sections */   
         if("patient-sections".equals(section)) {
             dspPos = patientFields.size() + 1;
+            Integer totalSearchColumns = 0;
+            
+            if(searchColumn == true) {
+                for(programPatientFields currField : patientFields) {
+                    if(currField.isSearchField()) {
+                        totalSearchColumns+=1;
+                    }
+                }
+            }
             
             programPatientFields field = new programPatientFields();
             field.setProgramId((Integer) session.getAttribute("programId"));
@@ -489,6 +500,13 @@ public class programForms {
             field.setRequiredField(requiredField);
             field.setDspPos(dspPos);
             field.setDataGridColumn(dataGridColumn);
+            field.setSummaryField(summaryColumn);
+            field.setSearchField(searchColumn);
+            
+            if(searchColumn == true) {
+                field.setSearchDspPos(totalSearchColumns+1);
+            }
+            
 
             patientFields.add(field);
             mav.addObject("existingFields", patientFields);
@@ -497,6 +515,16 @@ public class programForms {
         /* Engagement Form Sections */
         else if ("engagement-sections".equals(section)) {
             dspPos = engagementFields.size() + 1;
+            
+            Integer totalSearchColumns = 0;
+            
+            if(searchColumn == true) {
+                for(programEngagementFields currField : engagementFields) {
+                    if(currField.isSearchField()) {
+                        totalSearchColumns+=1;
+                    }
+                }
+            }
             
             programEngagementFields field = new programEngagementFields();
             field.setProgramId((Integer) session.getAttribute("programId"));
@@ -511,6 +539,12 @@ public class programForms {
             field.setRequiredField(requiredField);
             field.setDspPos(dspPos);
             field.setDataGridColumn(dataGridColumn);
+            field.setSummaryField(summaryColumn);
+            field.setSearchField(searchColumn);
+            
+            if(searchColumn == true) {
+                field.setSearchDspPos(totalSearchColumns+1);
+            }
             
             engagementFields.add(field);
             mav.addObject("existingFields", engagementFields);
@@ -531,21 +565,28 @@ public class programForms {
      */
     @RequestMapping(value = "/removeField.do", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
-    Integer removeField(@RequestParam(value = "section", required = true) String section, @RequestParam(value = "fieldId", required = true) Integer fieldId, @RequestParam(value = "dspOrder", required = true) Integer dspOrder) throws Exception {
+    Integer removeField(@RequestParam(value = "section", required = true) String section, @RequestParam(value = "fieldId", required = true) Integer fieldId, @RequestParam(value = "dspOrder", required = true) Integer dspOrder, @RequestParam(value = "searchDspOrder", required = true) Integer searchDspOrder) throws Exception {
 
         /* Patient Form Sections */
         if ("patient-sections".equals(section)) {
             Iterator<programPatientFields> it = patientFields.iterator();
 
             int currdspOrder;
+            int currsearchdspOrder;
 
             while (it.hasNext()) {
                 programPatientFields field = it.next();
+                
                 if (field.getFieldId() == fieldId && field.getDspPos() == dspOrder) {
                     patientFields.remove(field);
                 } else if (field.getDspPos() > dspOrder) {
                     currdspOrder = field.getDspPos();
                     field.setDspPos(currdspOrder - 1);
+                }
+                
+                if(field.getSearchDspPos() > searchDspOrder) {
+                    currsearchdspOrder = field.getSearchDspPos();
+                    field.setSearchDspPos(currsearchdspOrder -1);
                 }
             }
         } 
@@ -555,6 +596,7 @@ public class programForms {
             Iterator<programEngagementFields> it = engagementFields.iterator();
 
             int currdspOrder;
+            int currsearchdspOrder;
 
             while (it.hasNext()) {
                 programEngagementFields field = it.next();
@@ -563,6 +605,11 @@ public class programForms {
                 } else if (field.getDspPos() > dspOrder) {
                     currdspOrder = field.getDspPos();
                     field.setDspPos(currdspOrder - 1);
+                }
+                
+                if(field.getSearchDspPos() > searchDspOrder) {
+                    currsearchdspOrder = field.getSearchDspPos();
+                    field.setSearchDspPos(currsearchdspOrder -1);
                 }
             }
         }
@@ -582,7 +629,7 @@ public class programForms {
      */
     @RequestMapping(value = "/updateFieldDspOrder.do", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
-    Integer updateTranslationProcessOrder(@RequestParam(value = "section", required = true) String section, @RequestParam(value = "currdspOrder", required = true) Integer currdspOrder, @RequestParam(value = "newdspOrder", required = true) Integer newdspOrder) throws Exception {
+    Integer updateFormDisplayOrder(@RequestParam(value = "section", required = true) String section, @RequestParam(value = "currdspOrder", required = true) Integer currdspOrder, @RequestParam(value = "newdspOrder", required = true) Integer newdspOrder) throws Exception {
 
         /* Patient Form Sections */
         if ("patient-sections".equals(section)) {
@@ -608,6 +655,50 @@ public class programForms {
                     field.setDspPos(newdspOrder);
                 } else if (field.getDspPos() == newdspOrder) {
                     field.setDspPos(currdspOrder);
+                }
+            }
+        }
+
+        return 1;
+    }
+    
+    /**
+     * The '/updateFieldSearchDspOrder.do' function will handle updating the field display position.
+     *
+     * @param   section This will hold the section name (patient-sections) or (engagement-sections)
+     * @param	fieldId This will hold the field that is being removed
+     * @param	processOrder This will hold the process order of the field to be removed so we remove the correct field number as the same field could be in the list with different crosswalks
+     *
+     * @Return	1	The function will simply return a 1 back to the ajax call
+     */
+    @RequestMapping(value = "/updateFieldSearchDspOrder.do", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody
+    Integer updateFieldSearchDspOrder(@RequestParam(value = "section", required = true) String section, @RequestParam(value = "currdspOrder", required = true) Integer currdspOrder, @RequestParam(value = "newdspOrder", required = true) Integer newdspOrder) throws Exception {
+
+        /* Patient Form Sections */
+        if ("patient-sections".equals(section)) {
+            Iterator<programPatientFields> it = patientFields.iterator();
+
+            while (it.hasNext()) {
+                programPatientFields field = it.next();
+                if (field.getSearchDspPos()== currdspOrder) {
+                    field.setSearchDspPos(newdspOrder);
+                } else if (field.getSearchDspPos() == newdspOrder) {
+                    field.setSearchDspPos(currdspOrder);
+                }
+            }
+        } 
+        
+        /* Engagement Form Sections */
+        else if ("engagement-sections".equals(section)) {
+            Iterator<programEngagementFields> it = engagementFields.iterator();
+
+            while (it.hasNext()) {
+                programEngagementFields field = it.next();
+                if (field.getSearchDspPos() == currdspOrder) {
+                    field.setSearchDspPos(newdspOrder);
+                } else if (field.getSearchDspPos() == newdspOrder) {
+                    field.setSearchDspPos(currdspOrder);
                 }
             }
         }

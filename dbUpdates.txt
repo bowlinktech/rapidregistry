@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /** grace 11212014 01:02PM **/
 ALTER TABLE `rapidregistry`.`users` 
 ADD COLUMN `randomSalt` blob NULL AFTER `resetCode`,
@@ -57,3 +58,36 @@ DROP INDEX `surveyId_idx` ,
 ADD UNIQUE INDEX `uni_surveyIdPageNum` (`surveyId` ASC, `pageNum` ASC);
 
 
+=======
+/** Chad 12/2/2014 @ 10:36 PM **/
+ALTER TABLE `rapidregistry`.`program_patientFields` 
+ADD COLUMN `searchField` BIT(1) NOT NULL DEFAULT b'0' AFTER `dataGridColumn`,
+ADD COLUMN `summaryField` BIT(1) NOT NULL DEFAULT b'0' AFTER `searchField`;
+
+DROP TABLE `rapidregistry`.`program_patientSummaryFields`;
+
+DROP TABLE `rapidregistry`.`program_patientSearchFields`;
+
+ALTER TABLE `rapidregistry`.`program_engagementFields` 
+ADD COLUMN `searchField` BIT(1) NOT NULL DEFAULT b'0' AFTER `dataGridColumn`,
+ADD COLUMN `summaryField` BIT(1) NOT NULL DEFAULT b'0' AFTER `searchField`;
+
+/** Chad 12/4/2014 @ 4:25 PM **/
+ALTER TABLE `rapidregistry`.`modifiedFields` 
+CHANGE COLUMN `id` `id` INT(11) NOT NULL AUTO_INCREMENT ;
+
+ALTER TABLE `rapidregistry`.`modifiedFields` 
+ADD COLUMN `oldFieldValue` VARCHAR(255) NULL AFTER `dateCreated`,
+ADD COLUMN `newFieldValue` VARCHAR(255) NULL AFTER `oldFieldValue`;
+
+/** Chad 12/8/2014 @ 8:28 AM **/
+ALTER TABLE `rapidregistry`.`dataElements` 
+ADD COLUMN `answerType` INT NOT NULL DEFAULT 3 AFTER `status`;
+
+/** Chad 12/8/2014 @ 11:34 AM **/
+ALTER TABLE `rapidregistry`.`program_patientFields` 
+ADD COLUMN `searchDspPos` INT(11) NOT NULL DEFAULT '1' AFTER `summaryField`;
+
+ALTER TABLE `rapidregistry`.`program_engagementFields` 
+ADD COLUMN `searchDspPos` INT(11) NOT NULL DEFAULT '1' AFTER `summaryField`;
+>>>>>>> b8d6f44cc9e3b8b93df76458b19d750ba1e9516e

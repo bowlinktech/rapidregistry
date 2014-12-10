@@ -56,5 +56,6 @@ public interface dataElementManager {
     
     dataElements getFieldDetails(Integer fieldId) throws Exception;
     
-    
+    @SuppressWarnings("rawtypes")
+    List getAnswerTypes();
 }

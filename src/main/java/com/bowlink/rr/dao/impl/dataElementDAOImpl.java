@@ -357,4 +357,17 @@ public class dataElementDAOImpl implements dataElementDAO {
         return (dataElements) sessionFactory.getCurrentSession().get(dataElements.class, fieldId); 
     }
     
+    /**
+     * The 'getAnswerTypes' function will return a list of available field types
+     *
+     */
+    @Override
+    @SuppressWarnings("rawtypes")
+    @Transactional
+    public List getAnswerTypes() {
+        Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT id, answerType FROM lu_answerTypes order by answerType asc");
+
+        return query.list();
+    }
+    
 }

@@ -11,8 +11,6 @@ import com.bowlink.rr.model.program;
 import com.bowlink.rr.model.programAdmin;
 import com.bowlink.rr.model.programAvailableTables;
 import com.bowlink.rr.model.programPatientEntryMethods;
-import com.bowlink.rr.model.programPatientSearchFields;
-import com.bowlink.rr.model.programPatientSummaryFields;
 import com.bowlink.rr.service.programManager;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -160,54 +158,6 @@ public class programManagerImpl implements programManager {
     @Transactional
     public void deletePatientEntryMethod(Integer id) throws Exception {
         programDAO.deletePatientEntryMethod(id);
-    }
-    
-    @Override
-    @Transactional
-    public List<programPatientSearchFields> getProgramSearchFields(Integer programId) throws Exception {
-        return programDAO.getProgramSearchFields(programId);
-    }
-    
-    @Override
-    @Transactional
-    public programPatientSearchFields getPatientSearchFieldBydspPos(Integer dspPos,Integer programId) throws Exception {
-        return programDAO.getPatientSearchFieldBydspPos(dspPos, programId);
-    }
-
-    @Override
-    @Transactional
-    public void saveProgramPatientSearchField(programPatientSearchFields searchField) throws Exception {
-        programDAO.saveProgramPatientSearchField(searchField);
-    }
-    
-    @Override
-    @Transactional
-    public void deleteProgramPatientSearchField(Integer id) throws Exception {
-        programDAO.deleteProgramPatientSearchField(id);
-    }
-    
-    @Override
-    @Transactional
-    public List<programPatientSummaryFields> getProgramSummaryFields(Integer programId) throws Exception {
-        return programDAO.getProgramSummaryFields(programId);
-    }
-    
-    @Override
-    @Transactional
-    public programPatientSummaryFields getPatientSummaryFieldBydspPos(Integer dspPos,Integer programId) throws Exception {
-        return programDAO.getPatientSummaryFieldBydspPos(dspPos, programId);
-    }
-
-    @Override
-    @Transactional
-    public void saveProgramPatientSummaryField(programPatientSummaryFields summaryField) throws Exception {
-        programDAO.saveProgramPatientSummaryField(summaryField);
-    }
-    
-    @Override
-    @Transactional
-    public void deleteProgramPatientSummaryField(Integer id) throws Exception {
-        programDAO.deleteProgramPatientSummaryField(id);
     }
     
     @Override
