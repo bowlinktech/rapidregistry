@@ -7,12 +7,12 @@
 <div class="main clearfix" role="main">
     <div class="col-md-12">
         <c:choose>
-            <c:when test="${not empty param.msg}" >
+            <c:when test="${not empty msg}" >
                 <div class="alert alert-success">
                     <strong>Success!</strong> 
                     <c:choose>
-                        <c:when test="${param.msg == 'updated'}">The system administrator successfully updated!</c:when>
-                        <c:when test="${param.msg == 'created'}">The system administrator has been successfully added!</c:when>
+                        <c:when test="${msg == 'updated'}">The survey has been successfully updated!</c:when>
+                        <c:when test="${msg == 'created'}">The survey has been successfully added!</c:when>
                     </c:choose>
                 </div>
             </c:when>
@@ -69,12 +69,20 @@
                         <form:hidden path="dateCreated" />                      
                     	<div class="form-group">
                     	   <spring:bind path="title">
+                    	   <c:if test="${not empty existingTitle}">
+                    	    <div id="titleDiv" class="form-group has-error">
+                    		<label class="control-label has-error" for="title">Survey Title*</label>
+                   			 <form:input path="title" id="title" class="form-control" type="text"  maxLength="255" />
+                   			 <label id="title.errors" class="control-label">${existingTitle}</label>
+                    	   </div>
+                    	   </c:if>
+                    	   <c:if test="${empty existingTitle}">
                         	<div id="titleDiv" class="form-group ${status.error ? 'has-error' : '' }">
                     		<label class="control-label" for="title">Survey Title*</label>
                    			 <form:input path="title" id="title" class="form-control" type="text"  maxLength="255" />
                    			 <form:errors path="title" cssClass="control-label" element="label" />
-                    		 <c:if test="${not empty existingTitle}"><span class="control-label has-error">${existingTitle}</span></c:if>
-               		 		</div> 
+                    		</div> 
+               		 		</c:if>
                		 		</spring:bind> 
                		 	</div>
                		 	<div class="row">                           

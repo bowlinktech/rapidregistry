@@ -7,12 +7,15 @@
 <div class="main clearfix" role="main">
     <div class="col-md-12">
         <c:choose>
-            <c:when test="${not empty param.msg}" >
+            <c:when test="${not empty msg}" >
                 <div class="alert alert-success">
                     <strong>Success!</strong> 
                     <c:choose>
-                        <c:when test="${param.msg == 'updated'}">The system administrator successfully updated!</c:when>
-                        <c:when test="${param.msg == 'created'}">The system administrator has been successfully added!</c:when>
+                        <c:when test="${msg == 'surveyUpdated'}">The survey has been successfully updated!</c:when>
+                        <c:when test="${msg == 'surveyCreated'}">The survey has been successfully added!</c:when>
+                   	    <c:when test="${msg == 'pageUpdated'}">The page has been successfully updated!</c:when>
+                        <c:when test="${msg == 'pageCreated'}">The page has been successfully added!</c:when>
+                    
                     </c:choose>
                 </div>
             </c:when>
@@ -59,8 +62,35 @@
   	             </form:form>
             </div>
 		</section>
+		<div class="panel">
+		<ul class="nav nav-tabs" data-tabs="tabs">
+		  <li class="active"><a href="#edit" data-toggle="tab">Edit</a></li>
+		  <li><a href="#options" data-toggle="tab">Options</a></li>
+		  <li><a href="#logic" data-toggle="tab">Logic</a></li>
+		  <li><a href="#move" data-toggle="tab">Move</a></li>
+		  <li><a href="#copy" data-toggle="tab">Copy</a></li>
+		</ul>
+		<div class="tab-content">
+			  	<div class="tab-pane active" id="edit">
+					edit
+				</div>
+			 	<div class="tab-pane" id="options">
+					options
+			  	</div>  
+			  	<div class="tab-pane" id="logic">
+					Logic
+			  	</div> 
+			  	<div class="tab-pane" id="move">
+					Move
+			  	</div> 
+			  	<div class="tab-pane" id="copy">
+					Copy
+			  	</div> 
+		</div>
+		</div>
 		
-
+</div>
+</div>
 
 <!-- Activity Code Details modal -->
 <div class="modal fade" id="staffMemberModal" role="dialog" tabindex="-1" aria-labeledby="Add Staff Member" aria-hidden="true" aria-describedby="Add Staff Member"></div>

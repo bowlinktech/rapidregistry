@@ -152,10 +152,10 @@ public class surveyController {
         
         //insert survey into db
         Integer surveyId = surveymanager.saveSurvey(survey);
-        
+        redirectAttr.addFlashAttribute("msg", "created");
         if (action.equals("save")) {
             redirectAttr.addFlashAttribute("savedStatus", "updated");
-            mav = new ModelAndView(new RedirectView("/programAdmin/surveys/details?i=" + surveyId));
+            mav = new ModelAndView(new RedirectView("/programAdmin/surveys/details?s=" + surveyId));
             session.setAttribute("surveyId", surveyId);
             return mav;
         } else {
@@ -166,7 +166,7 @@ public class surveyController {
     }
     
     /**
-     * @param i
+     * @param s surveyId 
      * @param session
      * @param redirectAttr
      * @param authentication
@@ -270,14 +270,14 @@ public class surveyController {
              return mav;
         }
         
-        
+        redirectAttr.addFlashAttribute("msg", "surveyUpdated");
         if (action.equals("save")) {
             redirectAttr.addFlashAttribute("savedStatus", "updated");
-            mav = new ModelAndView(new RedirectView("/programAdmin/surveys/details?i=" + survey.getId()));
+            mav = new ModelAndView(new RedirectView("/programAdmin/surveys/details?s=" + survey.getId()));
             session.setAttribute("surveyId",survey.getId());
             return mav;
         } else {
-            mav = new ModelAndView(new RedirectView("/programAdmin/surveys/page"));
+        	mav = new ModelAndView(new RedirectView("/programAdmin/surveys/page"));
             return mav;
         }
 
