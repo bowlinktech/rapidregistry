@@ -1,0 +1,7 @@
+
+/** Chad 12-15-2014 @ 2:23 PM **/
+/**  You must first remove the index and foreign keys that look at engagmentId **/
+ALTER TABLE `rapidregistry`.`patientEngagements` 
+CHANGE COLUMN `id` `id` INT(11) NOT NULL AUTO_INCREMENT ,
+ADD COLUMN `dateCreated` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `systemUserId`,
+ADD UNIQUE INDEX `id_UNIQUE` (`id` ASC);
