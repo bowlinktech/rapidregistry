@@ -5,3 +5,41 @@ ALTER TABLE `rapidregistry`.`patientEngagements`
 CHANGE COLUMN `id` `id` INT(11) NOT NULL AUTO_INCREMENT ,
 ADD COLUMN `dateCreated` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `systemUserId`,
 ADD UNIQUE INDEX `id_UNIQUE` (`id` ASC);
+
+/** Chad 12-22-2014 @ 9:33 AM **/
+CREATE TABLE `modifiedEngagementFields` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `engagementId` int(11) NOT NULL,
+  `fieldId` int(11) NOT NULL,
+  `systemUserId` int(11) NOT NULL,
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `oldFieldValue` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `newFieldValue` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `engagementId_idx` (`engagementId`),
+  KEY `modifiedfieldId_idx` (`fieldId`),
+  KEY `fk_modifiedFields_userId` (`systemUserId`),
+  CONSTRAINT `fk_modifiedEngagementFields_fieldId` FOREIGN KEY (`fieldId`) REFERENCES `dataElements` (`id`),
+  CONSTRAINT `fk_modifiedEngagementFields_engagementId` FOREIGN KEY (`engagementId`) REFERENCES `patientEngagements` (`id`),
+  CONSTRAINT `fk_modifiedEngagementFields_userId` FOREIGN KEY (`systemUserId`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+/** Chad 12-24-2014 @ 10:33 AM **/
+CREATE TABLE `rapidregistry`.`providers` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `programId` INT NOT NULL,
+  `status` VARCHAR(45) NOT NULL DEFAULT '(1)',
+  `firstName` VARCHAR(255) NOT NULL COMMENT '			',
+  `lastName` VARCHAR(255) NOT NULL,
+  `address` VARCHAR(255) NULL,
+  `address2` VARCHAR(255) NULL,
+  `city` VARCHAR(255) NULL,
+  `state` VARCHAR(255) NULL,
+  `zipCode` VARCHAR(15) NULL,
+  `dateCreated` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC));
+
+
+ALTER TABLE `rapidregistry`.`providers` 
+ADD COLUMN `phoneNumber` VARCHAR(25) NULL AFTER `zipCode`;

@@ -29,7 +29,7 @@ require(['./main'], function () {
         //submit the new user fields from the modal window.
         $(document).on('click', '#submitButton', function(event) {
         	
-        	$('div.form-group').removeClass("has-error");
+          $('div.form-group').removeClass("has-error");
             $('span.control-label').removeClass("has-error");
             $('span.control-label').html("");
             
