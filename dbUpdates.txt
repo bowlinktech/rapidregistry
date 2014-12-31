@@ -43,3 +43,15 @@ CREATE TABLE `rapidregistry`.`providers` (
 
 ALTER TABLE `rapidregistry`.`providers` 
 ADD COLUMN `phoneNumber` VARCHAR(25) NULL AFTER `zipCode`;
+
+/** Chad 12-30-2014 @ 11:19 AM **/
+CREATE TABLE `rapidregistry`.`providerHierarchyAssoc` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `providerId` INT NOT NULL,
+  `hierarchyDetailId` INT NOT NULL,
+  `dateCreated` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC));
+
+ALTER TABLE `rapidregistry`.`providerHierarchyAssoc` 
+ADD INDEX `idx_providerId` (`providerId` ASC);
