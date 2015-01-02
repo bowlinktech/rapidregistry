@@ -40,11 +40,11 @@
             <fieldset name="login-fields" form="form-admin-login" class="basic-clearfix">
                 <div class="form-group ${not empty error ? 'has-error' : '' }">
                     <label class="control-label" for="username">Email Address</label>
-                    <input id="username" name='j_username' class="form-control" type="text" value="gchan123@yahoo.com" autofocus="true" autocomplete="off" />
+                    <input id="username" name='j_username' class="form-control" type="text" value="chadmccue05@gmail.com" autofocus="true" autocomplete="off" />
                 </div>
                 <div class="form-group ${not empty error ? 'has-error' : '' }">
                     <label class="control-label" for="password">Password</label>
-                    <input id="password" name='j_password' class="form-control" type="password" value="!admin!" autocomplete="off" />
+                    <input id="password" name='j_password' class="form-control" type="password" value="admin" autocomplete="off" />
                 </div>
                 <input type="submit" value="Login" class="btn btn-primary pull-right" role="button"/>
                 <!--<label for="remember-me" class="pull-left"><input id="j_remember" name="_spring_security_remember_me" type="checkbox" value="1">&nbsp;Remember Me</label>-->
