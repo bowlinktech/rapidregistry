@@ -112,15 +112,16 @@ public class surveyManagerImpl implements surveyManager {
 			throws Exception {
 		List<SurveyQuestions> surveyQuestions = surveyDAO.getSurveyQuestions(surveyPageId);
 		/** we get answers here **/
-		
+		for (SurveyQuestions question: surveyQuestions) {
+			question.setSurveyAnswers(getSurveyAnswers(question.getId()));
+		}
 		return surveyQuestions;
 	}
 
 	@Override
 	public List<SurveyAnswers> getSurveyAnswers(Integer questionId)
-			throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+			throws Exception {		
+		return surveyDAO.getSurveyAnswers(questionId);
 	}
 		
 }

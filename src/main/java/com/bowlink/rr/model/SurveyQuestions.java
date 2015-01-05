@@ -194,6 +194,15 @@ public class SurveyQuestions {
 
 	public void setQuestionNum(int questionNum) {
 		this.questionNum = questionNum;
+	}
+
+	public List<SurveyAnswers> getSurveyAnswers() {
+		return SurveyAnswers;
+	}
+
+	public void setSurveyAnswers(List<SurveyAnswers> surveyAnswers) {
+		SurveyAnswers = surveyAnswers;
 	}	
     
+	
 }
