@@ -100,7 +100,6 @@
                                                 </td>
                                                 <td>
                                                     <select name="fieldAction" class="form-control xs-input" style="width:150px;">
-                                                        <option value="">- Choose an Action -</option>
                                                         <option value="equals">Equals</option>
                                                         <option value="does not equal">Does not Equal</option>
                                                     </select>
