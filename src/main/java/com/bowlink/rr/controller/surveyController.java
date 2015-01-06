@@ -172,7 +172,8 @@ public class surveyController {
      * @param authentication
      * @return
      * @throws Exception
-     * This allows admins to view and modify the survey
+     * This page should contain all editable parts of a survey, all parts should display a
+     * modal when clicked
      * Permission will be tracked
      */
     
@@ -204,15 +205,18 @@ public class surveyController {
         	return mav;
         }
         
-        //we look up survey and send back survey object      
-        surveys survey = surveymanager.getSurveysById(surveyId);
+        /**we look up survey and send back survey object  
+         * we look for survey --> pages --> questions --> answers
+         * we loop and display in jsp page
+        **/
+        surveys survey = surveymanager.getSurveyById(surveyId);
         if (survey != null) {
         	//make sure we are in the right program
         	if(survey.getProgramId() == (Integer) session.getAttribute("selprogramId")) {
 	        	List<activityCodes> activityCodes = activitycodemanager.getActivityCodes(0);
 	            mav.addObject("activityCodes", activityCodes);        
 	            mav.addObject("survey", survey);
-	            mav.addObject("surveyTitle", survey.getTitle());
+	           
 	            /** add of pages drop down box **/
 	            List<SurveyPages> surveyPages =  surveymanager.getSurveyPages(survey.getId(), false);
 	            mav.addObject("surveyPages", surveyPages);	
@@ -352,7 +356,7 @@ public class surveyController {
         
         
         /** we get the i info and make sure it matches the program id of the survey **/
-        surveys survey = surveymanager.getSurveysById(surveyId);
+        surveys survey = surveymanager.getSurveyById(surveyId);
         
         
         Integer programId = (Integer) session.getAttribute("selprogramId");

@@ -1,6 +1,7 @@
 package com.bowlink.rr.model;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -80,6 +81,8 @@ public class SurveyQuestions {
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
     @Column(name = "DATECREATED", nullable = true)
     private Date dateCreated = new Date();
+    
+    @Transient List <SurveyAnswers> SurveyAnswers;
 
 	public int getId() {
 		return id;
@@ -191,6 +194,15 @@ public class SurveyQuestions {
 
 	public void setQuestionNum(int questionNum) {
 		this.questionNum = questionNum;
+	}
+
+	public List<SurveyAnswers> getSurveyAnswers() {
+		return SurveyAnswers;
+	}
+
+	public void setSurveyAnswers(List<SurveyAnswers> surveyAnswers) {
+		SurveyAnswers = surveyAnswers;
 	}	
     
+	
 }

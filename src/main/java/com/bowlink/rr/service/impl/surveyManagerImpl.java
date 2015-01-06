@@ -7,6 +7,7 @@ package com.bowlink.rr.service.impl;
 
 import com.bowlink.rr.dao.surveyDAO;
 import com.bowlink.rr.model.AnswerTypes;
+import com.bowlink.rr.model.SurveyAnswers;
 import com.bowlink.rr.model.SurveyChangeLogs;
 import com.bowlink.rr.model.SurveyPages;
 import com.bowlink.rr.model.SurveyQuestions;
@@ -61,8 +62,12 @@ public class surveyManagerImpl implements surveyManager {
 
 	@Override
 	@Transactional
-	public surveys getSurveysById(Integer surveyId) throws Exception {
-		return surveyDAO.getSurveysById(surveyId);
+	public surveys getSurveyById(Integer surveyId) throws Exception {
+		/**first we get the survey details**/
+		surveys survey = surveyDAO.getSurveyById(surveyId);
+		/** now we get the pages **/
+		survey.setSurveyPages(getSurveyPages(surveyId, true));
+		return survey;
 	}
     
 	@Override
@@ -92,13 +97,31 @@ public class surveyManagerImpl implements surveyManager {
 	@Override
 	@Transactional
 	public List<SurveyPages> getSurveyPages(Integer surveyId, boolean getQuestions) throws Exception {
-		return surveyDAO.getSurveyPages(surveyId, getQuestions) ;
+		List<SurveyPages> surveyPages = surveyDAO.getSurveyPages(surveyId, getQuestions) ;
+		if (getQuestions) {
+		/** now we loop and get page questions **/
+			for (SurveyPages page: surveyPages) {
+				page.setSurveyQuestions(getSurveyQuestions(page.getId()));
+			}
+		}
+		return surveyPages;
 	}
 
 	@Override
 	public List<SurveyQuestions> getSurveyQuestions(Integer surveyPageId)
 			throws Exception {
-		return surveyDAO.getSurveyQuestions(surveyPageId) ;
+		List<SurveyQuestions> surveyQuestions = surveyDAO.getSurveyQuestions(surveyPageId);
+		/** we get answers here **/
+		for (SurveyQuestions question: surveyQuestions) {
+			question.setSurveyAnswers(getSurveyAnswers(question.getId()));
+		}
+		return surveyQuestions;
+	}
+
+	@Override
+	public List<SurveyAnswers> getSurveyAnswers(Integer questionId)
+			throws Exception {		
+		return surveyDAO.getSurveyAnswers(questionId);
 	}
 		
 }

@@ -8,6 +8,7 @@ package com.bowlink.rr.dao.impl;
 import com.bowlink.rr.dao.surveyDAO;
 import com.bowlink.rr.model.AnswerTypes;
 import com.bowlink.rr.model.EngagementSurveys;
+import com.bowlink.rr.model.SurveyAnswers;
 import com.bowlink.rr.model.SurveyChangeLogs;
 import com.bowlink.rr.model.SurveyPages;
 import com.bowlink.rr.model.SurveyQuestions;
@@ -96,7 +97,7 @@ public class surveyDAOImpl implements surveyDAO {
 	}
 	
     @SuppressWarnings("unchecked")
-	public surveys getSurveysById(Integer surveyId) throws Exception {
+	public surveys getSurveyById(Integer surveyId) throws Exception {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(surveys.class);
         criteria.add(Restrictions.eq("id", surveyId));
         List <surveys> surveyList = criteria.list();
@@ -174,7 +175,15 @@ public class surveyDAOImpl implements surveyDAO {
         return criteria.list();
 	}
 	
-	
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<SurveyAnswers> getSurveyAnswers(Integer questionId)
+			throws Exception {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SurveyAnswers.class);
+        criteria.add(Restrictions.eq("questionId", questionId));
+        criteria.addOrder(Order.asc("answerNum"));      
+        return criteria.list();
+	}
 	
 }
 
