@@ -56,8 +56,14 @@ CREATE TABLE `rapidregistry`.`providerHierarchyAssoc` (
 ALTER TABLE `rapidregistry`.`providerHierarchyAssoc` 
 ADD INDEX `idx_providerId` (`providerId` ASC);
 
-/** grace 01.05.2014 12:56AM **/
+/** grace 01.05.2015 12:56AM **/
 ALTER TABLE `rapidregistry`.`survey_answers` 
 ADD COLUMN `answerNum` INT NOT NULL DEFAULT 1 AFTER `dateCreated`;
+
+/** grace 01.13.2015 12:49AM **/
+ALTER TABLE `rapidregistry`.`survey_answers` 
+CHANGE COLUMN `answer` `answerOrLabel` VARCHAR(255) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NOT NULL ,
+ADD COLUMN `numericOnly` BIT(1) NOT NULL DEFAULT 0 AFTER `answerNum`;
+
 
 

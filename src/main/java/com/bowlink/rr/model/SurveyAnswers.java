@@ -38,9 +38,10 @@ public class SurveyAnswers {
     @Column(name = "skipToQuestionId", nullable = true)
     private int skipToQuestionId = 0;
     
+    /** label is used for textboxes **/
     @NotEmpty
-    @Column(name = "answer", nullable = false)
-    private String answer;
+    @Column(name = "answerOrLabel", nullable = false)
+    private String answerOrLabel;
     
     @NotEmpty
     @Column(name = "activityCodeId", nullable = true)
@@ -91,14 +92,6 @@ public class SurveyAnswers {
 
 	public void setSkipToQuestionId(int skipToQuestionId) {
 		this.skipToQuestionId = skipToQuestionId;
-	}
-
-	public String getAnswer() {
-		return answer;
-	}
-
-	public void setAnswer(String answer) {
-		this.answer = answer;
 	}
 
 	public int getActivityCodeId() {
