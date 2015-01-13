@@ -38,9 +38,10 @@ public class SurveyAnswers {
     @Column(name = "skipToQuestionId", nullable = true)
     private int skipToQuestionId = 0;
     
+    /** label is used for textboxes **/
     @NotEmpty
-    @Column(name = "answer", nullable = false)
-    private String answer;
+    @Column(name = "answerOrLabel", nullable = false)
+    private String answerOrLabel;
     
     @NotEmpty
     @Column(name = "activityCodeId", nullable = true)
@@ -52,10 +53,8 @@ public class SurveyAnswers {
     @Column(name = "defAnswerText", nullable = true)
     private String defAnswerText;
     
-    /** this orders the answers **/
-    @NotEmpty
-    @Column(name = "answerNum", nullable = true)
-    private int answerNum = 1;
+    @Column(name = "numericOnly", nullable = false)
+    private boolean numericOnly = false;
     
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
     @Column(name = "DATECREATED", nullable = true)
@@ -93,12 +92,12 @@ public class SurveyAnswers {
 		this.skipToQuestionId = skipToQuestionId;
 	}
 
-	public String getAnswer() {
-		return answer;
+	public String getAnswerOrLabel() {
+		return answerOrLabel;
 	}
 
-	public void setAnswer(String answer) {
-		this.answer = answer;
+	public void setAnswerOrLabel(String answerOrLabel) {
+		this.answerOrLabel = answerOrLabel;
 	}
 
 	public int getActivityCodeId() {
@@ -133,12 +132,14 @@ public class SurveyAnswers {
 		this.dateCreated = dateCreated;
 	}
 
-	public int getAnswerNum() {
-		return answerNum;
+	public boolean isNumericOnly() {
+		return numericOnly;
 	}
 
-	public void setAnswerNum(int answerNum) {
-		this.answerNum = answerNum;
+	public void setNumericOnly(boolean numericOnly) {
+		this.numericOnly = numericOnly;
 	}
+	
+	
 	
 }
