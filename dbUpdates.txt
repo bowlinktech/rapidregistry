@@ -65,5 +65,8 @@ ALTER TABLE `rapidregistry`.`survey_answers`
 CHANGE COLUMN `answer` `answerOrLabel` VARCHAR(255) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NOT NULL ,
 ADD COLUMN `numericOnly` BIT(1) NOT NULL DEFAULT 0 AFTER `answerNum`;
 
+ALTER TABLE `rapidregistry`.`survey_answers` 
+DROP COLUMN `answerNum`;
+
 
 
