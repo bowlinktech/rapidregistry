@@ -61,3 +61,14 @@ ALTER TABLE `rapidregistry`.`survey_answers`
 ADD COLUMN `answerNum` INT NOT NULL DEFAULT 1 AFTER `dateCreated`;
 
 
+/** Chad 01-13-2015 @ 11:59 PM **/
+ALTER TABLE `rapidregistry`.`programPatients` 
+ADD COLUMN `status` BIT(1) NOT NULL DEFAULT b'1' AFTER `MCIReview`;
+
+CREATE TABLE `rapidregistry`.`mergeLogs` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `newClientId` INT NOT NULL,
+  `similarClientId` INT NOT NULL,
+  `dateMerged` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC));
