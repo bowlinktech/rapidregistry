@@ -192,6 +192,7 @@ public class programController {
         }
         mav.addObject("entryMethods", entryMethods);
         
+       
         /* Get the list of avaiable table for survey */
         List<programAvailableTables> availableTables = programmanager.getAvailableTablesForSurveys(programDetails.getId());
         mav.addObject("availableTables", availableTables);

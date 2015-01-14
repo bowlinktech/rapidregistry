@@ -98,6 +98,7 @@ require(['./main'], function() {
             
         });
         
+        
         //Open up the modal to display a list of available tables to associate with
         $(document).on('click', '#createNewSurveyTable', function() {
             $.ajax({

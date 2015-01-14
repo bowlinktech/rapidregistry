@@ -81,3 +81,131 @@ CREATE TABLE `rapidregistry`.`mergeLogs` (
   `dateMerged` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC));
+
+
+/** Chad 01-14-2015 @ 12:11 PM **/
+CREATE TABLE `rapidregistry`.`lu_providerTypes` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `displayText` VARCHAR(45) NOT NULL,
+  `status` BIT(1) NOT NULL DEFAULT b'1',
+  `dateCreated` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`));
+
+INSERT INTO `rapidregistry`.`lu_providerTypes` (`displayText`, `status`) VALUES ('Physician', 1);
+INSERT INTO `rapidregistry`.`lu_providerTypes` (`displayText`, `status`) VALUES ('NP/APRN/CNM/PA', 1);
+INSERT INTO `rapidregistry`.`lu_providerTypes` (`displayText`, `status`) VALUES ('RN/LPN', 1);
+INSERT INTO `rapidregistry`.`lu_providerTypes` (`displayText`, `status`) VALUES ('Counselor/CHE', 1);
+
+CREATE TABLE `rapidregistry`.`lu_primaryReimbursement` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `displayText` VARCHAR(45) NOT NULL,
+  `status` BIT(1) NOT NULL DEFAULT b'1',
+  `dateCreated` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`));
+
+INSERT INTO `rapidregistry`.`lu_primaryReimbursement` (`displayText`, `status`) VALUES ('Medicaid', 1);
+INSERT INTO `rapidregistry`.`lu_primaryReimbursement` (`displayText`, `status`) VALUES ('Private Insurance', 1);
+INSERT INTO `rapidregistry`.`lu_primaryReimbursement` (`displayText`, `status`) VALUES ('No Charge / Title X', 1);
+INSERT INTO `rapidregistry`.`lu_primaryReimbursement` (`displayText`, `status`) VALUES ('Self Pay - Partial', 1);
+INSERT INTO `rapidregistry`.`lu_primaryReimbursement` (`displayText`, `status`) VALUES ('State Funding / DPH (MA Only)', 1);
+INSERT INTO `rapidregistry`.`lu_primaryReimbursement` (`displayText`, `status`) VALUES ('Health Safety Net (MA Only)', 1);
+INSERT INTO `rapidregistry`.`lu_primaryReimbursement` (`displayText`, `status`) VALUES ('Other', 1);
+INSERT INTO `rapidregistry`.`lu_primaryReimbursement` (`displayText`, `status`) VALUES ('Insurance Exchange', 1);
+
+CREATE TABLE `rapidregistry`.`lu_principalHealthInsurance` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `displayText` VARCHAR(45) NOT NULL,
+  `status` BIT(1) NOT NULL DEFAULT b'1',
+  `dateCreated` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`));
+
+INSERT INTO `rapidregistry`.`lu_principalHealthInsurance` (`displayText`, `status`) VALUES ('Public Insurance', 1);
+INSERT INTO `rapidregistry`.`lu_principalHealthInsurance` (`displayText`, `status`) VALUES ('Private Insurance', 1);
+INSERT INTO `rapidregistry`.`lu_principalHealthInsurance` (`displayText`, `status`) VALUES ('Uninsured', 1);
+INSERT INTO `rapidregistry`.`lu_principalHealthInsurance` (`displayText`, `status`) VALUES ('Unknown / not reported', 1);
+
+CREATE TABLE `rapidregistry`.`storage_engagementMedicalServices` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `engagementId` INT NOT NULL,
+  `engagementFieldId` INT(11) NULL DEFAULT 0,
+  `codeId` INT NULL DEFAULT 0,
+  PRIMARY KEY (`id`));
+
+ALTER TABLE `rapidregistry`.`storage_engagementMedicalServices` 
+ADD COLUMN `textValue` VARCHAR(500) NULL DEFAULT NULL AFTER `codeId`;
+
+ALTER TABLE `rapidregistry`.`lu_activityCodes` 
+CHANGE COLUMN `code` `code` VARCHAR(45) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL DEFAULT NULL ;
+
+ALTER TABLE `rapidregistry`.`storage_engagements` 
+ADD COLUMN `providerTypeId` INT(11) NULL DEFAULT NULL COMMENT 'Look up value from lu_providerTypes. ' AFTER `dateCreated`,
+ADD COLUMN `familySize` INT(11) NOT NULL DEFAULT 1 AFTER `providerTypeId`,
+ADD COLUMN `GrossWeeklyIncome` FLOAT NULL DEFAULT 0 AFTER `familySize`,
+ADD COLUMN `GrossWeeklyIncomeUnknown` BIT(1) NULL DEFAULT b'0' AFTER `GrossWeeklyIncome`,
+ADD COLUMN `primaryReimbursementId` INT(11) NULL DEFAULT NULL COMMENT 'Look up value from lu_primaryReimbursement ' AFTER `GrossWeeklyIncomeUnknown`,
+ADD COLUMN `principalHealthInsuranceId` INT(11) NULL DEFAULT NULL COMMENT 'Look up value from lu_principalHealthInsurance. ' AFTER `primaryReimbursementId`,
+ADD COLUMN `visitType` VARCHAR(500) NULL DEFAULT NULL AFTER `principalHealthInsuranceId`,
+ADD COLUMN `contraceptiveMethodPrimaryId` INT(11) NULL DEFAULT NULL AFTER `visitType`,
+ADD COLUMN `contraceptiveMethodAfterId` INT(11) NULL DEFAULT NULL AFTER `contraceptiveMethodPrimaryId`;
+
+CREATE TABLE `rapidregistry`.`lu_contraceptiveMethods` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `displayText` VARCHAR(45) NOT NULL,
+  `status` BIT(1) NOT NULL DEFAULT b'1',
+  `dateCreated` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`));
+
+INSERT INTO `rapidregistry`.`lu_contraceptiveMethods` (`displayText`, `status`) VALUES ('Abstinence', 1);
+INSERT INTO `rapidregistry`.`lu_contraceptiveMethods` (`displayText`, `status`) VALUES ('Contraceptive Sponge', 1);
+INSERT INTO `rapidregistry`.`lu_contraceptiveMethods` (`displayText`, `status`) VALUES ('Diaphragm / Cervical Cap', 1);
+INSERT INTO `rapidregistry`.`lu_contraceptiveMethods` (`displayText`, `status`) VALUES ('Female Condom', 1);
+INSERT INTO `rapidregistry`.`lu_contraceptiveMethods` (`displayText`, `status`) VALUES ('Female Sterilization', 1);
+INSERT INTO `rapidregistry`.`lu_contraceptiveMethods` (`displayText`, `status`) VALUES ('Fertility Awareness', 1);
+INSERT INTO `rapidregistry`.`lu_contraceptiveMethods` (`displayText`, `status`) VALUES ('Hormonal Implant', 1);
+INSERT INTO `rapidregistry`.`lu_contraceptiveMethods` (`displayText`, `status`) VALUES ('Hormonal Injection - 1 month', 1);
+INSERT INTO `rapidregistry`.`lu_contraceptiveMethods` (`displayText`, `status`) VALUES ('Hormonal Injection - 3 month', 1);
+INSERT INTO `rapidregistry`.`lu_contraceptiveMethods` (`displayText`, `status`) VALUES ('Hormonal Patch', 1);
+INSERT INTO `rapidregistry`.`lu_contraceptiveMethods` (`displayText`, `status`) VALUES ('IUD', 1);
+INSERT INTO `rapidregistry`.`lu_contraceptiveMethods` (`displayText`, `status`) VALUES ('Male Condom', 1);
+INSERT INTO `rapidregistry`.`lu_contraceptiveMethods` (`displayText`, `status`) VALUES ('Oral Contraceptive', 1);
+INSERT INTO `rapidregistry`.`lu_contraceptiveMethods` (`displayText`, `status`) VALUES ('Spermicide (Used Alone)', 1);
+INSERT INTO `rapidregistry`.`lu_contraceptiveMethods` (`displayText`, `status`) VALUES ('Vaginal Ring', 1);
+INSERT INTO `rapidregistry`.`lu_contraceptiveMethods` (`displayText`, `status`) VALUES ('Vasectomy', 1);
+INSERT INTO `rapidregistry`.`lu_contraceptiveMethods` (`displayText`, `status`) VALUES ('Other Method', 1);
+INSERT INTO `rapidregistry`.`lu_contraceptiveMethods` (`displayText`, `status`) VALUES ('Method Unknown', 1);
+INSERT INTO `rapidregistry`.`lu_contraceptiveMethods` (`displayText`, `status`) VALUES ('No Method', 1);
+
+CREATE TABLE `rapidregistry`.`storage_engagementsMisc` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `engagementId` int(11) NOT NULL,
+  `field1` varchar(500) DEFAULT NULL,
+  `field2` varchar(500) DEFAULT NULL,
+  `field3` varchar(500) DEFAULT NULL,
+  `field4` varchar(500) DEFAULT NULL,
+  `field5` varchar(500) DEFAULT NULL,
+  `field6` varchar(500) DEFAULT NULL,
+  `field7` varchar(500) DEFAULT NULL,
+  `field8` varchar(500) DEFAULT NULL,
+  `field9` varchar(500) DEFAULT NULL,
+  `field10` varchar(500) DEFAULT NULL,
+  `field11` varchar(500) DEFAULT NULL,
+  `field12` varchar(500) DEFAULT NULL,
+  `field13` varchar(500) DEFAULT NULL,
+  `field14` varchar(500) DEFAULT NULL,
+  `field15` varchar(500) DEFAULT NULL,
+  `field16` varchar(500) DEFAULT NULL,
+  `field17` varchar(500) DEFAULT NULL,
+  `field18` varchar(500) DEFAULT NULL,
+  `field19` varchar(500) DEFAULT NULL,
+  `field20` varchar(500) DEFAULT NULL,
+  `field21` varchar(500) DEFAULT NULL,
+  `field22` varchar(500) DEFAULT NULL,
+  `field23` varchar(500) DEFAULT NULL,
+  `field24` varchar(500) DEFAULT NULL,
+  `field25` varchar(500) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+INSERT INTO `rapidregistry`.`lu_answerTypes` (`answerType`) VALUES ('Single Checkbox');
+INSERT INTO `rapidregistry`.`lu_answerTypes` (`answerType`) VALUES ('Multiple Checkbox');
