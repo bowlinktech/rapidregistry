@@ -43,7 +43,7 @@
                 <div class="form-group">
                     <spring:bind path="answerType">
                         <label class="control-label" for="name">Field Type *</label>
-                        <form:select path="answerType" class="form-control half">
+                        <form:select path="answerType" id="answerType" class="form-control half">
                             <option value="">- Select -</option>
                             <c:forEach items="${answerTypes}" var="atype" varStatus="aStatus">
                                 <option value="${answerTypes[aStatus.index][0]}"  <c:if test="${fn:toLowerCase(dataElementFormFields.answerType) == fn:toLowerCase(answerTypes[aStatus.index][0])}">selected</c:if>>${answerTypes[aStatus.index][1]} </option>
@@ -73,6 +73,20 @@
                                 <option value="" label=" - Select - " ></option>
                             </form:select>
                             <form:errors path="saveToTableCol" cssClass="control-label" element="label" />     
+                        </div>
+                    </spring:bind>
+                </div>
+                <div id="populateFromTableDiv" class="form-group" style="${not empty dataElementFormFields.populateFromTable ? 'display:block' : 'display:none'}">
+                    <spring:bind path="populateFromTable">
+                        <div id="populateFromTableDiv" class="form-group ${status.error ? 'has-error' : '' }">
+                            <label class="control-label" for="populateFromTable">Populate From</label>
+                            <form:select path="populateFromTable" id="populateFromTable" class="form-control half">
+                                <option value="">- Select -</option>
+                                <c:forEach items="${lookUpTables}" var="ltable" varStatus="lStatus">
+                                    <option value="${ltable}"  <c:if test="${fn:toLowerCase(dataElementFormFields.populateFromTable) == fn:toLowerCase(ltable)}">selected</c:if>>${ltable} </option>
+                                </c:forEach>
+                            </form:select>
+                        <form:errors path="populateFromTable" cssClass="control-label" element="label" />     
                         </div>
                     </spring:bind>
                 </div>
@@ -115,6 +129,18 @@
         $(document).on('change', '.tableName', function() {
             var tableName = $(this).val();
             populateTableColumns(tableName,"");
+        });
+        
+        $(document).on('change', '#answerType', function() {
+           
+          if($(this).val() == 1 || $(this).val() == 2 || $(this).val() == 8 || $(this).val() == 9) {
+              $('#populateFromTableDiv').show();
+          }
+          else {
+              $('#populateFromTableDiv').hide();
+              $('#populateFromTable').val("");
+          }
+        
         });
         
         

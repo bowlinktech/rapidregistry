@@ -141,7 +141,18 @@ public class programFormsDAOImpl implements programFormsDAO {
      */
     @Override
     public void savePatientFields(programPatientFields field) throws Exception {
-        sessionFactory.getCurrentSession().save(field);
+        sessionFactory.getCurrentSession().saveOrUpdate(field);
+    }
+    
+    /**
+     * The 'savePatientField' function will save all selected patient field for the passed in program.
+     * 
+     * @param field         The programDemoDataElemets object to save
+     * @throws Exception 
+     */
+    @Override
+    public void savePatientField(programPatientFields field) throws Exception {
+        sessionFactory.getCurrentSession().update(field);
     }
     
     /**
@@ -265,6 +276,17 @@ public class programFormsDAOImpl implements programFormsDAO {
     }
     
     /**
+     * The 'saveEngagementField' function will save all selected engagement field for the passed in program.
+     * 
+     * @param field         The programEngagementFields object to save
+     * @throws Exception 
+     */
+    @Override
+    public void saveEngagementField(programEngagementFields field) throws Exception {
+        sessionFactory.getCurrentSession().update(field);
+    }
+    
+    /**
      * The 'saveEngagementSection' function will save all selected engagement section for the passed in program.
      * 
      * @param engagementSection         The programEngagementSections object to save
@@ -291,6 +313,18 @@ public class programFormsDAOImpl implements programFormsDAO {
         query.setParameter("dspPos", dspPos);
         
         return (programEngagementSections) query.uniqueResult();
+    }
+    
+    /**
+     * The 'getEngagementFieldById' function will return the details of a passed in engagement field.
+     * 
+     * @param fieldId The fieldId is the id for the passed in engagement field
+     * @return This function will return a single programPatientFields object
+     * @throws Exception 
+     */
+    @Override
+    public programEngagementFields getEngagementFieldById(Integer fieldId) throws Exception {
+        return (programEngagementFields) sessionFactory.getCurrentSession().get(programEngagementFields.class, fieldId); 
     }
     
 }

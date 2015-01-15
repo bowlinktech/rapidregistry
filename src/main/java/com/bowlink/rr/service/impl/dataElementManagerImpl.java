@@ -284,4 +284,11 @@ public class dataElementManagerImpl implements dataElementManager {
     public List getAnswerTypes() {
         return dataElementDAO.getAnswerTypes();
     }
+    
+    @SuppressWarnings("rawtypes")
+    @Override
+    @Transactional
+    public List getLookUpTables() {
+        return dataElementDAO.getLookUpTables();
+    }
  }

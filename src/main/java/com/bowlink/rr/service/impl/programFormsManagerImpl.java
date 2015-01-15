@@ -70,6 +70,12 @@ public class programFormsManagerImpl implements programFormsManager {
     
     @Override
     @Transactional
+    public void savePatientField(programPatientFields field) throws Exception {
+        programFormsDAO.savePatientField(field);
+    }
+    
+    @Override
+    @Transactional
     public void savePatientSection(programPatientSections patientSection) throws Exception {
         programFormsDAO.savePatientSection(patientSection);
     }
@@ -118,6 +124,12 @@ public class programFormsManagerImpl implements programFormsManager {
     
     @Override
     @Transactional
+    public void saveEngagementField(programEngagementFields field) throws Exception {
+        programFormsDAO.saveEngagementField(field);
+    }
+    
+    @Override
+    @Transactional
     public void saveEngagementSection(programEngagementSections engagementSection) throws Exception {
         programFormsDAO.saveEngagementSection(engagementSection);
     }
@@ -132,5 +144,11 @@ public class programFormsManagerImpl implements programFormsManager {
     @Transactional
     public programPatientFields getPatientFieldById(Integer fieldId) throws Exception {
         return programFormsDAO.getPatientFieldById(fieldId);
+    }
+    
+    @Override
+    @Transactional
+    public programEngagementFields getEngagementFieldById(Integer fieldId) throws Exception {
+        return programFormsDAO.getEngagementFieldById(fieldId);
     }
 }

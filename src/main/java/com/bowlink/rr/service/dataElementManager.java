@@ -58,4 +58,7 @@ public interface dataElementManager {
     
     @SuppressWarnings("rawtypes")
     List getAnswerTypes();
+    
+    @SuppressWarnings("rawtypes")
+    List getLookUpTables();
 }

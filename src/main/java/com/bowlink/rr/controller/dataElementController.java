@@ -268,6 +268,11 @@ public class dataElementController {
         @SuppressWarnings("rawtypes")
         List answerTypes = dataelementmanager.getAnswerTypes();
         mav.addObject("answerTypes", answerTypes);
+        
+        //Get the list of available look up tables
+        @SuppressWarnings("rawtypes")
+        List lookUpTables = dataelementmanager.getLookUpTables();
+        mav.addObject("lookUpTables", lookUpTables);
 
         return mav;
     }
@@ -302,6 +307,11 @@ public class dataElementController {
             @SuppressWarnings("rawtypes")
             List answerTypes = dataelementmanager.getAnswerTypes();
             mav.addObject("answerTypes", answerTypes);
+            
+            //Get the list of available look up tables
+            @SuppressWarnings("rawtypes")
+            List lookUpTables = dataelementmanager.getLookUpTables();
+            mav.addObject("lookUpTables", lookUpTables);
             
             return mav;
         }

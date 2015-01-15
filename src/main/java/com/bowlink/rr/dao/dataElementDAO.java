@@ -60,4 +60,7 @@ public interface dataElementDAO {
     
     @SuppressWarnings("rawtypes")
     List getAnswerTypes();
+    
+    @SuppressWarnings("rawtypes")
+    List getLookUpTables();
 }

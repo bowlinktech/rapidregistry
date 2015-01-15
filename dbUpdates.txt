@@ -209,3 +209,7 @@ CREATE TABLE `rapidregistry`.`storage_engagementsMisc` (
 
 INSERT INTO `rapidregistry`.`lu_answerTypes` (`answerType`) VALUES ('Single Checkbox');
 INSERT INTO `rapidregistry`.`lu_answerTypes` (`answerType`) VALUES ('Multiple Checkbox');
+
+/** Chad 01-15-2015 @ 9:30 AM **/
+ALTER TABLE `rapidregistry`.`dataElements` 
+ADD COLUMN `populateFromTable` VARCHAR(55) NULL DEFAULT NULL AFTER `answerType`;

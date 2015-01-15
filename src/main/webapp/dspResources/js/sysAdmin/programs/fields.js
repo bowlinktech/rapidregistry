@@ -245,6 +245,53 @@ require(['./main'], function () {
             $(this).attr('rel', newDspPos);
         });
 
+        //Edit an existing field
+        $(document).on('click', '.editField', function() {
+            
+            $.ajax({
+                url: '../fieldForm',
+                data: {'id':$(this).attr('rel'), 'section': $('#sectionName').val(), 'sectionId': $('#sectionId').val()},
+                type: "GET",
+                success: function(data) {
+                    $("#fieldModal").html(data);
+                }
+            });
+           
+        });
+        
+        //Function to submit the changes to an existing user or 
+        //submit the new user fields from the modal window.
+        $(document).on('click', '#submitFieldEditButton', function(event) {
+            
+            var formData = $("#fieldForm").serialize();
+            
+            if($('#section').val() == 'patient-sections') {
+                var url = '../savePatienField';
+            }
+            else {
+                var url = '../saveEngagementField';
+            }
+            
+            $.ajax({
+                url: url,
+                data: formData,
+                type: "POST",
+                async: false,
+                success: function(data) {
+
+                    if (data.indexOf('fieldSaved') != -1) {
+                       window.location.href = "/sysAdmin/programs/"+$('#progamNameURL').val()+"/forms/"+$('#section').val()+"/fields?s="+$('#sectionId').val()+"&msg=fieldsaved";
+                    }
+                    else {
+                        $("#fieldModal").html(data);
+                    }
+                }
+            });
+            
+           event.preventDefault();
+           return false;
+        });
+        
 
         //Function that will handle removing a line item from the
         //existing data translations. Function will also update the

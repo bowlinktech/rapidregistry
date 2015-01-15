@@ -742,4 +742,148 @@ public class programForms {
         return 1;
     }
     
+    
+    /**
+     * The '/fieldForm' request will display the form to edit the selected field.
+     *
+     * @param session
+     * @param redirectAttr
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/fieldForm", method = RequestMethod.GET)
+    public @ResponseBody ModelAndView fieldForm(@RequestParam(value = "id", required = true) Integer fieldId, @RequestParam String section, @RequestParam(value = "sectionId", required = true) Integer sectionId, HttpSession session, RedirectAttributes redirectAttr) throws Exception {
+        
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/sysAdmin/programs/forms/fieldForm");
+        
+        if("patient-sections".equals(section)) {
+            programPatientFields fieldDetails = programformsmanager.getPatientFieldById(fieldId);
+            
+            mav.addObject("fieldDetails", fieldDetails);
+        }
+        
+        /* Engagement Form Sections */
+        else if ("engagement-sections".equals(section)) {
+            //Need to get a list of existing engagement fields
+            programEngagementFields fieldDetails = programformsmanager.getEngagementFieldById(fieldId);
+            
+            mav.addObject("fieldDetails", fieldDetails);
+ 
+        }
+        
+        mav.addObject("programName", session.getAttribute("programName"));
+        mav.addObject("section", section);
+        
+        /**
+         * Get a list of all available demographic fields *
+         */
+        List<dataElements> dataElements = dataelementmanager.getdataElements();
+        mav.addObject("availableFields", dataElements);
+
+        //Return a list of available crosswalks
+        List<crosswalks> crosswalks = dataelementmanager.getCrosswalks(1, 0, (Integer) session.getAttribute("programId"));
+        mav.addObject("crosswalks", crosswalks);
+
+        //Return a list of validation types
+        List validationTypes = dataelementmanager.getValidationTypes();
+        mav.addObject("validationTypes", validationTypes);
+
+        return mav;
+    }    
+    
+    
+    
+    /**
+     * The '/savePatientField' POST request will submit the patient field.
+     *
+     * @param fieldDetails	The object holding the patient field form fields
+     * @param result	The validation result
+     * @param redirectAttr	The variable that will hold values that can be read after the redirect
+     * @param action	The variable that holds which button was pressed
+     *
+     * @throws Exception
+     */
+    @RequestMapping(value = "/savePatientField", method = RequestMethod.POST)
+    public @ResponseBody ModelAndView savePatientField(@Valid @ModelAttribute(value = "fieldDetails") programPatientFields fieldDetails, BindingResult result, @RequestParam String action, @RequestParam String section, HttpSession session) throws Exception {
+
+        if (result.hasErrors()) {
+            ModelAndView mav = new ModelAndView();
+            mav.setViewName("/sysAdmin/programs/forms/fieldForm");
+            
+            List<dataElements> dataElements = dataelementmanager.getdataElements();
+            mav.addObject("availableFields", dataElements);
+
+            //Return a list of available crosswalks
+            List<crosswalks> crosswalks = dataelementmanager.getCrosswalks(1, 0, (Integer) session.getAttribute("programId"));
+            mav.addObject("crosswalks", crosswalks);
+
+            //Return a list of validation types
+            List validationTypes = dataelementmanager.getValidationTypes();
+            mav.addObject("validationTypes", validationTypes);
+            
+            mav.addObject("programName", session.getAttribute("programName"));
+            mav.addObject("section", section);
+            
+            return mav;
+        }
+        
+        programformsmanager.savePatientField(fieldDetails);
+
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/sysAdmin/programs/forms/fieldForm");
+        mav.addObject("programName", session.getAttribute("programName"));
+        mav.addObject("sectionName", section);
+        mav.addObject("success", "fieldSaved");
+        
+        return mav;
+    }
+    
+    
+    /**
+     * The '/saveEngagementField' POST request will submit the engagement field.
+     *
+     * @param fieldDetails	The object holding the patient engagement form fields
+     * @param result	The validation result
+     * @param redirectAttr	The variable that will hold values that can be read after the redirect
+     * @param action	The variable that holds which button was pressed
+     *
+     * @throws Exception
+     */
+    @RequestMapping(value = "/saveEngagementField", method = RequestMethod.POST)
+    public @ResponseBody ModelAndView saveEngagementField(@Valid @ModelAttribute(value = "fieldDetails") programEngagementFields fieldDetails, BindingResult result, @RequestParam String action, @RequestParam String section, HttpSession session) throws Exception {
+
+        if (result.hasErrors()) {
+            ModelAndView mav = new ModelAndView();
+            mav.setViewName("/sysAdmin/programs/forms/fieldForm");
+            
+            List<dataElements> dataElements = dataelementmanager.getdataElements();
+            mav.addObject("availableFields", dataElements);
+
+            //Return a list of available crosswalks
+            List<crosswalks> crosswalks = dataelementmanager.getCrosswalks(1, 0, (Integer) session.getAttribute("programId"));
+            mav.addObject("crosswalks", crosswalks);
+
+            //Return a list of validation types
+            List validationTypes = dataelementmanager.getValidationTypes();
+            mav.addObject("validationTypes", validationTypes);
+            
+            mav.addObject("programName", session.getAttribute("programName"));
+            mav.addObject("section", section);
+            mav.addObject("error", result.getFieldError());
+            
+            return mav;
+        }
+        
+        programformsmanager.saveEngagementField(fieldDetails);
+
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/sysAdmin/programs/forms/fieldForm");
+        mav.addObject("programName", session.getAttribute("programName"));
+        mav.addObject("sectionName", section);
+        mav.addObject("success", "fieldSaved");
+        
+        return mav;
+
+    }
 }

@@ -370,4 +370,16 @@ public class dataElementDAOImpl implements dataElementDAO {
         return query.list();
     }
     
+    
+    /**
+     * The 'getLookUpTables' function will return a list of all available look up tables where we can associate a data element to.
+     */
+    @Override
+    @SuppressWarnings("rawtypes")
+    @Transactional
+    public List getLookUpTables() {
+        Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT distinct table_name FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'rapidregistry' and TABLE_NAME LIKE 'lu\\_%'");
+
+        return query.list();
+    }
 }

@@ -31,6 +31,8 @@ public interface programFormsDAO {
     
     void savePatientFields(programPatientFields field) throws Exception;
     
+    void savePatientField(programPatientFields field) throws Exception;
+    
     void savePatientSection(programPatientSections patientSection) throws Exception;
     
     programPatientSections getPatientSectionBydspPos(Integer dspPos, Integer programId);
@@ -47,10 +49,14 @@ public interface programFormsDAO {
     
     void saveEngagementFields(programEngagementFields field) throws Exception;
     
+    void saveEngagementField(programEngagementFields field) throws Exception;
+    
     void saveEngagementSection(programEngagementSections engagementSection) throws Exception;
     
     programEngagementSections getEngagementSectionBydspPos(Integer dspPos, Integer programId);
     
     programPatientFields getPatientFieldById(Integer fieldId) throws Exception;
+    
+    programEngagementFields getEngagementFieldById(Integer fieldId) throws Exception;
     
 }
