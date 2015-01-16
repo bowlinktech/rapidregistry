@@ -348,6 +348,71 @@ require(['./main'], function () {
             });
         });
         
+        
+        //The function to populate the select fields modal
+        $(document).on('click', '.selectValues', function() {
+            var section = $('#sectionName').val();
+            var fieldId = $(this).attr('rel');
+
+            $.ajax({
+                url: '../getFieldValues',
+                data: {'section': section, 'fieldId': fieldId},
+                type: "GET",
+                success: function(data) {
+                    $("#selectValuesModal").html(data);
+                }
+            });
+        });
+        
+        $(document).on('click', '#submitFieldValuesButton', function(event) {
+            
+            var sectionId = $('#sectionId').val();
+            var section = $('#section').val();
+            var fieldId = $('#fieldId').val();
+            
+            
+            var valueList = "";
+            $('.valueCheckbox').each(function() {
+                if(this.checked) {
+                    valueList += $(this).val() + '~' + $(this).next('label').text() + '|';
+                }
+            })
+            
+            $.ajax({
+                url: '../saveFieldValues',
+                data: {'section': section, 'fieldId': fieldId, 'selectedValues': valueList.substring(0,valueList.length-1)},
+                type: "POST",
+                async: false,
+                success: function(data) {
+
+                    if (data.indexOf('valuesSaved') != -1) {
+                       window.location.href = "/sysAdmin/programs/"+$('#progamNameURL').val()+"/forms/"+section+"/fields?s="+sectionId+"&msg=fieldValuesSaved";
+                    }
+                    else {
+                        $("#selectValuesModal").html(data);
+                    }
+                }
+            });
+            event.preventDefault();
+            return false;
+            
+        });
+        
+        $(document).on('click', '.selectAllFieldValues', function() {
+            if(this.checked) {
+                 $('.valueCheckbox').each(function() {
+                    this.checked = true;
+                 });
+            }
+            else {
+                $('.valueCheckbox').each(function() {
+                    this.checked = false;
+                 });
+            }
+           
+            
+        })
+        
     });
 });
 

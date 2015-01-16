@@ -32,14 +32,12 @@ public class PWChangeJob implements Job {
         try {
             SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
             List <User> userlist = usermanager.getAllUsers();
-            System.out.println("start of pw job");
 			   for (User user : userlist) {
 				   //READ PW AND UPDATE
 				   user.setEmail(user.getEmail().trim());
 				   user = usermanager.encryptPW(user);
 				   usermanager.updateUser(user);  				   
 			   }
-			   System.out.println("end of pw job");   
         } catch (Exception ex) {
         	ex.printStackTrace();
             try {

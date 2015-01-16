@@ -6,8 +6,10 @@
 package com.bowlink.rr.dao.impl;
 
 import com.bowlink.rr.dao.programFormsDAO;
+import com.bowlink.rr.model.programEngagementFieldValues;
 import com.bowlink.rr.model.programEngagementFields;
 import com.bowlink.rr.model.programEngagementSections;
+import com.bowlink.rr.model.programPatientFieldValues;
 import com.bowlink.rr.model.programPatientFields;
 import com.bowlink.rr.model.programPatientSections;
 import java.util.List;
@@ -15,6 +17,7 @@ import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -52,7 +55,7 @@ public class programFormsDAOImpl implements programFormsDAO {
      */
     @Override
     public List<programPatientFields> getPatientFieldsByProgramId(Integer programId) throws Exception {
-        Query query = sessionFactory.getCurrentSession().createQuery("from programPatientFields where programId = :programId");
+        Query query = sessionFactory.getCurrentSession().createQuery("from programPatientFields where programId = :programId order by dspPos asc");
         query.setParameter("programId", programId);
         
         return query.list();
@@ -94,7 +97,7 @@ public class programFormsDAOImpl implements programFormsDAO {
      */
     @Override
     public List<programPatientFields> getPatientFields(Integer programId, Integer sectionId) throws Exception {
-        Query query = sessionFactory.getCurrentSession().createQuery("from programPatientFields where programId = :programId and sectionId = :sectionId");
+        Query query = sessionFactory.getCurrentSession().createQuery("from programPatientFields where programId = :programId and sectionId = :sectionId order by dspPos asc");
         query.setParameter("programId", programId);
         query.setParameter("sectionId", sectionId);
         
@@ -111,7 +114,7 @@ public class programFormsDAOImpl implements programFormsDAO {
      */
     @Override
     public List<programPatientFields> getAllPatientFields(Integer programId) throws Exception {
-        Query query = sessionFactory.getCurrentSession().createQuery("from programPatientFields where programId = :programId");
+        Query query = sessionFactory.getCurrentSession().createQuery("from programPatientFields where programId = :programId order by dspPos asc");
         query.setParameter("programId", programId);
         
         return query.list();
@@ -211,7 +214,7 @@ public class programFormsDAOImpl implements programFormsDAO {
      */
     @Override
     public List<programEngagementFields> getEngagementFieldsByProgramId(Integer programId) throws Exception {
-        Query query = sessionFactory.getCurrentSession().createQuery("from programEngagementFields where programId = :programId");
+        Query query = sessionFactory.getCurrentSession().createQuery("from programEngagementFields where programId = :programId order by dspPos asc");
         query.setParameter("programId", programId);
         
         return query.list();
@@ -241,7 +244,7 @@ public class programFormsDAOImpl implements programFormsDAO {
      */
     @Override
     public List<programEngagementFields> getEngagementFields(Integer programId, Integer sectionId) throws Exception {
-        Query query = sessionFactory.getCurrentSession().createQuery("from programEngagementFields where programId = :programId and sectionId = :sectionId");
+        Query query = sessionFactory.getCurrentSession().createQuery("from programEngagementFields where programId = :programId and sectionId = :sectionId order by dspPos asc");
         query.setParameter("programId", programId);
         query.setParameter("sectionId", sectionId);
         
@@ -325,6 +328,76 @@ public class programFormsDAOImpl implements programFormsDAO {
     @Override
     public programEngagementFields getEngagementFieldById(Integer fieldId) throws Exception {
         return (programEngagementFields) sessionFactory.getCurrentSession().get(programEngagementFields.class, fieldId); 
+    }
+    
+    /**
+     * The 'removeProgramFieldValues' will remove the selected field values for the passed in field Id.
+     * 
+     * @param fieldId   The id of the selected field
+     * @throws Exception 
+     */
+    @Override
+    @Transactional
+    public void removeProgramFieldValues(Integer fieldId) throws Exception {
+        Query deleteFields = sessionFactory.getCurrentSession().createQuery("delete from programPatientFieldValues where patientFieldId = :fieldId");
+        deleteFields.setParameter("fieldId", fieldId);
+        deleteFields.executeUpdate();
+    }
+    
+    /**
+     * The 'savePatientFieldValue' function will save the selected field values to the field
+     * 
+     * @param newFieldValue The object holding the selected field value;
+     * @throws Exception 
+     */
+    @Override
+    @Transactional
+    public void savePatientFieldValue(programPatientFieldValues newFieldValue) throws Exception {
+         sessionFactory.getCurrentSession().save(newFieldValue);
+    }
+    
+    /**
+     * The 'removeEngagementFieldValues' will remove the selected field values for the passed in field Id.
+     * 
+     * @param fieldId   The id of the selected field
+     * @throws Exception 
+     */
+    @Override
+    @Transactional
+    public void removeEngagementFieldValues(Integer fieldId) throws Exception {
+        Query deleteFields = sessionFactory.getCurrentSession().createQuery("delete from programEngagementFieldValues where engagementFieldId = :fieldId");
+        deleteFields.setParameter("fieldId", fieldId);
+        deleteFields.executeUpdate();
+    }
+    
+    /**
+     * The 'saveEngagementFieldValue' function will save the selected field values to the field
+     * 
+     * @param newFieldValue The object holding the selected field value;
+     * @throws Exception 
+     */
+    @Override
+    @Transactional
+    public void saveEngagementFieldValue(programEngagementFieldValues newFieldValue) throws Exception {
+        sessionFactory.getCurrentSession().save(newFieldValue);
+    }
+    
+    @Override
+    @Transactional
+    public List<programPatientFieldValues> getPatientFieldValues(Integer fieldId) throws Exception {
+        Query query = sessionFactory.getCurrentSession().createQuery("from programPatientFieldValues where patientFieldId = :fieldId");
+        query.setParameter("fieldId", fieldId);
+        
+        return query.list();
+    }
+    
+    @Override
+    @Transactional
+    public List<programEngagementFieldValues> getEngagementFieldValues(Integer fieldId) throws Exception {
+        Query query = sessionFactory.getCurrentSession().createQuery("from programEngagementFieldValues where engagementFieldId = :fieldId");
+        query.setParameter("fieldId", fieldId);
+        
+        return query.list();
     }
     
 }

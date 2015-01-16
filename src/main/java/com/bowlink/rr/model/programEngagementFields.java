@@ -33,6 +33,9 @@ public class programEngagementFields {
     @Transient
     private String validationName;
     
+    @Transient
+    private boolean autoPopulate;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID", nullable = false)
@@ -213,4 +216,13 @@ public class programEngagementFields {
     public void setSearchDspPos(int searchDspPos) {
         this.searchDspPos = searchDspPos;
     }
+
+    public boolean isAutoPopulate() {
+        return autoPopulate;
+    }
+
+    public void setAutoPopulate(boolean autoPopulate) {
+        this.autoPopulate = autoPopulate;
+    }
+    
 }

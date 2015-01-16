@@ -382,4 +382,15 @@ public class dataElementDAOImpl implements dataElementDAO {
 
         return query.list();
     }
+    
+    @Override
+    @SuppressWarnings("rawtypes")
+    @Transactional
+    public List getLookupTableValues(Integer fieldId) throws Exception {
+        dataElements fieldDetails = getFieldDetails(fieldId);
+        
+        Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT id, displayText from " + fieldDetails.getPopulateFromTable() + " where status = 1 order by displayText asc");
+
+        return query.list();
+    }
 }

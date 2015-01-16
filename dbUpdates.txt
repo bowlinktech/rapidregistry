@@ -213,3 +213,22 @@ INSERT INTO `rapidregistry`.`lu_answerTypes` (`answerType`) VALUES ('Multiple Ch
 /** Chad 01-15-2015 @ 9:30 AM **/
 ALTER TABLE `rapidregistry`.`dataElements` 
 ADD COLUMN `populateFromTable` VARCHAR(55) NULL DEFAULT NULL AFTER `answerType`;
+
+/** Chad 01-16-2015 @ 10:50 AM **/
+ALTER TABLE `rapidregistry`.`lu_insuranceCarriers` 
+CHANGE COLUMN `carrier` `displayText` VARCHAR(255) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL DEFAULT NULL ,
+ADD COLUMN `status` BIT(1) NULL DEFAULT b'1' AFTER `displayText`;
+
+CREATE TABLE `rapidregistry`.`program_engagementFieldValues` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `engagementFieldId` INT NOT NULL,
+  `valueId` INT NOT NULL,
+  `valueDisplayText` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`));
+
+CREATE TABLE `rapidregistry`.`program_patientFieldValues` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `patientFieldId` INT NOT NULL,
+  `valueId` INT NOT NULL,
+  `valueDisplayText` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`));

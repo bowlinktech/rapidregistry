@@ -291,4 +291,11 @@ public class dataElementManagerImpl implements dataElementManager {
     public List getLookUpTables() {
         return dataElementDAO.getLookUpTables();
     }
+    
+    @SuppressWarnings("rawtypes")
+    @Override
+    @Transactional
+    public List getLookupTableValues(Integer fieldId) throws Exception {
+        return dataElementDAO.getLookupTableValues(fieldId);
+    }
  }

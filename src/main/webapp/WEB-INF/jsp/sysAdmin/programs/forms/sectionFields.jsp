@@ -19,6 +19,7 @@
                             <c:when test="${param.msg == 'fieldssaved'}">The fields have been successfully saved!</c:when>
                             <c:when test="${param.msg == 'fieldsaved'}">The field has been successfully saved!</c:when>
                             <c:when test="${param.msg == 'created'}">The crosswalk has been successfully added!</c:when>
+                            <c:when test="${param.msg == 'fieldValuesSaved'}">The field values have been successfully saved!</c:when>
                         </c:choose>
                     </div>
                 </c:when>
@@ -146,3 +147,4 @@
 <%-- Crosswalks Address modal --%>
 <div class="modal fade" id="crosswalkModal" role="dialog" tabindex="-1" aria-labeledby="Message Crosswalks" aria-hidden="true" aria-describedby="Message Crosswalks"></div>
 <div class="modal fade" id="fieldModal" role="dialog" tabindex="-1" aria-labeledby="Edit Field" aria-hidden="true" aria-describedby="Edit Field"></div>
+<div class="modal fade" id="selectValuesModal" role="dialog" tabindex="-1" aria-labeledby="Select Field Values" aria-hidden="true" aria-describedby="Select Field Values"></div>

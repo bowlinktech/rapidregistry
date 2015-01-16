@@ -5,8 +5,10 @@
  */
 package com.bowlink.rr.service;
 
+import com.bowlink.rr.model.programEngagementFieldValues;
 import com.bowlink.rr.model.programEngagementFields;
 import com.bowlink.rr.model.programEngagementSections;
+import com.bowlink.rr.model.programPatientFieldValues;
 import com.bowlink.rr.model.programPatientFields;
 import com.bowlink.rr.model.programPatientSections;
 import java.util.List;
@@ -58,4 +60,17 @@ public interface programFormsManager {
     programPatientFields getPatientFieldById(Integer fieldId) throws Exception;
     
     programEngagementFields getEngagementFieldById(Integer fieldId) throws Exception;
+    
+    void removeProgramFieldValues(Integer fieldId) throws Exception;
+    
+    void savePatientFieldValue(programPatientFieldValues newFieldValue) throws Exception;
+    
+    void removeEngagementFieldValues(Integer fieldId) throws Exception;
+    
+    void saveEngagementFieldValue(programEngagementFieldValues newFieldValue) throws Exception;
+    
+    List<programPatientFieldValues> getPatientFieldValues(Integer fieldId) throws Exception;
+    
+    List<programEngagementFieldValues> getEngagementFieldValues(Integer fieldId) throws Exception;
+                    
 }

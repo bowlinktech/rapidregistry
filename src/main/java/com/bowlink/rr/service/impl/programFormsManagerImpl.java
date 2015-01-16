@@ -6,8 +6,10 @@
 package com.bowlink.rr.service.impl;
 
 import com.bowlink.rr.dao.programFormsDAO;
+import com.bowlink.rr.model.programEngagementFieldValues;
 import com.bowlink.rr.model.programEngagementFields;
 import com.bowlink.rr.model.programEngagementSections;
+import com.bowlink.rr.model.programPatientFieldValues;
 import com.bowlink.rr.model.programPatientFields;
 import com.bowlink.rr.model.programPatientSections;
 import com.bowlink.rr.service.programFormsManager;
@@ -150,5 +152,41 @@ public class programFormsManagerImpl implements programFormsManager {
     @Transactional
     public programEngagementFields getEngagementFieldById(Integer fieldId) throws Exception {
         return programFormsDAO.getEngagementFieldById(fieldId);
+    }
+    
+    @Override
+    @Transactional
+    public void removeProgramFieldValues(Integer fieldId) throws Exception {
+        programFormsDAO.removeProgramFieldValues(fieldId);
+    }
+    
+    @Override
+    @Transactional
+    public void savePatientFieldValue(programPatientFieldValues newFieldValue) throws Exception {
+         programFormsDAO.savePatientFieldValue(newFieldValue);
+    }
+    
+    @Override
+    @Transactional
+    public void removeEngagementFieldValues(Integer fieldId) throws Exception {
+        programFormsDAO.removeEngagementFieldValues(fieldId);
+    }
+    
+    @Override
+    @Transactional
+    public void saveEngagementFieldValue(programEngagementFieldValues newFieldValue) throws Exception {
+        programFormsDAO.saveEngagementFieldValue(newFieldValue); 
+    }
+    
+    @Override
+    @Transactional
+    public List<programPatientFieldValues> getPatientFieldValues(Integer fieldId) throws Exception {
+        return programFormsDAO.getPatientFieldValues(fieldId);
+    }
+    
+    @Override
+    @Transactional
+    public List<programEngagementFieldValues> getEngagementFieldValues(Integer fieldId) throws Exception {
+        return programFormsDAO.getEngagementFieldValues(fieldId);
     }
 }

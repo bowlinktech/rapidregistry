@@ -13,7 +13,7 @@
     <thead>
         <tr>
             <th scope="col">Field / Display Name</th>
-            <th scope="col">Crosswalk</th>
+            <th scope="col">Crosswalk/Auto Populate</th>
             <th scope="col">Field Validation</th>
             <th scope="col" class="center-text">Required</th>
             <th scope="col" class="center-text">Form Dsp Position</th>
@@ -34,6 +34,12 @@
                         <td>
                              <c:choose>
                                  <c:when test="${not empty existingFields[fStatus.index].cwName}">${existingFields[fStatus.index].cwName}</c:when>
+                                 <c:when test="${existingFields[fStatus.index].autoPopulate == true}">
+                                     <a href="#selectValuesModal" data-toggle="modal" class="btn btn-link selectValues" rel="${existingFields[fStatus.index].id}"  title="Select Field Values">
+                                         <span class="glyphicon glyphicon-search"></span>
+                                         Select Values
+                                     </a>
+                                 </c:when>
                                  <c:otherwise>--</c:otherwise>
                              </c:choose>
                         </td>
@@ -72,10 +78,12 @@
                         </c:choose>
                         </td>
                         <td class="center-text">
-                            <a href="#fieldModal" data-toggle="modal" class="btn btn-link editField" rel="${existingFields[fStatus.index].id}"  title="Edit this field">
-                               <span class="glyphicon glyphicon-edit"></span>
-                               Edit 
-                            </a>
+                            <c:if test="${existingFields[fStatus.index].id > 0}">
+                                <a href="#fieldModal" data-toggle="modal" class="btn btn-link editField" rel="${existingFields[fStatus.index].id}"  title="Edit this field">
+                                   <span class="glyphicon glyphicon-edit"></span>
+                                   Edit 
+                                </a>
+                            </c:if>
                             <a href="javascript:void(0);" class="btn btn-link removeField" rel3="${existingFields[fStatus.index].searchDspPos}" rel2="${existingFields[fStatus.index].dspPos}" rel="${existingFields[fStatus.index].fieldId}" title="Remove this field.">
                                 <span class="glyphicon glyphicon-remove-circle"></span>
                                 Remove

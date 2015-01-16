@@ -8,13 +8,16 @@ package com.bowlink.rr.controller;
 import com.bowlink.rr.model.crosswalks;
 import com.bowlink.rr.model.dataElements;
 import com.bowlink.rr.model.program;
+import com.bowlink.rr.model.programEngagementFieldValues;
 import com.bowlink.rr.model.programEngagementFields;
 import com.bowlink.rr.model.programEngagementSections;
+import com.bowlink.rr.model.programPatientFieldValues;
 import com.bowlink.rr.model.programPatientFields;
 import com.bowlink.rr.model.programPatientSections;
 import com.bowlink.rr.service.dataElementManager;
 import com.bowlink.rr.service.programFormsManager;
 import com.bowlink.rr.service.programManager;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -361,9 +364,17 @@ public class programForms {
                 List<programPatientFields> existingPatientFields = programformsmanager.getPatientFields((Integer) session.getAttribute("programId"), sectionId);
                 
                 for (programPatientFields field : existingPatientFields) {
-                    //Get the field name by id
-                    fieldName = dataelementmanager.getfieldName(field.getFieldId());
-                    field.setFieldName(fieldName);
+                    
+                    //Get the field Details
+                    dataElements fieldDetails = dataelementmanager.getFieldDetails(field.getFieldId());
+                    field.setFieldName(fieldDetails.getElementName());
+                    
+                    if(fieldDetails.getPopulateFromTable() != null && !fieldDetails.getPopulateFromTable().isEmpty()) {
+                        field.setAutoPopulate(true);
+                    }
+                    else {
+                        field.setAutoPopulate(false);
+                    }
 
                     //Get the crosswalk name by id
                     if (field.getCrosswalkId() != 0) {
@@ -389,9 +400,17 @@ public class programForms {
                 List<programEngagementFields> existingEngagementFields = programformsmanager.getEngagementFields((Integer) session.getAttribute("programId"), sectionId);
 
                 for (programEngagementFields field : existingEngagementFields) {
-                    //Get the field name by id
-                    fieldName = dataelementmanager.getfieldName(field.getFieldId());
-                    field.setFieldName(fieldName);
+                    
+                    //Get the field Details
+                    dataElements fieldDetails = dataelementmanager.getFieldDetails(field.getFieldId());
+                    field.setFieldName(fieldDetails.getElementName());
+                    
+                    if(fieldDetails.getPopulateFromTable() != null && !fieldDetails.getPopulateFromTable().isEmpty()) {
+                        field.setAutoPopulate(true);
+                    }
+                    else {
+                        field.setAutoPopulate(false);
+                    }
 
                     //Get the crosswalk name by id
                     if (field.getCrosswalkId() != 0) {
@@ -885,5 +904,135 @@ public class programForms {
         
         return mav;
 
+    }
+    
+    /**
+     * The '/getFieldValues' GET request will return the list of values for the selected table.
+     * 
+     * @param section   The section the field belongs to either "patient-sections" or "engagement-sections"
+     * @param fieldId   The id of the selected field
+     * 
+     * @return  This function will return a list of values
+     * @throws Exception 
+     */
+    @RequestMapping(value = "/getFieldValues", method = RequestMethod.GET)
+    public @ResponseBody ModelAndView getFieldValues(@RequestParam(value = "section", required = true) String section, @RequestParam(value = "fieldId", required = true) Integer fieldId) throws Exception {
+        
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/sysAdmin/programs/forms/selectValues");
+        
+        if("patient-sections".equals(section)) {
+            programPatientFields fieldDetails = programformsmanager.getPatientFieldById(fieldId);
+            mav.addObject("fieldName", fieldDetails.getFieldDisplayname());
+            
+            List tableValues = dataelementmanager.getLookupTableValues(fieldDetails.getFieldId());
+            mav.addObject("tableValues", tableValues);
+            
+            //Get already selected values 
+            List<programPatientFieldValues> selectedFieldValues = programformsmanager.getPatientFieldValues(fieldId);
+            
+            List<Integer> selectedFieldIds = new ArrayList<Integer>() ;
+            
+            if(!selectedFieldValues.isEmpty()) {
+                for(programPatientFieldValues fieldValue : selectedFieldValues) {
+                    selectedFieldIds.add(fieldValue.getValueId());
+                }
+            }
+            
+            mav.addObject("selectedFieldIds", selectedFieldIds);
+            
+        }
+        
+        /* Engagement Form Sections */
+        else if ("engagement-sections".equals(section)) {
+            //Need to get a list of existing engagement fields
+            programEngagementFields fieldDetails = programformsmanager.getEngagementFieldById(fieldId);
+            mav.addObject("fieldName", fieldDetails.getFieldDisplayname());
+            
+            List tableValues = dataelementmanager.getLookupTableValues(fieldDetails.getFieldId());
+            mav.addObject("tableValues", tableValues);
+            
+            //Get already selected values 
+            List<programEngagementFieldValues> selectedFieldValues = programformsmanager.getEngagementFieldValues(fieldId);
+            
+            List<Integer> selectedFieldIds = new ArrayList<Integer>() ;
+            
+            if(!selectedFieldValues.isEmpty()) {
+                for(programEngagementFieldValues fieldValue : selectedFieldValues) {
+                    selectedFieldIds.add(fieldValue.getValueId());
+                }
+            }
+            
+            
+            mav.addObject("selectedFieldIds", selectedFieldIds);
+            
+        }
+        
+        mav.addObject("section", section);
+        mav.addObject("fieldId", fieldId);
+        
+        
+        return mav;
+        
+    }
+    
+    /**
+     * 
+     * @return
+     * @throws Exception 
+     */
+    @RequestMapping(value = "/saveFieldValues", method = RequestMethod.POST)
+    public @ResponseBody ModelAndView saveFieldValues(@RequestParam(value = "section", required = true) String section, @RequestParam(value = "fieldId", required = true) Integer fieldId, @RequestParam(value = "selectedValues", required = true) String selectedValues) throws Exception {
+        
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/sysAdmin/programs/forms/selectValues");
+        
+        if("patient-sections".equals(section)) {
+            
+            //Delete all values for the field
+            programformsmanager.removeProgramFieldValues(fieldId);
+            
+            String[] selValues = selectedValues.split("\\|", -1);
+            
+            for(String value : selValues) {
+                programPatientFieldValues newValue = new programPatientFieldValues();
+                
+                String[] valueDetails = value.split("\\~", -1);
+                newValue.setpatientFieldId(fieldId);
+                newValue.setValueId(Integer.parseInt(valueDetails[0]));
+                newValue.setValueDisplayText(valueDetails[1]);
+                
+                programformsmanager.savePatientFieldValue(newValue);
+                
+            }
+            
+        }
+        
+        /* Engagement Form Sections */
+        else if ("engagement-sections".equals(section)) {
+            
+            //Delete all values for the field
+            programformsmanager.removeEngagementFieldValues(fieldId);
+            
+            String[] selValues = selectedValues.split("\\|", -1);
+            
+            for(String value : selValues) {
+                programEngagementFieldValues newValue = new programEngagementFieldValues();
+                
+                String[] valueDetails = value.split("\\~", -1);
+                newValue.setEngagementFieldId(fieldId);
+                newValue.setValueId(Integer.parseInt(valueDetails[0]));
+                newValue.setValueDisplayText(valueDetails[1]);
+                
+                programformsmanager.saveEngagementFieldValue(newValue);
+                
+            }
+            
+        }
+        
+        mav.addObject("success", "valuesSaved");
+        
+        return mav;
+        
     }
 }

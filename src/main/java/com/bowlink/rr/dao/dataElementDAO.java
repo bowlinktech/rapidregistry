@@ -63,4 +63,7 @@ public interface dataElementDAO {
     
     @SuppressWarnings("rawtypes")
     List getLookUpTables();
+    
+    @SuppressWarnings("rawtypes")
+    List getLookupTableValues(Integer fieldId) throws Exception;
 }
