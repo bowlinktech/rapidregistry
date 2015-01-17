@@ -232,3 +232,9 @@ CREATE TABLE `rapidregistry`.`program_patientFieldValues` (
   `valueId` INT NOT NULL,
   `valueDisplayText` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`id`));
+
+DELETE FROM `rapidregistry`.`lu_answerTypes` WHERE `id`='9';
+UPDATE `rapidregistry`.`lu_answerTypes` SET `answerType`='Checkbox' WHERE `id`='8';
+
+ALTER TABLE `rapidregistry`.`program_engagementFields` 
+CHANGE COLUMN `fieldDisplayname` `fieldDisplayName` VARCHAR(55) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL DEFAULT NULL ;
