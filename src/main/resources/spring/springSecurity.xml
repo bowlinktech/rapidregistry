@@ -16,6 +16,7 @@
         <intercept-url access="permitAll" pattern="/scheduleTask/**"></intercept-url>
         <intercept-url access="permitAll" pattern="/login/*"></intercept-url>
         <intercept-url access="permitAll" pattern="/logout"></intercept-url>
+        <intercept-url access="hasAnyRole('ROLE_SYSTEMADMIN', 'ROLE_USER','ROLE_PROGRAMADMIN')" pattern="/FileDownload/**"></intercept-url>
         <logout invalidate-session="true" delete-cookies="JSESSIONID" logout-success-url="/login" logout-url="/logout"></logout>
         <form-login authentication-success-handler-ref="authenticationSuccessRedirecthandler" authentication-failure-url="/loginfailed" login-page="/login"></form-login>
         <session-management invalid-session-url="/login"></session-management>
@@ -26,7 +27,7 @@
             <frame-options policy="SAMEORIGIN" />
             <xss-protection />
         </headers>
-        <csrf />
+        <!--<csrf /> -->
     </http>
     
     <authentication-manager>

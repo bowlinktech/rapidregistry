@@ -80,6 +80,9 @@ public class programPatientFields {
     
     @Column(name = "SEARCHDSPPOS", nullable = true)
     private int searchDspPos = 1;
+    
+    @Column(name = "HIDEFIELD", nullable = false)
+    private boolean hideField = false;
 
     public int getId() {
         return id;
@@ -223,6 +226,14 @@ public class programPatientFields {
 
     public void setAutoPopulate(boolean autoPopulate) {
         this.autoPopulate = autoPopulate;
+    }
+    
+    public boolean isHideField() {
+        return hideField;
+    }
+
+    public void setHideField(boolean hideField) {
+        this.hideField = hideField;
     }
     
 }

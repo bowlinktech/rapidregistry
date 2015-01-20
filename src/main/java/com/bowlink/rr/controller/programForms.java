@@ -476,6 +476,7 @@ public class programForms {
             @RequestParam(value = "cw", required = true) Integer cw, @RequestParam(value = "CWText", required = true) String cwText,
             @RequestParam(value = "validationId", required = true) Integer validationId, @RequestParam(value = "validationName", required = true) String validationName,
             @RequestParam(value = "requiredField", required = true) boolean requiredField, 
+            @RequestParam(value = "hideField", required = true) boolean hideField, 
             @RequestParam(value = "dataGridColumn", required = true) boolean dataGridColumn,
             @RequestParam(value = "section", required = true) String section,
             @RequestParam(value = "searchColumn", required = true) boolean searchColumn,
@@ -521,6 +522,7 @@ public class programForms {
             field.setDataGridColumn(dataGridColumn);
             field.setSummaryField(summaryColumn);
             field.setSearchField(searchColumn);
+            field.setHideField(hideField);
             
             if(searchColumn == true) {
                 field.setSearchDspPos(totalSearchColumns+1);
@@ -560,6 +562,7 @@ public class programForms {
             field.setDataGridColumn(dataGridColumn);
             field.setSummaryField(summaryColumn);
             field.setSearchField(searchColumn);
+            field.setHideField(hideField);
             
             if(searchColumn == true) {
                 field.setSearchDspPos(totalSearchColumns+1);
@@ -736,25 +739,37 @@ public class programForms {
 
         /* Patient Form Sections */   
         if("patient-sections".equals(section)) {
-            //Delete all the data translations before creating
-            //This will help with the jquery removing translations
             programformsmanager.deletePatientFields((Integer) session.getAttribute("programId"), sectionId);
-
+            
             //Loop through the list of translations
             for (programPatientFields field : patientFields) {
-                programformsmanager.savePatientFields(field);
+                Integer oldFieldId = field.getId();
+                
+                //Delete field
+                programformsmanager.deletePatientField(field.getId());
+                
+                Integer newFieldId = programformsmanager.savePatientFields(field);
+                
+                //Update any populated field values
+                programformsmanager.savePatientFieldValueFieldId(oldFieldId,newFieldId);
             }
         }
         
         /* Engagement Form Sections */
         else if ("engagement-sections".equals(section)) {
-            //Delete all the data translations before creating
-            //This will help with the jquery removing translations
             programformsmanager.deleteEngagementFields((Integer) session.getAttribute("programId"), sectionId);
-
+            
             //Loop through the list of translations
             for (programEngagementFields field : engagementFields) {
-                programformsmanager.saveEngagementFields(field);
+                Integer oldFieldId = field.getId();
+                
+                //Delete field
+                programformsmanager.deleteEngagementField(field.getId());
+                
+                Integer newFieldId = programformsmanager.saveEngagementFields(field);
+                
+                //Update any populated field values
+                programformsmanager.saveEngagementFieldValueFieldId(oldFieldId,newFieldId);
             }
         }
             

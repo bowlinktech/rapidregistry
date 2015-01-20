@@ -31,9 +31,13 @@ public interface programFormsDAO {
     
     void deletePatientFields(Integer programId, Integer SectionId) throws Exception;
     
-    void savePatientFields(programPatientFields field) throws Exception;
+    void deletePatientField(Integer fieldId) throws Exception;
+    
+    Integer savePatientFields(programPatientFields field) throws Exception;
     
     void savePatientField(programPatientFields field) throws Exception;
+    
+    void savePatientFieldValueFieldId(Integer oldFieldId, Integer newFieldId) throws Exception;
     
     void savePatientSection(programPatientSections patientSection) throws Exception;
     
@@ -49,9 +53,13 @@ public interface programFormsDAO {
     
     void deleteEngagementFields(Integer programId, Integer SectionId) throws Exception;
     
-    void saveEngagementFields(programEngagementFields field) throws Exception;
+    void deleteEngagementField(Integer fieldId) throws Exception;
+    
+    Integer saveEngagementFields(programEngagementFields field) throws Exception;
     
     void saveEngagementField(programEngagementFields field) throws Exception;
+    
+    void saveEngagementFieldValueFieldId(Integer oldFieldId, Integer newFieldId) throws Exception;
     
     void saveEngagementSection(programEngagementSections engagementSection) throws Exception;
     

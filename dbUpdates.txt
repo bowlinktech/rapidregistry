@@ -238,3 +238,35 @@ UPDATE `rapidregistry`.`lu_answerTypes` SET `answerType`='Checkbox' WHERE `id`='
 
 ALTER TABLE `rapidregistry`.`program_engagementFields` 
 CHANGE COLUMN `fieldDisplayname` `fieldDisplayName` VARCHAR(55) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL DEFAULT NULL ;
+
+/** Chad 01-19-2015 @ 11:43 AM **/
+DELETE * FROM `rapidregistry`.`lu_languages`;
+
+INSERT INTO `rapidregistry`.`lu_languages` (`displayText`, `isCustom`, `status`) VALUES ('English', 0, 1);
+INSERT INTO `rapidregistry`.`lu_languages` (`displayText`, `isCustom`, `status`) VALUES ('Spanish', 0, 1);
+INSERT INTO `rapidregistry`.`lu_languages` (`displayText`, `isCustom`, `status`) VALUES ('Portuguese', 0, 1);
+INSERT INTO `rapidregistry`.`lu_languages` (`displayText`, `isCustom`, `status`) VALUES ('C Verdean Creole', 0, 1);
+INSERT INTO `rapidregistry`.`lu_languages` (`displayText`, `isCustom`, `status`) VALUES ('Haitian Creole', 0, 1);
+INSERT INTO `rapidregistry`.`lu_languages` (`displayText`, `isCustom`, `status`) VALUES ('Khmer', 0, 1);
+INSERT INTO `rapidregistry`.`lu_languages` (`displayText`, `isCustom`, `status`) VALUES ('Hmong', 0, 1);
+INSERT INTO `rapidregistry`.`lu_languages` (`displayText`, `isCustom`, `status`) VALUES ('Lao', 0, 1);
+INSERT INTO `rapidregistry`.`lu_languages` (`displayText`, `isCustom`, `status`) VALUES ('Vietnamese', 0, 1);
+INSERT INTO `rapidregistry`.`lu_languages` (`displayText`, `isCustom`, `status`) VALUES ('Chinese', 0, 1);
+INSERT INTO `rapidregistry`.`lu_languages` (`displayText`, `isCustom`, `status`) VALUES ('Polish', 0, 1);
+INSERT INTO `rapidregistry`.`lu_languages` (`displayText`, `isCustom`, `status`) VALUES ('Somali', 0, 1);
+INSERT INTO `rapidregistry`.`lu_languages` (`displayText`, `isCustom`, `status`) VALUES ('French', 0, 1);
+INSERT INTO `rapidregistry`.`lu_languages` (`displayText`, `isCustom`, `status`) VALUES ('American Sign', 0, 1);
+INSERT INTO `rapidregistry`.`lu_languages` (`displayText`, `isCustom`, `status`) VALUES ('Russian', 0, 1);
+INSERT INTO `rapidregistry`.`lu_languages` (`displayText`, `isCustom`, `status`) VALUES ('Arabic', 0, 1);
+INSERT INTO `rapidregistry`.`lu_languages` (`displayText`, `isCustom`, `status`) VALUES ('Bosnian', 0, 1);
+INSERT INTO `rapidregistry`.`lu_languages` (`displayText`, `isCustom`, `status`) VALUES ('Other/Unknown', 0, 1);
+
+ALTER TABLE `rapidregistry`.`storage_engagements` 
+CHANGE COLUMN `id` `id` INT(11) NOT NULL AUTO_INCREMENT ;
+
+/** Chad 01-20-2015 @ 8:58 AM **/
+ALTER TABLE `rapidregistry`.`program_engagementFields` 
+ADD COLUMN `hideField` BIT(1) NOT NULL DEFAULT b'0' AFTER `searchDspPos`;
+
+ALTER TABLE `rapidregistry`.`program_patientFields` 
+ADD COLUMN `hideField` BIT(1) NOT NULL DEFAULT b'0' AFTER `searchDspPos`;

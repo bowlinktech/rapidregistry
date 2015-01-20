@@ -35,9 +35,12 @@ require(['./main'], function () {
         //This function will launch the new crosswalk overlay with a blank form
         $(document).on('click', '#createNewCrosswalk', function() {
             var orgId = $('#orgId').val();
+            var sectionName = $('#sectionName').val();
+               
 
             $.ajax({
                 url: '/sysAdmin/data-elements/newCrosswalk',
+                data: {'frompage': sectionName},
                 type: "GET",
                 success: function(data) {
                     $("#crosswalkModal").html(data);
@@ -108,7 +111,6 @@ require(['./main'], function () {
                 return false;
             }
             
-            $('#frompage').val("demo");
             $('#crosswalkdetailsform').attr('action', '/sysAdmin/data-elements/' + actionValue + 'Crosswalk');
             $('#crosswalkdetailsform').submit();
 
@@ -132,6 +134,7 @@ require(['./main'], function () {
             var selectedValidation = $('#fieldValidation').val();
             var selectedValidationText = $('#fieldValidation').find(":selected").text();
             var required = $('#requiredField').val();
+            var hideField = $('#hideField').val();
             var fieldDisplayName = $('#fieldDisplayName').val();
             var dataGridColumn = $('#dataGridColumn').is(':checked');
             var searchColumn = $('#searchColumn').is(':checked');
@@ -159,7 +162,7 @@ require(['./main'], function () {
                     url: "../setField.do",
                     type: "POST",
                     data: {'fieldId': selectedField, 'sectionId': sectionId, 'fieldText': selectedFieldText, 'fieldDisplayName': fieldDisplayName, 'cw': selectedCW, 'CWText': selectedCWText, 'validationId': selectedValidation
-                        , 'validationName': selectedValidationText, 'requiredField': required, 'dataGridColumn' : dataGridColumn, 'section' : section
+                        , 'validationName': selectedValidationText, 'requiredField': required, 'hideField': hideField, 'dataGridColumn' : dataGridColumn, 'section' : section
                         , 'searchColumn': searchColumn, 'summaryColumn': summaryColumn
                     },
                     success: function(data) {
@@ -174,6 +177,7 @@ require(['./main'], function () {
                         $('#dataGridColumn').attr('checked', false); 
                         $('#searchColumn').attr('checked', false); 
                         $('#summaryColumn').attr('checked', false); 
+                        $('#hideField option:eq("0")').prop('selected', true);
                     }
                 });
             }

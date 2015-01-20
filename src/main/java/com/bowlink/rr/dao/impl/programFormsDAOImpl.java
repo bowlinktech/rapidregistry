@@ -137,14 +137,32 @@ public class programFormsDAOImpl implements programFormsDAO {
     }
     
     /**
+     * The 'deletePatientFields' function will remove an patient field for the passed in field id.
+     * 
+     * @param fieldId The id that will contain the selected field
+     * 
+     * @throws Exception 
+     */
+    @Override
+    public void deletePatientField(Integer fieldId) throws Exception {
+        Query deleteFields = sessionFactory.getCurrentSession().createQuery("delete from programPatientFields where id = :fieldId");
+        deleteFields.setParameter("fieldId", fieldId);
+        deleteFields.executeUpdate();
+    }
+    
+    /**
      * The 'savePatientFields' function will save all selected patient fields for the passed in program.
      * 
      * @param field         The programDemoDataElemets object to save
      * @throws Exception 
      */
     @Override
-    public void savePatientFields(programPatientFields field) throws Exception {
-        sessionFactory.getCurrentSession().saveOrUpdate(field);
+    public Integer savePatientFields(programPatientFields field) throws Exception {
+        Integer lastId = null;
+
+        lastId = (Integer) sessionFactory.getCurrentSession().save(field);
+
+        return lastId;
     }
     
     /**
@@ -185,6 +203,18 @@ public class programFormsDAOImpl implements programFormsDAO {
         query.setParameter("dspPos", dspPos);
         
         return (programPatientSections) query.uniqueResult();
+    }
+    
+    /**
+     * The 'savePatientFieldValueFieldId' function will update the patientFieldId.
+     */
+    @Override
+    public void savePatientFieldValueFieldId(Integer oldFieldId, Integer newFieldId) throws Exception {
+        Query query = sessionFactory.getCurrentSession().createSQLQuery("UPDATE program_patientFieldValues set patientFieldId = :newFieldId where patientFieldId = :oldFieldId")
+                .setParameter("newFieldId", newFieldId)
+                .setParameter("oldFieldId", oldFieldId);
+        
+        query.executeUpdate();
     }
     
     
@@ -268,14 +298,32 @@ public class programFormsDAOImpl implements programFormsDAO {
     }
     
     /**
+     * The 'deleteEngagementField' function will remove an engagement field for the passed in field id.
+     * 
+     * @param fieldId The id that will contain the selected field
+     * 
+     * @throws Exception 
+     */
+    @Override
+    public void deleteEngagementField(Integer fieldId) throws Exception {
+        Query deleteFields = sessionFactory.getCurrentSession().createQuery("delete from programEngagementFields where id = :fieldId");
+        deleteFields.setParameter("fieldId", fieldId);
+        deleteFields.executeUpdate();
+    }
+    
+    /**
      * The 'saveEngagementFields' function will save all selected engagement fields for the passed in program.
      * 
      * @param field         The programEngagementFields object to save
      * @throws Exception 
      */
     @Override
-    public void saveEngagementFields(programEngagementFields field) throws Exception {
-        sessionFactory.getCurrentSession().save(field);
+    public Integer saveEngagementFields(programEngagementFields field) throws Exception {
+        Integer lastId = null;
+
+        lastId = (Integer) sessionFactory.getCurrentSession().save(field);
+
+        return lastId;
     }
     
     /**
@@ -287,6 +335,18 @@ public class programFormsDAOImpl implements programFormsDAO {
     @Override
     public void saveEngagementField(programEngagementFields field) throws Exception {
         sessionFactory.getCurrentSession().update(field);
+    }
+    
+    /**
+     * The 'saveEngagementFieldValueFieldId' function will update the engagementFieldId.
+     */
+    @Override
+    public void saveEngagementFieldValueFieldId(Integer oldFieldId, Integer newFieldId) throws Exception {
+        Query query = sessionFactory.getCurrentSession().createSQLQuery("UPDATE program_engagementFieldValues set engagementFieldId = :newFieldId where engagementFieldId = :oldFieldId")
+                .setParameter("newFieldId", newFieldId)
+                .setParameter("oldFieldId", oldFieldId);
+        
+        query.executeUpdate();
     }
     
     /**

@@ -16,6 +16,7 @@
             <th scope="col">Crosswalk/Auto Populate</th>
             <th scope="col">Field Validation</th>
             <th scope="col" class="center-text">Required</th>
+            <th scope="col" class="center-text">Hidden Field</th>
             <th scope="col" class="center-text">Form Dsp Position</th>
             <th scope="col">Show Field In</th>
             <th scope="col" class="center-text">Search/Summary Dsp Position</th>
@@ -48,6 +49,12 @@
                         </td>
                         <td class="center-text">
                             ${existingFields[fStatus.index].requiredField} 
+                        </td>
+                        <td class="center-text">
+                            <c:choose>
+                                <c:when test="${existingFields[fStatus.index].hideField == true}">Yes</c:when>
+                                <c:otherwise>No</c:otherwise>
+                            </c:choose>
                         </td>
                         <td class="center-text">
                             <select rel="${existingFields[fStatus.index].dspPos}" name="displayOrder" class="displayOrder">

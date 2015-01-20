@@ -121,7 +121,7 @@ public class dataElementController {
      */
     @RequestMapping(value = "/newCrosswalk", method = RequestMethod.GET)
     public @ResponseBody
-    ModelAndView newCrosswalk(HttpSession session) throws Exception {
+    ModelAndView newCrosswalk(HttpSession session, @RequestParam String frompage) throws Exception {
 
         int programId = 0;
 
@@ -131,6 +131,7 @@ public class dataElementController {
 
         ModelAndView mav = new ModelAndView();
         mav.setViewName("/sysAdmin/dataElements/crosswalkDetails");
+        mav.addObject("frompage", frompage);
 
         crosswalks crosswalkDetails = new crosswalks();
         mav.addObject("crosswalkDetails", crosswalkDetails);
@@ -158,7 +159,7 @@ public class dataElementController {
         if (null != session.getAttribute("programId")) {
             programId = (Integer) session.getAttribute("programId");
         }
-        
+       
         crosswalkDetails.setProgramId(programId);
         int lastId = dataelementmanager.createCrosswalk(crosswalkDetails);
 
@@ -172,11 +173,7 @@ public class dataElementController {
         //otherwise send back to the message type libarary translation page.
         if (programId > 0) {
             String programName = programmanager.getProgramById(programId).getProgramName().replace(" ", "-").toLowerCase();
-            String redirectPage = "demo-data-elements";
-            if("health".equals(frompage)) {
-                redirectPage = "health-data-elements";
-            }
-            ModelAndView mav = new ModelAndView(new RedirectView("../programs/"+programName+"/"+redirectPage));
+            ModelAndView mav = new ModelAndView(new RedirectView("../programs/"+programName+"/forms/"+frompage+"/fields?s=2"));
             return mav;
         } else {
             ModelAndView mav = new ModelAndView(new RedirectView("translations"));

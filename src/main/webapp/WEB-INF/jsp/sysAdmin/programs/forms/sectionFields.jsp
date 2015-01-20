@@ -83,6 +83,13 @@
                             </select>
                         </div> 
                         <div class="form-group">
+                            <label class="control-label" for=hideField">Hidden Field *</label>
+                            <select id="hideField" class="form-control half">
+                                <option value="false">No</option>
+                                <option value="true">Yes</option>
+                            </select>
+                        </div>     
+                        <div class="form-group">
                             <label class="control-label" for=dataGridColumn">Show field in: *</label>
                             <%--<div class="checkbox">
                                 <label>

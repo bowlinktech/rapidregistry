@@ -66,14 +66,26 @@ public class programFormsManagerImpl implements programFormsManager {
     
     @Override
     @Transactional
-    public void savePatientFields(programPatientFields field) throws Exception {
-        programFormsDAO.savePatientFields(field);
+    public void deletePatientField(Integer fieldId) throws Exception {
+        programFormsDAO.deletePatientField(fieldId);
+    }
+    
+    @Override
+    @Transactional
+    public Integer savePatientFields(programPatientFields field) throws Exception {
+        return programFormsDAO.savePatientFields(field);
     }
     
     @Override
     @Transactional
     public void savePatientField(programPatientFields field) throws Exception {
         programFormsDAO.savePatientField(field);
+    }
+    
+    @Override
+    @Transactional
+    public void savePatientFieldValueFieldId(Integer oldFieldId, Integer newFieldId) throws Exception {
+        programFormsDAO.savePatientFieldValueFieldId(oldFieldId, newFieldId);
     }
     
     @Override
@@ -120,14 +132,26 @@ public class programFormsManagerImpl implements programFormsManager {
     
     @Override
     @Transactional
-    public void saveEngagementFields(programEngagementFields field) throws Exception {
-        programFormsDAO.saveEngagementFields(field);
+    public void deleteEngagementField(Integer fieldId) throws Exception {
+        programFormsDAO.deleteEngagementField(fieldId);
+    }
+    
+    @Override
+    @Transactional
+    public Integer saveEngagementFields(programEngagementFields field) throws Exception {
+        return programFormsDAO.saveEngagementFields(field);
     }
     
     @Override
     @Transactional
     public void saveEngagementField(programEngagementFields field) throws Exception {
         programFormsDAO.saveEngagementField(field);
+    }
+    
+    @Override
+    @Transactional
+    public void saveEngagementFieldValueFieldId(Integer oldFieldId, Integer newFieldId) throws Exception {
+        programFormsDAO.saveEngagementFieldValueFieldId(oldFieldId, newFieldId);
     }
     
     @Override

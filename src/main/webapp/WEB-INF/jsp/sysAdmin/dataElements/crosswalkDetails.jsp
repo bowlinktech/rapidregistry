@@ -14,7 +14,7 @@
                 <form:hidden path="id" id="id" />
                 <form:hidden path="dateCreated" />
                 <input type="hidden" name="programId" value="${programId}" />
-                <input type="hidden" id="frompage" name="frompage" value="" />
+                <input type="hidden" id="frompage" name="frompage" value="${frompage}" />
                 <div class="form-container">
                     <spring:bind path="name">
                         <div id="crosswalkNameDiv" class="form-group ${status.error ? 'has-error' : '' }">
