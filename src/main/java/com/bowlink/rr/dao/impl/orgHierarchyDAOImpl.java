@@ -7,9 +7,11 @@ package com.bowlink.rr.dao.impl;
 
 import com.bowlink.rr.dao.orgHierarchyDAO;
 import com.bowlink.rr.model.programOrgHierarchy;
+import com.bowlink.rr.model.userProgramHierarchy;
 import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -78,5 +80,81 @@ public class orgHierarchyDAOImpl implements orgHierarchyDAO {
         query.setParameter("dspPos", dspPos);
         
         return (programOrgHierarchy) query.uniqueResult();
+    }
+    
+    /**
+     * The 'getProgramOrgHierarchyItems' function will return the organization hierarchy entries for the passed in programId, level and assocId.
+     * 
+     * @param programId The id of the selected program
+     * @param level     The hierarchy level to return.
+     * @param assocId   0 or the selected hierarchy to find associated sub levels.
+     * @return
+     * @throws Exception 
+     */
+    @Override
+    public List getProgramOrgHierarchyItems(Integer programId, Integer level, Integer assocId) throws Exception {
+        
+        String sqlQuery = "SELECT a.id, a.name from programOrgHierarchy_details a inner join programOrgHierarchy b on a.programHierarchyId = b.id";
+        
+        if(assocId > 0) {
+            sqlQuery += " inner join programOrgHierarchy_assoc c on c.programHierarchyId = a.id and c.associatedWith = " + assocId;
+        }
+        
+        sqlQuery += " where b.programId = :programId and b.dspPos = :level";
+        
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery)
+                .setParameter("programId", programId)
+                .setParameter("level", level);
+
+        return query.list();
+    }
+    
+    /**
+     * The 'saveUserProgramHierarchy' function will save the authorized program organizational 
+     * hierarchies for the user.
+     * 
+     * @param hierarchy The userProgramHierarchy object to save
+     * @throws Exception 
+     */
+    @Override
+    public void saveUserProgramHierarchy(userProgramHierarchy hierarchy) throws Exception {
+        sessionFactory.getCurrentSession().saveOrUpdate(hierarchy);
+    }
+    
+    /**
+     * The 'getUserProgramHierarchy' function will return a list of authorized hierarchy for the selected user and 
+     * program.
+     * 
+     * @param programId The id of the selected program
+     * @param userId    The id of the selected user
+     * @return  This function will return a list of userProgramHierarchy objects
+     * @throws Exception 
+     */
+    @Override
+    public List<userProgramHierarchy> getUserProgramHierarchy(Integer programId, Integer userId) throws Exception {
+        
+        String sqlQuery = "select a.id, a.systemUserId, a.programId, a.programHierarchyId, a.orgHierarchyDetailId, a.dateCreated, b.name as hierarchyName from user_authorizedOrgHierarchy a inner join programOrgHierarchy_details b on b.id = a.orgHierarchyDetailId where a.programId = " + programId + " and a.systemUserId = " + userId;
+        
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery) 
+        .setResultTransformer(Transformers.aliasToBean(userProgramHierarchy.class)
+        );
+        
+        
+        return query.list();
+    }
+    
+    /**
+     * The 'removeUserProgramHierarchy' function will remove the selected hierarchy for the user and program.
+     * 
+     * @param Id
+     * @throws Exception 
+     */
+    @Override
+    public void removeUserProgramHierarchy(Integer Id) throws Exception {
+       
+        Query removeProgram = sessionFactory.getCurrentSession().createQuery("delete from userProgramHierarchy where id = :Id");
+        removeProgram.setParameter("Id", Id);
+        removeProgram.executeUpdate();
+        
     }
 }

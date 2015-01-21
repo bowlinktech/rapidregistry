@@ -357,4 +357,40 @@ public class dataElementDAOImpl implements dataElementDAO {
         return (dataElements) sessionFactory.getCurrentSession().get(dataElements.class, fieldId); 
     }
     
+    /**
+     * The 'getAnswerTypes' function will return a list of available field types
+     *
+     */
+    @Override
+    @SuppressWarnings("rawtypes")
+    @Transactional
+    public List getAnswerTypes() {
+        Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT id, answerType FROM lu_answerTypes order by answerType asc");
+
+        return query.list();
+    }
+    
+    
+    /**
+     * The 'getLookUpTables' function will return a list of all available look up tables where we can associate a data element to.
+     */
+    @Override
+    @SuppressWarnings("rawtypes")
+    @Transactional
+    public List getLookUpTables() {
+        Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT distinct table_name FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'rapidregistry' and TABLE_NAME LIKE 'lu\\_%'");
+
+        return query.list();
+    }
+    
+    @Override
+    @SuppressWarnings("rawtypes")
+    @Transactional
+    public List getLookupTableValues(Integer fieldId) throws Exception {
+        dataElements fieldDetails = getFieldDetails(fieldId);
+        
+        Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT id, displayText from " + fieldDetails.getPopulateFromTable() + " where status = 1 order by displayText asc");
+
+        return query.list();
+    }
 }

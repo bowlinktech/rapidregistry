@@ -6,13 +6,20 @@
 package com.bowlink.rr.model;
 
 import java.util.Date;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import com.bowlink.rr.validator.NoHtml;
 
 /**
  *
@@ -42,21 +49,30 @@ public class surveys {
     @Column(name = "DUPLICATESALLOWED", nullable = false)
     private boolean duplicatesAllowed = false;
     
-    @Column(name = "TITLE", nullable = true)
+    @NotEmpty
+    @NoHtml
+    @Column(name = "TITLE", nullable = false)
     private String title = "";
     
+    @NotEmpty
+    @NoHtml
     @Column(name = "DONEBUTTONTEXT", nullable = false)
     private String doneButtonText = "Done";
     
+    @NotEmpty
+    @NoHtml
     @Column(name = "NEXTBUTTONTEXT", nullable = false)
     private String nextButtonText = "Next";
     
+    @NotEmpty
+    @NoHtml
     @Column(name = "PREVBUTTONTEXT", nullable = false)
     private String prevButtonText = "Previous";
     
     @Column(name = "REMINDERSTATUS", nullable = false)
     private boolean reminderStatus = false;
     
+    @NoHtml
     @Column(name = "REMINDERTEXT", nullable = true)
     private String reminderText = "";
     
@@ -71,8 +87,14 @@ public class surveys {
     @Column(name = "DATEMODIFIED", nullable = true)
     private Date dateModified = new Date();
     
-    @Column(name = "SURVEYSCOL", nullable = true)
-    private String surveysCol = "";
+    @Transient
+    private Integer timesTaken = 0;
+    
+    @Transient
+    private String encryptedId;
+    
+    @Transient 
+    private List <SurveyPages> surveyPages;
 
     public int getId() {
         return id;
@@ -194,12 +216,28 @@ public class surveys {
         this.dateModified = dateModified;
     }
 
-    public String getSurveysCol() {
-        return surveysCol;
-    }
+	public Integer getTimesTaken() {
+		return timesTaken;
+	}
 
-    public void setSurveysCol(String surveysCol) {
-        this.surveysCol = surveysCol;
-    }
-    
+	public void setTimesTaken(Integer timesTaken) {
+		this.timesTaken = timesTaken;
+	}
+
+	public String getEncryptedId() {
+		return encryptedId;
+	}
+
+	public void setEncryptedId(String encryptedId) {
+		this.encryptedId = encryptedId;
+	}
+
+	public List<SurveyPages> getSurveyPages() {
+		return surveyPages;
+	}
+
+	public void setSurveyPages(List<SurveyPages> surveyPages) {
+		this.surveyPages = surveyPages;
+	}
+
 }

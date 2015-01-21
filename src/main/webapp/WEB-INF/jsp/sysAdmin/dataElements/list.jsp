@@ -40,6 +40,7 @@
                                         <th scope="col" class="center-text">Status</th>
                                         <th scope="col">Table Name</th>
                                         <th scope="col">Table Column</th>
+                                        <th scope="col">Look Up Table</th>
                                         <th scope="col"></th>
                                     </tr>
                                 </thead>
@@ -59,6 +60,14 @@
                                                 </td>
                                                 <td>
                                                     ${field.saveToTableCol}
+                                                </td>
+                                                <td>
+                                                    <c:choose>
+                                                        <c:when test="${not empty field.populateFromTable}">
+                                                            ${field.populateFromTable}
+                                                        </c:when>
+                                                        <c:otherwise>N/A</c:otherwise>
+                                                    </c:choose>
                                                 </td>
                                                 <td class="actions-col">
                                                     <a href="#fieldModal" data-toggle="modal" rel="${field.id}" class="btn btn-link editField" title="Edit this field" role="button">

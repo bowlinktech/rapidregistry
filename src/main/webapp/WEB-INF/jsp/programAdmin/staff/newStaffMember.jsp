@@ -34,7 +34,7 @@
                                 <form:select path="typeId" id="typeId" class="form-control half">
                                     <option value="" label=" - Select - " >- Select -</option>
                                     <c:forEach items="${userTypes}"  varStatus="uname">
-                                        <option value="${userTypes[uname.index][0]}">${userTypes[uname.index][1]}</option>
+                                        <option value="${userTypes[uname.index][0]}" <c:if test="${staffdetails.typeId == userTypes[uname.index][0]}">selected</c:if>>${userTypes[uname.index][1]}</option>
                                     </c:forEach>
                                 </form:select>
                                <form:errors path="typeId" cssClass="control-label" element="label" />   
@@ -68,12 +68,13 @@
                                 <label class="control-label" for="password">Password *</label>
                                 <form:input path="password" id="password" class="form-control" type="password" maxLength="15" autocomplete="off"  />
                                 <form:errors path="password" cssClass="control-label" element="label" />
+                                <span id="passwordMsg" class="control-label"></span>
                             </div>
                         </spring:bind>
                         <div id="confirmPasswordDiv" class="form-group">
                             <label class="control-label" for="confirmPassword">Confirm Password *</label>
                             <input id="confirmPassword" name="confirmpassword" class="form-control" maxLength="15" autocomplete="off" type="password" value="" />
-                            <span id="confimPasswordMsg" class="control-label"></span>
+                            <span id="confirmPasswordMsg" class="control-label"></span>
                         </div>
                         <div class="form-group">
                             <input type="button" id="submitButton" rel="${btnValue}" role="button" class="btn btn-primary" value="${btnValue}"/>

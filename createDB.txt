@@ -4,7 +4,7 @@ USE `rapidregistry`;
 --
 -- Host: 127.0.0.1    Database: rapidregistry
 -- ------------------------------------------------------
--- Server version	5.6.13
+-- Server version	5.6.13-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -87,9 +87,10 @@ CREATE TABLE `dataElements` (
   `saveToTableName` varchar(55) COLLATE utf8_unicode_ci NOT NULL,
   `saveToTableCol` varchar(55) COLLATE utf8_unicode_ci NOT NULL,
   `status` bit(1) NOT NULL DEFAULT b'0',
+  `answerType` int(11) NOT NULL DEFAULT '3',
   PRIMARY KEY (`id`),
   KEY `fieldId_idx` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -98,7 +99,7 @@ CREATE TABLE `dataElements` (
 
 LOCK TABLES `dataElements` WRITE;
 /*!40000 ALTER TABLE `dataElements` DISABLE KEYS */;
-INSERT INTO `dataElements` VALUES (1,'First Name','storage_patients','firstName',''),(2,'Last Name','storage_patients','lastName','');
+INSERT INTO `dataElements` VALUES (1,'First Name','storage_patients','firstName','',3),(2,'Last Name','storage_patients','lastName','',3),(3,'Gender','storage_patients','genderId','',2),(4,'Address','storage_patientAddressInfo','address1','',3),(5,'Address 2','storage_patientAddressInfo','address2','',3),(6,'City','storage_patientAddressInfo','city','',3),(7,'State','storage_patientAddressInfo','state','',3);
 /*!40000 ALTER TABLE `dataElements` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -110,15 +111,15 @@ DROP TABLE IF EXISTS `engagementSurveys`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `engagementSurveys` (
-  `id` int(11) NOT NULL DEFAULT '0',
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `engagementId` int(11) NOT NULL,
   `programPatientId` int(11) NOT NULL,
   `surveyId` int(11) NOT NULL,
   `dateStarted` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `dateComplated` datetime NOT NULL,
+  `dateCompleted` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `systemUserId` int(11) NOT NULL,
   `lastAnsQuestionId` int(11) NOT NULL DEFAULT '0',
-  `completed` bit(1) NOT NULL DEFAULT b'1',
+  `completed` bit(1) NOT NULL DEFAULT b'0',
   PRIMARY KEY (`id`),
   KEY `engagmentId_idx` (`engagementId`),
   KEY `patientId_idx` (`programPatientId`),
@@ -128,7 +129,7 @@ CREATE TABLE `engagementSurveys` (
   CONSTRAINT `fk_engagementSurveys_patientId` FOREIGN KEY (`programPatientId`) REFERENCES `programPatients` (`id`),
   CONSTRAINT `fk_engagementSurveys_surveyId` FOREIGN KEY (`surveyId`) REFERENCES `surveys` (`id`),
   CONSTRAINT `fk_engagementSurveys_systemUserId` FOREIGN KEY (`systemUserId`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -137,6 +138,7 @@ CREATE TABLE `engagementSurveys` (
 
 LOCK TABLES `engagementSurveys` WRITE;
 /*!40000 ALTER TABLE `engagementSurveys` DISABLE KEYS */;
+INSERT INTO `engagementSurveys` VALUES (1,1,1,1,'2014-12-05 23:02:17','2014-12-05 23:02:17',12,0,'\0'),(2,2,2,1,'2014-12-05 23:02:17','2014-12-05 23:02:17',12,0,'\0');
 /*!40000 ALTER TABLE `engagementSurveys` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -554,8 +556,9 @@ DROP TABLE IF EXISTS `lu_programModules`;
 CREATE TABLE `lu_programModules` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `moduleName` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
+  `displayName` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -564,7 +567,7 @@ CREATE TABLE `lu_programModules` (
 
 LOCK TABLES `lu_programModules` WRITE;
 /*!40000 ALTER TABLE `lu_programModules` DISABLE KEYS */;
-INSERT INTO `lu_programModules` VALUES (1,'Scheduling Module'),(2,'Survey Module'),(3,'Report Module');
+INSERT INTO `lu_programModules` VALUES (1,'clients','Clients'),(2,'MCI','Master Patient Index'),(3,'reports','Reports'),(4,'import-export','Import / Export'),(5,'hierarchy','Org Hierarchy'),(6,'schedule','Schedule');
 /*!40000 ALTER TABLE `lu_programModules` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -679,11 +682,13 @@ DROP TABLE IF EXISTS `modifiedFields`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `modifiedFields` (
-  `id` int(11) NOT NULL DEFAULT '0',
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `programPatientId` int(11) NOT NULL,
   `fieldId` int(11) NOT NULL,
   `systemUserId` int(11) NOT NULL,
   `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `oldFieldValue` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `newFieldValue` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `patientId_idx` (`programPatientId`),
   KEY `fieldId_idx` (`fieldId`),
@@ -691,7 +696,7 @@ CREATE TABLE `modifiedFields` (
   CONSTRAINT `fk_modifiedFields_fieldId` FOREIGN KEY (`fieldId`) REFERENCES `dataElements` (`id`),
   CONSTRAINT `fk_modifiedFields_patientId` FOREIGN KEY (`programPatientId`) REFERENCES `programPatients` (`id`),
   CONSTRAINT `fk_modifiedFields_userId` FOREIGN KEY (`systemUserId`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -700,6 +705,7 @@ CREATE TABLE `modifiedFields` (
 
 LOCK TABLES `modifiedFields` WRITE;
 /*!40000 ALTER TABLE `modifiedFields` DISABLE KEYS */;
+INSERT INTO `modifiedFields` VALUES (4,1,4,3,'2014-12-04 16:39:22','5 Winding Hollow Rd','5 Winding Hollow Rd.'),(5,1,4,3,'2014-12-04 16:39:31','5 Winding Hollow Rd.','5 Winding Hollow Rd'),(6,1,3,3,'2014-12-08 09:31:09','Male','Unknown or Refused to Report'),(7,1,3,3,'2014-12-08 09:31:17','Unknown or Refused to Report','Male');
 /*!40000 ALTER TABLE `modifiedFields` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -837,6 +843,7 @@ CREATE TABLE `patientEngagements` (
 
 LOCK TABLES `patientEngagements` WRITE;
 /*!40000 ALTER TABLE `patientEngagements` DISABLE KEYS */;
+INSERT INTO `patientEngagements` VALUES (1,1,1,12),(2,2,1,12);
 /*!40000 ALTER TABLE `patientEngagements` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -865,7 +872,7 @@ CREATE TABLE `programOrgHierarchy` (
 
 LOCK TABLES `programOrgHierarchy` WRITE;
 /*!40000 ALTER TABLE `programOrgHierarchy` DISABLE KEYS */;
-INSERT INTO `programOrgHierarchy` VALUES (1,1,'Networks',1,'2014-10-20 11:28:49'),(2,1,'Institutions',2,'2014-10-20 11:29:03'),(3,1,'Departments',3,'2014-10-20 11:29:23');
+INSERT INTO `programOrgHierarchy` VALUES (1,4,'Networks',1,'2014-10-20 11:28:49'),(2,4,'Institutions',2,'2014-10-20 11:29:03'),(3,4,'Departments',3,'2014-10-20 11:29:23');
 /*!40000 ALTER TABLE `programOrgHierarchy` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -949,7 +956,7 @@ CREATE TABLE `programPatients` (
   KEY `fk_programPatients_staffMemberId` (`systemUserId`),
   CONSTRAINT `fk_programPatients_programId` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`),
   CONSTRAINT `fk_programPatients_staffMemberId` FOREIGN KEY (`systemUserId`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -958,6 +965,7 @@ CREATE TABLE `programPatients` (
 
 LOCK TABLES `programPatients` WRITE;
 /*!40000 ALTER TABLE `programPatients` DISABLE KEYS */;
+INSERT INTO `programPatients` VALUES (1,1,1,'2014-12-02 14:20:37','\0'),(2,1,1,'2014-12-02 15:28:56','\0');
 /*!40000 ALTER TABLE `programPatients` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1682,6 +1690,9 @@ CREATE TABLE `program_engagementFields` (
   `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `fieldDisplayName` varchar(55) COLLATE utf8_unicode_ci DEFAULT NULL,
   `dataGridColumn` bit(1) NOT NULL DEFAULT b'0',
+  `searchField` bit(1) NOT NULL DEFAULT b'0',
+  `summaryField` bit(1) NOT NULL DEFAULT b'0',
+  `searchDspPos` int(11) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   KEY `sectionId_idx` (`sectionId`),
   KEY `fk_programEngagementFields_programId` (`programId`),
@@ -1858,14 +1869,13 @@ CREATE TABLE `program_modules` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `programId` int(11) NOT NULL,
   `moduleId` int(11) NOT NULL,
-  `displayName` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `dspPos` int(255) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `programId_idx` (`programId`),
   KEY `fk_programModules_moduleId` (`moduleId`),
   CONSTRAINT `fk_programModules` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`),
   CONSTRAINT `fk_programModules_moduleId` FOREIGN KEY (`moduleId`) REFERENCES `lu_programModules` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1874,7 +1884,7 @@ CREATE TABLE `program_modules` (
 
 LOCK TABLES `program_modules` WRITE;
 /*!40000 ALTER TABLE `program_modules` DISABLE KEYS */;
-INSERT INTO `program_modules` VALUES (1,1,3,'',1),(2,4,3,NULL,1);
+INSERT INTO `program_modules` VALUES (1,1,1,1),(2,4,3,1),(3,1,2,2),(4,1,3,3),(5,1,4,4),(6,1,5,5),(7,1,6,6);
 /*!40000 ALTER TABLE `program_modules` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1894,7 +1904,7 @@ CREATE TABLE `program_patientEntryMethods` (
   PRIMARY KEY (`id`),
   KEY `programId_idx` (`programId`),
   CONSTRAINT `fk_programPatientEntryMethods_programId` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1903,6 +1913,7 @@ CREATE TABLE `program_patientEntryMethods` (
 
 LOCK TABLES `program_patientEntryMethods` WRITE;
 /*!40000 ALTER TABLE `program_patientEntryMethods` DISABLE KEYS */;
+INSERT INTO `program_patientEntryMethods` VALUES (1,1,0,'New Client',1);
 /*!40000 ALTER TABLE `program_patientEntryMethods` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1925,6 +1936,9 @@ CREATE TABLE `program_patientFields` (
   `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `fieldDisplayName` varchar(55) COLLATE utf8_unicode_ci DEFAULT NULL,
   `dataGridColumn` bit(1) NOT NULL DEFAULT b'0',
+  `searchField` bit(1) NOT NULL DEFAULT b'0',
+  `summaryField` bit(1) NOT NULL DEFAULT b'0',
+  `searchDspPos` int(11) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   KEY `sectionId_idx` (`sectionId`),
   KEY `fk_programPatientFields_programId` (`programId`),
@@ -1935,7 +1949,7 @@ CREATE TABLE `program_patientFields` (
   CONSTRAINT `fk_programPatientFields_programId` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`),
   CONSTRAINT `fk_programPatientFields_sectionId` FOREIGN KEY (`sectionId`) REFERENCES `program_patientSections` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_programPatientFields_validationId` FOREIGN KEY (`validationId`) REFERENCES `lu_validationtypes` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1944,7 +1958,7 @@ CREATE TABLE `program_patientFields` (
 
 LOCK TABLES `program_patientFields` WRITE;
 /*!40000 ALTER TABLE `program_patientFields` DISABLE KEYS */;
-INSERT INTO `program_patientFields` VALUES (10,1,2,1,'',1,0,1,'2014-10-17 10:58:13','First Name','');
+INSERT INTO `program_patientFields` VALUES (16,1,3,4,'',1,0,1,'2014-12-04 16:34:19','Address','\0','\0','\0',1),(17,1,3,5,'\0',1,0,2,'2014-12-04 16:34:25','Address 2','\0','\0','\0',1),(18,1,3,6,'',1,0,3,'2014-12-04 16:34:29','City','\0','\0','\0',1),(19,1,3,7,'',1,0,4,'2014-12-04 16:34:37','State','\0','\0','\0',1),(52,1,2,1,'',1,0,2,'2014-12-08 08:43:42','First Name','\0','','',1),(53,1,2,2,'',1,0,3,'2014-12-08 08:43:58','Last Name','\0','','',2),(55,1,2,3,'',1,0,1,'2014-12-08 12:26:03','Gender','\0','','\0',3);
 /*!40000 ALTER TABLE `program_patientFields` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1979,40 +1993,6 @@ LOCK TABLES `program_patientMCIFields` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `program_patientSearchFields`
---
-
-DROP TABLE IF EXISTS `program_patientSearchFields`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `program_patientSearchFields` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `programId` int(11) NOT NULL,
-  `fieldId` int(11) NOT NULL,
-  `sectionFieldId` int(11) NOT NULL,
-  `dspPos` int(11) NOT NULL DEFAULT '1',
-  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  KEY `programId_idx` (`programId`),
-  KEY `fk_programPatientSearchFields_fieldId` (`fieldId`),
-  KEY `fk_programPatientSearchFields_sectionFieldId_idx` (`sectionFieldId`),
-  CONSTRAINT `fk_programPatientSearchFields_fieldId` FOREIGN KEY (`fieldId`) REFERENCES `dataElements` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_programPatientSearchFields_programId` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`),
-  CONSTRAINT `fk_programPatientSearchFields_sectionFieldId` FOREIGN KEY (`sectionFieldId`) REFERENCES `program_patientFields` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `program_patientSearchFields`
---
-
-LOCK TABLES `program_patientSearchFields` WRITE;
-/*!40000 ALTER TABLE `program_patientSearchFields` DISABLE KEYS */;
-INSERT INTO `program_patientSearchFields` VALUES (4,1,1,10,1,'2014-10-17 00:27:03');
-/*!40000 ALTER TABLE `program_patientSearchFields` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `program_patientSections`
 --
 
@@ -2038,7 +2018,7 @@ CREATE TABLE `program_patientSections` (
 
 LOCK TABLES `program_patientSections` WRITE;
 /*!40000 ALTER TABLE `program_patientSections` DISABLE KEYS */;
-INSERT INTO `program_patientSections` VALUES (2,1,'','Client Contact Information',2,'2014-10-15 00:08:20'),(3,1,'','Test Section',1,'2014-10-15 00:52:24');
+INSERT INTO `program_patientSections` VALUES (2,1,'','General Information',1,'2014-10-15 00:08:20'),(3,1,'','Contact Information',2,'2014-10-15 00:52:24');
 /*!40000 ALTER TABLE `program_patientSections` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2069,40 +2049,6 @@ CREATE TABLE `program_patientSharing` (
 LOCK TABLES `program_patientSharing` WRITE;
 /*!40000 ALTER TABLE `program_patientSharing` DISABLE KEYS */;
 /*!40000 ALTER TABLE `program_patientSharing` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `program_patientSummaryFields`
---
-
-DROP TABLE IF EXISTS `program_patientSummaryFields`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `program_patientSummaryFields` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `programId` int(11) NOT NULL,
-  `fieldId` int(11) NOT NULL,
-  `sectionFieldId` int(11) DEFAULT NULL,
-  `dspPos` int(11) NOT NULL DEFAULT '1',
-  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  KEY `programId` (`programId`),
-  KEY `fk_programPatientSummaryFields_fieldId_idx` (`fieldId`),
-  KEY `fk_programPatientSummaryFields_sectionFieldId_idx` (`sectionFieldId`),
-  CONSTRAINT `fk_programPatientSummaryFields_fieldId` FOREIGN KEY (`fieldId`) REFERENCES `dataElements` (`id`),
-  CONSTRAINT `fk_programPatientSummaryFields_programId` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`),
-  CONSTRAINT `fk_programPatientSummaryFields_sectionFieldId` FOREIGN KEY (`sectionFieldId`) REFERENCES `program_patientFields` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `program_patientSummaryFields`
---
-
-LOCK TABLES `program_patientSummaryFields` WRITE;
-/*!40000 ALTER TABLE `program_patientSummaryFields` DISABLE KEYS */;
-INSERT INTO `program_patientSummaryFields` VALUES (2,1,1,10,1,'2014-10-17 00:53:21');
-/*!40000 ALTER TABLE `program_patientSummaryFields` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -2205,7 +2151,7 @@ CREATE TABLE `rel_userLogins` (
   PRIMARY KEY (`id`),
   KEY `userId_idx` (`systemUserId`),
   CONSTRAINT `userId` FOREIGN KEY (`systemUserId`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2669 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2847 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2214,7 +2160,7 @@ CREATE TABLE `rel_userLogins` (
 
 LOCK TABLES `rel_userLogins` WRITE;
 /*!40000 ALTER TABLE `rel_userLogins` DISABLE KEYS */;
-INSERT INTO `rel_userLogins` VALUES (2503,1,'2014-10-06 11:28:15'),(2504,1,'2014-10-06 12:46:52'),(2505,1,'2014-10-06 13:24:35'),(2506,1,'2014-10-06 13:31:54'),(2507,1,'2014-10-06 13:33:15'),(2508,1,'2014-10-06 13:38:30'),(2509,1,'2014-10-07 11:36:08'),(2510,1,'2014-10-07 11:38:27'),(2511,1,'2014-10-07 11:48:23'),(2512,1,'2014-10-07 12:33:57'),(2513,1,'2014-10-07 12:44:14'),(2514,1,'2014-10-07 13:30:58'),(2515,1,'2014-10-07 13:46:33'),(2516,1,'2014-10-07 14:36:53'),(2517,1,'2014-10-07 14:45:35'),(2518,1,'2014-10-14 10:54:30'),(2519,1,'2014-10-14 11:11:47'),(2520,1,'2014-10-14 11:28:41'),(2521,1,'2014-10-14 12:14:55'),(2522,1,'2014-10-14 12:21:06'),(2523,1,'2014-10-14 13:23:44'),(2524,1,'2014-10-14 13:29:14'),(2525,1,'2014-10-14 14:00:32'),(2526,1,'2014-10-14 14:05:03'),(2527,1,'2014-10-15 09:05:12'),(2528,1,'2014-10-15 09:08:57'),(2529,1,'2014-10-15 10:03:14'),(2530,1,'2014-10-15 10:21:54'),(2531,1,'2014-10-15 10:44:44'),(2532,1,'2014-10-15 11:26:55'),(2533,1,'2014-10-15 11:45:01'),(2534,1,'2014-10-15 11:56:52'),(2535,1,'2014-10-15 12:08:15'),(2536,1,'2014-10-15 12:35:11'),(2537,1,'2014-10-15 12:37:40'),(2538,1,'2014-10-15 12:41:07'),(2539,1,'2014-10-15 12:47:54'),(2540,1,'2014-10-15 12:52:17'),(2541,1,'2014-10-15 12:56:00'),(2542,1,'2014-10-16 13:44:33'),(2543,1,'2014-10-17 09:42:17'),(2544,1,'2014-10-17 10:23:09'),(2545,1,'2014-10-17 10:30:05'),(2546,1,'2014-10-17 10:40:55'),(2547,1,'2014-10-17 11:05:23'),(2548,1,'2014-10-17 11:08:15'),(2549,1,'2014-10-17 11:18:46'),(2550,1,'2014-10-17 11:41:40'),(2551,1,'2014-10-17 12:22:03'),(2552,1,'2014-10-17 12:45:36'),(2553,1,'2014-10-17 12:53:16'),(2554,1,'2014-10-17 12:58:01'),(2555,1,'2014-10-17 13:03:13'),(2556,1,'2014-10-17 13:33:36'),(2557,1,'2014-10-17 13:36:20'),(2558,1,'2014-10-17 13:38:28'),(2559,1,'2014-10-17 13:40:03'),(2560,1,'2014-10-17 13:49:26'),(2561,1,'2014-10-17 13:59:31'),(2562,1,'2014-10-17 14:01:24'),(2563,1,'2014-10-17 14:02:45'),(2564,1,'2014-10-17 14:10:59'),(2565,1,'2014-10-17 14:13:02'),(2566,1,'2014-10-17 14:25:02'),(2567,1,'2014-10-17 14:30:08'),(2568,1,'2014-10-17 14:38:10'),(2569,1,'2014-10-17 14:41:51'),(2570,1,'2014-10-17 14:45:37'),(2571,1,'2014-10-20 09:48:06'),(2572,1,'2014-10-20 10:35:55'),(2573,1,'2014-10-20 10:37:44'),(2574,1,'2014-10-20 10:39:59'),(2575,1,'2014-10-20 10:41:57'),(2576,1,'2014-10-20 11:15:32'),(2577,1,'2014-10-20 11:18:59'),(2578,1,'2014-10-20 11:21:55'),(2579,1,'2014-10-20 11:24:32'),(2580,1,'2014-10-20 11:26:02'),(2581,1,'2014-10-20 11:41:28'),(2582,1,'2014-10-20 11:53:40'),(2583,1,'2014-10-20 11:57:47'),(2584,1,'2014-10-20 12:18:06'),(2585,1,'2014-10-20 12:44:46'),(2586,1,'2014-11-03 09:19:18'),(2587,1,'2014-11-03 09:25:16'),(2588,1,'2014-11-03 09:29:23'),(2589,1,'2014-11-03 09:31:39'),(2590,2,'2014-11-03 10:32:49'),(2591,2,'2014-11-03 10:34:13'),(2592,1,'2014-11-03 10:41:25'),(2593,2,'2014-11-03 10:41:50'),(2594,2,'2014-11-03 11:02:55'),(2595,2,'2014-11-03 11:14:56'),(2596,2,'2014-11-03 11:39:34'),(2597,2,'2014-11-03 11:40:57'),(2598,2,'2014-11-03 11:54:17'),(2599,2,'2014-11-03 12:48:13'),(2600,1,'2014-11-03 12:57:43'),(2601,2,'2014-11-03 12:57:50'),(2602,2,'2014-11-03 14:02:01'),(2603,2,'2014-11-03 14:06:06'),(2604,2,'2014-11-03 14:19:36'),(2605,2,'2014-11-03 14:42:26'),(2606,2,'2014-11-03 14:43:30'),(2607,2,'2014-11-03 14:54:37'),(2608,2,'2014-11-03 15:03:12'),(2609,2,'2014-11-03 15:16:03'),(2610,2,'2014-11-03 15:26:37'),(2611,2,'2014-11-04 10:07:39'),(2612,2,'2014-11-04 10:10:26'),(2613,2,'2014-11-04 10:49:20'),(2614,2,'2014-11-04 10:53:04'),(2615,2,'2014-11-04 10:55:46'),(2616,2,'2014-11-04 10:58:48'),(2617,2,'2014-11-04 11:00:09'),(2618,2,'2014-11-04 11:03:04'),(2619,2,'2014-11-04 11:06:51'),(2620,2,'2014-11-04 11:25:28'),(2621,2,'2014-11-04 11:39:40'),(2622,2,'2014-11-04 11:44:52'),(2623,2,'2014-11-04 11:47:09'),(2624,2,'2014-11-04 11:51:30'),(2625,2,'2014-11-04 11:58:05'),(2626,2,'2014-11-04 12:00:29'),(2627,2,'2014-11-04 12:02:13'),(2628,2,'2014-11-04 12:05:35'),(2629,2,'2014-11-04 12:08:55'),(2630,2,'2014-11-04 12:11:09'),(2631,2,'2014-11-04 12:58:15'),(2632,2,'2014-11-04 13:10:30'),(2633,2,'2014-11-04 13:13:33'),(2634,2,'2014-11-04 13:30:24'),(2635,2,'2014-11-04 13:33:21'),(2636,2,'2014-11-04 13:39:56'),(2637,2,'2014-11-04 13:41:27'),(2638,2,'2014-11-04 13:47:34'),(2639,2,'2014-11-04 13:57:49'),(2640,2,'2014-11-04 14:04:20'),(2641,2,'2014-11-04 14:12:14'),(2642,2,'2014-11-04 14:14:17'),(2643,2,'2014-11-04 14:15:28'),(2644,2,'2014-11-04 14:34:49'),(2645,2,'2014-11-04 14:47:43'),(2646,1,'2014-11-04 14:53:43'),(2647,2,'2014-11-04 14:53:50'),(2648,2,'2014-11-04 15:05:45'),(2649,2,'2014-11-04 15:26:52'),(2650,2,'2014-11-04 15:29:44'),(2651,2,'2014-11-04 15:33:38'),(2652,2,'2014-11-04 15:35:39'),(2653,2,'2014-11-04 16:12:49'),(2654,2,'2014-11-04 16:18:15'),(2655,2,'2014-11-04 16:21:14'),(2656,2,'2014-11-04 16:22:40'),(2657,2,'2014-11-04 16:54:37'),(2658,2,'2014-11-06 11:49:32'),(2659,2,'2014-11-06 12:09:32'),(2660,2,'2014-11-06 13:49:11'),(2661,2,'2014-11-06 14:04:13'),(2662,2,'2014-11-06 14:25:27'),(2663,2,'2014-11-06 14:36:41'),(2664,1,'2014-11-06 14:39:26'),(2665,2,'2014-11-06 14:44:26'),(2666,2,'2014-11-06 15:05:50'),(2667,2,'2014-11-06 15:28:53'),(2668,2,'2014-11-06 16:09:54');
+INSERT INTO `rel_userLogins` VALUES (2503,1,'2014-10-06 11:28:15'),(2504,1,'2014-10-06 12:46:52'),(2505,1,'2014-10-06 13:24:35'),(2506,1,'2014-10-06 13:31:54'),(2507,1,'2014-10-06 13:33:15'),(2508,1,'2014-10-06 13:38:30'),(2509,1,'2014-10-07 11:36:08'),(2510,1,'2014-10-07 11:38:27'),(2511,1,'2014-10-07 11:48:23'),(2512,1,'2014-10-07 12:33:57'),(2513,1,'2014-10-07 12:44:14'),(2514,1,'2014-10-07 13:30:58'),(2515,1,'2014-10-07 13:46:33'),(2516,1,'2014-10-07 14:36:53'),(2517,1,'2014-10-07 14:45:35'),(2518,1,'2014-10-14 10:54:30'),(2519,1,'2014-10-14 11:11:47'),(2520,1,'2014-10-14 11:28:41'),(2521,1,'2014-10-14 12:14:55'),(2522,1,'2014-10-14 12:21:06'),(2523,1,'2014-10-14 13:23:44'),(2524,1,'2014-10-14 13:29:14'),(2525,1,'2014-10-14 14:00:32'),(2526,1,'2014-10-14 14:05:03'),(2527,1,'2014-10-15 09:05:12'),(2528,1,'2014-10-15 09:08:57'),(2529,1,'2014-10-15 10:03:14'),(2530,1,'2014-10-15 10:21:54'),(2531,1,'2014-10-15 10:44:44'),(2532,1,'2014-10-15 11:26:55'),(2533,1,'2014-10-15 11:45:01'),(2534,1,'2014-10-15 11:56:52'),(2535,1,'2014-10-15 12:08:15'),(2536,1,'2014-10-15 12:35:11'),(2537,1,'2014-10-15 12:37:40'),(2538,1,'2014-10-15 12:41:07'),(2539,1,'2014-10-15 12:47:54'),(2540,1,'2014-10-15 12:52:17'),(2541,1,'2014-10-15 12:56:00'),(2542,1,'2014-10-16 13:44:33'),(2543,1,'2014-10-17 09:42:17'),(2544,1,'2014-10-17 10:23:09'),(2545,1,'2014-10-17 10:30:05'),(2546,1,'2014-10-17 10:40:55'),(2547,1,'2014-10-17 11:05:23'),(2548,1,'2014-10-17 11:08:15'),(2549,1,'2014-10-17 11:18:46'),(2550,1,'2014-10-17 11:41:40'),(2551,1,'2014-10-17 12:22:03'),(2552,1,'2014-10-17 12:45:36'),(2553,1,'2014-10-17 12:53:16'),(2554,1,'2014-10-17 12:58:01'),(2555,1,'2014-10-17 13:03:13'),(2556,1,'2014-10-17 13:33:36'),(2557,1,'2014-10-17 13:36:20'),(2558,1,'2014-10-17 13:38:28'),(2559,1,'2014-10-17 13:40:03'),(2560,1,'2014-10-17 13:49:26'),(2561,1,'2014-10-17 13:59:31'),(2562,1,'2014-10-17 14:01:24'),(2563,1,'2014-10-17 14:02:45'),(2564,1,'2014-10-17 14:10:59'),(2565,1,'2014-10-17 14:13:02'),(2566,1,'2014-10-17 14:25:02'),(2567,1,'2014-10-17 14:30:08'),(2568,1,'2014-10-17 14:38:10'),(2569,1,'2014-10-17 14:41:51'),(2570,1,'2014-10-17 14:45:37'),(2571,1,'2014-10-20 09:48:06'),(2572,1,'2014-10-20 10:35:55'),(2573,1,'2014-10-20 10:37:44'),(2574,1,'2014-10-20 10:39:59'),(2575,1,'2014-10-20 10:41:57'),(2576,1,'2014-10-20 11:15:32'),(2577,1,'2014-10-20 11:18:59'),(2578,1,'2014-10-20 11:21:55'),(2579,1,'2014-10-20 11:24:32'),(2580,1,'2014-10-20 11:26:02'),(2581,1,'2014-10-20 11:41:28'),(2582,1,'2014-10-20 11:53:40'),(2583,1,'2014-10-20 11:57:47'),(2584,1,'2014-10-20 12:18:06'),(2585,1,'2014-10-20 12:44:46'),(2586,1,'2014-11-03 09:19:18'),(2587,1,'2014-11-03 09:25:16'),(2588,1,'2014-11-03 09:29:23'),(2589,1,'2014-11-03 09:31:39'),(2590,2,'2014-11-03 10:32:49'),(2591,2,'2014-11-03 10:34:13'),(2592,1,'2014-11-03 10:41:25'),(2593,2,'2014-11-03 10:41:50'),(2594,2,'2014-11-03 11:02:55'),(2595,2,'2014-11-03 11:14:56'),(2596,2,'2014-11-03 11:39:34'),(2597,2,'2014-11-03 11:40:57'),(2598,2,'2014-11-03 11:54:17'),(2599,2,'2014-11-03 12:48:13'),(2600,1,'2014-11-03 12:57:43'),(2601,2,'2014-11-03 12:57:50'),(2602,2,'2014-11-03 14:02:01'),(2603,2,'2014-11-03 14:06:06'),(2604,2,'2014-11-03 14:19:36'),(2605,2,'2014-11-03 14:42:26'),(2606,2,'2014-11-03 14:43:30'),(2607,2,'2014-11-03 14:54:37'),(2608,2,'2014-11-03 15:03:12'),(2609,2,'2014-11-03 15:16:03'),(2610,2,'2014-11-03 15:26:37'),(2611,2,'2014-11-04 10:07:39'),(2612,2,'2014-11-04 10:10:26'),(2613,2,'2014-11-04 10:49:20'),(2614,2,'2014-11-04 10:53:04'),(2615,2,'2014-11-04 10:55:46'),(2616,2,'2014-11-04 10:58:48'),(2617,2,'2014-11-04 11:00:09'),(2618,2,'2014-11-04 11:03:04'),(2619,2,'2014-11-04 11:06:51'),(2620,2,'2014-11-04 11:25:28'),(2621,2,'2014-11-04 11:39:40'),(2622,2,'2014-11-04 11:44:52'),(2623,2,'2014-11-04 11:47:09'),(2624,2,'2014-11-04 11:51:30'),(2625,2,'2014-11-04 11:58:05'),(2626,2,'2014-11-04 12:00:29'),(2627,2,'2014-11-04 12:02:13'),(2628,2,'2014-11-04 12:05:35'),(2629,2,'2014-11-04 12:08:55'),(2630,2,'2014-11-04 12:11:09'),(2631,2,'2014-11-04 12:58:15'),(2632,2,'2014-11-04 13:10:30'),(2633,2,'2014-11-04 13:13:33'),(2634,2,'2014-11-04 13:30:24'),(2635,2,'2014-11-04 13:33:21'),(2636,2,'2014-11-04 13:39:56'),(2637,2,'2014-11-04 13:41:27'),(2638,2,'2014-11-04 13:47:34'),(2639,2,'2014-11-04 13:57:49'),(2640,2,'2014-11-04 14:04:20'),(2641,2,'2014-11-04 14:12:14'),(2642,2,'2014-11-04 14:14:17'),(2643,2,'2014-11-04 14:15:28'),(2644,2,'2014-11-04 14:34:49'),(2645,2,'2014-11-04 14:47:43'),(2646,1,'2014-11-04 14:53:43'),(2647,2,'2014-11-04 14:53:50'),(2648,2,'2014-11-04 15:05:45'),(2649,2,'2014-11-04 15:26:52'),(2650,2,'2014-11-04 15:29:44'),(2651,2,'2014-11-04 15:33:38'),(2652,2,'2014-11-04 15:35:39'),(2653,2,'2014-11-04 16:12:49'),(2654,2,'2014-11-04 16:18:15'),(2655,2,'2014-11-04 16:21:14'),(2656,2,'2014-11-04 16:22:40'),(2657,2,'2014-11-04 16:54:37'),(2658,2,'2014-11-06 11:49:32'),(2659,2,'2014-11-06 12:09:32'),(2660,2,'2014-11-06 13:49:11'),(2661,2,'2014-11-06 14:04:13'),(2662,2,'2014-11-06 14:25:27'),(2663,2,'2014-11-06 14:36:41'),(2664,1,'2014-11-06 14:39:26'),(2665,2,'2014-11-06 14:44:26'),(2666,2,'2014-11-06 15:05:50'),(2667,2,'2014-11-06 15:28:53'),(2668,2,'2014-11-06 16:09:54'),(2669,2,'2014-11-13 09:13:55'),(2670,2,'2014-11-13 09:21:36'),(2671,2,'2014-11-13 09:25:35'),(2672,2,'2014-11-13 09:41:23'),(2673,2,'2014-11-13 09:58:32'),(2674,2,'2014-11-13 10:47:11'),(2675,2,'2014-11-13 10:54:02'),(2676,2,'2014-11-13 11:14:29'),(2677,2,'2014-11-13 11:16:30'),(2678,2,'2014-11-13 11:41:23'),(2679,2,'2014-11-13 11:56:15'),(2680,2,'2014-11-13 12:08:05'),(2681,2,'2014-11-13 13:25:04'),(2682,2,'2014-11-13 13:27:53'),(2683,2,'2014-11-13 13:30:47'),(2684,2,'2014-11-13 14:33:31'),(2685,2,'2014-11-13 14:38:43'),(2686,2,'2014-11-13 14:54:14'),(2687,2,'2014-11-13 14:57:46'),(2688,2,'2014-11-14 09:34:21'),(2689,2,'2014-11-14 10:12:29'),(2690,2,'2014-11-14 10:36:14'),(2691,2,'2014-11-14 10:38:51'),(2692,2,'2014-11-14 10:41:33'),(2693,2,'2014-11-14 11:01:40'),(2694,2,'2014-11-14 11:06:30'),(2695,3,'2014-11-20 11:04:50'),(2696,3,'2014-11-20 11:35:38'),(2697,3,'2014-11-20 14:56:05'),(2698,3,'2014-11-20 14:57:10'),(2699,3,'2014-11-20 14:58:40'),(2700,3,'2014-11-20 15:31:52'),(2701,3,'2014-11-21 11:29:40'),(2702,3,'2014-11-21 11:41:36'),(2703,3,'2014-11-21 11:56:01'),(2704,2,'2014-11-21 19:46:28'),(2705,2,'2014-11-24 16:04:33'),(2706,2,'2014-11-25 00:27:09'),(2707,2,'2014-11-25 00:29:00'),(2708,2,'2014-11-25 00:29:49'),(2709,2,'2014-11-25 00:34:45'),(2710,2,'2014-11-25 00:45:07'),(2711,2,'2014-11-25 00:55:25'),(2712,2,'2014-11-25 01:04:33'),(2713,14,'2014-11-25 01:18:21'),(2714,14,'2014-11-25 01:18:31'),(2715,2,'2014-11-25 01:22:23'),(2716,2,'2014-11-25 01:27:38'),(2717,2,'2014-11-25 01:36:53'),(2718,14,'2014-11-25 01:37:52'),(2719,14,'2014-11-25 01:40:05'),(2720,2,'2014-11-25 01:40:38'),(2721,2,'2014-11-25 02:31:27'),(2722,2,'2014-11-25 02:34:40'),(2723,2,'2014-11-25 10:37:14'),(2724,2,'2014-12-01 01:25:32'),(2725,2,'2014-12-03 09:44:43'),(2726,2,'2014-12-03 10:33:39'),(2727,2,'2014-12-03 14:04:26'),(2728,2,'2014-12-03 14:37:28'),(2729,2,'2014-12-03 15:13:52'),(2730,2,'2014-12-03 17:19:34'),(2731,2,'2014-12-04 11:28:06'),(2732,2,'2014-12-04 12:03:04'),(2733,2,'2014-12-04 14:10:33'),(2734,2,'2014-12-04 14:24:27'),(2735,2,'2014-12-04 14:35:10'),(2736,2,'2014-12-04 15:26:15'),(2737,2,'2014-12-04 15:29:08'),(2738,2,'2014-12-04 15:33:27'),(2739,2,'2014-12-04 17:44:29'),(2740,2,'2014-12-04 17:52:08'),(2741,2,'2014-12-04 18:34:57'),(2742,2,'2014-12-04 18:35:42'),(2743,2,'2014-12-04 19:49:58'),(2744,2,'2014-12-04 19:54:47'),(2745,2,'2014-12-04 20:01:43'),(2746,2,'2014-12-04 20:05:33'),(2747,2,'2014-12-04 20:07:07'),(2748,2,'2014-12-04 20:10:43'),(2749,2,'2014-12-04 20:12:37'),(2750,2,'2014-12-04 20:19:01'),(2751,2,'2014-12-04 20:19:38'),(2752,2,'2014-12-04 21:35:03'),(2753,2,'2014-12-04 21:40:57'),(2754,2,'2014-12-04 21:42:43'),(2755,2,'2014-12-04 21:52:35'),(2756,2,'2014-12-04 21:55:35'),(2757,2,'2014-12-04 22:14:41'),(2758,2,'2014-12-04 22:21:37'),(2759,2,'2014-12-04 22:24:17'),(2760,2,'2014-12-04 22:27:43'),(2761,2,'2014-12-04 22:29:28'),(2762,2,'2014-12-04 22:34:59'),(2763,2,'2014-12-04 22:40:59'),(2764,2,'2014-12-05 01:59:27'),(2765,2,'2014-12-05 02:47:21'),(2766,2,'2014-12-05 04:19:56'),(2767,2,'2014-12-05 05:20:54'),(2768,2,'2014-12-05 05:25:12'),(2769,2,'2014-12-05 05:28:45'),(2770,2,'2014-12-05 05:41:26'),(2771,2,'2014-12-05 05:47:40'),(2772,2,'2014-12-05 05:58:40'),(2773,2,'2014-12-05 06:18:47'),(2774,2,'2014-12-05 06:24:44'),(2775,2,'2014-12-05 13:32:16'),(2776,2,'2014-12-05 23:29:55'),(2777,2,'2014-12-05 23:31:52'),(2778,2,'2014-12-05 23:33:05'),(2779,2,'2014-12-06 00:29:06'),(2780,2,'2014-12-06 00:31:27'),(2781,2,'2014-12-06 00:43:39'),(2782,2,'2014-12-06 00:43:44'),(2783,2,'2014-12-06 00:45:08'),(2784,2,'2014-12-06 00:50:20'),(2785,2,'2014-12-06 00:50:25'),(2786,2,'2014-12-06 00:52:38'),(2787,2,'2014-12-06 00:55:57'),(2788,2,'2014-12-08 00:07:50'),(2789,2,'2014-12-08 01:36:04'),(2790,2,'2014-12-08 01:47:14'),(2791,2,'2014-12-08 02:21:19'),(2792,2,'2014-12-08 02:35:31'),(2793,2,'2014-12-08 03:15:52'),(2794,2,'2014-12-08 03:17:38'),(2795,2,'2014-12-08 03:25:29'),(2796,2,'2014-12-08 03:44:25'),(2797,2,'2014-12-08 03:50:09'),(2798,2,'2014-12-08 03:58:23'),(2799,2,'2014-12-08 04:14:29'),(2800,2,'2014-12-08 04:26:08'),(2801,2,'2014-12-08 04:30:09'),(2802,2,'2014-12-08 04:32:14'),(2803,2,'2014-12-08 04:33:21'),(2804,2,'2014-12-08 04:41:01'),(2805,2,'2014-12-08 05:22:12'),(2806,2,'2014-12-08 05:26:57'),(2807,2,'2014-12-08 05:30:54'),(2808,2,'2014-12-08 05:34:46'),(2809,2,'2014-12-08 05:38:37'),(2810,2,'2014-12-08 05:57:39'),(2811,2,'2014-12-08 06:06:00'),(2812,2,'2014-12-08 06:11:33'),(2813,2,'2014-12-08 06:24:18'),(2814,2,'2014-12-08 06:27:21'),(2815,2,'2014-12-08 08:15:19'),(2816,2,'2014-12-08 08:27:29'),(2817,2,'2014-12-08 08:30:15'),(2818,2,'2014-12-08 08:31:00'),(2819,2,'2014-12-08 08:33:56'),(2820,2,'2014-12-08 08:42:53'),(2821,2,'2014-12-08 15:46:16'),(2822,2,'2014-12-08 16:14:16'),(2823,2,'2014-12-08 18:33:12'),(2824,2,'2014-12-08 18:43:51'),(2825,2,'2014-12-08 18:47:54'),(2826,2,'2014-12-08 19:08:34'),(2827,2,'2014-12-08 20:17:06'),(2828,2,'2014-12-08 20:43:45'),(2829,2,'2014-12-08 22:03:16'),(2830,2,'2014-12-08 22:20:57'),(2831,2,'2014-12-08 23:13:30'),(2832,2,'2014-12-08 23:18:57'),(2833,2,'2014-12-08 23:20:37'),(2834,2,'2014-12-08 23:22:30'),(2835,2,'2014-12-08 23:27:43'),(2836,2,'2014-12-08 23:31:02'),(2837,2,'2014-12-08 23:49:13'),(2838,2,'2014-12-09 10:37:18'),(2839,2,'2014-12-09 10:51:43'),(2840,2,'2014-12-09 11:12:36'),(2841,2,'2014-12-09 11:44:06'),(2842,2,'2014-12-09 12:09:57'),(2843,2,'2014-12-09 12:25:47'),(2844,2,'2014-12-09 13:52:13'),(2845,2,'2014-12-09 14:23:59'),(2846,2,'2014-12-09 14:50:48');
 /*!40000 ALTER TABLE `rel_userLogins` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2303,7 +2249,7 @@ CREATE TABLE `storage_patientAddressInfo` (
   CONSTRAINT `fk_storage_patientAddress` FOREIGN KEY (`programpatientId`) REFERENCES `programPatients` (`id`),
   CONSTRAINT `fk_storage_patientAddressInfo_phonetype2` FOREIGN KEY (`phoneType2`) REFERENCES `lu_phoneTypes` (`id`),
   CONSTRAINT `fk_storage_patientAddress_phonetype` FOREIGN KEY (`phoneType1`) REFERENCES `lu_phoneTypes` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2312,6 +2258,7 @@ CREATE TABLE `storage_patientAddressInfo` (
 
 LOCK TABLES `storage_patientAddressInfo` WRITE;
 /*!40000 ALTER TABLE `storage_patientAddressInfo` DISABLE KEYS */;
+INSERT INTO `storage_patientAddressInfo` VALUES (1,1,'5 Winding Hollow Rd','','Hudson','NH','03051',NULL,'603-320-0047',NULL,NULL,'2014-12-02 14:22:54'),(2,2,'52 North Ashland St',NULL,'Worcester','MA','01760',NULL,'508-111-2222',NULL,NULL,'2014-12-02 15:29:50');
 /*!40000 ALTER TABLE `storage_patientAddressInfo` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2339,7 +2286,7 @@ CREATE TABLE `storage_patients` (
   `englishProficient` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'can be Yes, No, Unknown...\nWe wi\nso changing it to varchar',
   `maritalStatusId` int(11) DEFAULT NULL COMMENT 'look up from lu_MartialStatuses - Sample look up values are - Single, Married, Divorced, Not Reported, etc.',
   `email` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'e.g. test@test.com',
-  `additonalContactNumber` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `additionalContactNumber` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
   `url` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'e.g. http://test.com',
   `occupation` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
   `guardianName` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'name of guardian - Jane Doe, John Smith',
@@ -2363,7 +2310,7 @@ CREATE TABLE `storage_patients` (
   CONSTRAINT `martialStatusFK` FOREIGN KEY (`maritalStatusId`) REFERENCES `lu_maritalStatuses` (`id`),
   CONSTRAINT `patientFK` FOREIGN KEY (`programpatientId`) REFERENCES `programPatients` (`id`),
   CONSTRAINT `raceFK` FOREIGN KEY (`raceId`) REFERENCES `lu_races` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2372,6 +2319,7 @@ CREATE TABLE `storage_patients` (
 
 LOCK TABLES `storage_patients` WRITE;
 /*!40000 ALTER TABLE `storage_patients` DISABLE KEYS */;
+INSERT INTO `storage_patients` VALUES (1,1,NULL,NULL,'Chad',NULL,'McCue',NULL,'1978-05-10 00:00:00',1,1,2,124,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2014-12-02 14:22:18',NULL,'2014-12-02 14:22:18',NULL),(2,2,NULL,NULL,'Aimee',NULL,'McCue',NULL,'1978-09-09 00:00:00',2,1,2,124,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2014-12-02 15:29:20',NULL,'2014-12-02 15:29:20',NULL);
 /*!40000 ALTER TABLE `storage_patients` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2453,7 +2401,7 @@ CREATE TABLE `survey_changeLogs` (
   PRIMARY KEY (`id`),
   KEY `surveyid_idx` (`surveyId`),
   CONSTRAINT `cl_survey` FOREIGN KEY (`surveyId`) REFERENCES `surveys` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2462,6 +2410,7 @@ CREATE TABLE `survey_changeLogs` (
 
 LOCK TABLES `survey_changeLogs` WRITE;
 /*!40000 ALTER TABLE `survey_changeLogs` DISABLE KEYS */;
+INSERT INTO `survey_changeLogs` VALUES (1,2,2,'save note','2014-12-08 06:27:39'),(2,1,2,'             12345 save and close note','2014-12-08 06:30:04'),(3,2,2,'dsfdssfd','2014-12-08 06:30:57'),(4,2,2,'fdaffadfdadfa','2014-12-08 06:31:14'),(5,2,2,'test','2014-12-08 08:15:28'),(6,2,2,'hj','2014-12-08 08:23:59'),(7,2,2,'going to page','2014-12-08 16:14:27'),(8,2,2,'test','2014-12-08 18:34:53'),(9,2,2,'53w5','2014-12-08 18:43:59'),(10,2,2,'tesr','2014-12-08 18:48:16'),(11,2,2,'no changes','2014-12-08 20:44:04'),(12,2,2,'next','2014-12-08 21:15:25'),(13,2,2,'next','2014-12-08 22:03:27'),(14,2,2,'test','2014-12-08 22:13:51'),(15,1,2,'123','2014-12-09 00:02:20');
 /*!40000 ALTER TABLE `survey_changeLogs` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2477,11 +2426,11 @@ CREATE TABLE `survey_pages` (
   `surveyId` int(11) NOT NULL,
   `pageTitle` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `pageNum` int(11) NOT NULL,
-  `dateCreated` datetime DEFAULT CURRENT_TIMESTAMP,
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `surveyId_idx` (`surveyId`),
+  UNIQUE KEY `uni_surveyIdPageNum` (`surveyId`,`pageNum`),
   CONSTRAINT `sp_sur` FOREIGN KEY (`surveyId`) REFERENCES `surveys` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2490,6 +2439,7 @@ CREATE TABLE `survey_pages` (
 
 LOCK TABLES `survey_pages` WRITE;
 /*!40000 ALTER TABLE `survey_pages` DISABLE KEYS */;
+INSERT INTO `survey_pages` VALUES (1,1,'Survey 1 Page 1',1,'2014-12-08 22:21:36'),(2,1,'Page 2 Survey 1',2,'2014-12-08 22:21:36');
 /*!40000 ALTER TABLE `survey_pages` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2544,6 +2494,7 @@ CREATE TABLE `survey_questions` (
   `saveToFieldId` int(11) DEFAULT '0',
   `autoPopulateFromField` bit(1) NOT NULL DEFAULT b'0',
   `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `questionNum` int(11) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   KEY `pageId_idx` (`surveyPageId`),
   KEY `sq_ansType` (`answerTypeId`),
@@ -2600,8 +2551,8 @@ CREATE TABLE `surveys` (
   `programId` int(11) NOT NULL,
   `status` bit(1) NOT NULL DEFAULT b'1',
   `requireEngagement` bit(1) NOT NULL DEFAULT b'1',
-  `allowEngagement` varchar(45) COLLATE utf8_unicode_ci DEFAULT 'b''1''',
-  `duplicatesAllowed` varchar(45) COLLATE utf8_unicode_ci DEFAULT 'b''1''',
+  `allowEngagement` bit(1) DEFAULT b'1',
+  `duplicatesAllowed` bit(1) DEFAULT b'1',
   `title` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `doneButtonText` varchar(30) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'Done',
   `nextButtonText` varchar(30) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'Next',
@@ -2611,11 +2562,10 @@ CREATE TABLE `surveys` (
   `activityCodeId` int(11) DEFAULT '0',
   `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `dateModified` datetime DEFAULT CURRENT_TIMESTAMP,
-  `surveyscol` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `surveyId_idx` (`id`),
   KEY `programId_idx` (`programId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2624,7 +2574,36 @@ CREATE TABLE `surveys` (
 
 LOCK TABLES `surveys` WRITE;
 /*!40000 ALTER TABLE `surveys` DISABLE KEYS */;
+INSERT INTO `surveys` VALUES (1,1,'','','','\0','title1','D','N','P','\0','',NULL,'2014-12-05 05:58:43','2014-12-09 00:02:20'),(2,1,'\0','\0','','\0','edit title','3','2','1','','test',1,'2014-12-05 11:37:28','2014-12-08 22:13:51'),(13,1,'','','','\0','title','Done','Next','Previous','\0','',NULL,'2014-12-08 08:18:10','2014-12-08 08:18:10'),(14,4,'','','','\0','NH survey','Done','Next','Previous','\0','',NULL,'2014-12-09 02:30:40','2014-12-09 02:30:40');
 /*!40000 ALTER TABLE `surveys` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user_activityLog`
+--
+
+DROP TABLE IF EXISTS `user_activityLog`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user_activityLog` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `systemUserId` int(11) NOT NULL,
+  `surveyId` int(11) DEFAULT NULL,
+  `activityDesc` varchar(255) DEFAULT NULL,
+  `pageAccessed` varchar(45) DEFAULT NULL,
+  `controller` varchar(45) DEFAULT NULL,
+  `dateCreated` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_activityLog`
+--
+
+LOCK TABLES `user_activityLog` WRITE;
+/*!40000 ALTER TABLE `user_activityLog` DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_activityLog` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -2635,14 +2614,15 @@ DROP TABLE IF EXISTS `user_authorizedOrgHierarchy`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user_authorizedOrgHierarchy` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `systemUserId` int(11) NOT NULL,
+  `programId` int(11) NOT NULL,
   `programHierarchyId` int(11) NOT NULL,
   `orgHierarchyDetailId` int(11) NOT NULL,
   `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2651,6 +2631,7 @@ CREATE TABLE `user_authorizedOrgHierarchy` (
 
 LOCK TABLES `user_authorizedOrgHierarchy` WRITE;
 /*!40000 ALTER TABLE `user_authorizedOrgHierarchy` DISABLE KEYS */;
+INSERT INTO `user_authorizedOrgHierarchy` VALUES (7,12,4,1,1,'2014-11-14 09:50:45'),(8,12,4,2,3,'2014-11-14 09:50:45'),(9,12,4,3,5,'2014-11-14 09:50:45'),(13,12,4,1,0,'2014-11-14 11:10:05'),(14,12,4,2,0,'2014-11-14 11:10:05'),(15,12,4,3,0,'2014-11-14 11:10:05');
 /*!40000 ALTER TABLE `user_authorizedOrgHierarchy` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2698,7 +2679,7 @@ CREATE TABLE `user_programModules` (
   `moduleId` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2707,7 +2688,7 @@ CREATE TABLE `user_programModules` (
 
 LOCK TABLES `user_programModules` WRITE;
 /*!40000 ALTER TABLE `user_programModules` DISABLE KEYS */;
-INSERT INTO `user_programModules` VALUES (3,12,1,3);
+INSERT INTO `user_programModules` VALUES (5,12,1,3),(10,12,4,3),(12,3,1,1),(13,3,1,2),(14,3,1,3),(15,3,1,4),(16,3,1,5),(17,3,1,6);
 /*!40000 ALTER TABLE `user_programModules` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2729,7 +2710,7 @@ CREATE TABLE `user_programs` (
   KEY `fk_userPrograms_programId` (`programId`),
   CONSTRAINT `fk_userPrograms_programId` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`),
   CONSTRAINT `fk_userPrograms_userid` FOREIGN KEY (`systemUserId`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2738,7 +2719,7 @@ CREATE TABLE `user_programs` (
 
 LOCK TABLES `user_programs` WRITE;
 /*!40000 ALTER TABLE `user_programs` DISABLE KEYS */;
-INSERT INTO `user_programs` VALUES (1,2,1,0,'2014-10-17 14:56:10'),(2,2,4,0,'2014-11-03 10:41:32'),(3,3,1,0,'2014-11-03 13:54:13'),(11,12,1,0,'2014-11-04 13:58:09');
+INSERT INTO `user_programs` VALUES (1,2,1,0,'2014-10-17 14:56:10'),(2,2,4,0,'2014-11-03 10:41:32'),(3,3,1,0,'2014-11-03 13:54:13'),(11,12,1,0,'2014-11-04 13:58:09'),(16,12,4,2,'2014-11-14 09:50:45'),(17,13,1,0,'2014-11-25 00:39:48'),(18,14,1,0,'2014-11-25 01:16:51');
 /*!40000 ALTER TABLE `user_programs` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2812,17 +2793,18 @@ CREATE TABLE `users` (
   `status` bit(1) NOT NULL DEFAULT b'1',
   `firstName` varchar(55) COLLATE utf8_unicode_ci NOT NULL,
   `lastName` varchar(55) COLLATE utf8_unicode_ci NOT NULL,
-  `password` varchar(15) COLLATE utf8_unicode_ci DEFAULT NULL,
   `email` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `createdBy` int(11) NOT NULL DEFAULT '0',
   `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `resetCode` varchar(8) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `resetCode` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `randomSalt` blob,
+  `encryptedPw` blob,
   `lastloggedIn` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `userRoleId_idx` (`roleId`),
   KEY `userId_idx` (`id`),
   CONSTRAINT `userRoleId` FOREIGN KEY (`roleId`) REFERENCES `user_roles` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2831,13 +2813,9 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,0,1,'','Chad','McCue','!sysadmin!','chadmccue05@gmail.com',0,'2014-08-07 10:56:34',NULL,'2014-11-06 14:39:26'),(2,0,2,'','generic','admin','!admin!','genericadmin@rapidregistry.com',0,'2014-10-17 02:56:00',NULL,'2014-11-06 16:09:54'),(3,1,3,'','Chad','McCue','!chad!','chad_mccue@hotmail.com',2,'2014-11-03 01:53:55',NULL,NULL),(12,1,3,'\0','Aimee','McCue','aimeem','aimee.mccue@hotmail.com',1,'2014-11-04 01:57:54',NULL,'2014-11-04 14:47:43');
+INSERT INTO `users` VALUES (1,0,1,'','Chad','McCue','ludwiglizard-2@yahoo.com',0,'2014-08-07 10:56:34',NULL,'.âL¬Ó|a~','«£¯çai¯\rÊ 5ù/×³x÷&','2014-11-06 14:39:26'),(2,0,2,'','generic','admin','gchan123@yahoo.com',0,'2014-10-17 02:56:00',NULL,'ÉqàÙs°','Ñwî¥,ì|Ü\\ùÕ<,k\Zd','2014-12-09 14:50:48'),(3,1,3,'','Chad','McCue','gracec0505@gmail.com',2,'2014-11-03 01:53:55',NULL,'ßñÏY¢¡9','Øx`F=ÒIîîT\"b]õìL','2014-11-21 11:56:01'),(12,1,3,'','Aimee','McCue','ludwiglizard-1@yahoo.com',1,'2014-11-04 01:57:54',NULL,'êúû*ê{','¢jÒÁæÂ%e|êÒ³\'9_u',NULL),(13,1,3,'','first','last','gchan123@icloud.com1',1,'2014-11-25 00:35:04',NULL,NULL,NULL,NULL),(14,1,3,'','first','last','gchan123@icloud.com',1,'2014-11-25 01:16:11',NULL,'cÔÁÀÉ¯','ÑÁ´rìÀ;P¥ú\"ÈÃ$·è>*',NULL);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Dumping events for database 'rapidregistry'
---
 
 --
 -- Dumping routines for database 'rapidregistry'
@@ -2852,4 +2830,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-11-09 20:06:17
+-- Dump completed on 2014-12-10  8:29:01

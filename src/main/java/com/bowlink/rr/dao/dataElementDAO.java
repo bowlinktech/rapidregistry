@@ -57,4 +57,13 @@ public interface dataElementDAO {
     void saveField(dataElements formField) throws Exception;
     
     dataElements getFieldDetails(Integer fieldId) throws Exception;
+    
+    @SuppressWarnings("rawtypes")
+    List getAnswerTypes();
+    
+    @SuppressWarnings("rawtypes")
+    List getLookUpTables();
+    
+    @SuppressWarnings("rawtypes")
+    List getLookupTableValues(Integer fieldId) throws Exception;
 }

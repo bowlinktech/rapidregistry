@@ -23,7 +23,7 @@
                  <div class="form-group">
                     <div id="tableNameDiv" class="form-group ${status.error ? 'has-error' : '' }">
                         <label class="control-label" for="tableName">Available Program Modules</label>
-                        <select name="modules" class="form-control" multiple="true">
+                        <select name="programModules" class="form-control" multiple="true">
                             <c:forEach var="module" items="${programModules}">
                                 <option value="${module.moduleId}" <c:if test="${module.useModule == true}">selected</c:if>>${module.displayName}</option>
                             </c:forEach>

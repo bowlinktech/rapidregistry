@@ -17,7 +17,9 @@
                         <strong>Success!</strong> 
                         <c:choose>
                             <c:when test="${param.msg == 'fieldssaved'}">The fields have been successfully saved!</c:when>
+                            <c:when test="${param.msg == 'fieldsaved'}">The field has been successfully saved!</c:when>
                             <c:when test="${param.msg == 'created'}">The crosswalk has been successfully added!</c:when>
+                            <c:when test="${param.msg == 'fieldValuesSaved'}">The field values have been successfully saved!</c:when>
                         </c:choose>
                     </div>
                 </c:when>
@@ -81,12 +83,30 @@
                             </select>
                         </div> 
                         <div class="form-group">
-                            <label class="control-label" for=dataGridColumn">Show field in data grid *</label>
-                            <select id="dataGridColumn" class="form-control half">
-                                <option value="false">False</option>
-                                <option value="true">True</option>
+                            <label class="control-label" for=hideField">Hidden Field *</label>
+                            <select id="hideField" class="form-control half">
+                                <option value="false">No</option>
+                                <option value="true">Yes</option>
                             </select>
                         </div>     
+                        <div class="form-group">
+                            <label class="control-label" for=dataGridColumn">Show field in: *</label>
+                            <%--<div class="checkbox">
+                                <label>
+                                  <input type="checkbox" id="dataGridColumn" name="search" value="true" />  Data Grid
+                                </label>
+                            </div>--%>
+                            <div class="checkbox">
+                                <label>
+                                  <input type="checkbox" id="searchColumn" name="search" value="true" />  Client Search
+                                </label>
+                            </div>
+                            <div class="checkbox">
+                                <label>
+                                  <input type="checkbox" id="summaryColumn" name="summary" value="true" />  Client Summary
+                                </label>
+                            </div>  
+                        </div>  
                         <div class="form-group">
                             <input type="button" id="submitFieldButton"  class="btn btn-primary" value="Add Field"/>
                         </div>
@@ -119,7 +139,7 @@
     <div class="col-md-12">
         <section class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">Selected Demographic Fields</h3>
+                <h3 class="panel-title">Selected Fields</h3>
             </div>
             <div class="panel-body">
                 <div id="fieldMsgDiv"  rel="${id}" class="alert alert-danger" style="display:none;">
@@ -133,3 +153,5 @@
 
 <%-- Crosswalks Address modal --%>
 <div class="modal fade" id="crosswalkModal" role="dialog" tabindex="-1" aria-labeledby="Message Crosswalks" aria-hidden="true" aria-describedby="Message Crosswalks"></div>
+<div class="modal fade" id="fieldModal" role="dialog" tabindex="-1" aria-labeledby="Edit Field" aria-hidden="true" aria-describedby="Edit Field"></div>
+<div class="modal fade" id="selectValuesModal" role="dialog" tabindex="-1" aria-labeledby="Select Field Values" aria-hidden="true" aria-describedby="Select Field Values"></div>

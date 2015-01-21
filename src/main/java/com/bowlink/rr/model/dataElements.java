@@ -45,6 +45,12 @@ public class dataElements {
     
     @Column(name = "STATUS", nullable = false)
     private boolean status = false;
+    
+    @Column(name = "ANSWERTYPE", nullable = false) 
+    private Integer answerType = 3;
+    
+    @Column(name = "POPULATEFROMTABLE", nullable = true)
+    private String populateFromTable;
 
     public int getId() {
         return id;
@@ -85,6 +91,21 @@ public class dataElements {
     public void setStatus(boolean status) {
         this.status = status;
     }
-    
+
+    public Integer getAnswerType() {
+        return answerType;
+    }
+
+    public void setAnswerType(Integer answerType) {
+        this.answerType = answerType;
+    }
+
+    public String getPopulateFromTable() {
+        return populateFromTable;
+    }
+
+    public void setPopulateFromTable(String populateFromTable) {
+        this.populateFromTable = populateFromTable;
+    }
     
 }

@@ -14,44 +14,21 @@ require(['./main'], function () {
 
         $("input:text,form").attr("autocomplete", "off");
         
-        //This function will launch the new system user overlay with a blank screen
-        $(document).on('click', '#createNewProgram', function() {
-            $.ajax({
-                url: 'programs/create',
+        $(document).on('click', '#viewChangeLogs', function() {
+        	var surveyId = $(this).attr('rel');
+        	
+        	$.ajax({
+                url: 'surveys/changeLog',
+                data:{'s':surveyId},
                 type: "GET",
                 success: function(data) {
-                    $("#newProgramModal").html(data);
+                    $("#changeLogModal").html(data);
                 }
             });
         });
         
-        //Function to submit the changes to an existing user or 
-        //submit the new user fields from the modal window.
-        $(document).on('click', '#submitButton', function(event) {
-            
-            var formData = $("#program").serialize();
-
-            $.ajax({
-                url: 'programs/create',
-                data: formData,
-                type: "POST",
-                async: false,
-                success: function(data) {
-
-                    if (data.indexOf('programCreated') != -1) {
-                       window.location.href = "/sysAdmin/programs?msg=created";
-                    }
-                    else {
-                        $("#newProgramModal").html(data);
-                    }
-                }
-            });
-            event.preventDefault();
-            return false;
-
-        });
-
-
+        
+        
     });
 });
 

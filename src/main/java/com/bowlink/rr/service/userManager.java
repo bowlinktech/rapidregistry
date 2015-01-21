@@ -6,8 +6,19 @@
 package com.bowlink.rr.service;
 
 import com.bowlink.rr.model.User;
+import com.bowlink.rr.model.userActivityLog;
 import com.bowlink.rr.model.userPrograms;
+
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
 import java.util.List;
+
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
+
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -47,5 +58,20 @@ public interface userManager {
     List<User> searchStaffMembers(Integer programId, String firstName, String lastName, Integer status, Integer typeId) throws Exception;
     
     List<userPrograms> getUserPrograms(Integer userId) throws Exception;
+    
+    void removeProgram(Integer userId, Integer programId) throws Exception;
+    
+    User encryptPW(User user) throws Exception;
+    
+    byte[] generateSalt() throws NoSuchAlgorithmException;
+    
+    byte[] getEncryptedPassword(String password, byte[] salt)
+            throws NoSuchAlgorithmException, InvalidKeySpecException;
+    
+    boolean authenticate(String attemptedPassword, byte[] encryptedPassword, byte[] salt)
+ 		   throws NoSuchAlgorithmException, InvalidKeySpecException;
 
+    List<String> getUserRoles (User user) throws Exception;
+    
+    void insertUserLog (userActivityLog ual);
 }

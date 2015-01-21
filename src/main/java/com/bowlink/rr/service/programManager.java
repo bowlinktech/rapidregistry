@@ -10,8 +10,6 @@ import com.bowlink.rr.model.program;
 import com.bowlink.rr.model.programAdmin;
 import com.bowlink.rr.model.programAvailableTables;
 import com.bowlink.rr.model.programPatientEntryMethods;
-import com.bowlink.rr.model.programPatientSearchFields;
-import com.bowlink.rr.model.programPatientSummaryFields;
 import java.util.List;
 
 /**
@@ -54,22 +52,6 @@ public interface programManager {
     
     void deletePatientEntryMethod(Integer id) throws Exception;
     
-    List<programPatientSearchFields> getProgramSearchFields(Integer programId) throws Exception;
-    
-    programPatientSearchFields getPatientSearchFieldBydspPos(Integer dspPos, Integer programId) throws Exception;
-    
-    void saveProgramPatientSearchField(programPatientSearchFields searchField) throws Exception;
-    
-    void deleteProgramPatientSearchField(Integer id) throws Exception;
-    
-    List<programPatientSummaryFields> getProgramSummaryFields(Integer programId) throws Exception;
-    
-    programPatientSummaryFields getPatientSummaryFieldBydspPos(Integer dspPos, Integer programId) throws Exception;
-    
-    void saveProgramPatientSummaryField(programPatientSummaryFields summaryField) throws Exception;
-    
-    void deleteProgramPatientSummaryField(Integer id) throws Exception;
-    
     List<programAdmin> getProgramAdministrators(Integer programId) throws Exception;
     
     void saveAdminProgram(programAdmin adminProgram) throws Exception;
@@ -77,5 +59,6 @@ public interface programManager {
     void removeAdminProgram(Integer programId, Integer adminid) throws Exception;
     
     List<program> getAvailbleProgramsForUser(Integer userId) throws Exception;
+    
     
 }

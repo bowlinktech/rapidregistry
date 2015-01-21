@@ -30,7 +30,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
  * @author chadmccue
  */
 @Controller
-@RequestMapping(value={"/sysAdmin/programs/{programName}/organization-hierarchy"})
+@RequestMapping(value={"/sysAdmin/programs/{programName}/organization-hierarchy","/programAdmin/programs"})
 public class orgHierarchyController {
     
     @Autowired
@@ -157,4 +157,47 @@ public class orgHierarchyController {
         return mav;
 
     }
+    
+    /**
+     * The '/getProgramAvailableHierarchy.do' GET request will return a list of available organization hierarchies based on the 
+     * passed in program, level and assocId
+     *
+     * @param programId The selected program
+     * @param level     The level of the org hierarchy to return
+     * @param assocId   If a higher level was selected this will contain the id to return the next level
+     *
+     * @return The function will return a list of modules.
+    */ 
+    @RequestMapping(value = "/getProgramAvailableHierarchy.do", method = RequestMethod.GET)
+    public @ResponseBody ModelAndView getOrgHierarchy(@RequestParam(value = "programId", required = true) Integer programId) throws Exception {
+
+        List<programOrgHierarchy> orgHierarchy = orghierarchymanager.getProgramOrgHierarchy(programId);
+        
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/programAdmin/staff/orgHierarchySelectBoxes");
+        mav.addObject("orgHierarchy", orgHierarchy);
+        mav.addObject("programId", programId);
+        
+        return mav;
+    }
+    
+    /**
+     * The '/getOrgHierarchyListOptions.do' GET request will return a list of available organization hierarchies based on the 
+     * passed in program, level and assocId
+     *
+     * @param programId The selected program
+     * @param level     The level of the org hierarchy to return
+     * @param assocId   If a higher level was selected this will contain the id to return the next level
+     *
+     * @return The function will return a list of modules.
+    */ 
+    @SuppressWarnings("rawtypes")
+    @RequestMapping(value = "/getOrgHierarchyListOptions.do", method = RequestMethod.GET)
+    public @ResponseBody List getOrgHierarchyListOptions(@RequestParam(value = "programId", required = true) Integer programId, @RequestParam(value = "level", required = true) Integer level, @RequestParam(value = "assocId", required = true) Integer assocId) throws Exception {
+
+        List orgHierarchyItems = orghierarchymanager.getProgramOrgHierarchyItems(programId, level, assocId);
+        
+        return orgHierarchyItems;
+    }
+    
 }

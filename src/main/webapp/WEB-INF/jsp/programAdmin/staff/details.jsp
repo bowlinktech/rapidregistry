@@ -17,6 +17,10 @@
                 <strong>Success!</strong> 
                 <c:choose>
                     <c:when test="${param.msg == 'moduleAdded'}">The module(s) have been saved to the selected program!</c:when>
+                    <c:when test="${param.msg == 'programAdded'}">The user has been successfully associated to the selected program!</c:when>
+                    <c:when test="${param.msg == 'programRemoved'}">The user has been successfully removed from the selected program!</c:when>
+                    <c:when test="${param.msg == 'departmentAdded'}">The department has been saved to the selected program!</c:when>
+                    <c:when test="${param.msg == 'deparmentRemoved'}">The department has been successfully removed from the selected program!</c:when>
                 </c:choose>
             </div>
         </c:if>
@@ -32,6 +36,7 @@
                     <form:form id="staffdetails" commandName="staffdetails"  method="post" role="form">
                         <input type="hidden" id="action" name="action" value="save" />
                         <form:hidden path="roleId" />
+                        <form:hidden path="id" />
                         <form:hidden path="createdBy" />
                         <form:hidden path="dateCreated" />
                         <div class="form-group">
@@ -54,7 +59,8 @@
                                         <option value="${userTypes[uname.index][0]}" <c:if test="${staffdetails.typeId == userTypes[uname.index][0]}">selected</c:if>>${userTypes[uname.index][1]}</option>
                                     </c:forEach>
                                 </form:select>
-                               <form:errors path="typeId" cssClass="control-label" element="label" />      
+                               <form:errors path="typeId" cssClass="control-label" element="label" />  
+                               <span id="typeIdMsg" class="control-label"></span>    
                             </div>
                         </spring:bind>
                         <spring:bind path="firstName">
@@ -80,16 +86,18 @@
                             </div>
                         </spring:bind>
                         <spring:bind path="password">
+                        	
                             <div id="passwordDiv" class="form-group ${status.error ? 'has-error' : '' }">
-                                <label class="control-label" for="password">Password *</label>
+                                <label class="control-label" for="password">Password</label><br/><i>Leave blank if not changing</i>
                                 <form:input path="password" id="password" class="form-control" type="password" maxLength="15" autocomplete="off"  />
                                 <form:errors path="password" cssClass="control-label" element="label" />
+                                <span id="passwordMsg" class="control-label"></span>
                             </div>
                         </spring:bind>
                         <div id="confirmPasswordDiv" class="form-group">
-                            <label class="control-label" for="confirmPassword">Confirm Password *</label>
+                            <label class="control-label" for="confirmPassword">Confirm Password</label>
                             <input id="confirmPassword" name="confirmpassword" class="form-control" maxLength="15" autocomplete="off" type="password" value="${staffdetails.getPassword()}" />
-                            <span id="confimPasswordMsg" class="control-label"></span>
+                            <span id="confirmPasswordMsg" class="control-label"></span>
                         </div>
                     </form:form>
                 </div>

@@ -10,6 +10,8 @@ import com.bowlink.rr.model.program;
 import com.bowlink.rr.model.programAdmin;
 import com.bowlink.rr.model.userPrograms;
 import com.bowlink.rr.model.programModules;
+import com.bowlink.rr.model.programOrgHierarchy;
+import com.bowlink.rr.model.userProgramHierarchy;
 import com.bowlink.rr.model.userProgramModules;
 import com.bowlink.rr.service.userManager;
 import java.util.List;
@@ -26,6 +28,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bowlink.rr.security.encryptObject;
 import com.bowlink.rr.security.decryptObject;
 import com.bowlink.rr.service.moduleManager;
+import com.bowlink.rr.service.orgHierarchyManager;
 import com.bowlink.rr.service.programManager;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -34,6 +37,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
 import javax.servlet.http.HttpServletResponse;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
@@ -54,6 +58,9 @@ public class staffController {
     
     @Autowired
     moduleManager modulemanager;
+    
+    @Autowired
+    orgHierarchyManager orghierarchymanager;
     
     private String topSecret = "What goes up but never comes down";
     
@@ -195,6 +202,7 @@ public class staffController {
             return mav;
         }
         
+        staffdetails = usermanager.encryptPW(staffdetails);
         Integer adminId = usermanager.createUser(staffdetails);
         
         /* associate user to program */
@@ -307,6 +315,13 @@ public class staffController {
             return mav;
         }
         
+        if (!staffdetails.getPassword().equalsIgnoreCase("")) {
+        	staffdetails = usermanager.encryptPW(staffdetails);
+        } else {
+        	User currentUser = usermanager.getUserById(staffdetails.getId());
+        	staffdetails.setEncryptedPw(currentUser.getEncryptedPw());
+        	staffdetails.setRandomSalt(currentUser.getRandomSalt());
+        }
         usermanager.updateUser(staffdetails);
         
         if (action.equals("save")) {
@@ -366,8 +381,92 @@ public class staffController {
         mav.setViewName("/programAdmin/staff/newProgram");
         mav.addObject("programs", programs);
         
+        mav.addObject("v", v);
+        mav.addObject("userId", i);
+        
         return mav;
         
+    }
+    
+    /**
+     * The 'saveProgramUser' POST request will submit the selected program for the user.
+     * 
+     * @param i The encrypted userId
+     * @param v The encrypted secret
+     * @param modules   The selected program modules.
+     * @return
+     * @throws Exception 
+     */
+    @RequestMapping(value = "/saveProgramUser.do", method = RequestMethod.POST)
+    public @ResponseBody ModelAndView saveProgramUser(@RequestParam String i, @RequestParam String v, @RequestParam Integer program, @RequestParam List<String> hierarchyValues, @RequestParam(value = "programModules", required = false) List<Integer> programModules, HttpSession session) throws Exception {
+        
+        /* Decrypt the url */
+        int userId = decryptURLParam(i,v);
+        
+        User userDetails = (User) session.getAttribute("userDetails");
+        
+        /* Save the new program */
+        programAdmin userProgram = new programAdmin();
+        userProgram.setProgramId(program);
+        userProgram.setsystemUserId(userId);
+        userProgram.setCreatedBy(userDetails.getId());
+        
+        programmanager.saveAdminProgram(userProgram);
+        
+        if(programModules != null && !programModules.isEmpty()) {
+            for(Integer module : programModules) {
+                userProgramModules userModule = new userProgramModules();
+                userModule.setSystemUserId(userId);
+                userModule.setProgramId(program);
+                userModule.setModuleId(module);
+                
+                modulemanager.saveUsedModulesByUser(userModule);
+            }
+        }
+        
+        if(hierarchyValues != null && !hierarchyValues.isEmpty()) {
+            for(String hierarchyValue : hierarchyValues) {
+                
+                if(hierarchyValue.contains("-")) {
+                    String[] ids = hierarchyValue.split("-");
+                
+                    userProgramHierarchy hierarchy = new userProgramHierarchy();
+                    hierarchy.setProgramId(program);
+                    hierarchy.setSystemUserId(userId);
+                    hierarchy.setProgramHierarchyId(Integer.parseInt(ids[0]));
+                    hierarchy.setOrgHierarchyDetailId(Integer.parseInt(ids[1]));
+
+                    orghierarchymanager.saveUserProgramHierarchy(hierarchy);
+                }
+                
+            }
+        }
+        
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/programAdmin/staff/programModules");
+        mav.addObject("encryptedURL", "?i="+i+"&v="+v);
+        
+        return mav;
+    }
+    
+    /**
+     * The 'removeUserProgram' POST request will submit the selected program for the user.
+     * 
+     * @param i The encrypted userId
+     * @param v The encrypted secret
+     * @param modules   The selected program modules.
+     * @return
+     * @throws Exception 
+     */
+    @RequestMapping(value = "/removeUserProgram.do", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody Integer removeUserProgram(@RequestParam String i, @RequestParam String v, @RequestParam Integer programId, HttpSession session) throws Exception {
+        
+        /* Decrypt the url */
+        int userId = decryptURLParam(i,v);
+        
+        usermanager.removeProgram(userId, programId);
+        
+        return 1;
     }
     
     
@@ -380,16 +479,16 @@ public class staffController {
      * @throws Exception 
      */
     @RequestMapping(value = "/getProgramModules.do", method = RequestMethod.GET)
-    public @ResponseBody ModelAndView getProgramModules(@RequestParam String i, @RequestParam String v, HttpSession session) throws Exception {
+    public @ResponseBody ModelAndView getProgramModules(@RequestParam String i, @RequestParam String v, @RequestParam Integer programId, HttpSession session) throws Exception {
         
         /* Decrypt the url */
         int userId = decryptURLParam(i,v);
         
         /* Get a list of modules for the program */
-        List<programModules> modules = modulemanager.getUsedModulesByProgram((Integer) session.getAttribute("selprogramId"));
+        List<programModules> modules = modulemanager.getUsedModulesByProgram(programId);
         
         /* Get a list of modules for the user */
-        List<userProgramModules> userModules = modulemanager.getUsedModulesByUser((Integer) session.getAttribute("selprogramId"), userId);
+        List<userProgramModules> userModules = modulemanager.getUsedModulesByUser(programId, userId);
         
         if(!userModules.isEmpty()) {
             for(userProgramModules usermodule : userModules) {
@@ -421,7 +520,7 @@ public class staffController {
      * @throws Exception 
      */
     @RequestMapping(value = "/saveProgramUserModules.do", method = RequestMethod.POST)
-    public @ResponseBody ModelAndView saveProgramUserModules(@RequestParam String i, @RequestParam String v, @RequestParam List<Integer> modules, HttpSession session) throws Exception {
+    public @ResponseBody ModelAndView saveProgramUserModules(@RequestParam String i, @RequestParam String v, @RequestParam(value = "programModules", required = false) List<Integer> programModules, HttpSession session) throws Exception {
         
         /* Decrypt the url */
         int userId = decryptURLParam(i,v);
@@ -429,8 +528,8 @@ public class staffController {
         /* Clear out current user modules */
         modulemanager.removeUsedModulesByUser((Integer) session.getAttribute("selprogramId"), userId);
         
-        if(!modules.isEmpty()) {
-            for(Integer module : modules) {
+        if(programModules != null && !programModules.isEmpty()) {
+            for(Integer module : programModules) {
                 userProgramModules userModule = new userProgramModules();
                 userModule.setSystemUserId(userId);
                 userModule.setProgramId((Integer) session.getAttribute("selprogramId"));
@@ -446,6 +545,107 @@ public class staffController {
         
         return mav;
     }
+    
+    
+    /**
+     * The 'getProgramDepartments.do' GET request will return a list of departments associated to the program and the user.
+     * 
+     * @param i The encrypted userId
+     * @param v The encrypted secret
+     * @param programId The clicked program
+     * @return  This function will return the program department model
+     * @throws Exception 
+     */
+    @RequestMapping(value = "/getProgramDepartments.do", method = RequestMethod.GET)
+    public @ResponseBody ModelAndView getProgramDepartments(@RequestParam String i, @RequestParam String v, @RequestParam Integer programId, HttpSession session) throws Exception {
+        
+        /* Decrypt the url */
+        int userId = decryptURLParam(i,v);
+        
+        List<programOrgHierarchy> getProgramOrgHierarchy = orghierarchymanager.getProgramOrgHierarchy(programId);
+        
+        /* Get a list of departments for the user */
+        List<userProgramHierarchy> userDepartments = orghierarchymanager.getUserProgramHierarchy(programId, userId);
+        
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/programAdmin/staff/programDepartments");
+        mav.addObject("userId", i);
+        mav.addObject("v", v);
+        mav.addObject("programId", programId);
+        mav.addObject("hierarchyHeadings", getProgramOrgHierarchy);
+        mav.addObject("userDepartments", userDepartments);
+        
+        return mav;
+        
+    }
+    
+    /**
+     * The 'saveProgramUserDepartment.do' POST request will submit the selected program for the user.
+     * 
+     * @param i The encrypted userId
+     * @param v The encrypted secret
+     * @param modules   The selected program modules.
+     * @return
+     * @throws Exception 
+     */
+    @RequestMapping(value = "/saveProgramUserDepartment.do", method = RequestMethod.POST)
+    public @ResponseBody ModelAndView saveProgramUserDepartment(@RequestParam String i, @RequestParam String v, @RequestParam Integer program, @RequestParam List<String> hierarchyValues, HttpSession session) throws Exception {
+        
+        /* Decrypt the url */
+        int userId = decryptURLParam(i,v);
+        
+        User userDetails = (User) session.getAttribute("userDetails");
+        
+        if(!hierarchyValues.isEmpty()) {
+            for(String hierarchyValue : hierarchyValues) {
+                
+                if(hierarchyValue.contains("-")) {
+                    String[] ids = hierarchyValue.split("-");
+                
+                    userProgramHierarchy hierarchy = new userProgramHierarchy();
+                    hierarchy.setProgramId(program);
+                    hierarchy.setSystemUserId(userId);
+                    hierarchy.setProgramHierarchyId(Integer.parseInt(ids[0]));
+                    hierarchy.setOrgHierarchyDetailId(Integer.parseInt(ids[1]));
+
+                    orghierarchymanager.saveUserProgramHierarchy(hierarchy);
+                }
+                
+            }
+        }
+        
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/programAdmin/staff/programDepartments");
+        mav.addObject("encryptedURL", "?i="+i+"&v="+v);
+        
+        return mav;
+    }
+    
+    /**
+     * The 'removeUserDepartment.do' POST request will submit the selected program for the user.
+     * 
+     * @param i The encrypted userId
+     * @param v The encrypted secret
+     * @param modules   The selected program modules.
+     * @return
+     * @throws Exception 
+     */
+    @RequestMapping(value = "/removeUserDepartment.do", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody Integer removeUserDepartment(@RequestParam List<String> idList, HttpSession session) throws Exception {
+       
+        if(!idList.isEmpty()) {
+            for(String id : idList) {
+                if(!"".equals(id) && Integer.parseInt(id) > 0) {
+                    orghierarchymanager.removeUserProgramHierarchy(Integer.parseInt(id));
+                }
+            }
+        }
+        
+        return 1;
+    }
+    
+    
+    
     
     /**
      * The 'decryptURLParam' will take the encryptd url parameters and return the userid as an integer.

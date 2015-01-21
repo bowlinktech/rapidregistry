@@ -43,35 +43,6 @@
     <bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
-    
-    <beans profile="local">
-        <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-            <property name="locations">
-                <list>
-                    <value>classpath:local.database.properties</value>
-                </list>
-            </property>
-        </bean>
-    </beans>
-    
-    <beans profile="staging">
-        <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-            <property name="locations">
-                <list>
-                    <value>classpath:staging.database.properties</value>
-                </list>
-            </property>
-        </bean>
-    </beans>
-    
-    <beans profile="prod">
-        <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-            <property name="locations">
-                <list>
-                    <value>classpath:prod.database.properties</value>
-                </list>
-            </property>
-        </bean>
-    </beans>
+   
     
 </beans>

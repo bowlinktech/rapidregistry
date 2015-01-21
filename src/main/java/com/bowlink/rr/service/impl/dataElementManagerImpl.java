@@ -278,4 +278,24 @@ public class dataElementManagerImpl implements dataElementManager {
         return dataElementDAO.getFieldDetails(fieldId);
     }
     
+    @SuppressWarnings("rawtypes")
+    @Override
+    @Transactional
+    public List getAnswerTypes() {
+        return dataElementDAO.getAnswerTypes();
+    }
+    
+    @SuppressWarnings("rawtypes")
+    @Override
+    @Transactional
+    public List getLookUpTables() {
+        return dataElementDAO.getLookUpTables();
+    }
+    
+    @SuppressWarnings("rawtypes")
+    @Override
+    @Transactional
+    public List getLookupTableValues(Integer fieldId) throws Exception {
+        return dataElementDAO.getLookupTableValues(fieldId);
+    }
  }

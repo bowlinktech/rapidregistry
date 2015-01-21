@@ -23,8 +23,8 @@
                             <label class="control-label" for="surveyId">Survey </label>
                             <form:select path="surveyId" id="surveyId" class="form-control half">
                                 <option value="0" label=" - Select - " >- Select Survey -</option>
-                                <c:forEach items="${surveys}" varStatus="sname">
-                                    <option value="${surveys.id}" <c:if test="${programPatientEntryMethods.surveyId == surveys.id}">selected</c:if>>${surveys.title}</option>
+                                <c:forEach items="${surveys}" var="survey">
+                                    <option value="${survey.id}" <c:if test="${programPatientEntryMethods.surveyId == survey.id}">selected</c:if>>${survey.title}</option>
                                 </c:forEach>
                             </form:select>  
                         </div>

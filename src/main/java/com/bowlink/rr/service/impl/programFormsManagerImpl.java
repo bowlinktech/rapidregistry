@@ -6,8 +6,10 @@
 package com.bowlink.rr.service.impl;
 
 import com.bowlink.rr.dao.programFormsDAO;
+import com.bowlink.rr.model.programEngagementFieldValues;
 import com.bowlink.rr.model.programEngagementFields;
 import com.bowlink.rr.model.programEngagementSections;
+import com.bowlink.rr.model.programPatientFieldValues;
 import com.bowlink.rr.model.programPatientFields;
 import com.bowlink.rr.model.programPatientSections;
 import com.bowlink.rr.service.programFormsManager;
@@ -64,8 +66,26 @@ public class programFormsManagerImpl implements programFormsManager {
     
     @Override
     @Transactional
-    public void savePatientFields(programPatientFields field) throws Exception {
-        programFormsDAO.savePatientFields(field);
+    public void deletePatientField(Integer fieldId) throws Exception {
+        programFormsDAO.deletePatientField(fieldId);
+    }
+    
+    @Override
+    @Transactional
+    public Integer savePatientFields(programPatientFields field) throws Exception {
+        return programFormsDAO.savePatientFields(field);
+    }
+    
+    @Override
+    @Transactional
+    public void savePatientField(programPatientFields field) throws Exception {
+        programFormsDAO.savePatientField(field);
+    }
+    
+    @Override
+    @Transactional
+    public void savePatientFieldValueFieldId(Integer oldFieldId, Integer newFieldId) throws Exception {
+        programFormsDAO.savePatientFieldValueFieldId(oldFieldId, newFieldId);
     }
     
     @Override
@@ -112,8 +132,26 @@ public class programFormsManagerImpl implements programFormsManager {
     
     @Override
     @Transactional
-    public void saveEngagementFields(programEngagementFields field) throws Exception {
-        programFormsDAO.saveEngagementFields(field);
+    public void deleteEngagementField(Integer fieldId) throws Exception {
+        programFormsDAO.deleteEngagementField(fieldId);
+    }
+    
+    @Override
+    @Transactional
+    public Integer saveEngagementFields(programEngagementFields field) throws Exception {
+        return programFormsDAO.saveEngagementFields(field);
+    }
+    
+    @Override
+    @Transactional
+    public void saveEngagementField(programEngagementFields field) throws Exception {
+        programFormsDAO.saveEngagementField(field);
+    }
+    
+    @Override
+    @Transactional
+    public void saveEngagementFieldValueFieldId(Integer oldFieldId, Integer newFieldId) throws Exception {
+        programFormsDAO.saveEngagementFieldValueFieldId(oldFieldId, newFieldId);
     }
     
     @Override
@@ -132,5 +170,47 @@ public class programFormsManagerImpl implements programFormsManager {
     @Transactional
     public programPatientFields getPatientFieldById(Integer fieldId) throws Exception {
         return programFormsDAO.getPatientFieldById(fieldId);
+    }
+    
+    @Override
+    @Transactional
+    public programEngagementFields getEngagementFieldById(Integer fieldId) throws Exception {
+        return programFormsDAO.getEngagementFieldById(fieldId);
+    }
+    
+    @Override
+    @Transactional
+    public void removeProgramFieldValues(Integer fieldId) throws Exception {
+        programFormsDAO.removeProgramFieldValues(fieldId);
+    }
+    
+    @Override
+    @Transactional
+    public void savePatientFieldValue(programPatientFieldValues newFieldValue) throws Exception {
+         programFormsDAO.savePatientFieldValue(newFieldValue);
+    }
+    
+    @Override
+    @Transactional
+    public void removeEngagementFieldValues(Integer fieldId) throws Exception {
+        programFormsDAO.removeEngagementFieldValues(fieldId);
+    }
+    
+    @Override
+    @Transactional
+    public void saveEngagementFieldValue(programEngagementFieldValues newFieldValue) throws Exception {
+        programFormsDAO.saveEngagementFieldValue(newFieldValue); 
+    }
+    
+    @Override
+    @Transactional
+    public List<programPatientFieldValues> getPatientFieldValues(Integer fieldId) throws Exception {
+        return programFormsDAO.getPatientFieldValues(fieldId);
+    }
+    
+    @Override
+    @Transactional
+    public List<programEngagementFieldValues> getEngagementFieldValues(Integer fieldId) throws Exception {
+        return programFormsDAO.getEngagementFieldValues(fieldId);
     }
 }

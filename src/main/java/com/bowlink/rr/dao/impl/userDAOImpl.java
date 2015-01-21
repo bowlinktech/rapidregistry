@@ -10,10 +10,13 @@ import com.bowlink.rr.dao.userDAO;
 import com.bowlink.rr.model.User;
 import com.bowlink.rr.model.program;
 import com.bowlink.rr.model.programAdmin;
+import com.bowlink.rr.model.userActivityLog;
 import com.bowlink.rr.model.userLogin;
 import com.bowlink.rr.model.userPrograms;
+
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
@@ -22,6 +25,7 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -144,8 +148,8 @@ public class userDAOImpl implements userDAO {
     @Override
     public Integer getUserByIdentifier(String identifier) {
 
-        String sql = ("select id from users where lower(email) = '" + identifier + "' or lower(username) = '" + identifier + "' or lower(concat(concat(firstName,' '),lastName)) = '" + identifier + "'");
-
+        String sql = ("select id from users where lower(email) = '" + identifier.toLowerCase() + "' or lower(concat(concat(firstName,' '),lastName)) = '" + identifier.toLowerCase() + "'");
+        
         Query findUser = sessionFactory.getCurrentSession().createSQLQuery(sql);
 
         if (findUser.list().size() > 1) {
@@ -375,4 +379,62 @@ public class userDAOImpl implements userDAO {
         
         return query.list();
     }
+    
+    /**
+     * The 'removeProgram' function will remove the association with the passed in user and the passed in program
+     * 
+     * @param userId    The id of the user
+     * @param programId The id of the selected program
+     * 
+     * @throws Exception 
+     */
+    @Override
+    public void removeProgram(Integer userId, Integer programId) throws Exception {
+        
+        //Remove the user program module associations
+        Query removeModules = sessionFactory.getCurrentSession().createQuery("delete from userProgramModules where systemUserId = :userId and programId = :programId");
+        removeModules.setParameter("userId", userId);
+        removeModules.setParameter("programId", programId);
+        removeModules.executeUpdate();
+        
+        //Remove the user program assocation
+        Query removeProgram = sessionFactory.getCurrentSession().createQuery("delete from programAdmin where systemUserId = :userId and programId = :programId");
+        removeProgram.setParameter("userId", userId);
+        removeProgram.setParameter("programId", programId);
+        removeProgram.executeUpdate();
+        
+        //Remove the user program assocation
+        Query removeOrgHierarchy = sessionFactory.getCurrentSession().createQuery("delete from userProgramHierarchy where systemUserId = :userId and programId = :programId");
+        removeOrgHierarchy.setParameter("userId", userId);
+        removeOrgHierarchy.setParameter("programId", programId);
+        removeOrgHierarchy.executeUpdate();
+        
+    }
+    
+    @Override
+    @SuppressWarnings("unchecked")
+    @Transactional
+    public List<String> getUserRoles(User user) {
+        try {
+            String sql = ("select r.role as authority from users u inner join "
+            		+ " user_roles r on u.roleId = r.id where u.status = 1 and u.email = :email");
+
+            Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+            query.setParameter("email", user.getEmail());
+            List<String> roles = query.list();
+
+            return roles;
+
+        } catch (Exception ex) {
+            System.err.println("getUserRoles  " + ex.getCause());
+            ex.printStackTrace();
+            return null;
+        }
+    }
+    
+    @Override
+    public void insertUserLog (userActivityLog ual) {
+    	sessionFactory.getCurrentSession().save(ual);
+    }
+
 }

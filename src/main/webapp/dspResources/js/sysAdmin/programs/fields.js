@@ -35,9 +35,12 @@ require(['./main'], function () {
         //This function will launch the new crosswalk overlay with a blank form
         $(document).on('click', '#createNewCrosswalk', function() {
             var orgId = $('#orgId').val();
+            var sectionName = $('#sectionName').val();
+               
 
             $.ajax({
                 url: '/sysAdmin/data-elements/newCrosswalk',
+                data: {'frompage': sectionName},
                 type: "GET",
                 success: function(data) {
                     $("#crosswalkModal").html(data);
@@ -108,7 +111,6 @@ require(['./main'], function () {
                 return false;
             }
             
-            $('#frompage').val("demo");
             $('#crosswalkdetailsform').attr('action', '/sysAdmin/data-elements/' + actionValue + 'Crosswalk');
             $('#crosswalkdetailsform').submit();
 
@@ -132,9 +134,12 @@ require(['./main'], function () {
             var selectedValidation = $('#fieldValidation').val();
             var selectedValidationText = $('#fieldValidation').find(":selected").text();
             var required = $('#requiredField').val();
+            var hideField = $('#hideField').val();
             var fieldDisplayName = $('#fieldDisplayName').val();
-            var dataGridColumn = $('#dataGridColumn').val();
-
+            var dataGridColumn = $('#dataGridColumn').is(':checked');
+            var searchColumn = $('#searchColumn').is(':checked');
+            var summaryColumn = $('#summaryColumn').is(':checked');
+            
             //Remove all error classes and error messages
             $('div').removeClass("has-error");
             $('span').html("");
@@ -157,7 +162,8 @@ require(['./main'], function () {
                     url: "../setField.do",
                     type: "POST",
                     data: {'fieldId': selectedField, 'sectionId': sectionId, 'fieldText': selectedFieldText, 'fieldDisplayName': fieldDisplayName, 'cw': selectedCW, 'CWText': selectedCWText, 'validationId': selectedValidation
-                        , 'validationName': selectedValidationText, 'requiredField': required, 'dataGridColumn' : dataGridColumn, 'section' : section
+                        , 'validationName': selectedValidationText, 'requiredField': required, 'hideField': hideField, 'dataGridColumn' : dataGridColumn, 'section' : section
+                        , 'searchColumn': searchColumn, 'summaryColumn': summaryColumn
                     },
                     success: function(data) {
                         $('#fieldMsgDiv').show();
@@ -168,14 +174,19 @@ require(['./main'], function () {
                         $('#fieldValidation option:eq("0")').prop('selected', true);
                         $('#requiredField option:eq("0")').prop('selected', true);
                         $('#fieldDisplayName').val("");
+                        $('#dataGridColumn').attr('checked', false); 
+                        $('#searchColumn').attr('checked', false); 
+                        $('#summaryColumn').attr('checked', false); 
+                        $('#hideField option:eq("0")').prop('selected', true);
                     }
                 });
             }
 
+
         });
 
-        //Function that will handle changing a process order and
-        //making sure another field does not have the same process 
+        //Function that will handle changing a form display order and
+        //making sure another field does not have the same display 
         //order selected. It will swap display position
         //values with the requested position.
         $(document).on('change', '.displayOrder', function() {
@@ -205,6 +216,86 @@ require(['./main'], function () {
             $(this).attr('rel', newDspPos);
 
         });
+        
+        
+        //Function that will handle changing a search/summary display order and
+        //making sure another field does not have the same display order 
+        //selected. It will swap display position
+        //values with the requested position.
+        $(document).on('change', '.searchdisplayOrder', function() {
+            //Store the current position
+            var currDspPos = $(this).attr('rel');
+            var newDspPos = $(this).val();
+            var section = $('#sectionName').val();
+
+            $('.searchdisplayOrder').each(function() {
+                if ($(this).attr('rel') == newDspPos) {
+                    //Need to update the saved process order
+                    $.ajax({
+                        url: '../updateFieldSearchDspOrder.do',
+                        data: {'section' : section, 'currdspOrder' : currDspPos,  'newdspOrder': newDspPos},
+                        type: "POST",
+                        success: function(data) {
+                            $('#fieldMsgDiv').show();
+                            populateFields(1);
+                        }
+                    });
+                    $(this).val(currDspPos);
+                    $(this).attr('rel', currDspPos);
+                }
+            });
+
+            $(this).val(newDspPos);
+            $(this).attr('rel', newDspPos);
+        });
+
+        //Edit an existing field
+        $(document).on('click', '.editField', function() {
+            
+            $.ajax({
+                url: '../fieldForm',
+                data: {'id':$(this).attr('rel'), 'section': $('#sectionName').val(), 'sectionId': $('#sectionId').val()},
+                type: "GET",
+                success: function(data) {
+                    $("#fieldModal").html(data);
+                }
+            });
+           
+        });
+        
+        //Function to submit the changes to an existing user or 
+        //submit the new user fields from the modal window.
+        $(document).on('click', '#submitFieldEditButton', function(event) {
+            
+            var formData = $("#fieldForm").serialize();
+            
+            if($('#section').val() == 'patient-sections') {
+                var url = '../savePatienField';
+            }
+            else {
+                var url = '../saveEngagementField';
+            }
+            
+            $.ajax({
+                url: url,
+                data: formData,
+                type: "POST",
+                async: false,
+                success: function(data) {
+
+                    if (data.indexOf('fieldSaved') != -1) {
+                       window.location.href = "/sysAdmin/programs/"+$('#progamNameURL').val()+"/forms/"+$('#section').val()+"/fields?s="+$('#sectionId').val()+"&msg=fieldsaved";
+                    }
+                    else {
+                        $("#fieldModal").html(data);
+                    }
+                }
+            });
+            
+           event.preventDefault();
+           return false;
+        });
+        
 
         //Function that will handle removing a line item from the
         //existing data translations. Function will also update the
@@ -213,11 +304,12 @@ require(['./main'], function () {
             var currPos = $(this).attr('rel2');
             var fieldId = $(this).attr('rel');
             var section = $('#sectionName').val();
+            var currSearchPos = $(this).attr('rel3');
 
             //Need to remove the translation
             $.ajax({
                 url: '../removeField.do',
-                data: {'section' : section, 'fieldId' : fieldId, 'dspOrder' : currPos },
+                data: {'section' : section, 'fieldId' : fieldId, 'dspOrder' : currPos, 'searchDspOrder': currSearchPos },
                 type: "POST",
                 success: function(data) {
                     $('#fieldMsgDiv').show();
@@ -259,6 +351,71 @@ require(['./main'], function () {
                 }
             });
         });
+        
+        
+        //The function to populate the select fields modal
+        $(document).on('click', '.selectValues', function() {
+            var section = $('#sectionName').val();
+            var fieldId = $(this).attr('rel');
+
+            $.ajax({
+                url: '../getFieldValues',
+                data: {'section': section, 'fieldId': fieldId},
+                type: "GET",
+                success: function(data) {
+                    $("#selectValuesModal").html(data);
+                }
+            });
+        });
+        
+        $(document).on('click', '#submitFieldValuesButton', function(event) {
+            
+            var sectionId = $('#sectionId').val();
+            var section = $('#section').val();
+            var fieldId = $('#fieldId').val();
+            
+            
+            var valueList = "";
+            $('.valueCheckbox').each(function() {
+                if(this.checked) {
+                    valueList += $(this).val() + '~' + $(this).next('label').text() + '|';
+                }
+            })
+            
+            $.ajax({
+                url: '../saveFieldValues',
+                data: {'section': section, 'fieldId': fieldId, 'selectedValues': valueList.substring(0,valueList.length-1)},
+                type: "POST",
+                async: false,
+                success: function(data) {
+
+                    if (data.indexOf('valuesSaved') != -1) {
+                       window.location.href = "/sysAdmin/programs/"+$('#progamNameURL').val()+"/forms/"+section+"/fields?s="+sectionId+"&msg=fieldValuesSaved";
+                    }
+                    else {
+                        $("#selectValuesModal").html(data);
+                    }
+                }
+            });
+            event.preventDefault();
+            return false;
+            
+        });
+        
+        $(document).on('click', '.selectAllFieldValues', function() {
+            if(this.checked) {
+                 $('.valueCheckbox').each(function() {
+                    this.checked = true;
+                 });
+            }
+            else {
+                $('.valueCheckbox').each(function() {
+                    this.checked = false;
+                 });
+            }
+           
+            
+        })
         
     });
 });

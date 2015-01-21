@@ -38,9 +38,6 @@ public class programModules {
     @Column(name = "DSPPOS", nullable = true)
     private int dspPos = 1;
     
-    @Column(name = "DISPLAYNAME", nullable = true)
-    private String displayName = "";
-
     public int getId() {
         return id;
     }
@@ -71,14 +68,6 @@ public class programModules {
 
     public void setDspPos(int dspPos) {
         this.dspPos = dspPos;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
     }
 
     public boolean isUseModule() {

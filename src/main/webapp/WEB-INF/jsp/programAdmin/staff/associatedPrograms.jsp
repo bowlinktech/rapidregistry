@@ -38,7 +38,7 @@
                             <fmt:formatDate value="${program.dateCreated}" type="date" pattern="M/dd/yyyy h:mm a" />
                         </td>
                         <td class="center-text">
-                            Delete
+                            <a href="javascript:void(0)" class="btn-link removeProgram" rel="${program.programId}">Delete</a>
                         </td>
                     </tr>
                 </c:forEach>
