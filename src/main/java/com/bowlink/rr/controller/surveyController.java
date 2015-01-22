@@ -17,12 +17,9 @@ import com.bowlink.rr.service.activityCodeManager;
 import com.bowlink.rr.service.surveyManager;
 import com.bowlink.rr.service.userManager;
 
-import java.net.URLEncoder;
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -152,6 +149,12 @@ public class surveyController {
         
         //insert survey into db
         Integer surveyId = surveymanager.saveSurvey(survey);
+        //we automatically add page 1
+        SurveyPages sp = new SurveyPages();
+        sp.setPageNum(1);
+        sp.setPageTitle("");
+        sp.setSurveyId(surveyId);
+        surveymanager.createSurveyPage(sp);
         redirectAttr.addFlashAttribute("msg", "created");
         if (action.equals("save")) {
             redirectAttr.addFlashAttribute("savedStatus", "updated");
@@ -159,7 +162,7 @@ public class surveyController {
             session.setAttribute("surveyId", surveyId);
             return mav;
         } else {
-            mav = new ModelAndView(new RedirectView("/programAdmin/surveys/page"));
+            mav = new ModelAndView(new RedirectView("/programAdmin/surveys"));
             return mav;
         }
 
@@ -183,7 +186,7 @@ public class surveyController {
         	ModelAndView mav = new ModelAndView();
         	mav.setViewName("/surveys/details");
         	mav.addObject("edit", "edit");
-        //i -       
+        //s - survey Id       
         Integer surveyId = 0;
         //see if param is valid
         try {
@@ -223,7 +226,12 @@ public class surveyController {
 	            /** add drop down for other surveys for this program **/
 	            List<surveys> surveys = surveymanager.getProgramSurveys((Integer) session.getAttribute("selprogramId"));
 	            mav.addObject("surveys", surveys);	
-	            
+	            mav.addObject("surveyTitle", survey.getTitle());	            
+	            mav.addObject("surveyId", survey.getId());
+	            /* Get the list of answer types in the system */
+	        	List<AnswerTypes>  answerTypeList = surveymanager.getAnswerTypes();
+	            mav.addObject("answerTypeList", answerTypeList);  
+            
         	} else {
         		//log here
             	try {
@@ -384,23 +392,6 @@ public class surveyController {
         
         mav.setViewName("/programAdmin/surveys/changeLogs");
         return mav;
-    }
-    
-    
-    /** this one is for page 1 of the survey , the rest we will pass the page number if the form**/
-    @RequestMapping(value = "/page", method = RequestMethod.GET)
-    public ModelAndView newSurveyPage(HttpServletRequest request, 
-    		HttpServletResponse response, HttpSession session, RedirectAttributes redirectAttr) throws Exception {
-        
-    	ModelAndView mav = new ModelAndView();
-        
-        /* Get the list of answer types in the system */
-    	List<AnswerTypes>  answerTypeList = surveymanager.getAnswerTypes();
-        mav.addObject("answerTypeList", answerTypeList);    
-        mav.addObject("create", "create");
-        mav.setViewName("/surveys/page");
-        return mav;
-
     }
     
 }

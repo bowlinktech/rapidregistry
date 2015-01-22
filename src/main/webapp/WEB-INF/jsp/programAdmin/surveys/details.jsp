@@ -20,61 +20,152 @@
                 </div>
             </c:when>
         </c:choose>
+        
+        <section>
+        <div class="form-container scrollable">
+                <div class="pull-right">
+                
+                <div id="answerDiv" class="form-group">
+	                     <select  id="ddAns" name="answer" class="form-control ">
+	                       <c:forEach var="pageNum" items="${surveyPages}">
+			           			<option value="${pageNum.pageNum}">P. ${pageNum.pageNum} - ${pageNum.pageTitle}</option>
+			           	 </c:forEach>
+	                     </select>
+	                     <span id="errorMsg_dropDown" class="control-label"></span>  
+                      </div>
+                
+        	
+        	</div>
+        </div>
+        </section>
+        <!--  we start to loop pages here -->
+        <c:forEach var="page" items="${survey.surveyPages}">
         <section class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">
-                Click-able Survey Title Goes Here ${survey.title}
-                </h3>
-            </div>
-            <!--  we start to loop pages here -->
-            <div class="panel-body">
+            <div class="panel-heading" style="height:46px; background-color: rgba(0,0,0, 0.3);">
+            	<h3 class="panel-title" class="main clearfix">
+            	<a href="javascript:alert('open modal to modify title');" data-toggle="modal" id="editSurveyTitle" title="${surveyTitle}" role="${surveyId}">${surveyTitle}</a>
+            	</h3>
+            	</div>
+            	<div class="panel-heading">
+            	<h4>
+            	<span role="presentation" class="disabled">Page ${page.pageNum}</span>
+                	<span class="editTitle"><a href="javascript:alert('open modal with edit title');" data-toggle="modal" class="btn-link-lg editTitle" rel="${page.id}" title="Edit Page Title" role="button">
+	                 	${page.pageTitle }
+	               	</a>
+	               	</span>
+	            </h4>
+     			</div>
+            <!--  each question is displayed here -->
+           <c:forEach var="question" items="${page.surveyQuestions}">
+			 <div class="panel-body" id="questionDiv" rel="${questionId}">
                 <form:form id="pageForm" method="post" role="form">
-                    <div class="form-container">
-                        <div id="titleDiv" class="form-group">
-                            <label class="control-label" for="confirmPassword">Everything to do with page</label>
-                            <input id="title" name="title" class="form-control" maxLength="255" autocomplete="off" type="text" value="${title}" />
-                            <span id="titleMsg" class="control-label"></span>
-                        </div>  
-                     </div>  
-                            
                     <section class="panel panel-default">
-                        <div class="panel-heading clearfix" style="height:46px; background-color: rgba(0,0,0, 0.3);">
-                            <div class="btn-group pull-left">
-                                <ul class="nav panel-tabs">
-                                    <li class="active"><a href="#edit" data-toggle="tab"><strong>Edit</strong></a></li>
-                                    <li><a href="#options" data-toggle="tab"><strong>Options</strong></a></li>
-                                    <li><a href="#logic" data-toggle="tab"><strong>Logic</strong></a></li>
-                                    <li><a href="#move" data-toggle="tab"><strong>Move</strong></a></li>
-                                    <li><a href="#copy" data-toggle="tab"><strong>Copy</strong></a></li>
-                                </ul>
-                            </div>
-                        </div>
                         <div class="panel-body">
-                            <div class="tab-content">
-                                <div class="tab-pane active" id="edit">
-                                    Edit Section
-                                </div> 
-                                <div class="tab-pane" id="options">
-                                    Options Section
-                                </div>
-                                <div class="tab-pane" id="logic">
-                                    Logic Section
-                                </div>
-                                <div class="tab-pane" id="move">
-                                    Move Section
-                                </div>
-                                <div class="tab-pane" id="copy">
-                                    Copy Section
-                                </div>
-                            </div>   
+					             <c:set var="displayQ" value="Q. ${question.questionNum}"/>
+					             <c:if test="${fn:length(question.dspQuestionId) > 0}">
+					            	<c:set var="displayQ" value="${question.dspQuestionId}"/>
+					             </c:if>
+					             <label class="control-label" for="question">${displayQ} - ${question.question}</label>
+                                    <c:choose>
+	            <c:when test="${question.answerTypeId == 1}">
+		            <div class="form-group">
+	                           <c:forEach var="answer" items="${question.surveyAnswers}">
+	                  				<label class="radio-inline">
+	                       				<input type="radio" name="answerMC" value="1" <c:if test="${answer.defAnswer}">checked</c:if> /> ${answer.answer}
+					                 </label>
+					                 <br/>
+	                   			</c:forEach>
+	                       </div>          
+	            </c:when>
+	            <c:when test="${question.answerTypeId == 2}"> <%--dropdown--%>
+	            	<div id="answerDiv" class="form-group">
+	                     <select  id="ddAns" name="answer" class="form-control ">
+	                       <c:forEach var="answer" items="${question.surveyAnswers}">
+			           			<option <c:if test="${answer.defAnswer}"> selected </c:if>>Answer is ${answer.answer}</option>
+			           	 </c:forEach>
+	                     </select>
+	                     <span id="errorMsg_dropDown" class="control-label"></span>  
+                      </div>
+                </c:when>
+	            <c:when test="${question.answerTypeId == 3}"><!--  single text box -->
+	            	<div class="form-group">
+			               ${question.surveyAnswers[0].label}	<input type="text" name="answer" value='<c:if test="${answer.defAnswer}"> ${question.surveyAnswers[0].answer} </c:if>' class="form-control" type="text" maxLength="${question.surveyAnswers[0].maxLength}" />	               
+	                </div>
+	            </c:when>
+	            <c:when test="${question.answerTypeId == 4}"><%-- multiple textbox --%>
+	            <div class="form-group" >
+		            <c:forEach var="answer" items="${question.surveyAnswers}">
+			            ${answer.label}
+						<input class="form-control" type="text" max="${answer.maxLength}" value="<c:if test='${answer.defAnswer}'>${answer.answer}</c:if>">
+			            <br/>
+			         </c:forEach>
+		         </div>
+	            </c:when>
+	            <c:when test="${question.answerTypeId == 5}"><%--comment box --%>
+	            	<div class="form-group">
+			            	${answer.label}
+				            <!--  check where to pull out cols and rows -->
+							<textarea rows="5" maxlength="${question.surveyAnswers[0].maxLength}" id="a${question.surveyAnswers[0].id}" name="a${question.surveyAnswers[0].id}" class="form-control"><c:if test="${question.surveyAnswers[0].defAnswer} == true">${question.surveyAnswers[0].answer}</c:if></textarea> 
+		         	</div>
+	            </c:when>
+	            <c:when test="${question.answerTypeId == 6}"><%-- 'Date/Time' --%>
+		            ${question.answerTypeId} is the date / time
+		            Where should we track how we restrict
+		      	</c:when>
+	            <c:when test="${question.answerTypeId == 7}"><%--'7','Display Text' --%>
+		            <div class="form-group">
+		            	${question.surveyAnswers[0].answer}
+		            </div>
+	            </c:when>
+	            <c:when test="${question.answerTypeId == 8}"><%--'8','Single Checkbox' --%>
+					<div class="form-group">
+                        <label class="control-label" for="singleCheckbox">${question.surveyAnswers[0].label}</label>
+                        <div class="checkbox">
+                            <label>
+                              <input type="checkbox" id="q_${question.id}"  
+                              value="${question.surveyAnswers[0].answer}" 
+                              <c:if test='${question.surveyAnswers[0].defAnswer}'>checked</c:if> />${question.surveyAnswers[0].answer}
+                            </label>
+                        </div>         
+                    </div>  
+	            </c:when>
+	            <c:when test="${question.answerTypeId == 9}"><%-- '9','Multiple Checkbox' --%>
+	            <div class="form-group">
+	            	<c:forEach var="answer" items="${question.surveyAnswers}">
+                        <div class="checkbox">
+                            <label>
+                            <input type="checkbox" id="q_${question.id}"  
+                              value="${answer.answer}" <c:if test="${answer.defAnswer}">checked</c:if> />${answer.answer}
+                           </label>
                         </div>
+                    </c:forEach>     
+                    </div>  
+	            </c:when>
+           
+            </c:choose>
+           <div class="form-group" id="editButtons" style="display:none">
+           This should appear when cursor is mouse over the question, clicking edit would bring up tab modal
+           	<br/>
+           	<input type="button" id="submitButton"  role="button" class="btn btn-primary" value="Edit Question" rel="${question.id}" onClick="javascript:alert('open edit/option tab');"/>
+            </div>    
+                                </div> 
+
                     </section>
                 </form:form>
-            </div>
-        </section>
-        
+</div>
+			 
+
+            </c:forEach>
+         </section>
+         
+         <section class="panel panel-default">
+            <div class="panel-body">
+            <a href="">Add a Page</a>
+         	</div>
+         </section>
+        </c:forEach>
     </div>
 </div>
 
-<!-- Activity Code Details modal -->
-<div class="modal fade" id="staffMemberModal" role="dialog" tabindex="-1" aria-labeledby="Add Staff Member" aria-hidden="true" aria-describedby="Add Staff Member"></div>
+<!-- Edit Survey modal -->
+<div class="modal fade" id="surveyModal" role="dialog" tabindex="-1" aria-labeledby="Modify Survey" aria-hidden="true" aria-describedby="Modify Survey"></div>

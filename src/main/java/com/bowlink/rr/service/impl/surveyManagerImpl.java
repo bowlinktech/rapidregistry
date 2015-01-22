@@ -123,5 +123,18 @@ public class surveyManagerImpl implements surveyManager {
 			throws Exception {		
 		return surveyDAO.getSurveyAnswers(questionId);
 	}
+
+	@Override
+	@Transactional
+	public Integer createSurveyPage(SurveyPages surveyPage) throws Exception {
+		return surveyDAO.createSurveyPage(surveyPage);
+	}
+
+
+	@Override
+	@Transactional
+	public void updateSurveyPage(SurveyPages surveyPage) throws Exception {
+		surveyDAO.updateSurveyPage(surveyPage);		
+	}
 		
 }

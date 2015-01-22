@@ -26,35 +26,38 @@ public class SurveyAnswers {
     @Column(name = "ID", nullable = false)
     private int id;
     
-    @NotEmpty
     @Column(name = "questionId", nullable = false)
     private int questionId = 0;
     
-    @NotEmpty
     @Column(name = "skipToPageId", nullable = true)
     private int skipToPageId = 0;
     
-    @NotEmpty
     @Column(name = "skipToQuestionId", nullable = true)
     private int skipToQuestionId = 0;
     
+    @NotEmpty
+    @Column(name = "answer", nullable = false)
+    private String answer;
+    
     /** label is used for textboxes **/
     @NotEmpty
-    @Column(name = "answerOrLabel", nullable = false)
-    private String answerOrLabel;
+    @Column(name = "label", nullable = false)
+    private String label;
     
-    @NotEmpty
     @Column(name = "activityCodeId", nullable = true)
     private int activityCodeId = 0;
     
     @Column(name = "defAnswer", nullable = false)
     private boolean defAnswer = false;
     
-    @Column(name = "defAnswerText", nullable = true)
-    private String defAnswerText;
+    @Column(name = "defAnsText", nullable = true)
+    private String defAnsText;
     
     @Column(name = "numericOnly", nullable = false)
     private boolean numericOnly = false;
+    
+    @Column(name = "maxLength", nullable = true)
+    private int maxLength = 255;
     
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
     @Column(name = "DATECREATED", nullable = true)
@@ -92,12 +95,20 @@ public class SurveyAnswers {
 		this.skipToQuestionId = skipToQuestionId;
 	}
 
-	public String getAnswerOrLabel() {
-		return answerOrLabel;
+	public String getAnswer() {
+		return answer;
 	}
 
-	public void setAnswerOrLabel(String answerOrLabel) {
-		this.answerOrLabel = answerOrLabel;
+	public void setAnswer(String answer) {
+		this.answer = answer;
+	}
+
+	public String getLabel() {
+		return label;
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
 	}
 
 	public int getActivityCodeId() {
@@ -116,12 +127,28 @@ public class SurveyAnswers {
 		this.defAnswer = defAnswer;
 	}
 
-	public String getDefAnswerText() {
-		return defAnswerText;
+	public String getDefAnsText() {
+		return defAnsText;
 	}
 
-	public void setDefAnswerText(String defAnswerText) {
-		this.defAnswerText = defAnswerText;
+	public void setDefAnsText(String defAnsText) {
+		this.defAnsText = defAnsText;
+	}
+
+	public boolean isNumericOnly() {
+		return numericOnly;
+	}
+
+	public void setNumericOnly(boolean numericOnly) {
+		this.numericOnly = numericOnly;
+	}
+
+	public int getMaxLength() {
+		return maxLength;
+	}
+
+	public void setMaxLength(int maxLength) {
+		this.maxLength = maxLength;
 	}
 
 	public Date getDateCreated() {
@@ -132,14 +159,4 @@ public class SurveyAnswers {
 		this.dateCreated = dateCreated;
 	}
 
-	public boolean isNumericOnly() {
-		return numericOnly;
-	}
-
-	public void setNumericOnly(boolean numericOnly) {
-		this.numericOnly = numericOnly;
-	}
-	
-	
-	
 }

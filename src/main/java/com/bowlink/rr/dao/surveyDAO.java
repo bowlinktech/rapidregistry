@@ -49,4 +49,8 @@ public interface surveyDAO {
     
     List<SurveyAnswers> getSurveyAnswers(Integer questionId) throws Exception;
     
+    Integer createSurveyPage (SurveyPages surveyPage) throws Exception;
+    
+    void updateSurveyPage (SurveyPages surveyPage) throws Exception;
+    
 }

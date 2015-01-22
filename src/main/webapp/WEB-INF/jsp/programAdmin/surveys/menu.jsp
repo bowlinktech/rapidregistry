@@ -13,7 +13,7 @@
                 <div style="padding: 2px;">
                     <span class="text">${answerType.answerType}</span>
                     <span class="pull-right" style="cursor:pointer; padding-right: 2px">
-                        <a href="" id="addAQuestion" rel="${answerType.id}"><span class="glyphicon glyphicon-plus-sign"></span></a>
+                        <a href="javascript:alert('how to tell what page user is on');" id="addAQuestion" rel="${answerType.id}"><span class="glyphicon glyphicon-plus-sign"></span></a>
                     </span>
                     <c:if test="${!loopCount.last}"><hr /></c:if>
                 </div>

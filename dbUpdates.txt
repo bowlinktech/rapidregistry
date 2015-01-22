@@ -270,3 +270,13 @@ ADD COLUMN `hideField` BIT(1) NOT NULL DEFAULT b'0' AFTER `searchDspPos`;
 
 ALTER TABLE `rapidregistry`.`program_patientFields` 
 ADD COLUMN `hideField` BIT(1) NOT NULL DEFAULT b'0' AFTER `searchDspPos`;
+
+
+/** Grace 01-21-2015 @ 1:17 PM **/
+ALTER TABLE `rapidregistry`.`survey_answers` 
+ADD COLUMN `maxLength` INT NULL DEFAULT 255 AFTER `numericOnly`;
+
+ALTER TABLE `rapidregistry`.`survey_answers` 
+CHANGE COLUMN `answerOrLabel` `answer` VARCHAR(255) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NOT NULL ,
+ADD COLUMN `label` TEXT NULL AFTER `maxLength`;
+

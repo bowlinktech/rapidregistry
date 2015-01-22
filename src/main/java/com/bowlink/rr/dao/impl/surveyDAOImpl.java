@@ -175,14 +175,29 @@ public class surveyDAOImpl implements surveyDAO {
         return criteria.list();
 	}
 	
+	/** survey answers will be ordered by Id.  When an answer is changed we will delete old entry
+	 * and insert a new one 
+	 * **/
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<SurveyAnswers> getSurveyAnswers(Integer questionId)
 			throws Exception {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SurveyAnswers.class);
         criteria.add(Restrictions.eq("questionId", questionId));
-        criteria.addOrder(Order.asc("answerNum"));      
+        criteria.addOrder(Order.asc("id"));      
         return criteria.list();
+	}
+
+	@Override
+	public Integer createSurveyPage(SurveyPages surveyPage) throws Exception {
+		Integer lastId = null;
+		lastId = (Integer) sessionFactory.getCurrentSession().save(surveyPage);
+		return lastId;
+	}
+
+	@Override
+	public void updateSurveyPage(SurveyPages surveyPage) throws Exception {
+		sessionFactory.getCurrentSession().update(surveyPage);
 	}
 	
 }
