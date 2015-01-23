@@ -280,3 +280,7 @@ ALTER TABLE `rapidregistry`.`survey_answers`
 CHANGE COLUMN `answerOrLabel` `answer` VARCHAR(255) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NOT NULL ,
 ADD COLUMN `label` TEXT NULL AFTER `maxLength`;
 
+
+/** Chad 01-22-2015 @ 10:27 AM **/
+ALTER TABLE `rapidregistry`.`program_patientEntryMethods` 
+ADD COLUMN `useEngagementForm` BIT(1) NULL DEFAULT b'0' AFTER `displayPos`;

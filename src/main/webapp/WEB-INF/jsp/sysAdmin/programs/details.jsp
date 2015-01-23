@@ -102,6 +102,7 @@
                             <tr>
                                 <th scope="col">Button Value</th>
                                 <th scope="col">Selected Survey</th>
+                                <th scope="col" class="center-text">Use Engagement Form</th>
                                 <th scope="col" class="center-text">Display Position</th>
                                 <th scope="col"></th>
                             </tr>
@@ -120,6 +121,14 @@
                                                         ${entryMethod.surveyTitle}
                                                     </c:when>
                                                     <c:otherwise>N/A</c:otherwise>
+                                                </c:choose>
+                                            </td>
+                                            <td class="center-text">
+                                                <c:choose>
+                                                    <c:when test="${entryMethod.useEngagementForm == true}">
+                                                        Yes
+                                                    </c:when>
+                                                    <c:otherwise>NO</c:otherwise>
                                                 </c:choose>
                                             </td>
                                             <td class="center-text">

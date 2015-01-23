@@ -18,6 +18,12 @@
                 <form:hidden path="id" id="id" />
                 <form:hidden path="programId" />
                  <div class="form-group">
+                     <spring:bind path="useEngagementForm">
+                        <div id="useEngagementFormDiv" class="form-group ${status.error ? 'has-error' : '' }">
+                            <label class="control-label" for="useEngagementForm">Use the Engagement Form? </label>
+                            <form:checkbox id="useEngagementForm" path="useEngagementForm" value="1" />
+                        </div>
+                    </spring:bind>
                     <spring:bind path="surveyId">
                         <div id="surveyDiv" class="form-group ${status.error ? 'has-error' : '' }">
                             <label class="control-label" for="surveyId">Survey </label>
@@ -62,6 +68,17 @@
 
     $(document).ready(function() {
         $("input:text,form").attr("autocomplete", "off");
+        
+        $(document).on('change','#useEngagementForm', function() {
+            if($(this).is(':checked')) {
+                $('#surveyDiv').hide();
+            }
+            else {
+               $('#surveyDiv').show(); 
+            }
+        });
+        
+        
     });
 
 </script>

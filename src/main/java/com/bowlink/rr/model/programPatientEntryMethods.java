@@ -46,6 +46,9 @@ public class programPatientEntryMethods {
     @Min(1)
     @Column(name = "DISPLAYPOS", nullable = true)
     private int dspPos = 1;
+    
+    @Column(name = "USEENGAGEMENTFORM", nullable = true)
+    private boolean useEngagementForm = false;
 
     public int getId() {
         return id;
@@ -93,6 +96,14 @@ public class programPatientEntryMethods {
 
     public void setSurveyTitle(String surveyTitle) {
         this.surveyTitle = surveyTitle;
+    }
+
+    public boolean isUseEngagementForm() {
+        return useEngagementForm;
+    }
+
+    public void setUseEngagementForm(boolean useEngagementForm) {
+        this.useEngagementForm = useEngagementForm;
     }
     
 }

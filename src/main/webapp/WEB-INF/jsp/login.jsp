@@ -44,7 +44,7 @@
                 </div>
                 <div class="form-group ${not empty error ? 'has-error' : '' }">
                     <label class="control-label" for="password">Password</label>
-                    <input id="password" name='j_password' class="form-control" type="password" value="admin" autocomplete="off" />
+                    <input id="password" name='j_password' class="form-control" type="password" value="chadmccue05" autocomplete="off" />
                 </div>
                 <input type="submit" value="Login" class="btn btn-primary pull-right" role="button"/>
                 <!--<label for="remember-me" class="pull-left"><input id="j_remember" name="_spring_security_remember_me" type="checkbox" value="1">&nbsp;Remember Me</label>-->
