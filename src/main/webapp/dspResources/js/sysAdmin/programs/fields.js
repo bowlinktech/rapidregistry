@@ -270,7 +270,7 @@ require(['./main'], function () {
             var formData = $("#fieldForm").serialize();
             
             if($('#section').val() == 'patient-sections') {
-                var url = '../savePatienField';
+                var url = '../savePatientField';
             }
             else {
                 var url = '../saveEngagementField';
