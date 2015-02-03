@@ -184,7 +184,7 @@ public class surveyDAOImpl implements surveyDAO {
 			throws Exception {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SurveyAnswers.class);
         criteria.add(Restrictions.eq("questionId", questionId));
-        criteria.addOrder(Order.asc("id"));      
+        criteria.addOrder(Order.asc("answerOrder"));      
         return criteria.list();
 	}
 

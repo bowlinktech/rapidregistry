@@ -3,9 +3,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="s" uri="http://www.springframework.org/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<link rel="stylesheet" href="/dspResources/css/scroll.css" type="text/css" media="screen">
 
 <div class="main clearfix" role="main">
-    <div class="col-md-10">
+    <div class="col-md-12">
         <c:choose>
             <c:when test="${not empty msg}" >
                 <div class="alert alert-success">
@@ -21,8 +22,27 @@
             </c:when>
         </c:choose>
         
+        <%--- we set up the page so that the menu bar will always stay with the question --%>
+<div class="main clearfix" role="main">
+
+    <div class="col-md-12">
+
+<div id="wrapper"  class="col-md-12">
+
+	<div id="left">
+
+		<div id="sidebar">
+			<%@ include file="menu.jsp" %>
+		</div>
+
+	</div>
+
+	<div id="right">
+	
+ <!--  we start to loop pages here -->
+        <c:forEach var="page" items="${survey.surveyPages}">
         <section>
-        <div class="form-container scrollable">
+        <div class="form-container scrollable post" rel="${page.id}">
                 <div class="pull-right">
                 
                 <div id="answerDiv" class="form-group">
@@ -38,9 +58,8 @@
         	</div>
         </div>
         </section>
-        <!--  we start to loop pages here -->
-        <c:forEach var="page" items="${survey.surveyPages}">
         <section class="panel panel-default">
+        
             <div class="panel-heading" style="height:46px; background-color: rgba(0,0,0, 0.3);">
             	<h3 class="panel-title" class="main clearfix">
             	<a href="javascript:alert('open modal to modify title');" data-toggle="modal" id="editSurveyTitle" title="${surveyTitle}" role="${surveyId}">${surveyTitle}</a>
@@ -57,7 +76,7 @@
      			</div>
             <!--  each question is displayed here -->
            <c:forEach var="question" items="${page.surveyQuestions}">
-			 <div class="panel-body" id="questionDiv" rel="${questionId}">
+			 <div class="panel-body" id="questionDiv${question.id}" rel="${questionId}">
                 <form:form id="pageForm" method="post" role="form">
                     <section class="panel panel-default">
                         <div class="panel-body">
@@ -117,19 +136,7 @@
 		            	${question.surveyAnswers[0].answer}
 		            </div>
 	            </c:when>
-	            <c:when test="${question.answerTypeId == 8}"><%--'8','Single Checkbox' --%>
-					<div class="form-group">
-                        <label class="control-label" for="singleCheckbox">${question.surveyAnswers[0].label}</label>
-                        <div class="checkbox">
-                            <label>
-                              <input type="checkbox" id="q_${question.id}"  
-                              value="${question.surveyAnswers[0].answer}" 
-                              <c:if test='${question.surveyAnswers[0].defAnswer}'>checked</c:if> />${question.surveyAnswers[0].answer}
-                            </label>
-                        </div>         
-                    </div>  
-	            </c:when>
-	            <c:when test="${question.answerTypeId == 9}"><%-- '9','Multiple Checkbox' --%>
+	            <c:when test="${question.answerTypeId == 8}"><%-- '8' Checkbox' --%>
 	            <div class="form-group">
 	            	<c:forEach var="answer" items="${question.surveyAnswers}">
                         <div class="checkbox">
@@ -143,7 +150,7 @@
 	            </c:when>
            
             </c:choose>
-           <div class="form-group" id="editButtons" style="display:none">
+           <div class="form-group" id="editButtons${question.id}" style="display:none">
            This should appear when cursor is mouse over the question, clicking edit would bring up tab modal
            	<br/>
            	<input type="button" id="submitButton"  role="button" class="btn btn-primary" value="Edit Question" rel="${question.id}" onClick="javascript:alert('open edit/option tab');"/>
@@ -159,13 +166,26 @@
          </section>
          
          <section class="panel panel-default">
-            <div class="panel-body">
-            <a href="">Add a Page</a>
+            <div class="panel-body text-center">
+            <%-- from page id, we can look up all info --%>
+            <a href="javascript:alert('this adds a page to the page after');" rel="${page.id}">Add a Page</a>
          	</div>
          </section>
-        </c:forEach>
-    </div>
+        </c:forEach>	
+        <%-- end of questions, need padding --%>
+
+<div class="marginBottom" style="visibility:hidden;">
+
+</div>
+	</div>
+<%-- padding --%>
+	<div class="clear"></div>
+
+</div>
+</div>
 </div>
 
+    </div>
+</div>
 <!-- Edit Survey modal -->
 <div class="modal fade" id="surveyModal" role="dialog" tabindex="-1" aria-labeledby="Modify Survey" aria-hidden="true" aria-describedby="Modify Survey"></div>

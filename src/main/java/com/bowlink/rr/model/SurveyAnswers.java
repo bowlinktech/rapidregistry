@@ -62,6 +62,9 @@ public class SurveyAnswers {
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
     @Column(name = "DATECREATED", nullable = true)
     private Date dateCreated = new Date();
+    
+    @Column(name = "answerOrder", nullable = true)
+    private int answerOrder = 1;
 
 	public int getId() {
 		return id;
@@ -159,4 +162,12 @@ public class SurveyAnswers {
 		this.dateCreated = dateCreated;
 	}
 
+	public int getAnswerOrder() {
+		return answerOrder;
+	}
+
+	public void setAnswerOrder(int answerOrder) {
+		this.answerOrder = answerOrder;
+	}
+	
 }
