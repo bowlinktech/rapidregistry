@@ -23,20 +23,6 @@ CREATE TABLE `survey_answers_log` (
 ) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-
-delimiter #
-
-create trigger survey_answers_track_u after update on survey_answers
-for each row
-begin
-  insert into survey_answers_log (id, questionId, skipToPageId, skipToQuestionId, answer, activityCodeId,
-  defAnswer, defAnsText, dateCreated, numericOnly, maxLength, label, answerOrder, triggerType)
-  values (new.id, new.questionId, new.skipToPageId, new.skipToQuestionId, new.answer, new.activityCodeId,
-  new.defAnswer, new.defAnsText, new.dateCreated, new.numericOnly, new.maxLength, new.label, new.answerOrder, 'U');
-end#
-
-delimiter ;
-
 ALTER TABLE `rapidregistry`.`survey_answers_log` 
 RENAME TO  `rapidregistry`.`Log_survey_answers` ;
 
@@ -46,10 +32,25 @@ ADD COLUMN `triggerType` VARCHAR(1) NULL AFTER `dateArchive`;
 
 delimiter #
 
+create trigger survey_answers_track_u after update on survey_answers
+for each row
+begin
+  insert into Log_survey_answers (id, questionId, skipToPageId, skipToQuestionId, answer, activityCodeId,
+  defAnswer, defAnsText, dateCreated, numericOnly, maxLength, label, answerOrder, triggerType)
+  values (new.id, new.questionId, new.skipToPageId, new.skipToQuestionId, new.answer, new.activityCodeId,
+  new.defAnswer, new.defAnsText, new.dateCreated, new.numericOnly, new.maxLength, new.label, new.answerOrder, 'U');
+end#
+
+delimiter ;
+
+
+
+delimiter #
+
 create trigger survey_answers_track_d before delete on survey_answers
 for each row
 begin
-  insert into survey_answers_log (id, questionId, skipToPageId, skipToQuestionId, answer, activityCodeId,
+  insert into Log_survey_answers (id, questionId, skipToPageId, skipToQuestionId, answer, activityCodeId,
   defAnswer, defAnsText, dateCreated, numericOnly, maxLength, label, answerOrder, triggerType)
   values (OLD.id, old.questionId, old.skipToPageId, old.skipToQuestionId, OLD.answer, OLD.activityCodeId,
   OLD.defAnswer, OLD.defAnsText, OLD.dateCreated, OLD.numericOnly, OLD.maxLength, OLD.label, OLD.answerOrder, 'D');
