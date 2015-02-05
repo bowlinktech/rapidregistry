@@ -5,6 +5,17 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <link rel="stylesheet" href="/dspResources/css/scroll.css" type="text/css" media="screen">
 
+<%-- make sure there is a survey --%>
+<c:choose>
+<c:when test="${empty surveys}">
+<div class="main clearfix" role="main">
+You do not have permission to access this page.
+</div>
+</c:when>
+<c:otherwise>
+
+
+
 <div class="main clearfix" role="main">
     <div class="col-md-12">
         <c:choose>
@@ -23,6 +34,7 @@
         </c:choose>
         
         <%--- we set up the page so that the menu bar will always stay with the question --%>
+        
 <div class="main clearfix" role="main">
 
     <div class="col-md-12">
@@ -60,10 +72,9 @@
         </section>
         <section class="panel panel-default">
         
-            <div class="panel-heading" style="height:46px; background-color: rgba(0,0,0, 0.3);">
+            <div id="divSurTitle${page.id}" class="panel-heading" style="height:46px; background-color: rgba(0,0,0, 0.3);">
             	<h3 class="panel-title" class="main clearfix">
-            	<a href="javascript:alert('open modal to modify title');" data-toggle="modal" id="editSurveyTitle" title="${surveyTitle}" role="${surveyId}">${surveyTitle}</a>
-            	</h3>
+            	<a href="#surveyModal" data-toggle="modal" id="editSurveyInfo{page.id}" title="${surveyTitle}" relPage="${page.id}" relS="${surveyId}" class="editSurveyInfo btn-link-lg" role="button">${surveyTitle}</a></h3>
             	</div>
             	<div class="panel-heading">
             	<h4>
@@ -187,5 +198,7 @@
 
     </div>
 </div>
+</c:otherwise>
+</c:choose>
 <!-- Edit Survey modal -->
 <div class="modal fade" id="surveyModal" role="dialog" tabindex="-1" aria-labeledby="Modify Survey" aria-hidden="true" aria-describedby="Modify Survey"></div>

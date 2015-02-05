@@ -33,7 +33,7 @@ public interface surveyDAO {
     
     Integer surveyTakenTimes (Integer surveyId) throws Exception;
     
-    surveys getSurveyById(Integer surveyId) throws Exception;
+    surveys getSurveyById(Integer surveyId);
     
     void updateSurvey (surveys survey) throws Exception;
     

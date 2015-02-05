@@ -66,7 +66,9 @@ public class surveyManagerImpl implements surveyManager {
 		/**first we get the survey details**/
 		surveys survey = surveyDAO.getSurveyById(surveyId);
 		/** now we get the pages **/
-		survey.setSurveyPages(getSurveyPages(surveyId, true));
+		if (survey != null) {
+			survey.setSurveyPages(getSurveyPages(surveyId, true));
+		}
 		return survey;
 	}
     

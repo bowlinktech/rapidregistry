@@ -39,9 +39,7 @@
         <put-attribute name="page-section" value="section-dashboard" />
         <put-attribute name="actions" value="/WEB-INF/jsp/programAdmin/actionBar.jsp?page=surveyDetails" />
         <put-attribute name="body" value="/WEB-INF/jsp/programAdmin/surveys/details.jsp" />
-        <put-attribute name="jscript" value="/dspResources/js/programAdmin/surveys/details.js" />
-        <put-attribute name="jscript" value="/dspResources/js/programAdmin/surveys/scroll.js" />
-        
+        <put-attribute name="jscript" value="/dspResources/js/programAdmin/surveys/details.js" />      
     </definition>
 
 </tiles-definitions>

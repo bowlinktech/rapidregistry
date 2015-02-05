@@ -97,7 +97,7 @@ public class surveyDAOImpl implements surveyDAO {
 	}
 	
     @SuppressWarnings("unchecked")
-	public surveys getSurveyById(Integer surveyId) throws Exception {
+	public surveys getSurveyById(Integer surveyId) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(surveys.class);
         criteria.add(Restrictions.eq("id", surveyId));
         List <surveys> surveyList = criteria.list();

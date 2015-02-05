@@ -136,7 +136,7 @@ public class surveyController {
         Integer programId = (Integer) session.getAttribute("selprogramId");
         survey.setProgramId(programId);
         
-        // TODO see if Duplicates Allowed  means TITLE
+        //we do not allow duplicate title
         List <surveys> existingTitle = surveymanager.getProgramSurveysByTitle(survey);
 		if (existingTitle.size() != 0) {
         	List<activityCodes> activityCodes = activitycodemanager.getActivityCodes(0);
@@ -182,74 +182,43 @@ public class surveyController {
     
     @RequestMapping(value = "/details", method = RequestMethod.GET)
     public ModelAndView viewSurveyDetails(@RequestParam String s,
-    		HttpSession session, RedirectAttributes redirectAttr, Authentication authentication) throws Exception {
+    		HttpSession session, RedirectAttributes redirectAttr, Authentication authentication) 
+    				throws Exception {
         	ModelAndView mav = new ModelAndView();
         	mav.setViewName("/surveys/details");
         	mav.addObject("edit", "edit");
+        
+        
         //s - survey Id       
-        Integer surveyId = 0;
-        //see if param is valid
-        try {
-        	surveyId = Integer.parseInt(s);
-        } catch (Exception ex) {
-        	//log here
-        	try {
-	        	userActivityLog ua = new userActivityLog();
-	        	ua.setActivityDesc("accessed denied for survey - survey is not numeric");
-	        	ua.setController(controllerName);
-	        	ua.setPageAccessed("/details");
-	        	User userDetails = (User)session.getAttribute("userDetails");
-	        	ua.setSystemUserId(userDetails.getId());
-	            usermanager.insertUserLog (ua);
-        	} catch (Exception ex1) {
-        		ex1.printStackTrace();
-        	}
+        surveys survey = checkSurveyPermission(session, s, "/details" );
+        	
+        if(survey != null) {
+        	/**we look up survey and send back survey object  
+             * we look for survey --> pages --> questions --> answers
+             * we loop and display in jsp page
+            **/
+        	List<activityCodes> activityCodes = activitycodemanager.getActivityCodes(0);
+            mav.addObject("activityCodes", activityCodes);        
+            mav.addObject("survey", survey);
+           
+            /** add of pages drop down box **/
+            List<SurveyPages> surveyPages =  surveymanager.getSurveyPages(survey.getId(), false);
+            mav.addObject("surveyPages", surveyPages);	
+            /** add drop down for other surveys for this program **/
+            List<surveys> surveys = surveymanager.getProgramSurveys((Integer) session.getAttribute("selprogramId"));
+            mav.addObject("surveys", surveys);	
+            mav.addObject("surveyTitle", survey.getTitle());	            
+            mav.addObject("surveyId", survey.getId());
+            /* Get the list of answer types in the system */
+        	List<AnswerTypes>  answerTypeList = surveymanager.getAnswerTypes();
+            mav.addObject("answerTypeList", answerTypeList);  
+            return mav;
+        
+    	} else {
         	mav.addObject("notValid", "Survey is not valid or you do not have permission.");
         	return mav;
-        }
-        
-        /**we look up survey and send back survey object  
-         * we look for survey --> pages --> questions --> answers
-         * we loop and display in jsp page
-        **/
-        surveys survey = surveymanager.getSurveyById(surveyId);
-        if (survey != null) {
-        	//make sure we are in the right program
-        	if(survey.getProgramId() == (Integer) session.getAttribute("selprogramId")) {
-	        	List<activityCodes> activityCodes = activitycodemanager.getActivityCodes(0);
-	            mav.addObject("activityCodes", activityCodes);        
-	            mav.addObject("survey", survey);
-	           
-	            /** add of pages drop down box **/
-	            List<SurveyPages> surveyPages =  surveymanager.getSurveyPages(survey.getId(), false);
-	            mav.addObject("surveyPages", surveyPages);	
-	            /** add drop down for other surveys for this program **/
-	            List<surveys> surveys = surveymanager.getProgramSurveys((Integer) session.getAttribute("selprogramId"));
-	            mav.addObject("surveys", surveys);	
-	            mav.addObject("surveyTitle", survey.getTitle());	            
-	            mav.addObject("surveyId", survey.getId());
-	            /* Get the list of answer types in the system */
-	        	List<AnswerTypes>  answerTypeList = surveymanager.getAnswerTypes();
-	            mav.addObject("answerTypeList", answerTypeList);  
-            
-        	} else {
-        		//log here
-            	try {
-    	        	userActivityLog ua = new userActivityLog();
-    	        	ua.setActivityDesc("accessed denied for survey - program Id mismatch");
-    	        	ua.setController(controllerName);
-    	        	ua.setSurveyId(surveyId);
-    	        	ua.setPageAccessed("/details");
-    	        	User userDetails = (User)session.getAttribute("userDetails");
-    	        	ua.setSystemUserId(userDetails.getId());
-    	            usermanager.insertUserLog (ua);
-            	} catch (Exception ex1) {
-            		ex1.printStackTrace();
-            	}
-        	}
-        }
-       
-        return mav;
+    	}
+  
     }
     
     
@@ -340,58 +309,127 @@ public class surveyController {
     @ResponseBody public ModelAndView viewChangeLog(HttpSession session, @RequestParam String s) throws Exception {
         ModelAndView mav = new ModelAndView();
         
-        int surveyId = 0;
-        
-        /** we check to make sure s is a number **/
-        try {
-        	surveyId = Integer.parseInt(s);
-        } catch (Exception ex) {
-        	//log here
-        	try {
-	        	userActivityLog ua = new userActivityLog();
-	        	ua.setActivityDesc("accessed denied - survey is not numeric");
-	        	ua.setController(controllerName);
-	        	ua.setPageAccessed("/viewChangeLog");
-	        	User userDetails = (User)session.getAttribute("userDetails");
-	        	ua.setSystemUserId(userDetails.getId());
-	            usermanager.insertUserLog (ua);
-        	} catch (Exception ex1) {
-        		ex1.printStackTrace();
-        	}
-        	mav.addObject("notValid", "Survey Id is not valid or you do not have permission.");
-        	return mav;
-        }
-        
-        
-        /** we get the i info and make sure it matches the program id of the survey **/
-        surveys survey = surveymanager.getSurveyById(surveyId);
-        
-        
-        Integer programId = (Integer) session.getAttribute("selprogramId");
-        /** make sure session program id matches the survey's programId **/
-        if (survey.getProgramId() != programId) {
-        	try {
-	        	userActivityLog ua = new userActivityLog();
-	        	ua.setActivityDesc("accessed denied");
-	        	ua.setController(controllerName);
-	        	ua.setPageAccessed("/viewChangeLog");
-	        	ua.setSurveyId(surveyId);
-	        	User userDetails = (User)session.getAttribute("userDetails");
-	        	ua.setSystemUserId(userDetails.getId());
-	            usermanager.insertUserLog (ua);
-        	} catch (Exception ex1) {
-        		ex1.printStackTrace();
-        	}
+        surveys survey = checkSurveyPermission(session, s, "/changeLog" );
+    	
+        if(survey == null) {
         	mav.addObject("notValid", "Survey Id is not valid or you do not have permission to view this survey.");
         	return mav;
+        } else {
+        	/** now we get change logs **/
+	        List <SurveyChangeLogs> getSurveyChangeLogs = surveymanager.getSurveyChangeLogs(survey.getId());
+	        mav.addObject("changeLogs", getSurveyChangeLogs);
         }
-        
-        /** now we get change logs **/
-        List <SurveyChangeLogs> getSurveyChangeLogs = surveymanager.getSurveyChangeLogs(surveyId);
-        mav.addObject("changeLogs", getSurveyChangeLogs);
         
         mav.setViewName("/programAdmin/surveys/changeLogs");
         return mav;
     }
     
+    /**
+     * This method returns the form to edit survey title
+     * @param session
+     * @param s = surveyId
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "getSurveyForm.do", method = RequestMethod.GET)
+    @ResponseBody public ModelAndView getSurveyTitleForm (
+    		HttpSession session, @RequestParam String s) throws Exception {
+        ModelAndView mav = new ModelAndView();
+        
+        surveys survey = checkSurveyPermission(session, s, "getSurveyForm.do" );
+        if (survey == null) {
+        	mav.addObject("notValid", "Survey Id is not valid or you do not have permission.");
+        	return mav;
+        }
+        
+        List<activityCodes> activityCodes = activitycodemanager.getActivityCodes(0);
+        mav.addObject("activityCodes", activityCodes);
+        mav.addObject("survey", survey);
+        mav.setViewName("/programAdmin/surveys/surveyModal");
+        return mav;
+    }
+    
+    
+    @RequestMapping(value = "saveSurveyForm.do", method = RequestMethod.POST)
+    public @ResponseBody
+    ModelAndView saveSurveyForm(@Valid @ModelAttribute(value = "survey") surveys surveyNew, 
+    		BindingResult result, HttpSession session) throws Exception {
+    		
+    	ModelAndView mav = new ModelAndView();
+    	List<activityCodes> activityCodes = activitycodemanager.getActivityCodes(0);
+        mav.addObject("activityCodes", activityCodes);
+    	
+        if (result.hasErrors()) {
+            mav.addObject("survey", surveyNew);
+            mav.setViewName("/programAdmin/surveys/surveyModal");
+            return mav;
+        }
+
+        //check permissions
+        surveys survey = checkSurveyPermission (session, String.valueOf(surveyNew.getId()), "saveSurveyForm.do");
+        if (survey == null) {
+        	mav.addObject("survey", surveyNew);
+            mav.setViewName("/programAdmin/surveys/surveyModal");
+            return mav;
+        }
+        		
+        //check title		
+        // update 
+         return mav;
+    }
+    
+    
+    public surveys checkSurveyPermission (HttpSession session, String s, String pageName) {
+    	
+    	int surveyId = 0;
+    	surveys survey = new surveys();
+    	
+    	/** we check to make sure s is a number **/
+        try {
+        	surveyId = Integer.parseInt(s);
+        	Integer programId = (Integer) session.getAttribute("selprogramId");
+            /** make sure session program id matches the survey's programId **/
+            try {
+            	survey = surveymanager.getSurveyById(surveyId);
+            	if (survey != null && survey.getProgramId() != programId ) {
+            		survey = null;
+                	try {
+        	        	userActivityLog ua = new userActivityLog();
+        	        	ua.setActivityDesc("accessed denied");
+        	        	ua.setController(controllerName);
+        	        	ua.setPageAccessed(pageName);
+        	        	ua.setSurveyId(surveyId);
+        	        	User userDetails = (User)session.getAttribute("userDetails");
+        	        	ua.setSystemUserId(userDetails.getId());
+        	            usermanager.insertUserLog (ua);
+                	} catch (Exception ex1) {
+                		ex1.printStackTrace();
+                	}
+                	
+    	        }
+            } catch (Exception exSur) {
+        		exSur.printStackTrace();
+            }
+        	
+        	
+        	
+        } catch (Exception ex) {
+        	//log here
+        	try {
+        		survey = null;
+	        	userActivityLog ua = new userActivityLog();
+	        	ua.setActivityDesc("accessed denied - survey is not numeric");
+	        	ua.setController(controllerName);
+	        	ua.setPageAccessed(pageName);
+	        	User userDetails = (User)session.getAttribute("userDetails");
+	        	ua.setSystemUserId(userDetails.getId());
+	        	usermanager.insertUserLog (ua);
+        	} catch (Exception ex1) {
+        		ex1.printStackTrace();
+        	}
+        }	
+        	
+        return survey;
+    	
+    }
 }
