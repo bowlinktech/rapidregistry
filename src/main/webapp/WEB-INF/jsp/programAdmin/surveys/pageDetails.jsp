@@ -3,9 +3,21 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h3 class="panel-title">Edit Page Information ${updated}</h3>
+         </div>
+         <div class="modal-body">
+            <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %> 
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+
 <c:choose>
-               <c:when test="${not empty survey}">
-            	<form:form id="surveyForm" commandName="survey" method="post" role="form">
+               <c:when test="${not empty page}">
+            	<form:form id="pageForm" commandName="page" method="post" role="form">
             		<div class="form-container">
                     	<form:hidden path="id" />
                     	<form:hidden path="programId" />            	
@@ -155,3 +167,14 @@
                 	This survey does not exist or you do not have permission to access it.
                 </c:otherwise>
                 </c:choose>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function() {
+        $("input:text,form").attr("autocomplete", "off");
+    });
+</script>
+

@@ -74,7 +74,7 @@ You do not have permission to access this page.
         
             <div id="divSurTitle${page.id}" class="panel-heading" style="height:46px; background-color: rgba(0,0,0, 0.3);">
             	<h3 class="panel-title" class="main clearfix">
-            	<a href="#surveyModal" data-toggle="modal" id="editSurveyInfo{page.id}" title="${surveyTitle}" relPage="${page.id}" relS="${surveyId}" class="editSurveyInfo btn-link-lg" role="button">${surveyTitle}</a></h3>
+            	<a href="#surveyModal" data-toggle="modal" id="surveyTitle${page.id}" title="${surveyTitle}" relPage="${page.id}" relS="${surveyId}" class="editSurveyInfo btn-link-lg" role="button">${surveyTitle}</a></h3>
             	</div>
             	<div class="panel-heading">
             	<h4>
@@ -174,6 +174,7 @@ You do not have permission to access this page.
 			 
 
             </c:forEach>
+            
          </section>
          
          <section class="panel panel-default">
@@ -195,7 +196,6 @@ You do not have permission to access this page.
 </div>
 </div>
 </div>
-
     </div>
 </div>
 </c:otherwise>

@@ -358,10 +358,10 @@ public class surveyController {
     	ModelAndView mav = new ModelAndView();
     	List<activityCodes> activityCodes = activitycodemanager.getActivityCodes(0);
         mav.addObject("activityCodes", activityCodes);
-    	
+        mav.setViewName("/programAdmin/surveys/surveyModal");
+        
         if (result.hasErrors()) {
             mav.addObject("survey", surveyNew);
-            mav.setViewName("/programAdmin/surveys/surveyModal");
             return mav;
         }
 
@@ -369,15 +369,44 @@ public class surveyController {
         surveys survey = checkSurveyPermission (session, String.valueOf(surveyNew.getId()), "saveSurveyForm.do");
         if (survey == null) {
         	mav.addObject("survey", surveyNew);
-            mav.setViewName("/programAdmin/surveys/surveyModal");
             return mav;
         }
         		
-        //check title		
+        //check title	
+        if (!survey.getTitle().trim().equalsIgnoreCase(surveyNew.getTitle().trim())) {
+        	//we do not allow duplicate title
+            List <surveys> existingTitle = surveymanager.getProgramSurveysByTitle(surveyNew);
+    		if (existingTitle.size() != 0) {
+    			mav.addObject("survey", surveyNew);
+            	mav.addObject("activityCodes", activityCodes);
+            	mav.addObject("existingTitle", "Title is in use by this program already.");
+            	return mav;
+            } 
+        }
+        
+        
         // update 
+        surveymanager.updateSurvey(surveyNew);
+        mav.addObject("updated", "updated");
+        
          return mav;
     }
     
+    
+    
+    
+    
+    /** shared methods **/
+    
+    /**
+     * This method checks to see if the user has permission to the survey in question
+     * It first checks to see if the survey Id is an integer, then it checks to see 
+     * if it belongs to session's programId
+     * @param session
+     * @param s
+     * @param pageName
+     * @return
+     */
     
     public surveys checkSurveyPermission (HttpSession session, String s, String pageName) {
     	

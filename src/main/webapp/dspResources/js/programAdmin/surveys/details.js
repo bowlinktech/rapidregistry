@@ -21,7 +21,7 @@ require(['./main'], function () {
         
        /** scroll, making sure side bar stays along with main page **/
     	$(document).ready(function () {
-
+    		
     		/** side bar scroll **/
     	    var length = $('#left').height() - $('#sidebar').height() + $('#left').offset().top;
 
@@ -93,6 +93,19 @@ require(['./main'], function () {
            });         
         });
         
+        /** when clicking on the page title we get the page Id from relP and we load page title form **/
+        $(document).on('click', '.editPageInfo', function() {
+        	var pageId = $(this).attr("relS");
+        	$.ajax({
+                url: 'getPageForm.do',
+                data: {'p':pageId},
+                type: "GET",
+                success: function(data) {
+                    $(surveyModal).html(data);
+                }
+           });         
+        });
+        
         
         
         
@@ -113,15 +126,16 @@ require(['./main'], function () {
                 async: false,
                 success: function(data) {
 
-                    if (data.indexOf('codeUpdated') != -1) {
-                        window.location.href = "list?msg=updated";
-
-                    }
-                    else if (data.indexOf('codeCreated') != -1) {
-                        window.location.href = "list?msg=created";
-
-                    }
-                    else {
+                    if (data.indexOf('updated') != -1) {
+                    	//update all titles on the page
+                    	if ($('#editSurveyInfoActionBar').text() != $("#title").val()) {
+                    		$(".editSurveyInfo").each( function(index, element) {
+                    				$(element).html($("#title").val());
+                    		});
+                   
+                    	}
+                    	$('#surveyModal').modal('toggle');
+                    } else {
                         $("#surveyModal").html(data);
                     }
                 }
