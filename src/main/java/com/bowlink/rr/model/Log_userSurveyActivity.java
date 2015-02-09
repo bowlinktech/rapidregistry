@@ -17,8 +17,8 @@ import org.springframework.format.annotation.DateTimeFormat;
  * @author gchan
  */
 @Entity
-@Table(name = "user_activityLog")
-public class userActivityLog {
+@Table(name = "Log_userSurveyActivity")
+public class Log_userSurveyActivity {
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -30,6 +30,18 @@ public class userActivityLog {
     
     @Column(name = "surveyId", nullable = true)
     private int surveyId = 0;
+    
+    @Column(name = "pageId", nullable = true)
+    private int pageId = 0;
+    
+    @Column(name = "questionId", nullable = true)
+    private int questionId = 0;
+    
+    @Column(name = "answerId", nullable = true)
+    private int answerId = 0;
+    
+    @Column(name = "programId", nullable = true)
+    private int programId = 0;
     
     @NoHtml
     @Column(name = "activityDesc", nullable = true)
@@ -79,6 +91,36 @@ public class userActivityLog {
 	}
 
 
+	public int getPageId() {
+		return pageId;
+	}
+
+
+	public void setPageId(int pageId) {
+		this.pageId = pageId;
+	}
+
+
+	public int getQuestionId() {
+		return questionId;
+	}
+
+
+	public void setQuestionId(int questionId) {
+		this.questionId = questionId;
+	}
+
+
+	public int getAnswerId() {
+		return answerId;
+	}
+
+
+	public void setAnswerId(int answerId) {
+		this.answerId = answerId;
+	}
+
+
 	public String getActivityDesc() {
 		return activityDesc;
 	}
@@ -118,5 +160,14 @@ public class userActivityLog {
 		this.dateCreated = dateCreated;
 	}
 
-    
+
+	public int getProgramId() {
+		return programId;
+	}
+
+
+	public void setProgramId(int programId) {
+		this.programId = programId;
+	}
+ 
 }

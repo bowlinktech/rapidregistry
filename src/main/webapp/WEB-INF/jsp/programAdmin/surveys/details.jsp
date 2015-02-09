@@ -52,34 +52,53 @@ You do not have permission to access this page.
 	<div id="right">
 	
  <!--  we start to loop pages here -->
+  		<!-- in case there are no survey pages -->
+ 		<c:if test="${fn:length(survey.surveyPages) == 0}">
+ 		<section class="panel panel-default">
+        
+            <div id="divSurTitle${page.id}" class="panel-heading" style="height:46px; background-color: rgba(0,0,0, 0.3);">
+            	<h3 class="panel-title" class="main clearfix">
+            	<a href="#surveyModal" data-toggle="modal" id="surveyTitle${page.id}" title="${surveyTitle}" relPage="${page.id}" relS="${surveyId}" class="editSurveyTitle btn-link-lg" role="button">${surveyTitle}</a></h3>
+            	</div>           	
+ 			</section>
+			<section class="panel panel-default">
+            <div class="panel-body text-center">
+            <%-- from page id, we can look up all info --%>
+            <a href="javascript:alert('this adds a page to the page after');" rel="${page.id}">Add a Page</a>
+         	</div>
+         </section>
+		</c:if>
+ 
+ 		<!-- survey pages, there should be at least one page -->
         <c:forEach var="page" items="${survey.surveyPages}">
-        <section>
-        <div class="form-container scrollable post" rel="${page.id}">
-                <div class="pull-right">
-                
-                <div id="answerDiv" class="form-group">
-	                     <select  id="ddAns" name="answer" class="form-control ">
-	                       <c:forEach var="pageNum" items="${surveyPages}">
-			           			<option value="${pageNum.pageNum}">P. ${pageNum.pageNum} - ${pageNum.pageTitle}</option>
-			           	 </c:forEach>
-	                     </select>
-	                     <span id="errorMsg_dropDown" class="control-label"></span>  
-                      </div>
-                
-        	
-        	</div>
-        </div>
+        <section class="panel panel-default">
+        	<div class="row" id="page${page.id}">
+		                <div class="col-md-2">
+		                	<h4>Page ${page.pageNum}</h4>
+		                </div>
+		                <div class="scrollable post" relPage="${page.id}">
+			                <div class="pull-right">
+				                <div id="answerDiv" class="form-group">
+					                     <select  id="pageDD${page.id}" name="answer" class="form-control ddForPage">
+					                       <c:forEach var="pageNum" items="${surveyPages}">
+							           			<option value="page${pageNum.id}" <c:if test="${pageNum.id == page.id}"> selected </c:if>>P. ${pageNum.pageNum} - ${pageNum.pageTitle}</option>
+							           	 </c:forEach>
+					                     </select>
+					                     <span id="errorMsg_dropDown" class="control-label"></span>  
+				                 </div>
+			            	</div>
+		            	</div>
+	        	</div>
         </section>
         <section class="panel panel-default">
         
             <div id="divSurTitle${page.id}" class="panel-heading" style="height:46px; background-color: rgba(0,0,0, 0.3);">
             	<h3 class="panel-title" class="main clearfix">
-            	<a href="#surveyModal" data-toggle="modal" id="surveyTitle${page.id}" title="${surveyTitle}" relPage="${page.id}" relS="${surveyId}" class="editSurveyInfo btn-link-lg" role="button">${surveyTitle}</a></h3>
+            	<a href="#surveyModal" data-toggle="modal" id="surveyTitle${page.id}" title="${surveyTitle}" relPage="${page.id}" relS="${surveyId}" class="editSurveyTitle btn-link-lg" role="button">${surveyTitle}</a></h3>
             	</div>
             	<div class="panel-heading">
             	<h4>
-            	<span role="presentation" class="disabled">Page ${page.pageNum}</span>
-                	<span class="editTitle"><a href="javascript:alert('open modal with edit title');" data-toggle="modal" class="btn-link-lg editTitle" rel="${page.id}" title="Edit Page Title" role="button">
+            		<span class="editTitle"><a href="javascript:alert('open modal with edit title');" data-toggle="modal" class="btn-link-lg editTitle" relPage="${page.id}" title="Edit Page Title" role="button">
 	                 	${page.pageTitle }
 	               	</a>
 	               	</span>

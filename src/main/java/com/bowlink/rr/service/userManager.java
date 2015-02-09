@@ -6,7 +6,7 @@
 package com.bowlink.rr.service;
 
 import com.bowlink.rr.model.User;
-import com.bowlink.rr.model.userActivityLog;
+import com.bowlink.rr.model.Log_userSurveyActivity;
 import com.bowlink.rr.model.userPrograms;
 
 import java.security.NoSuchAlgorithmException;
@@ -73,5 +73,5 @@ public interface userManager {
 
     List<String> getUserRoles (User user) throws Exception;
     
-    void insertUserLog (userActivityLog ual);
+    void insertUserLog (Log_userSurveyActivity ual);
 }
