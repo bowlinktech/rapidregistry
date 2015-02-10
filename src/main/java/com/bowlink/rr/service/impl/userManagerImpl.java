@@ -9,7 +9,7 @@ package com.bowlink.rr.service.impl;
 import com.bowlink.rr.dao.userDAO;
 import com.bowlink.rr.model.User;
 import com.bowlink.rr.model.programAdmin;
-import com.bowlink.rr.model.userActivityLog;
+import com.bowlink.rr.model.Log_userSurveyActivity;
 import com.bowlink.rr.model.userPrograms;
 import com.bowlink.rr.service.userManager;
 
@@ -212,7 +212,7 @@ public class userManagerImpl implements userManager {
     
     @Override
     @Transactional
-    public void insertUserLog (userActivityLog ual) {
+    public void insertUserLog (Log_userSurveyActivity ual) {
         userDAO.insertUserLog (ual);
     }
 }

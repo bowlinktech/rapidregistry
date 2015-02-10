@@ -297,6 +297,185 @@ LOCK TABLES `inactiveDays` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `log_survey_answers`
+--
+
+DROP TABLE IF EXISTS `log_survey_answers`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `log_survey_answers` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `originalId` int(11) DEFAULT NULL,
+  `questionId` int(11) NOT NULL,
+  `skipToPageId` int(11) NOT NULL DEFAULT '0',
+  `skipToQuestionId` int(11) NOT NULL DEFAULT '0',
+  `answer` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `activityCodeId` int(11) DEFAULT '0',
+  `defAnswer` bit(1) NOT NULL DEFAULT b'0',
+  `defAnsText` text COLLATE utf8_unicode_ci,
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `numericOnly` bit(1) NOT NULL DEFAULT b'0',
+  `maxLength` int(11) DEFAULT '255',
+  `label` text COLLATE utf8_unicode_ci,
+  `answerOrder` int(11) DEFAULT '1',
+  `dateArchive` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `triggerType` varchar(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `log_survey_answers`
+--
+
+LOCK TABLES `log_survey_answers` WRITE;
+/*!40000 ALTER TABLE `log_survey_answers` DISABLE KEYS */;
+/*!40000 ALTER TABLE `log_survey_answers` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `log_survey_pages`
+--
+
+DROP TABLE IF EXISTS `log_survey_pages`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `log_survey_pages` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `originalId` int(11) DEFAULT NULL,
+  `surveyId` int(11) NOT NULL,
+  `pageTitle` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `pageDesc` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `pageNum` int(11) NOT NULL,
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `dateInserted` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `triggerType` varchar(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `log_survey_pages`
+--
+
+LOCK TABLES `log_survey_pages` WRITE;
+/*!40000 ALTER TABLE `log_survey_pages` DISABLE KEYS */;
+/*!40000 ALTER TABLE `log_survey_pages` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `log_survey_questions`
+--
+
+DROP TABLE IF EXISTS `log_survey_questions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `log_survey_questions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `originalId` int(11) DEFAULT NULL,
+  `hide` bit(1) NOT NULL DEFAULT b'0',
+  `required` bit(1) NOT NULL DEFAULT b'0',
+  `dspQuestionId` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `question` text COLLATE utf8_unicode_ci NOT NULL,
+  `surveyPageId` int(11) NOT NULL,
+  `answerTypeId` int(11) NOT NULL,
+  `columnsDisplayed` int(11) NOT NULL DEFAULT '0',
+  `allowMultipleAns` bit(1) NOT NULL DEFAULT b'0',
+  `saveToTableName` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `saveToFieldId` int(11) DEFAULT '0',
+  `autoPopulateFromField` bit(1) NOT NULL DEFAULT b'0',
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `questionNum` int(11) NOT NULL DEFAULT '1',
+  `dateInserted` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `triggerType` varchar(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `log_survey_questions`
+--
+
+LOCK TABLES `log_survey_questions` WRITE;
+/*!40000 ALTER TABLE `log_survey_questions` DISABLE KEYS */;
+/*!40000 ALTER TABLE `log_survey_questions` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `log_surveys`
+--
+
+DROP TABLE IF EXISTS `log_surveys`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `log_surveys` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `originalId` int(11) DEFAULT NULL,
+  `programId` int(11) NOT NULL,
+  `status` bit(1) NOT NULL DEFAULT b'1',
+  `requireEngagement` bit(1) NOT NULL DEFAULT b'1',
+  `allowEngagement` bit(1) DEFAULT b'1',
+  `duplicatesAllowed` bit(1) DEFAULT b'1',
+  `title` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `doneButtonText` varchar(30) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'Done',
+  `nextButtonText` varchar(30) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'Next',
+  `prevButtonText` varchar(30) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'Prev',
+  `reminderStatus` bit(1) NOT NULL DEFAULT b'0',
+  `reminderText` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `activityCodeId` int(11) DEFAULT '0',
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `dateModified` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `dateInserted` datetime DEFAULT CURRENT_TIMESTAMP,
+  `triggerType` varchar(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `surveyId_idx` (`id`),
+  KEY `programId_idx` (`programId`)
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `log_surveys`
+--
+
+LOCK TABLES `log_surveys` WRITE;
+/*!40000 ALTER TABLE `log_surveys` DISABLE KEYS */;
+/*!40000 ALTER TABLE `log_surveys` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `log_userSurveyActivity`
+--
+
+DROP TABLE IF EXISTS `log_userSurveyActivity`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `log_userSurveyActivity` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `systemUserId` int(11) NOT NULL,
+  `surveyId` int(11) DEFAULT NULL,
+  `pageId` int(11) DEFAULT NULL,
+  `questionId` int(11) DEFAULT NULL,
+  `answerId` int(11) DEFAULT NULL,
+  `activityDesc` varchar(255) DEFAULT NULL,
+  `pageAccessed` varchar(45) DEFAULT NULL,
+  `controller` varchar(45) DEFAULT NULL,
+  `dateCreated` datetime DEFAULT CURRENT_TIMESTAMP,
+  `programId` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `log_userSurveyActivity`
+--
+
+LOCK TABLES `log_userSurveyActivity` WRITE;
+/*!40000 ALTER TABLE `log_userSurveyActivity` DISABLE KEYS */;
+INSERT INTO `log_userSurveyActivity` VALUES (7,2,0,0,0,0,'Accessed survey list','/surveys','survey','2015-02-09 12:52:15',1),(8,2,1,0,0,0,'Accessed Survey Details','/details','survey','2015-02-09 12:52:18',1),(9,2,0,0,0,0,'Accessed survey list','/surveys','survey','2015-02-09 12:52:21',4),(10,2,0,0,0,0,'Accessed survey list','/surveys','survey','2015-02-09 12:52:24',1),(11,2,1,0,0,0,'Accessed Survey Details','/details','survey','2015-02-09 12:52:25',1),(12,2,1,0,0,0,'Accessed Survey Details','/details','survey','2015-02-09 13:15:29',1),(13,2,1,0,0,0,'Access Survey Title Form','getSurveyForm.do','survey','2015-02-09 13:15:33',1),(14,2,1,0,0,0,'Updated Survey Title','saveSurveyForm.do','survey','2015-02-09 13:15:41',1),(15,2,0,0,0,0,'Accessed survey list','/surveys','survey','2015-02-09 13:15:47',4),(16,2,0,0,0,0,'Accessed survey list','/surveys','survey','2015-02-09 13:15:48',1),(17,2,2,0,0,0,'Accessed Survey Details','/details','survey','2015-02-09 13:15:50',1),(18,2,0,0,0,0,'Accessed survey list','/surveys','survey','2015-02-09 13:15:52',1),(19,2,13,0,0,0,'Accessed Survey Details','/details','survey','2015-02-09 13:15:54',1),(20,2,0,0,0,0,'Accessed survey list','/surveys','survey','2015-02-09 13:15:55',1),(21,2,28,0,0,0,'Accessed Survey Details','/details','survey','2015-02-09 13:15:58',1),(22,2,0,0,0,0,'Accessed survey list','/surveys','survey','2015-02-09 13:16:00',1),(23,2,0,0,0,0,'Accessed survey list','/surveys','survey','2015-02-09 13:16:02',4),(24,2,14,0,0,0,'Accessed Survey Details','/details','survey','2015-02-09 13:16:03',4),(25,2,0,0,0,0,'Accessed survey list','/surveys','survey','2015-02-09 15:13:53',1),(26,2,0,0,0,0,'Accessed survey list','/surveys','survey','2015-02-09 15:13:57',4),(27,2,0,0,0,0,'Accessed survey list','/surveys','survey','2015-02-09 15:13:58',1),(28,2,15,0,0,0,'Accessed Survey Details','/details','survey','2015-02-09 15:14:00',1),(29,2,15,0,0,0,'Access Survey Title Form','getSurveyForm.do','survey','2015-02-09 15:14:01',1),(30,2,15,0,0,0,'Accessed Survey Details','/details','survey','2015-02-09 15:22:45',1),(31,2,0,0,0,0,'Accessed survey list','/surveys','survey','2015-02-09 15:56:37',1),(32,2,1,0,0,0,'Accessed Survey Details','/details','survey','2015-02-09 15:56:39',1),(33,2,0,0,0,0,'Accessed survey list','/surveys','survey','2015-02-09 15:56:42',4),(34,2,14,0,0,0,'Accessed Survey Details','/details','survey','2015-02-09 15:56:43',4),(35,2,14,0,0,0,'Access Survey Title Form','getSurveyForm.do','survey','2015-02-09 15:56:45',4),(36,2,14,0,0,0,'Accessed Survey Details','/details','survey','2015-02-09 15:58:49',4),(37,2,14,0,0,0,'Accessed Survey Details','/details','survey','2015-02-09 15:59:16',4),(38,2,14,0,0,0,'Accessed Survey Details','/details','survey','2015-02-09 16:00:35',4),(39,2,14,0,0,0,'Accessed Survey Details','/details','survey','2015-02-09 16:01:05',4),(40,2,14,0,0,0,'Accessed Survey Details','/details','survey','2015-02-09 16:01:37',4),(41,2,14,0,0,0,'Accessed Survey Details','/details','survey','2015-02-09 16:01:56',4),(42,2,14,0,0,0,'Accessed Survey Details','/details','survey','2015-02-09 16:05:26',4),(43,2,14,0,0,0,'Accessed Survey Details','/details','survey','2015-02-09 16:06:00',4),(44,2,14,0,0,0,'Accessed Survey Details','/details','survey','2015-02-09 16:07:02',4),(45,2,14,0,0,0,'Accessed Survey Details','/details','survey','2015-02-09 16:08:30',4),(46,2,14,0,0,0,'Accessed Survey Details','/details','survey','2015-02-09 16:08:53',4),(47,2,14,0,0,0,'Accessed Survey Details','/details','survey','2015-02-09 16:09:38',4);
+/*!40000 ALTER TABLE `log_userSurveyActivity` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `lu_activityCodes`
 --
 
@@ -2788,6 +2967,7 @@ CREATE TABLE `survey_answers` (
 
 LOCK TABLES `survey_answers` WRITE;
 /*!40000 ALTER TABLE `survey_answers` DISABLE KEYS */;
+INSERT INTO `survey_answers` VALUES (2,1,0,0,'multiple 1',0,'',NULL,'2015-01-13 01:15:10','\0',255,NULL,1),(3,1,0,0,'multiple 2',0,'\0',NULL,'2015-01-13 01:15:10','\0',255,NULL,2),(4,2,0,0,'dd 1',0,'\0',NULL,'2015-01-13 01:15:10','\0',255,NULL,1),(5,2,0,0,'dd 2',0,'',NULL,'2015-01-13 01:15:10','\0',255,NULL,2),(6,3,0,0,'textbox label',0,'\0',NULL,'2015-01-13 01:15:10','\0',255,'label',1),(7,4,0,0,'multi textbox default',0,'\0',NULL,'2015-01-13 01:15:10','',255,'label should be beside it',1),(8,4,0,0,'multi textbox label',0,'\0',NULL,'2015-01-13 01:15:10','\0',255,NULL,2),(9,5,0,0,'comment box',0,'\0',NULL,'2015-01-20 20:28:11','\0',255,NULL,1),(10,6,0,0,'date time',0,'\0',NULL,'2015-01-20 20:28:11','\0',255,NULL,1),(11,7,0,0,'display text,      With a foundation in community-based healthcare and public health programs, Health-e-link was established to provide cost-effective solutions for managing healthcare information for community-based \n                    organizations and',0,'\0',NULL,'2015-01-20 20:28:11','\0',255,NULL,1),(12,8,0,0,'single checkbox',0,'',NULL,'2015-01-20 20:28:11','\0',255,NULL,1),(13,9,0,0,'multiple checkbox #1',0,'\0',NULL,'2015-01-20 20:28:11','\0',255,NULL,1),(14,9,0,0,'multiple checkbox 3',0,'\0',NULL,'2015-01-20 20:28:11','\0',255,NULL,3),(15,9,0,0,'multiple cb 2 default',0,'',NULL,'2015-01-20 20:28:11','\0',255,NULL,2);
 /*!40000 ALTER TABLE `survey_answers` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -2797,12 +2977,12 @@ UNLOCK TABLES;
 /*!50003 SET character_set_results = utf8 */ ;
 /*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 trigger survey_answers_track_u after update on survey_answers
 for each row
 begin
-  insert into Log_survey_answers (id, questionId, skipToPageId, skipToQuestionId, answer, activityCodeId,
+  insert into Log_survey_answers (originalid, questionId, skipToPageId, skipToQuestionId, answer, activityCodeId,
   defAnswer, defAnsText, dateCreated, numericOnly, maxLength, label, answerOrder, triggerType)
   values (new.id, new.questionId, new.skipToPageId, new.skipToQuestionId, new.answer, new.activityCodeId,
   new.defAnswer, new.defAnsText, new.dateCreated, new.numericOnly, new.maxLength, new.label, new.answerOrder, 'U');
@@ -2819,12 +2999,12 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8 */ ;
 /*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 trigger survey_answers_track_d before delete on survey_answers
 for each row
 begin
-  insert into Log_survey_answers (id, questionId, skipToPageId, skipToQuestionId, answer, activityCodeId,
+  insert into Log_survey_answers (originalid, questionId, skipToPageId, skipToQuestionId, answer, activityCodeId,
   defAnswer, defAnsText, dateCreated, numericOnly, maxLength, label, answerOrder, triggerType)
   values (OLD.id, old.questionId, old.skipToPageId, old.skipToQuestionId, OLD.answer, OLD.activityCodeId,
   OLD.defAnswer, OLD.defAnsText, OLD.dateCreated, OLD.numericOnly, OLD.maxLength, OLD.label, OLD.answerOrder, 'D');
@@ -2875,12 +3055,13 @@ CREATE TABLE `survey_pages` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `surveyId` int(11) NOT NULL,
   `pageTitle` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `pageDesc` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
   `pageNum` int(11) NOT NULL,
   `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uni_surveyIdPageNum` (`surveyId`,`pageNum`),
   CONSTRAINT `sp_sur` FOREIGN KEY (`surveyId`) REFERENCES `surveys` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2889,9 +3070,57 @@ CREATE TABLE `survey_pages` (
 
 LOCK TABLES `survey_pages` WRITE;
 /*!40000 ALTER TABLE `survey_pages` DISABLE KEYS */;
-INSERT INTO `survey_pages` VALUES (1,1,'Survey 1 Page 1',1,'2014-12-08 22:21:36'),(2,1,'Page 2 Survey 1',2,'2014-12-08 22:21:36');
+INSERT INTO `survey_pages` VALUES (1,14,'0',NULL,1,'2014-12-08 22:21:36'),(2,14,'0',NULL,2,'2014-12-08 22:21:36'),(3,14,'0',NULL,3,'2015-01-15 13:44:00'),(4,14,'0',NULL,4,'2015-01-16 13:09:33'),(5,14,'0',NULL,5,'2015-01-16 13:09:33'),(6,14,'0',NULL,6,'2015-01-22 00:09:54'),(7,26,'0',NULL,1,'2015-01-22 00:11:47');
 /*!40000 ALTER TABLE `survey_pages` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 trigger survey_pages_track_u after update on survey_pages
+for each row 
+begin  
+
+INSERT INTO `rapidregistry`.`log_survey_pages`
+(`originalid`, `surveyId`, `pageTitle`, `pageDesc`, `pageNum`, `dateCreated`, `triggerType`)
+VALUES
+(new.id, new.surveyId, new.pageTitle, new.pageDesc, new.pageNum, new.dateCreated, 'U');
+
+end */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 trigger survey_pages_track_d before delete on survey_pages
+for each row 
+begin  
+
+INSERT INTO `rapidregistry`.`log_survey_pages`
+(`originalid`, `surveyId`, `pageTitle`, `pageDesc`, `pageNum`, `dateCreated`, `triggerType`)
+VALUES
+(old.id, old.surveyId, old.pageTitle, old.pageDesc, old.pageNum, old.dateCreated, 'D');
+
+end */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `survey_patientAnswers`
@@ -2961,6 +3190,58 @@ LOCK TABLES `survey_questions` WRITE;
 /*!40000 ALTER TABLE `survey_questions` DISABLE KEYS */;
 /*!40000 ALTER TABLE `survey_questions` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 trigger survey_questions_track_u after update on survey_questions 
+for each row 
+begin  
+
+INSERT INTO `rapidregistry`.`log_survey_questions`
+(`originalid`, `hide`, `required`, `dspQuestionId`, `question`, `surveyPageId`, `answerTypeId`, `columnsDisplayed`, 
+`allowMultipleAns`, `saveToTableName`, `saveToFieldId`, `autoPopulateFromField`, `dateCreated`, `questionNum`, `triggerType`)
+VALUES (
+new.id, new.hide, new.required, new.dspQuestionId, new.question, new.surveyPageId, new.answerTypeId, new.columnsDisplayed, 
+new.allowMultipleAns, new.saveToTableName, new.saveToFieldId, new.autoPopulateFromField, new.dateCreated, new.questionNum, 'U');
+
+end */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 trigger survey_questions_track_d before delete on survey_questions 
+for each row 
+begin  
+
+INSERT INTO `rapidregistry`.`log_survey_questions`
+(`originalid`, `hide`, `required`, `dspQuestionId`, `question`, `surveyPageId`, `answerTypeId`, `columnsDisplayed`, 
+`allowMultipleAns`, `saveToTableName`, `saveToFieldId`, `autoPopulateFromField`, `dateCreated`, `questionNum`, `triggerType`)
+VALUES (
+old.id, old.hide, old.required, old.dspQuestionId, old.question, old.surveyPageId, old.answerTypeId, old.columnsDisplayed, 
+old.allowMultipleAns, old.saveToTableName, old.saveToFieldId, old.autoPopulateFromField, old.dateCreated, old.questionNum, 'D');
+
+end */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `survey_selectTableAssoc`
@@ -3015,7 +3296,7 @@ CREATE TABLE `surveys` (
   PRIMARY KEY (`id`),
   KEY `surveyId_idx` (`id`),
   KEY `programId_idx` (`programId`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3024,37 +3305,62 @@ CREATE TABLE `surveys` (
 
 LOCK TABLES `surveys` WRITE;
 /*!40000 ALTER TABLE `surveys` DISABLE KEYS */;
-INSERT INTO `surveys` VALUES (1,1,'','','','\0','title1','D','N','P','\0','',NULL,'2014-12-05 05:58:43','2014-12-09 00:02:20'),(2,1,'\0','\0','','\0','edit title','3','2','1','','test',1,'2014-12-05 11:37:28','2014-12-08 22:13:51'),(13,1,'','','','\0','title','Done','Next','Previous','\0','',NULL,'2014-12-08 08:18:10','2014-12-10 09:55:58'),(14,4,'','','','\0','NH survey','Done','Next','Previous','\0','',NULL,'2014-12-09 02:30:40','2014-12-09 02:30:40'),(15,5,'','\0','\0','\0','RR Engagement Survey','Done','Next','Previous','\0',NULL,0,'2015-01-14 13:42:47','2015-01-14 13:42:47');
+INSERT INTO `surveys` VALUES (1,1,'','','','\0','Survey Title 1_1','D','N','P','\0','',NULL,'2014-12-05 05:58:43','2014-12-09 00:02:20'),(2,1,'\0','\0','','\0','Survey Title 2','3','2','1','','test',1,'2014-12-05 11:37:28','2014-12-08 22:13:51'),(13,1,'','','','\0','Survey Title 3','Done','Next','Previous','\0','',NULL,'2014-12-08 08:18:10','2014-12-08 08:18:10'),(14,4,'','','','','ABCDE','Done','Next','Previous','','reminder',NULL,'2014-12-09 02:30:40','2014-12-09 02:30:40'),(15,1,'','','','\0','Survey Title 5','Done','Next','Previous','\0','',NULL,'2015-01-04 10:48:32','2015-01-04 10:48:32'),(26,1,'','','','\0','Survey Title 6','Done','Next','Previous','\0','',NULL,'2015-01-22 00:11:38','2015-01-22 00:11:38'),(27,1,'','','','\0','Survey Title 7','Done','Next','Previous','\0','',NULL,'2015-01-22 00:12:20','2015-01-22 00:12:20'),(28,1,'','','','\0','zzzzzz','Done','Next','Previous','\0','',NULL,'2015-01-22 02:07:54','2015-01-22 02:07:54'),(29,1,'','','','\0','testing 123','Done','Next','Previous','\0','',NULL,'2015-02-04 11:20:29','2015-02-04 11:20:29');
 /*!40000 ALTER TABLE `surveys` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 trigger survey_track_u after update on surveys
+for each row
+begin
 
---
--- Table structure for table `user_activityLog`
---
+INSERT INTO `rapidregistry`.`log_surveys`(`originalid`, `programId`, `status`, `requireEngagement`, `allowEngagement`, 
+`duplicatesAllowed`, `title`, `doneButtonText`, `nextButtonText`, `prevButtonText`, `reminderStatus`, `reminderText`, 
+`activityCodeId`, `dateCreated`, `dateModified`,  `triggerType`) 
+VALUES 
+(new.id, new.programId, new.status, new.requireEngagement, new.allowEngagement, new.duplicatesAllowed, new.title, 
+new.doneButtonText, new.nextButtonText, new.prevButtonText, new.reminderStatus, new.reminderText, new.activityCodeId, 
+new.dateCreated, new.dateModified,  'u');
 
-DROP TABLE IF EXISTS `user_activityLog`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `user_activityLog` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `systemUserId` int(11) NOT NULL,
-  `surveyId` int(11) DEFAULT NULL,
-  `activityDesc` varchar(255) DEFAULT NULL,
-  `pageAccessed` varchar(45) DEFAULT NULL,
-  `controller` varchar(45) DEFAULT NULL,
-  `dateCreated` datetime DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+end */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 trigger survey_track_d before delete on surveys 
+for each row 
+begin  
 
---
--- Dumping data for table `user_activityLog`
---
+INSERT INTO `rapidregistry`.`log_surveys`(`originalid`, `programId`, `status`, `requireEngagement`, `allowEngagement`,  
+`duplicatesAllowed`, `title`, `doneButtonText`, `nextButtonText`, `prevButtonText`, `reminderStatus`, `reminderText`,
+`activityCodeId`, `dateCreated`, `dateModified`,  `triggerType`)  VALUES  
+(old.id, old.programId, old.status, old.requireEngagement, old.allowEngagement, old.duplicatesAllowed, old.title,  
+old.doneButtonText, old.nextButtonText, old.prevButtonText, old.reminderStatus, old.reminderText, 
+old.activityCodeId,  old.dateCreated, old.dateModified,  'D');  
 
-LOCK TABLES `user_activityLog` WRITE;
-/*!40000 ALTER TABLE `user_activityLog` DISABLE KEYS */;
-/*!40000 ALTER TABLE `user_activityLog` ENABLE KEYS */;
-UNLOCK TABLES;
+end */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `user_authorizedOrgHierarchy`
@@ -3159,7 +3465,7 @@ CREATE TABLE `user_programs` (
   KEY `fk_userPrograms_programId` (`programId`),
   CONSTRAINT `fk_userPrograms_programId` FOREIGN KEY (`programId`) REFERENCES `programs` (`id`),
   CONSTRAINT `fk_userPrograms_userid` FOREIGN KEY (`systemUserId`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3268,10 +3574,6 @@ UNLOCK TABLES;
 
 --
 -- Dumping events for database 'rapidregistry'
---
-
---
--- Dumping routines for database 'rapidregistry'
 --
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

@@ -12,7 +12,7 @@
                     </c:when>
                     <c:when test="${param['page'] == 'surveyDetails'}">
 	                    <div id="surveyTitle">
-	                        <a href="#surveyModal" data-toggle="modal" id="editSurveyInfoActionBar" title="${surveyTitle}" relPage="1" relS="${surveyId}" class="editSurveyInfo unstyled-link" role="button">${surveyTitle}</a>
+	                        <a href="#surveyModal" data-toggle="modal" id="editSurveyTitleActionBar" title="${surveyTitle}" relPage="1" relS="${surveyId}" class="editSurveyTitle unstyled-link" role="button">${surveyTitle}</a>
 	                   </div>
                     </c:when>
                     <c:when test="${param['page'] == 'staff'}">

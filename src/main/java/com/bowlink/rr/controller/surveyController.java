@@ -12,7 +12,7 @@ import com.bowlink.rr.model.SurveyPages;
 import com.bowlink.rr.model.User;
 import com.bowlink.rr.model.activityCodes;
 import com.bowlink.rr.model.surveys;
-import com.bowlink.rr.model.userActivityLog;
+import com.bowlink.rr.model.Log_userSurveyActivity;
 import com.bowlink.rr.service.activityCodeManager;
 import com.bowlink.rr.service.surveyManager;
 import com.bowlink.rr.service.userManager;
@@ -78,6 +78,21 @@ public class surveyController {
         List<surveys> surveys = surveymanager.getProgramSurveys((Integer) session.getAttribute("selprogramId"));
         
         mav.addObject("surveys", surveys);
+        
+        /** log user **/
+        try {
+        	Log_userSurveyActivity ua = new Log_userSurveyActivity();
+        	ua.setActivityDesc("Accessed survey list");
+        	ua.setController(controllerName);
+        	ua.setPageAccessed("/surveys");
+        	ua.setProgramId((Integer) session.getAttribute("selprogramId"));
+        	User userDetails = (User)session.getAttribute("userDetails");
+        	ua.setSystemUserId(userDetails.getId());
+            usermanager.insertUserLog (ua);
+    	} catch (Exception ex1) {
+    		ex1.printStackTrace();
+    	}
+        
 
         return mav;
 
@@ -105,6 +120,20 @@ public class surveyController {
         List<surveys> surveys = surveymanager.getProgramSurveys((Integer) session.getAttribute("selprogramId"));
         mav.addObject("surveys", surveys);	
         mav.setViewName("/surveys/create");
+        
+        /** log user **/
+        try {
+        	Log_userSurveyActivity ua = new Log_userSurveyActivity();
+        	ua.setActivityDesc("Created Survey Form");
+        	ua.setController(controllerName);
+        	ua.setPageAccessed("/surveys");
+        	ua.setProgramId((Integer) session.getAttribute("selprogramId"));
+        	User userDetails = (User)session.getAttribute("userDetails");
+        	ua.setSystemUserId(userDetails.getId());
+            usermanager.insertUserLog (ua);
+    	} catch (Exception ex1) {
+    		ex1.printStackTrace();
+    	}
         return mav;
 
     }
@@ -156,6 +185,22 @@ public class surveyController {
         sp.setSurveyId(surveyId);
         surveymanager.createSurveyPage(sp);
         redirectAttr.addFlashAttribute("msg", "created");
+        
+        /** log user **/
+        try {
+        	Log_userSurveyActivity ua = new Log_userSurveyActivity();
+        	ua.setActivityDesc("Created Survey");
+        	ua.setController(controllerName);
+        	ua.setPageAccessed("/create");
+        	ua.setProgramId((Integer) session.getAttribute("selprogramId"));
+        	ua.setSurveyId(surveyId);
+        	User userDetails = (User)session.getAttribute("userDetails");
+        	ua.setSystemUserId(userDetails.getId());
+            usermanager.insertUserLog (ua);
+    	} catch (Exception ex1) {
+    		ex1.printStackTrace();
+    	}
+        
         if (action.equals("save")) {
             redirectAttr.addFlashAttribute("savedStatus", "updated");
             mav = new ModelAndView(new RedirectView("/programAdmin/surveys/details?s=" + surveyId));
@@ -212,6 +257,22 @@ public class surveyController {
             /* Get the list of answer types in the system */
         	List<AnswerTypes>  answerTypeList = surveymanager.getAnswerTypes();
             mav.addObject("answerTypeList", answerTypeList);  
+            
+            /** log user **/
+            try {
+            	Log_userSurveyActivity ua = new Log_userSurveyActivity();
+            	ua.setActivityDesc("Accessed Survey Details");
+            	ua.setController(controllerName);
+            	ua.setPageAccessed("/details");
+            	ua.setProgramId((Integer) session.getAttribute("selprogramId"));
+            	ua.setSurveyId(survey.getId());
+            	User userDetails = (User)session.getAttribute("userDetails");
+            	ua.setSystemUserId(userDetails.getId());
+                usermanager.insertUserLog (ua);
+        	} catch (Exception ex1) {
+        		ex1.printStackTrace();
+        	}
+            
             return mav;
         
     	} else {
@@ -256,11 +317,26 @@ public class surveyController {
             redirectAttr.addFlashAttribute("savedStatus", "updated");
             mav = new ModelAndView(new RedirectView("/programAdmin/surveys/details?s=" + survey.getId()));
             session.setAttribute("surveyId",survey.getId());
-            return mav;
         } else {
         	mav = new ModelAndView(new RedirectView("/programAdmin/surveys/page"));
-            return mav;
         }
+        
+        /** log user **/
+        try {
+        	Log_userSurveyActivity ua = new Log_userSurveyActivity();
+        	ua.setActivityDesc("Saved survey change note");
+        	ua.setController(controllerName);
+        	ua.setPageAccessed("/details");
+        	ua.setProgramId((Integer) session.getAttribute("selprogramId"));
+        	ua.setSurveyId(survey.getId());
+        	User userDetails = (User)session.getAttribute("userDetails");
+        	ua.setSystemUserId(userDetails.getId());
+            usermanager.insertUserLog (ua);
+    	} catch (Exception ex1) {
+    		ex1.printStackTrace();
+    	}
+        
+        return mav;
 
     }
     
@@ -295,6 +371,20 @@ public class surveyController {
         surveymanager.saveChangeLogs(scl);
         
         mav.setViewName("/programAdmin/surveys/saveNote");
+        
+        /** log user **/
+        try {
+        	Log_userSurveyActivity ua = new Log_userSurveyActivity();
+        	ua.setActivityDesc("Saved survey change note");
+        	ua.setController(controllerName);
+        	ua.setPageAccessed("/saveNote");
+        	ua.setProgramId((Integer) session.getAttribute("selprogramId"));
+        	ua.setSurveyId(Integer.parseInt(request.getParameter("surveyId")));
+        	ua.setSystemUserId(userDetails.getId());
+            usermanager.insertUserLog (ua);
+    	} catch (Exception ex1) {
+    		ex1.printStackTrace();
+    	}
         return mav;
     }
     
@@ -318,6 +408,21 @@ public class surveyController {
         	/** now we get change logs **/
 	        List <SurveyChangeLogs> getSurveyChangeLogs = surveymanager.getSurveyChangeLogs(survey.getId());
 	        mav.addObject("changeLogs", getSurveyChangeLogs);
+	        /** log user **/
+	        try {
+	        	Log_userSurveyActivity ua = new Log_userSurveyActivity();
+	        	ua.setActivityDesc("Saved survey change log");
+	        	ua.setController(controllerName);
+	        	ua.setPageAccessed("/changeLog");
+	        	ua.setProgramId((Integer) session.getAttribute("selprogramId"));
+	        	ua.setSurveyId(survey.getId());
+	        	User userDetails = (User)session.getAttribute("userDetails");
+	        	ua.setSystemUserId(userDetails.getId());
+	            usermanager.insertUserLog (ua);
+	    	} catch (Exception ex1) {
+	    		ex1.printStackTrace();
+	    	}
+	        
         }
         
         mav.setViewName("/programAdmin/surveys/changeLogs");
@@ -346,13 +451,35 @@ public class surveyController {
         mav.addObject("activityCodes", activityCodes);
         mav.addObject("survey", survey);
         mav.setViewName("/programAdmin/surveys/surveyModal");
+        /** log user **/
+        try {
+        	Log_userSurveyActivity ua = new Log_userSurveyActivity();
+        	ua.setActivityDesc("Access Survey Title Form");
+        	ua.setController(controllerName);
+        	ua.setPageAccessed("getSurveyForm.do");
+        	ua.setProgramId((Integer) session.getAttribute("selprogramId"));
+        	ua.setSurveyId(survey.getId());
+        	User userDetails = (User)session.getAttribute("userDetails");
+        	ua.setSystemUserId(userDetails.getId());
+            usermanager.insertUserLog (ua);
+    	} catch (Exception ex1) {
+    		ex1.printStackTrace();
+    	}
+        
         return mav;
     }
     
-    
+    /**
+     * This method checks and saves new survey title
+     * @param surveyNew
+     * @param result
+     * @param session
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(value = "saveSurveyForm.do", method = RequestMethod.POST)
     public @ResponseBody
-    ModelAndView saveSurveyForm(@Valid @ModelAttribute(value = "survey") surveys surveyNew, 
+    ModelAndView saveSurveyTitleForm(@Valid @ModelAttribute(value = "survey") surveys surveyNew, 
     		BindingResult result, HttpSession session) throws Exception {
     		
     	ModelAndView mav = new ModelAndView();
@@ -389,6 +516,21 @@ public class surveyController {
         surveymanager.updateSurvey(surveyNew);
         mav.addObject("updated", "updated");
         
+        /** log user **/
+        try {
+        	Log_userSurveyActivity ua = new Log_userSurveyActivity();
+        	ua.setActivityDesc("Updated Survey Title");
+        	ua.setController(controllerName);
+        	ua.setPageAccessed("saveSurveyForm.do");
+        	ua.setProgramId((Integer) session.getAttribute("selprogramId"));
+        	ua.setSurveyId(survey.getId());
+        	User userDetails = (User)session.getAttribute("userDetails");
+        	ua.setSystemUserId(userDetails.getId());
+            usermanager.insertUserLog (ua);
+    	} catch (Exception ex1) {
+    		ex1.printStackTrace();
+    	}
+        
          return mav;
     }
     
@@ -423,7 +565,7 @@ public class surveyController {
             	if (survey != null && survey.getProgramId() != programId ) {
             		survey = null;
                 	try {
-        	        	userActivityLog ua = new userActivityLog();
+        	        	Log_userSurveyActivity ua = new Log_userSurveyActivity();
         	        	ua.setActivityDesc("accessed denied");
         	        	ua.setController(controllerName);
         	        	ua.setPageAccessed(pageName);
@@ -446,7 +588,7 @@ public class surveyController {
         	//log here
         	try {
         		survey = null;
-	        	userActivityLog ua = new userActivityLog();
+	        	Log_userSurveyActivity ua = new Log_userSurveyActivity();
 	        	ua.setActivityDesc("accessed denied - survey is not numeric");
 	        	ua.setController(controllerName);
 	        	ua.setPageAccessed(pageName);
@@ -461,4 +603,5 @@ public class surveyController {
         return survey;
     	
     }
+
 }

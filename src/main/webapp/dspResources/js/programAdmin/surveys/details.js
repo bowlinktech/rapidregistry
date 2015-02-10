@@ -67,7 +67,7 @@ require(['./main'], function () {
     	            
     	            if (position <= 0) {
     	                post.addClass('selected');
-    	                window.pageId = post.attr("rel");
+    	                window.pageId = post.attr("relPage");
     	            } else {
     	                post.removeClass('selected');
     	            }
@@ -80,7 +80,7 @@ require(['./main'], function () {
          * div with form that has survey title info
          */
         //Function to open the new program association modal
-        $(document).on('click', '.editSurveyInfo', function() {
+        $(document).on('click', '.editSurveyTitle', function() {
         	//$('#divSurTitle' + surveyId).html("new replacement content");
         	var surveyId = $(this).attr("relS");
         	$.ajax({
@@ -128,8 +128,8 @@ require(['./main'], function () {
 
                     if (data.indexOf('updated') != -1) {
                     	//update all titles on the page
-                    	if ($('#editSurveyInfoActionBar').text() != $("#title").val()) {
-                    		$(".editSurveyInfo").each( function(index, element) {
+                    	if ($('#editSurveyTitleActionBar').text() != $("#title").val()) {
+                    		$(".editSurveyTitle").each( function(index, element) {
                     				$(element).html($("#title").val());
                     		});
                    
@@ -145,9 +145,16 @@ require(['./main'], function () {
 
         });
         
-        
-        
-        /** end of modal js **/
+        /** end of survey title modal js **/
+      
+      /** dropdown change **/
+      $('.ddForPage').change(function() {
+    	  var cTarget = $(this).val();
+    	  window.location.hash = cTarget;
+    	});
+     
+       
+      
     });
 });
 
