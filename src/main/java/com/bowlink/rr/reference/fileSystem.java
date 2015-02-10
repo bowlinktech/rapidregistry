@@ -23,7 +23,70 @@ public class fileSystem {
     public String getDir() {
         return dir;
     }
-   
+    
+    public void setDir(String programName, String folderName) {
+        
+        if(programName.contains(" ")) {
+            programName = programName.replaceAll(" ", "-").toLowerCase();
+        }
+
+        //Windows
+        if (os.indexOf("win") >= 0) {
+            this.dir = winDirectoryPath + programName + "\\" + folderName + "\\";
+        } //Mac
+        else if (os.indexOf("mac") >= 0) {
+            this.dir = macDirectoryPath + programName + "/" + folderName + "/";
+        } //Unix or Linux or Solarix
+        else if (os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0 || os.indexOf("aix") >= 0 || os.indexOf("sunos") >= 0) {
+            this.dir = unixDirectoryPath + programName + "/" + folderName + "/";
+        }
+    }
+    
+    public void createProgramDirectories(String programName) {
+        
+        String dirName = programName.replaceAll(" ", "-").toLowerCase();
+
+        try {
+            //Windows
+            if (os.indexOf("win") >= 0) {
+                //C:/BowLink/
+                String dir = winDirectoryPath + dirName;
+                File directory = new File(dir);
+                if (!directory.exists()) {
+                    directory.mkdir();
+                    new File(winDirectoryPath + dirName + "\\crosswalks").mkdirs();
+                    new File(winDirectoryPath + dirName + "\\import files").mkdirs();
+                    new File(winDirectoryPath + dirName + "\\export files").mkdirs();
+                }
+            } //Mac
+            else if (os.indexOf("mac") >= 0) {
+                String dir = macDirectoryPath + dirName;
+                File directory = new File(dir);
+                if (!directory.exists()) {
+                    directory.mkdir();
+                    new File(macDirectoryPath + dirName + "/crosswalks").mkdirs();
+                    new File(macDirectoryPath + dirName + "/import files").mkdirs();
+                    new File(macDirectoryPath + dirName + "/export files").mkdirs();
+                }
+            } //Unix or Linux or Solarix
+            else if (os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0 || os.indexOf("aix") >= 0 || os.indexOf("sunos") >= 0) {
+                String dir = unixDirectoryPath + dirName;
+                File directory = new File(dir);
+                if (!directory.exists()) {
+                    directory.mkdir();
+                    new File(unixDirectoryPath + dirName + "/crosswalks").mkdirs();
+                    new File(unixDirectoryPath + dirName + "/import files").mkdirs();
+                    new File(unixDirectoryPath + dirName + "/export files").mkdirs();
+                }
+            } else {
+                System.out.println("Your OS is not support!!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+    
     public void setDirByName(String dirName) {
         //Windows
         if (os.indexOf("win") >= 0) {

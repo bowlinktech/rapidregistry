@@ -40,8 +40,8 @@
                     <c:when test="${param['page'] == 'cannedreports'}">
                         <a href="javascript:void(0);" title="Canned Reports" class="unstyled-link">Canned Reports</a>
                     </c:when>  
-                    <c:when test="${param['page'] == 'extracts'}">
-                        <a href="javascript:void(0);" title="Extracts / Imports" class="unstyled-link">Extracts / Imports</a>
+                    <c:when test="${param['page'] == 'imports'}">
+                        <a href="javascript:void(0);" title="Imports" class="unstyled-link">Imports</a>
                     </c:when>   
                     <c:when test="${param['page'] == 'mci'}">
                         <a href="javascript:void(0);" title="MCI Algorithms" class="unstyled-link">MCI Algorithms</a>
@@ -57,7 +57,7 @@
         </div>
         <ul class="nav navbar-nav navbar-right navbar-actions" role="menu">
             <c:choose>
-                <c:when test="${param['page'] == 'details' || param['page'] == 'sharing' || param['page'] == 'modules' || param['page'] == 'fields' || param['page'] == 'activitycodes' }">
+                <c:when test="${param['page'] == 'details' || param['page'] == 'sharing' || param['page'] == 'modules' || param['page'] == 'fields' || param['page'] == 'activitycodes' || param['page'] == 'imports' }">
                     <li role="menuitem"><a href="javascript:void(0);" id="saveDetails" title="Save Form" role="button"><span class="glyphicon glyphicon-ok icon-stacked"></span> Save </a></li>
                     <li role="menuitem"><a href="javascript:void(0);" id="saveCloseDetails" title="Save &amp; Close" role="button"><span class="glyphicon glyphicon-floppy-disk icon-stacked"></span> Save &amp; Close</a></li>
                 </c:when>
