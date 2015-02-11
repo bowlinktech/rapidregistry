@@ -11,7 +11,9 @@
                         <a href="javascript:void(0);" title="Surveys" class="unstyled-link">Create New Survey</a>
                     </c:when>
                     <c:when test="${param['page'] == 'surveyDetails'}">
-                        <a href="javascript:void(0);" title="Surveys" class="unstyled-link">${surveyTitle} Details</a>
+	                    <div id="surveyTitle">
+	                        <a href="#surveyModal" data-toggle="modal" id="editSurveyTitleActionBar" title="${surveyTitle}" relPage="1" relS="${surveyId}" class="editSurveyTitle unstyled-link" role="button">${surveyTitle}</a>
+	                   </div>
                     </c:when>
                     <c:when test="${param['page'] == 'staff'}">
                         <a href="javascript:void(0);" title="Staff Members" class="unstyled-link">Staff Members</a>
@@ -33,14 +35,12 @@
                     <li role="menuitem"><a href="/programAdmin/surveys/create" id="createSurvey" title="Create New Survey" role="button"><span class="glyphicon glyphicon-plus-sign icon-stacked"></span> Create New Survey </a></li>
                 </c:when>
                 <c:when test="${param['page'] == 'createSurvey'}">
-                    <li role="menuitem"><a href="javascript:void(0);" id="saveNewSurvey" title="Save Form" role="button"><span class="glyphicon glyphicon-ok icon-stacked"></span> Save </a></li>
-                    <li role="menuitem"><a href="javascript:void(0);" id="saveNextNewSurvey" title="Save &amp; Close" role="button"><span class="glyphicon glyphicon-floppy-disk icon-stacked"></span>Save &amp;Proceed to Pages</a></li>
+                    <li role="menuitem"><a href="javascript:void(0);" id="saveNewSurvey" title="Save Form" role="button"><span class="glyphicon glyphicon-ok icon-stacked"></span> Next </a></li>
+                    <li role="menuitem"><a href="javascript:void(0);" id="saveNextNewSurvey" title="Save &amp; Close" role="button"><span class="glyphicon glyphicon-floppy-disk icon-stacked"></span>Save &amp; Close</a></li>
                     <li role="menuitem"><a href="/programAdmin/surveys" title="Save &amp; Close" role="button"><span class="glyphicon glyphicon-ban-circle icon-stacked"></span> Cancel</a></li>
                 </c:when>
                 <c:when test="${param['page'] == 'surveyDetails'}">
-                    <li role="menuitem"><a href="#surveySaveNote" data-toggle="modal" id="saveSurveyDetails" title="Save" role="button"><span class="glyphicon glyphicon-ok icon-stacked"></span>Save</a></li>
-                    <li role="menuitem"><a href="#surveySaveNote" data-toggle="modal" id="saveNextSurveyDetails" title="Save" role="button"><span class="glyphicon glyphicon-forward icon-stacked"></span>Save &amp;Proceed to Pages</a></li>
-                    <li role="menuitem"><a href="/programAdmin/surveys" title="Save &amp; Close" role="button"><span class="glyphicon glyphicon-ban-circle icon-stacked"></span> Cancel</a></li>
+                    <li role="menuitem"><a href="/programAdmin/surveys" title="Cancel" role="button"><span class="glyphicon glyphicon-ban-circle icon-stacked"></span> Cancel</a></li>
                 </c:when>
           </c:choose>
         </ul>

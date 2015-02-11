@@ -24,6 +24,9 @@ public class programModules {
     @Transient
     private boolean useModule = false;
     
+    @Transient
+    private String displayName;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID", nullable = false)
@@ -76,6 +79,14 @@ public class programModules {
 
     public void setUseModule(boolean useModule) {
         this.useModule = useModule;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
     
 }

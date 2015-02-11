@@ -29,11 +29,9 @@ public class SurveyQuestions {
     @Column(name = "ID", nullable = false)
     private int id;
 
-    @NotEmpty
     @Column(name = "hide", nullable = false)
     private boolean hide = false;
     
-    @NotEmpty
     @Column(name = "required", nullable = false)
     private boolean required = false;
     
@@ -45,19 +43,15 @@ public class SurveyQuestions {
     @Column(name = "question", nullable = false)
     private String question;
 
-    @NotEmpty
     @Column(name = "surveyPageId", nullable = false)
     private int surveyPageId = 0;
     
-    @NotEmpty
     @Column(name = "answerTypeId", nullable = false)
     private int answerTypeId = 0;
     
-    @NotEmpty
     @Column(name = "columnsDisplayed", nullable = false)
     private int columnsDisplayed = 0;
     
-    @NotEmpty
     @Column(name = "allowMultipleAns", nullable = false)
     private boolean allowMultipleAns = false;
     
@@ -65,15 +59,12 @@ public class SurveyQuestions {
     @Column(name = "saveToTableName", nullable = true)
     private String saveToTableName;
 
-    @NotEmpty
     @Column(name = "saveToFieldId", nullable = false)
     private int saveToFieldId = 0;
     
-    @NotEmpty
     @Column(name = "autoPopulateFromField", nullable = false)
     private boolean autoPopulateFromField = false;
-    
-    @NotEmpty
+
     @Column(name = "questionNum", nullable = false)
     private int questionNum = 1;
     

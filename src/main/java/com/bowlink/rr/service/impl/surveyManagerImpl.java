@@ -66,7 +66,9 @@ public class surveyManagerImpl implements surveyManager {
 		/**first we get the survey details**/
 		surveys survey = surveyDAO.getSurveyById(surveyId);
 		/** now we get the pages **/
-		survey.setSurveyPages(getSurveyPages(surveyId, true));
+		if (survey != null) {
+			survey.setSurveyPages(getSurveyPages(surveyId, true));
+		}
 		return survey;
 	}
     
@@ -122,6 +124,19 @@ public class surveyManagerImpl implements surveyManager {
 	public List<SurveyAnswers> getSurveyAnswers(Integer questionId)
 			throws Exception {		
 		return surveyDAO.getSurveyAnswers(questionId);
+	}
+
+	@Override
+	@Transactional
+	public Integer createSurveyPage(SurveyPages surveyPage) throws Exception {
+		return surveyDAO.createSurveyPage(surveyPage);
+	}
+
+
+	@Override
+	@Transactional
+	public void updateSurveyPage(SurveyPages surveyPage) throws Exception {
+		surveyDAO.updateSurveyPage(surveyPage);		
 	}
 		
 }

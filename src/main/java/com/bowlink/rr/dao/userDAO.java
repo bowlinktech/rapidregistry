@@ -7,7 +7,7 @@
 package com.bowlink.rr.dao;
 
 import com.bowlink.rr.model.User;
-import com.bowlink.rr.model.userActivityLog;
+import com.bowlink.rr.model.Log_userSurveyActivity;
 import com.bowlink.rr.model.userPrograms;
 
 import java.util.List;
@@ -58,5 +58,5 @@ public interface userDAO {
     
     List<String> getUserRoles (User user) throws Exception;
     
-    void insertUserLog (userActivityLog ual);
+    void insertUserLog (Log_userSurveyActivity ual);
 }

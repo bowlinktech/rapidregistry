@@ -11,105 +11,153 @@ require(['./main'], function () {
         if ($('.alert').length > 0) {
             $('.alert').delay(2000).fadeOut(1000);
         }
+
+        $( "#questionDiv" ).mouseover(function() {
+        	  $( "#editButtons" ).show();
+        });
+        $( "#questionDiv" ).mouseout(function() {
+      	  $( "#editButtons" ).hide();
+      });
         
-        $("input:text,form").attr("autocomplete", "off");
-        
-        //Function to submit new survey - inserts title
-        $('#saveNewSurvey').click(function(event) {
-          $('#action').val('save');
-         removeErrorClasses ();
-         $('#surveyForm').submit();
+       /** scroll, making sure side bar stays along with main page **/
+    	$(document).ready(function () {
+    		
+    		/** side bar scroll **/
+    	    var length = $('#left').height() - $('#sidebar').height() + $('#left').offset().top;
+
+    	    $(window).scroll(function () {
+
+    	        var scroll = $(this).scrollTop();
+    	        var height = $('#sidebar').height() + 'px';
+
+    	        if (scroll < $('#left').offset().top) {
+
+    	            $('#sidebar').css({
+    	                'position': 'absolute',
+    	                'top': '0'
+    	            });
+
+    	        } else if (scroll > length) {
+
+    	            $('#sidebar').css({
+    	                'position': 'absolute',
+    	                'bottom': '0',
+    	                'top': 'auto'
+    	            });
+
+    	        } else {
+
+    	            $('#sidebar').css({
+    	                'position': 'fixed',
+    	                'top': '0',
+    	                'height': height
+    	            });
+    	        }
+    	    });
+    	});
+    	
+    	
+    	 /** scroll, tracking, make sure we know what page we are on **/
+        window.pageId = 1;
+    	$(function(){
+    	    $(window).bind('scroll', function() {
+    	        $('.post').each(function() {
+    	            var post = $(this);
+    	            var position = post.position().top - $(window).scrollTop();
+    	            
+    	            if (position <= 0) {
+    	                post.addClass('selected');
+    	                window.pageId = post.attr("relPage");
+    	            } else {
+    	                post.removeClass('selected');
+    	            }
+    	        });        
+    	    });
+    	});
+    	
+    	
+    	 /** when clicking on the title, we want to replace
+         * div with form that has survey title info
+         */
+        //Function to open the new program association modal
+        $(document).on('click', '.editSurveyTitle', function() {
+        	//$('#divSurTitle' + surveyId).html("new replacement content");
+        	var surveyId = $(this).attr("relS");
+        	$.ajax({
+                url: 'getSurveyForm.do',
+                data: {'s':surveyId},
+                type: "GET",
+                success: function(data) {
+                    $(surveyModal).html(data);
+                }
+           });         
         });
         
-        /** save and close new survey**/
-        $('#saveNextNewSurvey').click(function(event) {
-            $('#action').val('saveAndClose');
-           removeErrorClasses ();
-           $('#surveyForm').submit();
-          });
-        
-        
-        /**survey changes - save button only **/
-        $(document).on('click', '#saveSurveyDetails', function() {
-           $('#action').val('save');
-           removeErrorClasses ();
-           //we makes sure there is a note saved
-           var actionValue = 'saveNote';
-           
-           $.ajax({
-               url: actionValue,
-               type: "GET",
-               async: false,
-               success: function(data) {
-            	   $('#surveySaveNote').html(data);
-               }
-           });
-		       	event.preventDefault();
-		       	return false;
-          });
-        // end of save survey only
-        
-        
-        $(document).on('click', '#saveNextSurveyDetails', function() {
-        	$('#action').val('saveAndClose');
-            removeErrorClasses ();
-            //we makes sure there is a note saved
-            var actionValue = 'saveNote';
-            
-            $.ajax({
-                url: actionValue,
+        /** when clicking on the page title we get the page Id from relP and we load page title form **/
+        $(document).on('click', '.editPageInfo', function() {
+        	var pageId = $(this).attr("relS");
+        	$.ajax({
+                url: 'getPageForm.do',
+                data: {'p':pageId},
                 type: "GET",
-                async: false,
                 success: function(data) {
-             	   $('#surveySaveNote').html(data);
+                    $(surveyModal).html(data);
                 }
-            });
- 		       	event.preventDefault();
- 		       	return false;
-           });
-            
+           });         
+        });
         
-        /** we save note **/
-        $(document).on('click', '#saveNote', function() {
-        	/**
-        	 * make sure note is not blank
-        	 **/
-        	removeErrorClasses ();
-        	 
-        	//we submit and save note
-        	var actionValue = 'saveNote';
-        	var notes = $('#notes').val();
-        	if (notes.trim().length < 1) {
-        		$('#notesDiv').addClass("has-error");
-                $('#notesMsg').addClass("has-error");
-                $('#notesMsg').html('Please enter a note.  It cannot be blank.');
-        		return false;
-        	} 
+        
+        
+        
+        /** modal js**/
+
+      $(document).on('click', '#submitSurveyButton', function(event) {
         	
-        	var notes =  $('#notes').val(); 
-        	var id = $('#id').val(); 
+        	$('div.form-group').removeClass("has-error");
+            $('span.control-label').removeClass("has-error");
+            $('span.control-label').html("");
+            
+            var formData = $("#surveyForm").serialize();
+
             $.ajax({
-                url: actionValue,
-                data: {'surveyId': id, 'notes': notes.trim()},
+                url: "saveSurveyForm.do",
+                data: formData,
                 type: "POST",
                 async: false,
                 success: function(data) {
-                	$('#surveyForm').submit();
+
+                    if (data.indexOf('updated') != -1) {
+                    	//update all titles on the page
+                    	if ($('#editSurveyTitleActionBar').text() != $("#title").val()) {
+                    		$(".editSurveyTitle").each( function(index, element) {
+                    				$(element).html($("#title").val());
+                    		});
+                   
+                    	}
+                    	$('#surveyModal').modal('toggle');
+                    } else {
+                        $("#surveyModal").html(data);
+                    }
                 }
             });
-        	event.preventDefault();
-        	return false;
-          });
+            event.preventDefault();
+            return false;
+
+        });
         
+        /** end of survey title modal js **/
+      
+      /** dropdown change **/
+      $('.ddForPage').change(function() {
+    	  var cTarget = $(this).val();
+    	  window.location.hash = cTarget;
+    	});
+     
+       
       
     });
 });
 
-function removeErrorClasses () {
-	$('div.form-group').removeClass("has-error");
-    $('span.control-label').removeClass("has-error");
-    $('span.control-label').html("");
-}
 
 
 

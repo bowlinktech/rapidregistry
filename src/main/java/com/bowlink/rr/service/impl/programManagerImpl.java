@@ -11,11 +11,18 @@ import com.bowlink.rr.model.program;
 import com.bowlink.rr.model.programAdmin;
 import com.bowlink.rr.model.programAvailableTables;
 import com.bowlink.rr.model.programPatientEntryMethods;
+import com.bowlink.rr.reference.fileSystem;
 import com.bowlink.rr.service.programManager;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
@@ -32,6 +39,14 @@ public class programManagerImpl implements programManager {
     public Integer createProgram(program newProgram) throws Exception {
         Integer lastId = null;
         lastId = (Integer) programDAO.createProgram(newProgram);
+        
+        //Need to create the directory structure for the new organization
+        //Use the cleanURL (name without spaces) for the directory name
+        //First get the operating system
+        fileSystem dir = new fileSystem();
+
+        dir.createProgramDirectories(newProgram.getProgramName());
+        
         return lastId;
     }
     
@@ -67,6 +82,13 @@ public class programManagerImpl implements programManager {
     @Transactional
     public void updateProgram(program program) throws Exception {
         programDAO.updateProgram(program);
+        
+        //Need to make sure all folders are created for
+        //the organization
+        fileSystem dir = new fileSystem();
+        
+        dir.createProgramDirectories(program.getProgramName());
+        
     }
     
     @Override

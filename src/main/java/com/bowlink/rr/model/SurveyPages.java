@@ -29,18 +29,15 @@ public class SurveyPages {
     @Column(name = "ID", nullable = false)
     private int id;
     
-    @NotEmpty
     @NoHtml
     @Column(name = "pageTitle", nullable = false)
     private String pageTitle;
     
-    @NotEmpty
     @Column(name = "surveyId", nullable = false)
-    private int surveyId;
+    private int surveyId = 0;
     
-    @NotEmpty
     @Column(name = "pageNum", nullable = false)
-    private int pageNum;
+    private int pageNum = 1;
     
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
     @Column(name = "DATECREATED", nullable = true)
