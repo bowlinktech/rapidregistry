@@ -411,7 +411,6 @@ public class programImports {
         
         //Need to make sure all folders are created for
         //the organization
-        fileSystem dir = new fileSystem();
         
         //Set the directory to save the uploaded message type template to
         fileSystem programdir = new fileSystem();
