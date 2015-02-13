@@ -12,6 +12,7 @@ require(['./main'], function () {
             $('.alert').delay(2000).fadeOut(1000);
         }
 
+        //$('#divSurTitle' + surveyId).
         $( "#questionDiv" ).mouseover(function() {
         	  $( "#editButtons" ).show();
         });
@@ -93,11 +94,13 @@ require(['./main'], function () {
            });         
         });
         
+        
+        /** edit page title **/
         /** when clicking on the page title we get the page Id from relP and we load page title form **/
-        $(document).on('click', '.editPageInfo', function() {
-        	var pageId = $(this).attr("relS");
+        $(document).on('click', '.editPageTitle', function() {
+        	var pageId = $(this).attr("relPage");
         	$.ajax({
-                url: 'getPageForm.do',
+                url: 'getPageTitleForm.do',
                 data: {'p':pageId},
                 type: "GET",
                 success: function(data) {
@@ -109,8 +112,10 @@ require(['./main'], function () {
         
         
         
+        
+        
         /** modal js**/
-
+        /** submit survey title form **/
       $(document).on('click', '#submitSurveyButton', function(event) {
         	
         	$('div.form-group').removeClass("has-error");
@@ -146,6 +151,42 @@ require(['./main'], function () {
         });
         
         /** end of survey title modal js **/
+      
+      /** submit page title form **/
+      $(document).on('click', '#submitPageButton', function(event) {
+        	
+        	$('div.form-group').removeClass("has-error");
+            $('span.control-label').removeClass("has-error");
+            $('span.control-label').html("");
+            
+            var formData = $("#pageForm").serialize();
+
+            $.ajax({
+                url: "savePageTitleForm.do",
+                data: formData,
+                type: "POST",
+                async: false,
+                success: function(data) {
+
+                    if (data.indexOf('updated') != -1) {
+                    	//update all titles on the page
+                    	if ($('#editSurveyTitleActionBar').text() != $("#title").val()) {
+                    		$(".editSurveyTitle").each( function(index, element) {
+                    				$(element).html($("#title").val());
+                    		});
+                   
+                    	}
+                    	$('#surveyModal').modal('toggle');
+                    } else {
+                        $("#surveyModal").html(data);
+                    }
+                }
+            });
+            event.preventDefault();
+            return false;
+
+        });
+      
       
       /** dropdown change **/
       $('.ddForPage').change(function() {

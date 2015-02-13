@@ -98,7 +98,7 @@ You do not have permission to access this page.
             	</div>
             	<div class="panel-heading">
             	<h4>
-            		<span class="editTitle"><a href="javascript:alert('open modal with edit title');" data-toggle="modal" class="btn-link-lg editTitle" relPage="${page.id}" title="Edit Page Title" role="button">
+            		<span class="editTitle"><a href="#surveyModal" data-toggle="modal" class="btn-link-lg editPageTitle" relPage="${page.id}" title="Edit Page Title" role="button" id="pageTitle${page.id}">
 	                 	${page.pageTitle }
 	               	</a>
 	               	</span>

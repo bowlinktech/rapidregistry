@@ -7,7 +7,7 @@
     <div class="modal-content">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h3 class="panel-title">Edit Page Information ${updated}</h3>
+            <h3 class="panel-title">Edit Title for Page ${pageNum} ${updated}</h3>
          </div>
          <div class="modal-body">
             <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
@@ -17,12 +17,13 @@
 
 <c:choose>
                <c:when test="${not empty page}">
-            	<form:form id="pageForm" commandName="surveyPages" method="post" role="form">
+            	<form:form id="pageForm" commandName="page" method="post" role="form">
             		<div class="form-container">
                     	<form:hidden path="id" />
                     	<form:hidden path="surveyId" />            	
-                        <form:hidden path="pageNum" />
-                        <form:hidden path="dateCreated" />                      
+                        <form:hidden path="dateCreated" />  
+                        <form:hidden path="pageNum"/>
+                                       		 		                
                     	<div class="form-group">
                     	   <spring:bind path="pageTitle">
                         	<div id="pageTitleDiv" class="form-group ${status.error ? 'has-error' : '' }">
@@ -36,12 +37,12 @@
                		 	<spring:bind path="pageDesc">
                         	<div id="pageDescDiv" class="form-group ${status.error ? 'has-error' : '' }">
                     		<label class="control-label" for="pageDesc">Page Description</label>
-                   			<form:input path="pageDesc" id="pageDesc" class="form-control" />
+                   			<form:textarea path="pageDesc" class="form-control"  rows="10" />
                    			<form:errors path="pageDesc" cssClass="control-label" element="label" />
                     		</div> 
                		 	</spring:bind>                        
                		 	<div class="form-group">
-	                   				 <input type="button" id="submitSurveyButton" role="button" class="btn btn-primary" value="Save"/>
+	                   				 <input type="button" id="submitPageButton" role="button" class="btn btn-primary" value="Save"/>
 	                	</div>
 	                	
                     	

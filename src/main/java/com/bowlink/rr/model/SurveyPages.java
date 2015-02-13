@@ -10,8 +10,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.bowlink.rr.validator.NoHtml;
@@ -42,6 +40,9 @@ public class SurveyPages {
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
     @Column(name = "DATECREATED", nullable = true)
     private Date dateCreated = new Date();
+    
+    @Column(name = "pageDesc", nullable = false)
+    private String pageDesc;
     
     @Transient List <SurveyQuestions> surveyQuestions;
 
@@ -91,6 +92,14 @@ public class SurveyPages {
 
 	public void setSurveyId(int surveyId) {
 		this.surveyId = surveyId;
+	}
+
+	public String getPageDesc() {
+		return pageDesc;
+	}
+
+	public void setPageDesc(String pageDesc) {
+		this.pageDesc = pageDesc;
 	}
   
 }

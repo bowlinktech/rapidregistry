@@ -50,5 +50,9 @@ public interface surveyManager {
     
     void updateSurveyPage (SurveyPages surveyPage) throws Exception;
     
+    SurveyPages getSurveyPageById (Integer pageId) throws Exception;
+    
+    
+    
     
 }

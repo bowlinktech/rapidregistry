@@ -199,6 +199,15 @@ public class surveyDAOImpl implements surveyDAO {
 	public void updateSurveyPage(SurveyPages surveyPage) throws Exception {
 		sessionFactory.getCurrentSession().update(surveyPage);
 	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public SurveyPages getSurveyPageById(Integer pageId) throws Exception {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SurveyPages.class);
+        criteria.add(Restrictions.eq("id", pageId));
+        List<SurveyPages> surveyPages = criteria.list();
+        return surveyPages.get(0);
+	}
 	
 }
 

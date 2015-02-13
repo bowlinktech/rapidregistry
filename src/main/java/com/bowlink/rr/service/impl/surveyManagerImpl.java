@@ -138,5 +138,11 @@ public class surveyManagerImpl implements surveyManager {
 	public void updateSurveyPage(SurveyPages surveyPage) throws Exception {
 		surveyDAO.updateSurveyPage(surveyPage);		
 	}
+
+	@Override
+	@Transactional
+	public SurveyPages getSurveyPageById(Integer pageId) throws Exception {
+		return surveyDAO.getSurveyPageById(pageId);		
+	}
 		
 }

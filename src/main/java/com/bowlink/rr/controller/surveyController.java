@@ -534,11 +534,95 @@ public class surveyController {
          return mav;
     }
     
+    @RequestMapping(value = "getPageTitleForm.do", method = RequestMethod.GET)
+    @ResponseBody public ModelAndView getPageTitleForm (
+    		HttpSession session, @RequestParam String p) throws Exception {
+        ModelAndView mav = new ModelAndView();
+        
+        //get page info
+        SurveyPages surveyPage = surveymanager.getSurveyPageById(Integer.valueOf(p));
+        
+        surveys survey = checkSurveyPermission(session, String.valueOf(surveyPage.getSurveyId()), "getPageTitleForm.do");
+        
+        if (survey == null) {
+        	mav.addObject("notValid", "You do not have permission.");
+        	return mav;
+        }
+        
+        mav.setViewName("/programAdmin/surveys/pageDetails");
+        
+        /** log user **/
+        try {
+        	Log_userSurveyActivity ua = new Log_userSurveyActivity();
+        	ua.setActivityDesc("Access Page Title Form");
+        	ua.setController(controllerName);
+        	ua.setPageAccessed("getPageTitleForm.do");
+        	ua.setProgramId((Integer) session.getAttribute("selprogramId"));
+        	ua.setSurveyId(survey.getId());
+        	ua.setPageId(surveyPage.getId());
+        	User userDetails = (User)session.getAttribute("userDetails");
+        	ua.setSystemUserId(userDetails.getId());
+            usermanager.insertUserLog (ua);
+    	} catch (Exception ex1) {
+    		ex1.printStackTrace();
+    	}
+        
+        mav.addObject("pageNum", surveyPage.getPageNum());
+        mav.addObject("page", surveyPage);
+        return mav;
+    }
+    
+    
+    @RequestMapping(value = "savePageTitleForm.do", method = RequestMethod.POST)
+    public @ResponseBody
+    ModelAndView savePageTitleForm(@Valid @ModelAttribute(value = "page") SurveyPages pageNew, 
+    		BindingResult result, HttpSession session) throws Exception {
+    		
+    	ModelAndView mav = new ModelAndView();
+    	mav.setViewName("/programAdmin/surveys/pageDetails");
+        
+        if (result.hasErrors()) {
+            mav.addObject("page", pageNew);
+            return mav;
+        }
+
+        //get page info
+        SurveyPages surveyPage = surveymanager.getSurveyPageById(pageNew.getId());
+        
+        //check permissions
+        surveys survey = checkSurveyPermission (session, String.valueOf(surveyPage.getSurveyId()), "savePageTitleForm.do");
+        if (survey == null) {
+        	 mav.addObject("page", null);
+            return mav;
+        }
+        
+        // update 
+        surveymanager.updateSurveyPage(pageNew);
+        mav.addObject("updated", "updated");
+        
+        /** log user **/
+        try {
+        	Log_userSurveyActivity ua = new Log_userSurveyActivity();
+        	ua.setActivityDesc("Updated Page Title");
+        	ua.setController(controllerName);
+        	ua.setPageAccessed("savePageTitleForm.do");
+        	ua.setProgramId((Integer) session.getAttribute("selprogramId"));
+        	ua.setSurveyId(survey.getId());
+        	ua.setPageId(surveyPage.getId());
+        	User userDetails = (User)session.getAttribute("userDetails");
+        	ua.setSystemUserId(userDetails.getId());
+            usermanager.insertUserLog (ua);
+    	} catch (Exception ex1) {
+    		ex1.printStackTrace();
+    	}
+        
+         return mav;
+    }
     
     
     
     
-    /** shared methods **/
+/** shared methods **/
     
     /**
      * This method checks to see if the user has permission to the survey in question
@@ -603,5 +687,7 @@ public class surveyController {
         return survey;
     	
     }
+    
+    
 
 }
