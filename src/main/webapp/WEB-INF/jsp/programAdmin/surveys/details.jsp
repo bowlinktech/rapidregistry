@@ -98,8 +98,8 @@ You do not have permission to access this page.
             	</div>
             	<div class="panel-heading">
             	<h4>
-            		<span class="editTitle"><a href="#surveyModal" data-toggle="modal" class="btn-link-lg editPageTitle" relPage="${page.id}" title="Edit Page Title" role="button" id="pageTitle${page.id}">
-	                 	${page.pageTitle }
+            		<span class="editTitle"><a href="#surveyModal" data-toggle="modal" class="btn-link-lg editPageTitle" relPage="${page.id}" title="Edit Page Title" role="button" id="pageTitle${page.id}">${page.pageTitle}
+            		<c:if test="${fn:length(page.pageTitle) == 0}">-- Add Page Title --</c:if>
 	               	</a>
 	               	</span>
 	            </h4>

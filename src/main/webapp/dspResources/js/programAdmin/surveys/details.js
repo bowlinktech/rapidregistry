@@ -158,7 +158,15 @@ require(['./main'], function () {
         	$('div.form-group').removeClass("has-error");
             $('span.control-label').removeClass("has-error");
             $('span.control-label').html("");
+            var pageNum = $(this).attr("relPage");
             
+            /** page title cannot be blank at this point **/
+            if ($("#pageTitle").val().trim().length < 1) {
+            	$('#pageTitleDiv').addClass("has-error");
+            	$('#pageTitleMsg').addClass("has-error");
+                $('#pageTitleMsg').html('Please enter a page title.  It cannot be blank.');
+            	return false;            	
+            }
             var formData = $("#pageForm").serialize();
 
             $.ajax({
@@ -170,12 +178,7 @@ require(['./main'], function () {
 
                     if (data.indexOf('updated') != -1) {
                     	//update all titles on the page
-                    	if ($('#editSurveyTitleActionBar').text() != $("#title").val()) {
-                    		$(".editSurveyTitle").each( function(index, element) {
-                    				$(element).html($("#title").val());
-                    		});
-                   
-                    	}
+                    	$('#pageTitle' + pageNum).html($("#pageTitle").val());
                     	$('#surveyModal').modal('toggle');
                     } else {
                         $("#surveyModal").html(data);

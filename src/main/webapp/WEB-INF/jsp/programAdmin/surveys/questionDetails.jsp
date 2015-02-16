@@ -2,27 +2,42 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %> 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-
 <div class="modal-dialog">
     <div class="modal-content">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h3 class="panel-title">Edit Title for Page ${pageNum} ${updated}</h3>
+            <h3 class="panel-title">Edit Question ${questionNum} for Page ${pageNum} ${updated}</h3>
          </div>
          <div class="modal-body">
             <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %> 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-
+<%-- edit answers and questions --%>
 <c:choose>
-               <c:when test="${not empty page}">
-            	<form:form id="pageForm" commandName="page" method="post" role="form">
+               <c:when test="${not empty question}">
+            	<form:form id="questionForm" commandName="question" method="post" role="form">
             		<div class="form-container">
                     	<form:hidden path="id" />
-                    	<form:hidden path="surveyId" />            	
+                    	<form:hidden path="surveyPageId" />            	
                         <form:hidden path="dateCreated" />  
-                        <form:hidden path="pageNum"/>
+                        <form:hidden path="questionNum"/>
+                         <%-- 
+                         `id`,
+`hide`,
+`required`,
+`dspQuestionId`,
+`question`,
+
+`answerTypeId`,
+`columnsDisplayed`,
+`allowMultipleAns`,
+`saveToTableName`,
+`saveToFieldId`,
+`autoPopulateFromField`,
+`dateCreated`,
+                         
+                         --%>
                                        		 		                
                     	<div class="form-group">
                     	   <spring:bind path="pageTitle">
