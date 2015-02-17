@@ -208,6 +208,16 @@ public class surveyDAOImpl implements surveyDAO {
         List<SurveyPages> surveyPages = criteria.list();
         return surveyPages.get(0);
 	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public SurveyQuestions getSurveyQuestionById(Integer questionId)
+			throws Exception {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SurveyQuestions.class);
+        criteria.add(Restrictions.eq("id", questionId));
+        List<SurveyQuestions> question = criteria.list();
+        return question.get(0);
+	}
 	
 }
 

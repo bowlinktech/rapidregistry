@@ -1,83 +1,43 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %> 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<div class="modal-dialog">
-    <div class="modal-content">
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h3 class="panel-title">Edit Question ${questionNum} for Page ${pageNum} ${updated}</h3>
-         </div>
-         <div class="modal-body">
-            <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %> 
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<%-- edit answers and questions --%>
-<c:choose>
-               <c:when test="${not empty question}">
-            	<form:form id="questionForm" commandName="question" method="post" role="form">
-            		<div class="form-container">
-                    	<form:hidden path="id" />
-                    	<form:hidden path="surveyPageId" />            	
-                        <form:hidden path="dateCreated" />  
-                        <form:hidden path="questionNum"/>
-                         <%-- 
-                         `id`,
-`hide`,
-`required`,
-`dspQuestionId`,
-`question`,
+<%@ taglib prefix="s" uri="http://www.springframework.org/tags" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
-`answerTypeId`,
-`columnsDisplayed`,
-`allowMultipleAns`,
-`saveToTableName`,
-`saveToFieldId`,
-`autoPopulateFromField`,
-`dateCreated`,
-                         
-                         --%>
-                                       		 		                
-                    	<div class="form-group">
-                    	   <spring:bind path="pageTitle">
-                        	<div id="pageTitleDiv" class="form-group ${status.error ? 'has-error' : '' }">
-                    		<label class="control-label" for="pageTitle">Page Title*</label>
-                   			 <form:input path="pageTitle" id="pageTitle" class="form-control" type="text"  maxLength="255" />
-                   			 <form:errors path="pageTitle" cssClass="control-label" element="label" />
-                    		 <span id="pageTitleMsg" class="control-label"></span>
-                    		</div> 
-               		 		</spring:bind> 
-               		 	</div>
-               		 	
-               		 	<spring:bind path="pageDesc">
-                        	<div id="pageDescDiv" class="form-group ${status.error ? 'has-error' : '' }">
-                    		<label class="control-label" for="pageDesc">Page Description</label>
-                   			<form:textarea path="pageDesc" class="form-control"  rows="10" />
-                   			<form:errors path="pageDesc" cssClass="control-label" element="label" />
-                    		</div> 
-               		 	</spring:bind>                        
-               		 	<div class="form-group">
-	                   				 <input type="button" id="submitPageButton" role="button" class="btn btn-primary" value="Save" relPage="${page.pageNum}"/>
-	                	</div>
-	                	
-                    	
-                                                        
-                    </div>
+<%-- need to add codes to figure out which question it is  --%>
+<div class="panel-body">
+                <form:form id="pageForm" method="post" role="form">
+                    <section class="panel panel-default">
+                        <div class="panel-heading clearfix" style="height:46px; background-color: rgba(0,0,0, 0.3);">
+                            <div class="btn-group pull-left">
+                                <ul class="nav panel-tabs">
+                                    <li class="active"><a href="#edit" data-toggle="tab"><strong>Edit</strong></a></li>
+                                    <li><a href="#options" data-toggle="tab"><strong>Options</strong></a></li>
+                                    <li><a href="#logic" data-toggle="tab"><strong>Logic</strong></a></li>
+                                    <li><a href="#move" data-toggle="tab"><strong>Move</strong></a></li>
+                                    <li><a href="#copy" data-toggle="tab"><strong>Copy</strong></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="edit">
+                                    Edit Section Q. ${param.questionForPage.question}
+                                </div> 
+                                <div class="tab-pane" id="options">
+                                    Options Section
+                                </div>
+                                <div class="tab-pane" id="logic">
+                                    Logic Section
+                                </div>
+                                <div class="tab-pane" id="move">
+                                    Move Section
+                                </div>
+                                <div class="tab-pane" id="copy">
+                                    Copy Section
+                                </div>
+                            </div>   
+                        </div>
+                    </section>
                 </form:form>
-                </c:when>
-                <c:otherwise>
-                	This page does not exist or you do not have permission to access it.
-                </c:otherwise>
-                </c:choose>
-        </div>
-    </div>
 </div>
-
-<script type="text/javascript">
-
-    $(document).ready(function() {
-        $("input:text,form").attr("autocomplete", "off");
-    });
-</script>
-

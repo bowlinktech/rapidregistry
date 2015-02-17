@@ -55,4 +55,7 @@ public interface surveyDAO {
     
     SurveyPages getSurveyPageById(Integer pageId) throws Exception;
     
+    SurveyQuestions getSurveyQuestionById (Integer questionId) throws Exception;
+    
+    
 }

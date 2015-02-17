@@ -11,14 +11,6 @@ require(['./main'], function () {
         if ($('.alert').length > 0) {
             $('.alert').delay(2000).fadeOut(1000);
         }
-
-        //$('#divSurTitle' + surveyId).
-        $( "#questionDiv" ).mouseover(function() {
-        	  $( "#editButtons" ).show();
-        });
-        $( "#questionDiv" ).mouseout(function() {
-      	  $( "#editButtons" ).hide();
-      });
         
        /** scroll, making sure side bar stays along with main page **/
     	$(document).ready(function () {
@@ -108,9 +100,38 @@ require(['./main'], function () {
                 }
            });         
         });
+       
         
+        /** this shows the mouse over edit button when mousing over a question **/
+        /** need to figure out which question users are mouse over **/
+        //example if they are on question 1
+        //$('#questionDiv' + questionId)
+        $( "#questionDiv1" ).mouseover(function() {
+        	  $( "#editButtons1" ).show();
+        });
+        $( "#questionDiv1" ).mouseout(function() {
+      	  $( "#editButtons1" ).hide();
+        });
+        $( "#questionDiv2" ).mouseover(function() {
+      	  $( "#editButtons2" ).show();
+      });
+      $( "#questionDiv2" ).mouseout(function() {
+    	  $( "#editButtons2" ).hide();
+      });
+      /** etc etc etc  but need to be dynamic **/
         
-        
+      /** clicking on the edit button brings up the edit question modal **/
+      $(document).on('click', '.editQuestionButton', function() {
+    	var questionId = $(this).attr("relQ");
+      	$.ajax({
+              url: 'getQuestionForm.do',
+              data: {'q':questionId},
+              type: "GET",
+              success: function(data) {
+                  $(surveyModal).html(data);
+              }
+         });         
+      }); 
         
         
         
@@ -189,7 +210,6 @@ require(['./main'], function () {
             return false;
 
         });
-      
       
       /** dropdown change **/
       $('.ddForPage').change(function() {

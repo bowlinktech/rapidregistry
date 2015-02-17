@@ -106,7 +106,7 @@ You do not have permission to access this page.
      			</div>
             <!--  each question is displayed here -->
            <c:forEach var="question" items="${page.surveyQuestions}">
-			 <div class="panel-body" id="questionDiv${question.id}" rel="${questionId}">
+			 <div class="panel-body questionDiv" id="questionDiv${question.id}" relQ="${questionId}">
                 <form:form id="pageForm" method="post" role="form">
                     <section class="panel panel-default">
                         <div class="panel-body">
@@ -171,7 +171,7 @@ You do not have permission to access this page.
 	            	<c:forEach var="answer" items="${question.surveyAnswers}">
                         <div class="checkbox">
                             <label>
-                            <input type="checkbox" id="q_${question.id}"  
+                            <input type="checkbox" id="q_${question.id}" name="a_${answer.id}" 
                               value="${answer.answer}" <c:if test="${answer.defAnswer}">checked</c:if> />${answer.answer}
                            </label>
                         </div>
@@ -183,9 +183,9 @@ You do not have permission to access this page.
            <div class="form-group" id="editButtons${question.id}" style="display:none">
            This should appear when cursor is mouse over the question, clicking edit would bring up tab modal
            	<br/>
-           	<input type="button" id="submitButton"  role="button" class="btn btn-primary" value="Edit Question" rel="${question.id}" onClick="javascript:alert('open edit/option tab');"/>
-            </div>    
-                                </div> 
+           <a href="#surveyModal" data-toggle="modal" id="editQuestion${question.id}"  relQ="${question.id}" class="btn btn-primary editQuestionButton btn-link-lg" role="button">Edit Question</a>
+            </div> 
+             </div> 
 
                     </section>
                 </form:form>

@@ -9,6 +9,7 @@ package com.bowlink.rr.controller;
 import com.bowlink.rr.model.AnswerTypes;
 import com.bowlink.rr.model.SurveyChangeLogs;
 import com.bowlink.rr.model.SurveyPages;
+import com.bowlink.rr.model.SurveyQuestions;
 import com.bowlink.rr.model.User;
 import com.bowlink.rr.model.activityCodes;
 import com.bowlink.rr.model.surveys;
@@ -618,6 +619,47 @@ public class surveyController {
         
          return mav;
     }
+    
+    
+    @RequestMapping(value = "getQuestionForm.do", method = RequestMethod.GET)
+    @ResponseBody public ModelAndView getQuestionForm (
+    		HttpSession session, @RequestParam String q) throws Exception {
+        ModelAndView mav = new ModelAndView();
+        
+        //get page info
+        SurveyQuestions question = surveymanager.getSurveyQuestionById(Integer.valueOf(q));
+        SurveyPages surveyPage = surveymanager.getSurveyPageById(question.getSurveyPageId());
+        surveys survey = checkSurveyPermission(session, String.valueOf(surveyPage.getSurveyId()), "getQuestionForm.do");
+        
+        if (survey == null) {
+        	mav.addObject("notValid", "You do not have permission.");
+        	return mav;
+        }
+        
+        mav.setViewName("/programAdmin/surveys/questionDetails");
+        
+        /** log user **/
+        try {
+        	Log_userSurveyActivity ua = new Log_userSurveyActivity();
+        	ua.setActivityDesc("Access Question Form");
+        	ua.setController(controllerName);
+        	ua.setPageAccessed("getQuestionForm.do");
+        	ua.setProgramId((Integer) session.getAttribute("selprogramId"));
+        	ua.setQuestionId(question.getId());
+        	ua.setSurveyId(survey.getId());
+        	ua.setPageId(surveyPage.getId());
+        	User userDetails = (User)session.getAttribute("userDetails");
+        	ua.setSystemUserId(userDetails.getId());
+            usermanager.insertUserLog (ua);
+    	} catch (Exception ex1) {
+    		ex1.printStackTrace();
+    	}
+        
+        mav.addObject("questionNum", question.getQuestionNum());
+        mav.addObject("question", question);
+        return mav;
+    }
+    
     
     
     

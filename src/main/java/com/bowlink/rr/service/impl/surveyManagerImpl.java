@@ -144,5 +144,16 @@ public class surveyManagerImpl implements surveyManager {
 	public SurveyPages getSurveyPageById(Integer pageId) throws Exception {
 		return surveyDAO.getSurveyPageById(pageId);		
 	}
+
+	@Override
+	@Transactional
+	public SurveyQuestions getSurveyQuestionById(Integer questionId)
+			throws Exception {
+		SurveyQuestions question = surveyDAO.getSurveyQuestionById(questionId);
+		if(question != null) {
+			question.setSurveyAnswers(getSurveyAnswers(question.getId()));
+		}
+		return question;
+	}
 		
 }
