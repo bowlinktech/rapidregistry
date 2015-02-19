@@ -1,0 +1,52 @@
+
+/* Chad McCue 2/18/2015 - 11:02 AM */
+
+ALTER TABLE `rapidregistry`.`providers` 
+DROP COLUMN `lastName`,
+CHANGE COLUMN `firstName` `name` VARCHAR(255) NOT NULL COMMENT '			' ;
+
+ALTER TABLE `rapidregistry`.`providers` 
+ADD COLUMN `agency` VARCHAR(255) NULL DEFAULT NULL AFTER `name`,
+ADD COLUMN `faxNumber` VARCHAR(25) NULL AFTER `phoneNumber`,
+ADD COLUMN `email` VARCHAR(255) NULL DEFAULT NULL AFTER `faxNumber`,
+ADD COLUMN `region` VARCHAR(45) NULL DEFAULT NULL AFTER `email`,
+ADD COLUMN `url` VARCHAR(255) NULL DEFAULT NULL AFTER `region`,
+ADD COLUMN `description` VARCHAR(500) NULL DEFAULT NULL AFTER `url`,
+ADD COLUMN `languages` VARCHAR(255) NULL AFTER `description`,
+ADD COLUMN `groupsServed` VARCHAR(255) NULL AFTER `languages`;
+
+CREATE TABLE `rapidregistry`.`program_serviceCategories` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `programId` INT NOT NULL,
+  `status` BIT(1) NOT NULL DEFAULT b'1',
+  `categoryName` VARCHAR(255) NOT NULL,
+  `dateCreated` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC));
+
+CREATE TABLE `rapidregistry`.`program_services` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `programId` INT NOT NULL,rel
+  `status` BIT(1) NOT NULL DEFAULT b'1',
+  `serviceName` VARCHAR(255) NOT NULL,
+  `dateCreated` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC));
+
+CREATE TABLE `rapidregistry`.`rel_programServiceCategories` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `serviceId` INT NOT NULL,
+  `serviceCategoryId` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC));
+
+/* Chad McCue 2/19/2015 - 10:51 AM */
+CREATE TABLE `rapidregistry`.`providerServices` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `providerId` INT NOT NULL,
+  `serviceId` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC));
+
+ALTER TABLE `rapidregistry`.`providerServices` 
+ADD COLUMN `programId` INT(11) NOT NULL AFTER `id`;

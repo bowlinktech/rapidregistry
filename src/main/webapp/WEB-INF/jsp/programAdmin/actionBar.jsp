@@ -21,12 +21,21 @@
                     <c:when test="${param['page'] == 'staffdetails'}">
                         <a href="javascript:void(0);" title="Staff Member Details" class="unstyled-link">Staff Member Details</a>
                     </c:when>
+                    <c:when test="${param['page'] == 'categories'}">
+                        <a href="javascript:void(0);" title="Service Categories" class="unstyled-link">Service Categories</a>
+                    </c:when>  
+                    <c:when test="${param['page'] == 'services'}">
+                        <a href="javascript:void(0);" title="Services" class="unstyled-link">Services</a>
+                    </c:when> 
+                    <c:when test="${param['page'] == 'serviceDetails'}">
+                        <a href="javascript:void(0);" title="Service Details" class="unstyled-link">Service Details</a>
+                    </c:when>  
                 </c:choose>
             </h1>
         </div>
         <ul class="nav navbar-nav navbar-right navbar-actions" role="menu">
            <c:choose>
-                <c:when test="${param['page'] == 'staffdetails'}">
+                <c:when test="${param['page'] == 'staffdetails' || param['page'] == 'serviceDetails'}">
                     <li role="menuitem"><a href="javascript:void(0);" id="saveDetails" title="Save Form" role="button"><span class="glyphicon glyphicon-ok icon-stacked"></span> Save </a></li>
                     <li role="menuitem"><a href="javascript:void(0);" id="saveCloseDetails" title="Save &amp; Close" role="button"><span class="glyphicon glyphicon-floppy-disk icon-stacked"></span> Save &amp; Close</a></li>
                     <li role="menuitem"><a href="/programAdmin/staff" title="Save &amp; Close" role="button"><span class="glyphicon glyphicon-ban-circle icon-stacked"></span> Cancel</a></li>

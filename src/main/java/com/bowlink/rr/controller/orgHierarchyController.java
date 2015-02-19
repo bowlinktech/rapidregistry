@@ -30,7 +30,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
  * @author chadmccue
  */
 @Controller
-@RequestMapping(value={"/sysAdmin/programs/{programName}/organization-hierarchy","/programAdmin/programs"})
+@RequestMapping("/sysAdmin/programs/{programName}/organization-hierarchy")
 public class orgHierarchyController {
     
     @Autowired
