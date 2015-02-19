@@ -41,8 +41,8 @@ public class ExceptionControllerAdvice {
         try {
         mailMessage messageDetails = new mailMessage();
         
-        messageDetails.settoEmailAddress("gchan123@yahoo.com");
-        messageDetails.setfromEmailAddress("gchan123@yahoo.com");
+        messageDetails.settoEmailAddress("information@health-e-link.net");
+        messageDetails.setfromEmailAddress("information@health-e-link.net");
         messageDetails.setmessageSubject("Exception Error " + InetAddress.getLocalHost().getHostAddress());
         
         StringBuilder sb = new StringBuilder();
@@ -71,9 +71,9 @@ public class ExceptionControllerAdvice {
         sb.append("Stack Trace: " + Arrays.toString(e.getStackTrace()));
         
         messageDetails.setmessageBody(sb.toString());
-        System.out.println(sb.toString());
-        //emailMessageManager.sendEmail(messageDetails); 
-        /*mav.addObject("messageBody",sb.toString());*/
+        //System.out.println(sb.toString());
+        emailMessageManager.sendEmail(messageDetails); 
+        //mav.addObject("messageBody",sb.toString());
         } catch (Exception ex) {
         	ex.printStackTrace();
         	System.err.println(ex.toString() + " error at exception");
