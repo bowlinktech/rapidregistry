@@ -26,134 +26,173 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 public class surveyManagerImpl implements surveyManager {
-    
+
     @Autowired
     surveyDAO surveyDAO;
-    
+
     @Override
     @Transactional
     public List<surveys> getActiveSurveys(Integer programId) throws Exception {
         return surveyDAO.getActiveSurveys(programId);
     }
-    
+
     @Override
     @Transactional
     public List<surveys> getProgramSurveys(Integer programId) throws Exception {
         return surveyDAO.getProgramSurveys(programId);
     }
-    
+
     @Override
     @Transactional
     public List<surveys> getProgramSurveysByTitle(surveys survey) throws Exception {
         return surveyDAO.getProgramSurveysByTitle(survey);
     }
-    
+
     @Override
     @Transactional
     public Integer saveSurvey(surveys survey) throws Exception {
-       return surveyDAO.saveSurvey(survey);
+        return surveyDAO.saveSurvey(survey);
+    }
+
+    @Override
+    @Transactional
+    public Integer surveyTakenTimes(Integer surveyId) throws Exception {
+        return surveyDAO.surveyTakenTimes(surveyId);
+    }
+
+    @Override
+    @Transactional
+    public surveys getSurveyById(Integer surveyId) throws Exception {
+        /**
+         * first we get the survey details*
+         */
+        surveys survey = surveyDAO.getSurveyById(surveyId);
+        /**
+         * now we get the pages *
+         */
+        if (survey != null) {
+            survey.setSurveyPages(getSurveyPages(surveyId, true));
+        }
+        return survey;
+    }
+
+    @Override
+    @Transactional
+    public void updateSurvey(surveys survey) throws Exception {
+        surveyDAO.updateSurvey(survey);
+    }
+
+    @Override
+    @Transactional
+    public void saveChangeLogs(SurveyChangeLogs scl) throws Exception {
+        surveyDAO.saveChangeLogs(scl);
+    }
+
+    @Override
+    @Transactional
+    public List<SurveyChangeLogs> getSurveyChangeLogs(Integer surveyId) throws Exception {
+        return surveyDAO.getSurveyChangeLogs(surveyId);
+    }
+
+    @Override
+    @Transactional
+    public List<AnswerTypes> getAnswerTypes() throws Exception {
+        return surveyDAO.getAnswerTypes();
+    }
+
+    @Override
+    @Transactional
+    public List<SurveyPages> getSurveyPages(Integer surveyId, boolean getQuestions) throws Exception {
+        List<SurveyPages> surveyPages = surveyDAO.getSurveyPages(surveyId, getQuestions);
+        if (getQuestions) {
+            /**
+             * now we loop and get page questions *
+             */
+            for (SurveyPages page : surveyPages) {
+                page.setSurveyQuestions(getSurveyQuestions(page.getId()));
+            }
+        }
+        return surveyPages;
+    }
+
+    @Override
+    @Transactional
+    public List<SurveyQuestions> getSurveyQuestions(Integer surveyPageId)
+            throws Exception {
+        List<SurveyQuestions> surveyQuestions = surveyDAO.getSurveyQuestions(surveyPageId);
+        /**
+         * we get answers here *
+         */
+        for (SurveyQuestions question : surveyQuestions) {
+            question.setSurveyAnswers(getSurveyAnswers(question.getId()));
+        }
+        return surveyQuestions;
+    }
+    
+     @Override
+    @Transactional
+    public List <SurveyQuestions> getAllSurveyQuestions(Integer surveyId) throws Exception {
+         return surveyDAO.getAllSurveyQuestions(surveyId);
+    }
+
+    @Override
+    @Transactional
+    public List<SurveyAnswers> getSurveyAnswers(Integer questionId)
+            throws Exception {
+        return surveyDAO.getSurveyAnswers(questionId);
+    }
+
+    @Override
+    @Transactional
+    public Integer createSurveyPage(SurveyPages surveyPage) throws Exception {
+        return surveyDAO.createSurveyPage(surveyPage);
+    }
+
+    @Override
+    @Transactional
+    public void updateSurveyPage(SurveyPages surveyPage) throws Exception {
+        surveyDAO.updateSurveyPage(surveyPage);
+    }
+
+    @Override
+    @Transactional
+    public SurveyPages getSurveyPageById(Integer pageId) throws Exception {
+        return surveyDAO.getSurveyPageById(pageId);
+    }
+
+    @Override
+    @Transactional
+    public SurveyQuestions getSurveyQuestionById(Integer questionId)
+            throws Exception {
+        SurveyQuestions question = surveyDAO.getSurveyQuestionById(questionId);
+        if (question != null) {
+            question.setSurveyAnswers(getSurveyAnswers(question.getId()));
+        }
+        return question;
     }
     
     @Override
     @Transactional
-    public Integer surveyTakenTimes(Integer surveyId) throws Exception {
-       return surveyDAO.surveyTakenTimes(surveyId);
+    public List<SurveyPages> getSurveyPagesByPageNum(Integer surveyId, Integer nextPageNum) throws Exception {
+        return surveyDAO.getSurveyPagesByPageNum(surveyId, nextPageNum);
+    }
+    
+    @Override
+    @Transactional
+    public Integer saveNewSurveyQuestion(SurveyQuestions surveyQuestion) throws Exception {
+        return surveyDAO.saveNewSurveyQuestion(surveyQuestion);
+    }
+    
+    @Override
+    @Transactional
+    public void saveSurveyQuestion(SurveyQuestions surveyQuestion) throws Exception {
+        surveyDAO.saveSurveyQuestion(surveyQuestion);
+    }
+    
+    @Override
+    @Transactional
+    public List getQuestionForSelectedPage(Integer pageId, Integer questionId) throws Exception {
+        return surveyDAO.getQuestionForSelectedPage(pageId, questionId);
     }
 
-	@Override
-	@Transactional
-	public surveys getSurveyById(Integer surveyId) throws Exception {
-		/**first we get the survey details**/
-		surveys survey = surveyDAO.getSurveyById(surveyId);
-		/** now we get the pages **/
-		if (survey != null) {
-			survey.setSurveyPages(getSurveyPages(surveyId, true));
-		}
-		return survey;
-	}
-    
-	@Override
-	@Transactional
-	public void updateSurvey(surveys survey) throws Exception {
-		surveyDAO.updateSurvey(survey);
-	}
-	
-	@Override
-	@Transactional
-	public void saveChangeLogs(SurveyChangeLogs scl) throws Exception {
-		surveyDAO.saveChangeLogs(scl);
-	}
-	
-	@Override
-	@Transactional
-	public List <SurveyChangeLogs> getSurveyChangeLogs (Integer surveyId)  throws Exception {
-		return surveyDAO.getSurveyChangeLogs(surveyId);
-	}
-
-	@Override
-	@Transactional
-	public List<AnswerTypes> getAnswerTypes() throws Exception {
-		return surveyDAO.getAnswerTypes();
-	}
-
-	@Override
-	@Transactional
-	public List<SurveyPages> getSurveyPages(Integer surveyId, boolean getQuestions) throws Exception {
-		List<SurveyPages> surveyPages = surveyDAO.getSurveyPages(surveyId, getQuestions) ;
-		if (getQuestions) {
-		/** now we loop and get page questions **/
-			for (SurveyPages page: surveyPages) {
-				page.setSurveyQuestions(getSurveyQuestions(page.getId()));
-			}
-		}
-		return surveyPages;
-	}
-
-	@Override
-	public List<SurveyQuestions> getSurveyQuestions(Integer surveyPageId)
-			throws Exception {
-		List<SurveyQuestions> surveyQuestions = surveyDAO.getSurveyQuestions(surveyPageId);
-		/** we get answers here **/
-		for (SurveyQuestions question: surveyQuestions) {
-			question.setSurveyAnswers(getSurveyAnswers(question.getId()));
-		}
-		return surveyQuestions;
-	}
-
-	@Override
-	public List<SurveyAnswers> getSurveyAnswers(Integer questionId)
-			throws Exception {		
-		return surveyDAO.getSurveyAnswers(questionId);
-	}
-
-	@Override
-	@Transactional
-	public Integer createSurveyPage(SurveyPages surveyPage) throws Exception {
-		return surveyDAO.createSurveyPage(surveyPage);
-	}
-
-
-	@Override
-	@Transactional
-	public void updateSurveyPage(SurveyPages surveyPage) throws Exception {
-		surveyDAO.updateSurveyPage(surveyPage);		
-	}
-
-	@Override
-	@Transactional
-	public SurveyPages getSurveyPageById(Integer pageId) throws Exception {
-		return surveyDAO.getSurveyPageById(pageId);		
-	}
-
-	@Override
-	@Transactional
-	public SurveyQuestions getSurveyQuestionById(Integer questionId)
-			throws Exception {
-		SurveyQuestions question = surveyDAO.getSurveyQuestionById(questionId);
-		if(question != null) {
-			question.setSurveyAnswers(getSurveyAnswers(question.getId()));
-		}
-		return question;
-	}
-		
 }

@@ -15,11 +15,12 @@ require(['./main'], function () {
         $("input:text,form").attr("autocomplete", "off");
         
         $(document).on('click', '#viewChangeLogs', function() {
-        	var surveyId = $(this).attr('rel');
+        	var i = $(this).attr('rel');
+                var v = $(this).attr('rel2');
         	
         	$.ajax({
                 url: 'surveys/changeLog',
-                data:{'s':surveyId},
+                data:{'i':i, 'v': v},
                 type: "GET",
                 success: function(data) {
                     $("#changeLogModal").html(data);

@@ -11,9 +11,11 @@
                         <a href="javascript:void(0);" title="Surveys" class="unstyled-link">Create New Survey</a>
                     </c:when>
                     <c:when test="${param['page'] == 'surveyDetails'}">
-	                    <div id="surveyTitle">
-	                        <a href="#surveyModal" data-toggle="modal" id="editSurveyTitleActionBar" title="${surveyTitle}" relPage="1" relS="${surveyId}" class="editSurveyTitle unstyled-link" role="button">${surveyTitle}</a>
-	                   </div>
+                        <div id="surveyTitle">
+                            <a href="#surveyModal" data-toggle="modal" title="${survey.title}" rel="${encryptedId}" rel2="${encryptedSecret}" class="editSurveyTitle unstyled-link" role="button">
+                                ${survey.title} <span class="glyphicon glyphicon-edit" style="padding-left:5px; cursor: pointer;"></span>
+                            </a>
+                        </div>
                     </c:when>
                     <c:when test="${param['page'] == 'staff'}">
                         <a href="javascript:void(0);" title="Staff Members" class="unstyled-link">Staff Members</a>

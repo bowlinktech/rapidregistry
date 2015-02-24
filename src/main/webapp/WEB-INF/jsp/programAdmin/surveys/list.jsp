@@ -41,7 +41,7 @@
                                     <c:forEach var="survey" items="${surveys}">
                                         <tr>
                                             <td>
-                                                <a href="surveys/details?s=${survey.id}" class="btn-link" title="Edit this survey" role="button">${survey.title}&nbsp;                                               
+                                                <a href="surveys/details?s=${survey.encryptedId}&v=${survey.encryptedSecret}" class="btn-link" title="Edit this survey" role="button">${survey.title}&nbsp;                                               
                                                 <br />
                                                 (<c:choose><c:when test="${survey.status == true}">Active</c:when><c:otherwise>Inactive</c:otherwise></c:choose>)</a>
                                             </td>
@@ -51,12 +51,12 @@
                                             <td class="center-text"><fmt:formatDate value="${survey.dateCreated}" type="Both" pattern="M/dd/yyyy h:mm a" /></td>
                                             <td class="center-text"><fmt:formatDate value="${survey.dateModified}" type="Both" pattern="M/dd/yyyy h:mm a" /></td>
                                             <td class="actions-col">
-                                                <a href="#changeLogModal" data-toggle="modal" id="viewChangeLogs" title="View" role="button" class="btn-link viewModules" rel="${survey.id}">
+                                                <a href="#changeLogModal" data-toggle="modal" id="viewChangeLogs" title="View" role="button" class="btn-link viewModules" rel="${staff.encryptedId}" rel2="${staff.encryptedSecret}">
                                                     View Change Log
                                                 </a>
                                             </td>
                                             <td class="actions-col">
-                                                <a href="surveys/details?s=${survey.id}" class="btn btn-link editSysAdmin" title="Edit" role="button">
+                                                <a href="surveys/details?s=${survey.encryptedId}&v=${survey.encryptedSecret}" class="btn btn-link editSysAdmin" title="Edit" role="button">
                                                     <span class="glyphicon glyphicon-edit"></span>
                                                     Edit
                                                 </a>

@@ -63,7 +63,7 @@ public class activityCodeDAOImpl implements activityCodeDAO {
         
         if(programId > 0) {
             
-            Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT * FROM activityCodes where id not in (select codeId from programActivityCodes where programId = :programId)")
+            Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT * FROM lu_activityCodes where id not in (select codeId from program_activityCodes where programId = :programId)")
                 .setParameter("programId", programId);
             
             query.setResultTransformer(Transformers.aliasToBean(activityCodes.class));
@@ -96,6 +96,26 @@ public class activityCodeDAOImpl implements activityCodeDAO {
         activityCodes codeDetails = (activityCodes) criteria.uniqueResult(); 
         
         return codeDetails;
+    }
+    
+    /**
+     * The 'getAllProgramActivityCodes' function will return all the activity codes associated for the
+     * passed in program Id
+     * 
+     * @param programId The id of the program to search on
+     * @return  This function will return either true or false.
+     * @throws Exception 
+     */
+    @Override
+    public List<activityCodes> getActivityCodesByProgram(Integer programId) throws Exception {
+        
+         Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT * FROM lu_activityCodes where id in (select codeId from program_activityCodes where programId = :programId)")
+            .setParameter("programId", programId);
+
+        query.setResultTransformer(Transformers.aliasToBean(activityCodes.class));
+
+        return query.list();
+        
     }
     
     /**

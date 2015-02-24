@@ -5,35 +5,15 @@
 
 <div class="main clearfix" role="main">
     <div class="col-md-12">
-        <c:choose>
-            <c:when test="${not empty param.msg}" >
-                <div class="alert alert-success">
-                    <strong>Success!</strong> 
-                    <c:choose>
-                        <c:when test="${param.msg == 'updated'}">The system administrator successfully updated!</c:when>
-                        <c:when test="${param.msg == 'created'}">The system administrator has been successfully added!</c:when>
-                    </c:choose>
+        <c:if test="${not empty create}">   
+            <section class="panel panel-default">
+                <div class="panel-body">           
+                    <a href="javascript:alert('code this');" title="Surveys" class="btn-link">Edit or Copy an Existing Survey</a>
                 </div>
-            </c:when>
-        </c:choose>
-        <section class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">
-                <c:if test="${not empty create}">Build a New Survey from Scratch</c:if>
-                <c:if test="${not empty edit}">Modify ${surveyTitle}</c:if>
-                </h3>
-            </div>
-            <div class="panel-body">
-           	<%@ include file="include/surveyForm.jsp" %>
-            </div>
-        </section>
-     <c:if test="${not empty create}">   
-        <section class="panel panel-default">
-            <div class="panel-body">           
-					<a href="javascript:alert('code this');" title="Surveys" class="btn-link">Edit or Copy an Existing Survey</a>
-            </div>
             </section>
-       </c:if>
+        </c:if>
+        <%@ include file="include/surveyForm.jsp" %>
+        </section>
     </div>
 </div>
 

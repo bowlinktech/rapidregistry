@@ -18,6 +18,8 @@ public interface activityCodeManager {
     
     List<activityCodes> getActivityCodes(Integer programId) throws Exception;
     
+    List<activityCodes> getActivityCodesByProgram(Integer programId) throws Exception;
+    
     activityCodes getActivityCodeById(Integer codeId) throws Exception;
     
     void createActivityCode(activityCodes codeDetails) throws Exception;

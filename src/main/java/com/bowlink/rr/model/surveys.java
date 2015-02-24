@@ -29,72 +29,82 @@ import com.bowlink.rr.validator.NoHtml;
 @Table(name = "SURVEYS")
 public class surveys {
     
+    @Transient
+    private Integer timesTaken = 0;
+
+    @Transient
+    private List<SurveyPages> surveyPages;
+
+    
+    @Transient
+    private String encryptedId = null;
+
+    @Transient
+    private String encryptedSecret = null;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID", nullable = false)
     private int id;
-    
+
     @Column(name = "PROGRAMID", nullable = false)
     private int programId;
-    
+
     @Column(name = "STATUS", nullable = false)
     private boolean status = true;
-    
+
     @Column(name = "REQUIREENGAGEMENT", nullable = false)
     private boolean requireEngagement = true;
-    
+
     @Column(name = "ALLOWENGAGEMENT", nullable = false)
     private boolean allowEngagement = true;
-    
+
     @Column(name = "DUPLICATESALLOWED", nullable = false)
     private boolean duplicatesAllowed = false;
-    
+
     @NotEmpty
     @NoHtml
     @Column(name = "TITLE", nullable = false)
     private String title = "";
-    
+
     @NotEmpty
     @NoHtml
     @Column(name = "DONEBUTTONTEXT", nullable = false)
     private String doneButtonText = "Done";
-    
+
     @NotEmpty
     @NoHtml
     @Column(name = "NEXTBUTTONTEXT", nullable = false)
     private String nextButtonText = "Next";
-    
+
     @NotEmpty
     @NoHtml
     @Column(name = "PREVBUTTONTEXT", nullable = false)
     private String prevButtonText = "Previous";
-    
+
     @Column(name = "REMINDERSTATUS", nullable = false)
     private boolean reminderStatus = false;
-    
+
     @NoHtml
     @Column(name = "REMINDERTEXT", nullable = true)
     private String reminderText = "";
-    
-    @Column(name = "ACTIVITYCODEID", nullable = true)
-    private Integer activityCodeId = 0;
-    
+
+    @Column(name = "DONEBTNACTIVITYCODEID", nullable = true)
+    private Integer doneBtnActivityCodeId = 0;
+
+    @Column(name = "NEXTBTNACTIVITYCODEID", nullable = true)
+    private Integer nextBtnActivityCodeId = 0;
+
+    @Column(name = "PREVBTNACTIVITYCODEID", nullable = true)
+    private Integer prevBtnActivityCodeId = 0;
+
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
     @Column(name = "DATECREATED", nullable = true)
     private Date dateCreated = new Date();
-    
+
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
     @Column(name = "DATEMODIFIED", nullable = true)
     private Date dateModified = new Date();
-    
-    @Transient
-    private Integer timesTaken = 0;
-    
-    @Transient
-    private String encryptedId;
-    
-    @Transient 
-    private List <SurveyPages> surveyPages;
 
     public int getId() {
         return id;
@@ -192,12 +202,12 @@ public class surveys {
         this.reminderText = reminderText;
     }
 
-    public Integer getActivityCodeId() {
-        return activityCodeId;
+    public Integer getdoneBtnActivityCodeId() {
+        return doneBtnActivityCodeId;
     }
 
-    public void setActivityCodeId(Integer activityCodeId) {
-        this.activityCodeId = activityCodeId;
+    public void setdoneBtnActivityCodeId(Integer doneBtnActivityCodeId) {
+        this.doneBtnActivityCodeId = doneBtnActivityCodeId;
     }
 
     public Date getDateCreated() {
@@ -216,28 +226,60 @@ public class surveys {
         this.dateModified = dateModified;
     }
 
-	public Integer getTimesTaken() {
-		return timesTaken;
-	}
+    public Integer getTimesTaken() {
+        return timesTaken;
+    }
 
-	public void setTimesTaken(Integer timesTaken) {
-		this.timesTaken = timesTaken;
-	}
+    public void setTimesTaken(Integer timesTaken) {
+        this.timesTaken = timesTaken;
+    }
 
-	public String getEncryptedId() {
-		return encryptedId;
-	}
+    public String getEncryptedId() {
+        return encryptedId;
+    }
 
-	public void setEncryptedId(String encryptedId) {
-		this.encryptedId = encryptedId;
-	}
+    public void setEncryptedId(String encryptedId) {
+        this.encryptedId = encryptedId;
+    }
 
-	public List<SurveyPages> getSurveyPages() {
-		return surveyPages;
-	}
+    public List<SurveyPages> getSurveyPages() {
+        return surveyPages;
+    }
 
-	public void setSurveyPages(List<SurveyPages> surveyPages) {
-		this.surveyPages = surveyPages;
-	}
+    public void setSurveyPages(List<SurveyPages> surveyPages) {
+        this.surveyPages = surveyPages;
+    }
 
+    public Integer getNextBtnActivityCodeId() {
+        return nextBtnActivityCodeId;
+    }
+
+    public void setNextBtnActivityCodeId(Integer nextBtnActivityCodeId) {
+        this.nextBtnActivityCodeId = nextBtnActivityCodeId;
+    }
+
+    public Integer getPrevBtnActivityCodeId() {
+        return prevBtnActivityCodeId;
+    }
+
+    public void setPrevBtnActivityCodeId(Integer prevBtnActivityCodeId) {
+        this.prevBtnActivityCodeId = prevBtnActivityCodeId;
+    }
+
+    public String getEncryptedSecret() {
+        return encryptedSecret;
+    }
+
+    public void setEncryptedSecret(String encryptedSecret) {
+        this.encryptedSecret = encryptedSecret;
+    }
+
+    public Integer getDoneBtnActivityCodeId() {
+        return doneBtnActivityCodeId;
+    }
+
+    public void setDoneBtnActivityCodeId(Integer doneBtnActivityCodeId) {
+        this.doneBtnActivityCodeId = doneBtnActivityCodeId;
+    }
+    
 }

@@ -33,6 +33,12 @@ public class activityCodeManagerImpl implements activityCodeManager {
     
     @Override
     @Transactional
+    public List<activityCodes> getActivityCodesByProgram(Integer programId) throws Exception {
+        return activityCodeDAO.getActivityCodesByProgram(programId);
+    }
+    
+    @Override
+    @Transactional
     public activityCodes getActivityCodeById(Integer codeId) throws Exception {
         return activityCodeDAO.getActivityCodeById(codeId);
     }

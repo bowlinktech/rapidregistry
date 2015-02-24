@@ -213,4 +213,10 @@ public class programFormsManagerImpl implements programFormsManager {
     public List<programEngagementFieldValues> getEngagementFieldValues(Integer fieldId) throws Exception {
         return programFormsDAO.getEngagementFieldValues(fieldId);
     }
+    
+    @Override
+    @Transactional
+    public List getFieldsForProgram(Integer programId) throws Exception {
+        return programFormsDAO.getFieldsForProgram(programId);
+    }
 }
