@@ -167,5 +167,31 @@
         <put-attribute name="jscript" value="/dspResources/js/sysAdmin/programs/hierarchyList.js" />
     </definition>
     
+    <definition name="/categories" extends="base.definition.programAdmin">
+        <put-attribute name="page-id" value="dashboard-details" />
+        <put-attribute name="page-section" value="section-dashboard" />
+        <put-attribute name="actions" value="/WEB-INF/jsp/programAdmin/actionBar.jsp?page=categories" />
+        <put-attribute name="menu" value="/WEB-INF/jsp/programAdmin/menu.jsp?page=categories" />
+        <put-attribute name="body" value="/WEB-INF/jsp/programAdmin/services/categoryList.jsp" />
+        <put-attribute name="jscript" value="/dspResources/js/programAdmin/services/categoryList.js" />
+    </definition>
+    
+    <definition name="/services" extends="base.definition.programAdmin">
+        <put-attribute name="page-id" value="dashboard-details" />
+        <put-attribute name="page-section" value="section-dashboard" />
+        <put-attribute name="actions" value="/WEB-INF/jsp/programAdmin/actionBar.jsp?page=services" />
+        <put-attribute name="menu" value="/WEB-INF/jsp/programAdmin/menu.jsp?page=services" />
+        <put-attribute name="body" value="/WEB-INF/jsp/programAdmin/services/serviceList.jsp" />
+        <put-attribute name="jscript" value="/dspResources/js/programAdmin/services/serviceList.js" />
+    </definition>
+    
+    <definition name="/serviceDetails" extends="base.definition.programAdmin">
+        <put-attribute name="page-id" value="dashboard-details" />
+        <put-attribute name="page-section" value="section-dashboard" />
+        <put-attribute name="actions" value="/WEB-INF/jsp/programAdmin/actionBar.jsp?page=serviceDetails" />
+        <put-attribute name="menu" value="/WEB-INF/jsp/programAdmin/menu.jsp?page=services" />
+        <put-attribute name="body" value="/WEB-INF/jsp/programAdmin/services/serviceDetails.jsp" />
+        <put-attribute name="jscript" value="/dspResources/js/programAdmin/services/serviceDetails.js" />
+    </definition>
     
 </tiles-definitions>

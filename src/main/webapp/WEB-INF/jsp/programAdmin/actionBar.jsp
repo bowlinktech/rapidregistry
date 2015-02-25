@@ -11,9 +11,11 @@
                         <a href="javascript:void(0);" title="Surveys" class="unstyled-link">Create New Survey</a>
                     </c:when>
                     <c:when test="${param['page'] == 'surveyDetails'}">
-	                    <div id="surveyTitle">
-	                        <a href="#surveyModal" data-toggle="modal" id="editSurveyTitleActionBar" title="${surveyTitle}" relPage="1" relS="${surveyId}" class="editSurveyTitle unstyled-link" role="button">${surveyTitle}</a>
-	                   </div>
+                        <div id="surveyTitle">
+                            <a href="#surveyModal" data-toggle="modal" title="${survey.title}" rel="${encryptedId}" rel2="${encryptedSecret}" class="editSurveyTitle unstyled-link" role="button">
+                                ${survey.title} <span class="glyphicon glyphicon-edit" style="padding-left:5px; cursor: pointer;"></span>
+                            </a>
+                        </div>
                     </c:when>
                     <c:when test="${param['page'] == 'staff'}">
                         <a href="javascript:void(0);" title="Staff Members" class="unstyled-link">Staff Members</a>
@@ -21,12 +23,21 @@
                     <c:when test="${param['page'] == 'staffdetails'}">
                         <a href="javascript:void(0);" title="Staff Member Details" class="unstyled-link">Staff Member Details</a>
                     </c:when>
+                    <c:when test="${param['page'] == 'categories'}">
+                        <a href="javascript:void(0);" title="Service Categories" class="unstyled-link">Service Categories</a>
+                    </c:when>  
+                    <c:when test="${param['page'] == 'services'}">
+                        <a href="javascript:void(0);" title="Services" class="unstyled-link">Services</a>
+                    </c:when> 
+                    <c:when test="${param['page'] == 'serviceDetails'}">
+                        <a href="javascript:void(0);" title="Service Details" class="unstyled-link">Service Details</a>
+                    </c:when>  
                 </c:choose>
             </h1>
         </div>
         <ul class="nav navbar-nav navbar-right navbar-actions" role="menu">
            <c:choose>
-                <c:when test="${param['page'] == 'staffdetails'}">
+                <c:when test="${param['page'] == 'staffdetails' || param['page'] == 'serviceDetails'}">
                     <li role="menuitem"><a href="javascript:void(0);" id="saveDetails" title="Save Form" role="button"><span class="glyphicon glyphicon-ok icon-stacked"></span> Save </a></li>
                     <li role="menuitem"><a href="javascript:void(0);" id="saveCloseDetails" title="Save &amp; Close" role="button"><span class="glyphicon glyphicon-floppy-disk icon-stacked"></span> Save &amp; Close</a></li>
                     <li role="menuitem"><a href="/programAdmin/staff" title="Save &amp; Close" role="button"><span class="glyphicon glyphicon-ban-circle icon-stacked"></span> Cancel</a></li>

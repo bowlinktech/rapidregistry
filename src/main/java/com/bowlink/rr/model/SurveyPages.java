@@ -10,8 +10,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.bowlink.rr.validator.NoHtml;
@@ -24,73 +22,85 @@ import com.bowlink.rr.validator.NoHtml;
 @Table(name = "survey_pages")
 public class SurveyPages {
     
+    @Transient
+    List<SurveyQuestions> surveyQuestions;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID", nullable = false)
     private int id;
-    
+
     @NoHtml
     @Column(name = "pageTitle", nullable = false)
     private String pageTitle;
-    
+
     @Column(name = "surveyId", nullable = false)
     private int surveyId = 0;
-    
+
     @Column(name = "pageNum", nullable = false)
     private int pageNum = 1;
-    
+
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
     @Column(name = "DATECREATED", nullable = true)
     private Date dateCreated = new Date();
-    
-    @Transient List <SurveyQuestions> surveyQuestions;
 
-	public int getId() {
-		return id;
-	}
+    @Column(name = "pageDesc", nullable = false)
+    private String pageDesc;
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public String getPageTitle() {
-		return pageTitle;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public void setPageTitle(String pageTitle) {
-		this.pageTitle = pageTitle;
-	}
+    public String getPageTitle() {
+        return pageTitle;
+    }
 
-	public int getPageNum() {
-		return pageNum;
-	}
+    public void setPageTitle(String pageTitle) {
+        this.pageTitle = pageTitle;
+    }
 
-	public void setPageNum(int pageNum) {
-		this.pageNum = pageNum;
-	}
+    public int getPageNum() {
+        return pageNum;
+    }
 
-	public Date getDateCreated() {
-		return dateCreated;
-	}
+    public void setPageNum(int pageNum) {
+        this.pageNum = pageNum;
+    }
 
-	public void setDateCreated(Date dateCreated) {
-		this.dateCreated = dateCreated;
-	}
+    public Date getDateCreated() {
+        return dateCreated;
+    }
 
-	public List<SurveyQuestions> getSurveyQuestions() {
-		return surveyQuestions;
-	}
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
+    }
 
-	public void setSurveyQuestions(List<SurveyQuestions> surveyQuestions) {
-		this.surveyQuestions = surveyQuestions;
-	}
+    public List<SurveyQuestions> getSurveyQuestions() {
+        return surveyQuestions;
+    }
 
-	public int getSurveyId() {
-		return surveyId;
-	}
+    public void setSurveyQuestions(List<SurveyQuestions> surveyQuestions) {
+        this.surveyQuestions = surveyQuestions;
+    }
 
-	public void setSurveyId(int surveyId) {
-		this.surveyId = surveyId;
-	}
-  
+    public int getSurveyId() {
+        return surveyId;
+    }
+
+    public void setSurveyId(int surveyId) {
+        this.surveyId = surveyId;
+    }
+
+    public String getPageDesc() {
+        return pageDesc;
+    }
+
+    public void setPageDesc(String pageDesc) {
+        this.pageDesc = pageDesc;
+    }
+
 }

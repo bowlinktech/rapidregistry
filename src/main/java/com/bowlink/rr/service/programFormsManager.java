@@ -80,5 +80,7 @@ public interface programFormsManager {
     List<programPatientFieldValues> getPatientFieldValues(Integer fieldId) throws Exception;
     
     List<programEngagementFieldValues> getEngagementFieldValues(Integer fieldId) throws Exception;
+    
+    List getFieldsForProgram(Integer programId) throws Exception;
                     
 }

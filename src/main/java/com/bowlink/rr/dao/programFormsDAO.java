@@ -81,4 +81,6 @@ public interface programFormsDAO {
     
     List<programEngagementFieldValues> getEngagementFieldValues(Integer fieldId) throws Exception;
     
+    List getFieldsForProgram(Integer programId) throws Exception;
+    
 }

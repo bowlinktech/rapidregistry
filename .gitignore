@@ -3,12 +3,9 @@ context.xml
 /target/
 .DS_Store
 .classpath
-<<<<<<< HEAD
 .project
-.settings/org.eclipse.wst.common.component
-=======
 .externalToolBuilders
 .settings/org.eclipse.ltk.core.refactoring.prefs
 .settings/org.eclipse.wst.common.component
 .settings/org.eclipse.wst.ws.service.policy.prefs
->>>>>>> 4feac472a99ad0ef1d2c6dd649c1545f879c20c9
+

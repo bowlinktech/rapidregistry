@@ -460,4 +460,25 @@ public class programFormsDAOImpl implements programFormsDAO {
         return query.list();
     }
     
+    /**
+     * The 'getFieldsForProgram' function will return the selected fields for the program. This will combine the fields for
+     * the patient form and engagement forms
+     * @param programId
+     * @return
+     * @throws Exception 
+     */
+    @Override
+    @Transactional
+    public List getFieldsForProgram(Integer programId) throws Exception {
+        
+        Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT distinct fieldId, fieldDisplayName FROM ( "
+                + "SELECT fieldId, fieldDisplayName FROM program_patientFields where programId = :programId "
+                + "UNION ALL "
+                + "SELECT fieldId, fieldDisplayName FROM program_engagementFields where programId = :programId "
+                + ") as programFields order by FieldDisplayName asc")
+                .setParameter("programId", programId);
+
+        return query.list();
+        
+    }
 }

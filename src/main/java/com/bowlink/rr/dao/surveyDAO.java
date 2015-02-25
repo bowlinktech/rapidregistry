@@ -47,10 +47,25 @@ public interface surveyDAO {
     
     List <SurveyQuestions> getSurveyQuestions(Integer surveyPageId) throws Exception;
     
+    List <SurveyQuestions> getAllSurveyQuestions(Integer surveyId) throws Exception;
+    
     List<SurveyAnswers> getSurveyAnswers(Integer questionId) throws Exception;
     
     Integer createSurveyPage (SurveyPages surveyPage) throws Exception;
     
     void updateSurveyPage (SurveyPages surveyPage) throws Exception;
+    
+    SurveyPages getSurveyPageById(Integer pageId) throws Exception;
+    
+    SurveyQuestions getSurveyQuestionById (Integer questionId) throws Exception;
+    
+    List<SurveyPages> getSurveyPagesByPageNum(Integer surveyId, Integer nextPageNum) throws Exception;
+    
+    Integer saveNewSurveyQuestion(SurveyQuestions surveyQuestion) throws Exception;
+    
+    void saveSurveyQuestion(SurveyQuestions surveyQuestion) throws Exception;
+    
+    List getQuestionForSelectedPage(Integer pageId, Integer questionId) throws Exception;
+    
     
 }

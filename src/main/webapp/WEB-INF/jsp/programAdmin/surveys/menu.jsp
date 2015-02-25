@@ -2,23 +2,15 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 
-<aside class="secondary" style="margin-left:10px;">
-    <div>
-        <section class="panel panel-info">
-            <div class="panel-heading">
-                <h3 class="panel-title">Survey Builder</h3>
+<aside class="secondary" style="margin-left:10px; width:250px;">
+    <div class="sidebar list-group" >
+        <c:forEach var="answerType" items="${answerTypeList}" varStatus="loopCount">
+            <div class="list-group-item list-group-item-warning padding-sm QuestionTypeDiv" rel="${answerType.id}">
+                <a href="javascript:void(0);" class="addQuestionType" rel="${answerType.id}" style="text-decoration:none; color: #000000">
+                <strong>${answerType.answerType}</strong></a>
+               <button style="display:none;" type="button" id="answertype_${answerType.id}" class="pull-right btn btn-primary btn-xs addQuestionType addQuestionTypeBtn" rel="${answerType.id}">+ Add</button> 
             </div>
-            <div class="panel-body" style="padding:5px;">
-                <c:forEach var="answerType" items="${answerTypeList}" varStatus="loopCount">
-                <div style="padding: 2px;">
-                    <span class="text">${answerType.answerType}</span>
-                    <span class="pull-right" style="cursor:pointer; padding-right: 2px">
-                        <a href="javascript:alert(pageId);" id="addAQuestion" rel="${answerType.id}"><span class="glyphicon glyphicon-plus-sign"></span></a>
-                    </span>
-                    <c:if test="${!loopCount.last}"><hr /></c:if>
-                </div>
-                </c:forEach>
-            </div>
-        </section>
+        </c:forEach>
     </div>
 </aside>
+
