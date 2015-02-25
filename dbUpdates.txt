@@ -1,0 +1,25 @@
+/** Grace 02.25.2015 12:04PM **/
+ALTER TABLE `rapidregistry`.`programs` 
+ADD COLUMN `shareAcrossHierarchy` BIT(1) NULL DEFAULT 0 AFTER `url`;
+
+ALTER TABLE `rapidregistry`.`programs` 
+ADD COLUMN `visitsPerDay` INT NULL DEFAULT 1 AFTER `shareAcrossHierarchy`;
+
+ALTER TABLE `rapidregistry`.`programs` 
+ADD COLUMN `patientRecon` INT NULL DEFAULT 1 AFTER `visitsPerDay`,
+ADD COLUMN `visitRecon` INT NULL DEFAULT 1 AFTER `patientRecon`;
+
+CREATE TABLE `lu_engagementActions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `displayText` varchar(45) NOT NULL,
+  `status` bit(1) NOT NULL DEFAULT b'1',
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+
+
+INSERT INTO `rapidregistry`.`lu_engagementActions` (`displayText`) VALUES ('No Action');
+INSERT INTO `rapidregistry`.`lu_engagementActions` (`displayText`) VALUES ('Overwrite');
+INSERT INTO `rapidregistry`.`lu_engagementActions` (`displayText`) VALUES ('Reject');
+INSERT INTO `rapidregistry`.`lu_engagementActions` (`displayText`) VALUES ('Use Last Visit');
+INSERT INTO `rapidregistry`.`lu_engagementActions` (`displayText`) VALUES ('Put In Queue');

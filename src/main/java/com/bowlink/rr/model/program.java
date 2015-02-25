@@ -62,6 +62,18 @@ public class program {
     
     @Column(name = "URL", nullable = true)
     private String url;
+    
+    @Column(name = "shareAcrossHierarchy", nullable = false)
+    private boolean shareAcrossHierarchy = false;
+    
+    @Column(name = "visitsPerDay", nullable = false)
+    private int visitsPerDay = 1;
+    
+    @Column(name = "patientRecon", nullable = false)
+    private int patientRecon = 1;
+    
+    @Column(name = "visitRecon", nullable = false)
+    private int visitRecon = 1;   
 
     public int getId() {
         return id;
@@ -134,5 +146,37 @@ public class program {
     public void setUrl(String url) {
         this.url = url;
     }
-    
+
+	public boolean isShareAcrossHierarchy() {
+		return shareAcrossHierarchy;
+	}
+
+	public void setShareAcrossHierarchy(boolean shareAcrossHierarchy) {
+		this.shareAcrossHierarchy = shareAcrossHierarchy;
+	}
+
+	public int getVisitsPerDay() {
+		return visitsPerDay;
+	}
+
+	public void setVisitsPerDay(int visitsPerDay) {
+		this.visitsPerDay = visitsPerDay;
+	}
+
+	public int getPatientRecon() {
+		return patientRecon;
+	}
+
+	public void setPatientRecon(int patientRecon) {
+		this.patientRecon = patientRecon;
+	}
+
+	public int getVisitRecon() {
+		return visitRecon;
+	}
+
+	public void setVisitRecon(int visitRecon) {
+		this.visitRecon = visitRecon;
+	}
+
 }

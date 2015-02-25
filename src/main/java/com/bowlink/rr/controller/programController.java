@@ -1,13 +1,16 @@
 package com.bowlink.rr.controller;
 
 import com.bowlink.rr.model.User;
+import com.bowlink.rr.model.engagementMatchingActions;
 import com.bowlink.rr.model.program;
 import com.bowlink.rr.model.programAdmin;
 import com.bowlink.rr.model.programAvailableTables;
+import com.bowlink.rr.model.programOrgHierarchy;
 import com.bowlink.rr.model.programPatientEntryMethods;
 import com.bowlink.rr.model.surveys;
 import com.bowlink.rr.service.activityCodeManager;
 import com.bowlink.rr.service.dataElementManager;
+import com.bowlink.rr.service.orgHierarchyManager;
 import com.bowlink.rr.service.programFormsManager;
 import com.bowlink.rr.service.programManager;
 import com.bowlink.rr.service.reportManager;
@@ -64,7 +67,10 @@ public class programController {
     
     @Autowired
     programFormsManager programformsmanager;
-
+    
+    @Autowired
+    orgHierarchyManager orghierarchymanager;
+    
     
     /**
      * The '' request will serve up the administrator dashboard after a successful login.
@@ -175,7 +181,18 @@ public class programController {
         
         session.setAttribute("programName", programName);
         program programDetails = programmanager.getProgramByName(programName);
-
+        
+        //get the last hierarchy
+        List<programOrgHierarchy> programOrgHierarchy = orghierarchymanager.getProgramOrgHierarchy(programDetails.getId());
+        String lastHierarchyName = "Program"; 
+        if (programOrgHierarchy.size() != 0) {
+        	lastHierarchyName = programOrgHierarchy.get(programOrgHierarchy.size() -1 ).getName();
+        }
+        //drop down of possible actions for patient and visit reconciliation
+        List<engagementMatchingActions> actionList = programmanager.getEngagementMatchingActions();
+        mav.addObject("actionList", actionList);
+        
+        mav.addObject("lastHierarchyName", lastHierarchyName);
         mav.addObject("id", programDetails.getId());
         mav.addObject("program", programDetails);
         

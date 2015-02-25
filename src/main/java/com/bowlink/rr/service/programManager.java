@@ -6,6 +6,7 @@
 
 package com.bowlink.rr.service;
 
+import com.bowlink.rr.model.engagementMatchingActions;
 import com.bowlink.rr.model.program;
 import com.bowlink.rr.model.programAdmin;
 import com.bowlink.rr.model.programAvailableTables;
@@ -60,5 +61,6 @@ public interface programManager {
     
     List<program> getAvailbleProgramsForUser(Integer userId) throws Exception;
     
+    List <engagementMatchingActions> getEngagementMatchingActions () throws Exception;
     
 }

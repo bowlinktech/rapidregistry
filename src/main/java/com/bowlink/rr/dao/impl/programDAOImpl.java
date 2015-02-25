@@ -7,6 +7,7 @@
 package com.bowlink.rr.dao.impl;
 
 import com.bowlink.rr.dao.programDAO;
+import com.bowlink.rr.model.engagementMatchingActions;
 import com.bowlink.rr.model.program;
 import com.bowlink.rr.model.programAdmin;
 import com.bowlink.rr.model.programAvailableTables;
@@ -17,7 +18,6 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -402,6 +402,18 @@ public class programDAOImpl implements programDAO {
         return programs;
         
     }
+
+    /**
+     * This method returns a list of available action that can be assigned to a patient match or visit match
+     */
+    
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<engagementMatchingActions> getEngagementMatchingActions() throws Exception {
+		Query query = sessionFactory.getCurrentSession().createQuery("from engagementMatchingActions order by id asc");
+		List<engagementMatchingActions> actionList = query.list();
+        return actionList;
+	}
     
     
 }

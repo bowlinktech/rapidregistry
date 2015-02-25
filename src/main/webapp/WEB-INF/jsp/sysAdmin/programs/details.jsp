@@ -38,19 +38,76 @@
                         <input type="hidden" id="action" name="action" value="save" />
                         <form:hidden path="id" id="id" />
                         <form:hidden path="dateCreated" />
-                        <spring:bind path="status">
-                            <div class="form-group ${status.error ? 'has-error' : '' }">
-                                <label class="control-label" for="status">Status *</label>
-                                <div>
-                                    <label class="radio-inline">
-                                        <form:radiobutton id="status" path="status" value="true" /> Active
-                                    </label>
-                                    <label class="radio-inline">
-                                        <form:radiobutton id="status" path="status" value="false" /> Inactive
-                                    </label>
-                                </div>
-                            </div>
-                        </spring:bind> 
+                         <div class="row">                           
+                            <div class="form-group col-md-4">
+		                        <spring:bind path="status">
+		                            <div class="form-group ${status.error ? 'has-error' : '' }">
+		                                <label class="control-label" for="status">Status *</label>
+		                                <div>
+		                                    <label class="radio-inline">
+		                                        <form:radiobutton id="status" path="status" value="true" /> Active
+		                                    </label>
+		                                    <label class="radio-inline">
+		                                        <form:radiobutton id="status" path="status" value="false" /> Inactive
+		                                    </label>
+		                                </div>
+		                            </div>
+		                        </spring:bind> 
+                       		</div>
+	                        <div class="form-group col-md-4">
+		                        <spring:bind path="shareAcrossHierarchy">
+		                            <div class="form-group ${shareAcrossHierarchy.error ? 'has-error' : '' }">
+		                                <label class="control-label" for="status">Share Across ${lastHierarchyName} *</label>
+		                                <div>
+		                                    <label class="radio-inline">
+		                                        <form:radiobutton id="shareAcrossHierarchy" path="shareAcrossHierarchy" value="true" /> Yes
+		                                    </label>
+		                                    <label class="radio-inline">
+		                                        <form:radiobutton id="shareAcrossHierarchy" path="shareAcrossHierarchy" value="false" /> No
+		                                    </label>
+		                                </div>
+		                            </div>
+		                        </spring:bind> 
+	                        </div>
+                        </div>
+                        <spring:bind path="visitsPerDay">
+		                            <div class="form-group ${visitsPerDay.error ? 'has-error' : '' }">
+		                                <label class="control-label" for="visitsPerDay">Visit(s) Allowed Per Day *</label>
+		                                <form:select path="visitsPerDay" id="visitsPerDay" class="form-control half visitsPerDay">
+                                <c:forEach begin="1" end="20" var="number">
+                                    <option value="${number}" <c:if test="${number == program.visitsPerDay}">selected</c:if>>${number}</option>
+                                </c:forEach>
+                            </form:select>
+		                            </div>
+		                </spring:bind> 
+                        <div class="row">                           
+                            <div class="form-group col-md-4">
+		                        <spring:bind path="patientRecon">
+		                            <div class="form-group ${patientRecon.error ? 'has-error' : '' }">
+		                                <label class="control-label" for="patientRecon">Patient Reconciliation *</label>
+		                                <form:select path="patientRecon" id="patientRecon" class="form-control half patientRecon">
+                                    <option value="1" <c:if test="${action.id == program.patientRecon}">selected</c:if>>No Action</option>
+                                    <option value="2" <c:if test="${action.id == program.patientRecon}">selected</c:if>>Overwrite</option>
+                                    <option value="4" <c:if test="${action.id == program.patientRecon}">selected</c:if>>Use Last Visit</option>                                
+                            </form:select>
+		                            </div>
+		                        </spring:bind> 
+                       		</div>
+	                        <div class="form-group col-md-4">
+		                        <spring:bind path="visitRecon">
+		                            <div class="form-group ${visitRecon.error ? 'has-error' : '' }">
+		                                <label class="control-label" for="visitRecon">Visit Reconciliation *</label>
+		                                <form:select path="visitRecon" id="visitRecon" class="form-control half visitRecon">
+                                <option value="0" label=" - Select - " >- Select An Action - </option>
+                                <c:forEach items="${actionList}" var="action">
+                                    <option value="${action.id}" <c:if test="${action.id == program.visitRecon}">selected</c:if>>${action.displayText}</option>
+                                </c:forEach>
+                            </form:select>
+		                            </div>
+		                        </spring:bind> 
+	                        </div>
+                        </div>             
+                        
                         <spring:bind path="programName">
                             <div class="form-group ${status.error ? 'has-error' : '' } ${not empty existingProgram ? 'has-error' : ''}">
                                 <label class="control-label" for="programName">Program Name *</label>
