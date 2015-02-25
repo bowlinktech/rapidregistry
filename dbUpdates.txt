@@ -23,3 +23,16 @@ INSERT INTO `rapidregistry`.`lu_engagementActions` (`displayText`) VALUES ('Over
 INSERT INTO `rapidregistry`.`lu_engagementActions` (`displayText`) VALUES ('Reject');
 INSERT INTO `rapidregistry`.`lu_engagementActions` (`displayText`) VALUES ('Use Last Visit');
 INSERT INTO `rapidregistry`.`lu_engagementActions` (`displayText`) VALUES ('Put In Queue');
+
+
+/** grace 02252015 02:47 PM **/
+ALTER TABLE `rapidregistry`.`storage_engagements` 
+ADD COLUMN `programorghierarchy_detailsId` INT NOT NULL AFTER `engagementId`;
+
+ALTER TABLE `rapidregistry`.`storage_engagements` 
+ADD CONSTRAINT `hierarchyDetailsId`
+  FOREIGN KEY (`id`)
+  REFERENCES `rapidregistry`.`programorghierarchy_details` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+

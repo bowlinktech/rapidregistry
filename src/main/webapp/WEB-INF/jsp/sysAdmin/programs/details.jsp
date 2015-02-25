@@ -77,6 +77,7 @@
                                 <c:forEach begin="1" end="20" var="number">
                                     <option value="${number}" <c:if test="${number == program.visitsPerDay}">selected</c:if>>${number}</option>
                                 </c:forEach>
+                                <option value="9999999" <c:if test="${number == program.visitsPerDay}">selected</c:if>>Unlimited</option>
                             </form:select>
 		                            </div>
 		                </spring:bind> 

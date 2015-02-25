@@ -74,18 +74,6 @@ public class programImports {
         /* Get a list of program upload types */
         List<programUploadTypes> importTypes = importManager.getUploadTypes((Integer) session.getAttribute("programId"));
         
-        if(importTypes.size() > 0) {
-            for(programUploadTypes importType : importTypes) {
-                
-                importType.setTemplateFileName(importType.getName().replaceAll(" ", "-").toLowerCase() + ".csv");
-                
-                Integer totalFields = importManager.getImportTypeFields(importType.getId()).size();
-                if(totalFields > 0) {
-                    importType.setTotalFields(totalFields);
-                }
-            }
-        }
-        
         mav.addObject("importTypes", importTypes);
         
         mav.addObject("programName", session.getAttribute("programName"));

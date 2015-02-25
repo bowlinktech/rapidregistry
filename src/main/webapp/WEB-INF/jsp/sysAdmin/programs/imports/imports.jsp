@@ -46,7 +46,6 @@
                                 <th scope="col" class="center-text">Status</th>
                                 <th scope="col" class="center-text">Use MCI</th>
                                 <th scope="col" class="center-text">Date Created</th>
-                                <th scope="col">Import Template</th>
                                 <th scope="col" class="center-text"></th>
                             </tr>
                         </thead>
@@ -65,17 +64,6 @@
                                                 <c:choose><c:when test="${importType.useMCI == true}">Yes</c:when><c:otherwise>No, overwrite existing records</c:otherwise></c:choose>
                                             </td>
                                             <td class="center-text"><fmt:formatDate value="${importType.dateCreated}" type="date" pattern="M/dd/yyyy" /></td>
-                                            <td>
-                                                <c:choose>
-                                                    <c:when test="${importType.totalFields > 0}">
-                                                        <a href="<c:url value="/FileDownload/downloadFile.do?filename=${importType.templateFileName}&foldername=import files&programId=${importType.programId}"/>"  class="media-modal" title="Download this import template">
-                                                            <span class="glyphicon glyphicon-open"></span>
-                                                            Download Data Import Template
-                                                        </a>
-                                                    </c:when>
-                                                    <c:otherwise>No Fields Yet</c:otherwise>
-                                                </c:choose>
-                                            </td>
                                             <td class="actions-col">
                                                 <a href="#importModal" data-toggle="modal" class="btn btn-link editImportType" rel="${importType.id}" title="Edit this import type">
                                                     <span class="glyphicon glyphicon-edit"></span>
@@ -84,6 +72,10 @@
                                                 <a href="/sysAdmin/programs/${programName}/imports/fields?s=${importType.id}"  class="btn btn-link" title="View importable fields for this import type.">
                                                     <span class="glyphicon glyphicon-align-justify"></span>
                                                     Fields
+                                                </a>
+                                                <a href="/sysAdmin/programs/${programName}/imports/fields?s=${importType.id}"  class="btn btn-link" title="View rules on how to process this import type.">
+                                                    <span class="glyphicon glyphicon-saved"></span>
+                                                    Rules
                                                 </a>
                                                 <a href="javascript:void(0);"  class="btn btn-link deleteImportType" rel="${importType.id}"  title="Delete this import type">
                                                     <span class="glyphicon glyphicon-remove"></span>
