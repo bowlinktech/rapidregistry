@@ -66,6 +66,18 @@ UPDATE `rapidregistry`.`lu_engagementMatchingActions` SET `id`='3' WHERE `id`='7
 UPDATE `rapidregistry`.`lu_engagementMatchingActions` SET `id`='4' WHERE `id`='8';
 UPDATE `rapidregistry`.`lu_engagementMatchingActions` SET `id`='5' WHERE `id`='9';
 
+ 
+/** chad 02262015 08:29 AM **/
+ALTER TABLE `rapidregistry`.`survey_questions` 
+ADD COLUMN `alphabeticallySort` BIT(1) NOT NULL DEFAULT b'0' AFTER `validationId`,
+ADD COLUMN `choiceLayout` VARCHAR(45) NULL DEFAULT NULL AFTER `alphabeticallySort`,
+ADD COLUMN `populateFromTable` VARCHAR(45) NULL DEFAULT NULL AFTER `choiceLayout`;
+
+ALTER TABLE `rapidregistry`.`survey_questionChoices` 
+ADD COLUMN `choiceValue` INT(11) NULL DEFAULT '0' AFTER `defAnswer`;
+
+
+
 /** grace 02262015 10:27AM **/
 CREATE TABLE `rapidregistry`.`lu_MCI_Categories` (
   `id` INT NOT NULL AUTO_INCREMENT,
