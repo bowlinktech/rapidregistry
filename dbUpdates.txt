@@ -109,7 +109,7 @@ DEFAULT CURRENT_TIMESTAMP AFTER `HELPickUpPath`;
 
 ALTER TABLE `rapidregistry`.`programuploads` 
 ADD COLUMN `batchFileName` VARCHAR(55) NULL AFTER `fileName`,
-ADD COLUMN `batchId` VARCHAR(55) NULL AFTER `UTAssignedFileName`;
+ADD COLUMN `batchId` VARCHAR(55) NULL AFTER `batchFileName`;
 
 
 ALTER TABLE `rapidregistry`.`programuploads` 
