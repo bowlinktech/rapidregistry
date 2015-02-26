@@ -2964,23 +2964,17 @@ UNLOCK TABLES;
 -- Table structure for table `survey_answers`
 --
 
-DROP TABLE IF EXISTS `survey_answers`;
+DROP TABLE IF EXISTS `survey_questionChoices`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `survey_answers` (
+CREATE TABLE `survey_questionChoices` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `questionId` int(11) NOT NULL,
   `skipToPageId` int(11) NOT NULL DEFAULT '0',
   `skipToQuestionId` int(11) NOT NULL DEFAULT '0',
-  `answer` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `choiceText` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `activityCodeId` int(11) DEFAULT '0',
   `defAnswer` bit(1) NOT NULL DEFAULT b'0',
-  `defAnsText` text COLLATE utf8_unicode_ci,
-  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `numericOnly` bit(1) NOT NULL DEFAULT b'0',
-  `maxLength` int(11) DEFAULT '255',
-  `label` text COLLATE utf8_unicode_ci,
-  `answerOrder` int(11) DEFAULT '1',
   PRIMARY KEY (`id`),
   KEY `questionId_idx` (`questionId`),
   CONSTRAINT `sa_qId` FOREIGN KEY (`questionId`) REFERENCES `survey_questions` (`id`)

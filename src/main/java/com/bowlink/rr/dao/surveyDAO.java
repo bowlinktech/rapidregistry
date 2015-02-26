@@ -6,7 +6,7 @@
 package com.bowlink.rr.dao;
 
 import com.bowlink.rr.model.AnswerTypes;
-import com.bowlink.rr.model.SurveyAnswers;
+import com.bowlink.rr.model.SurveyQuestionChoices;
 import com.bowlink.rr.model.SurveyChangeLogs;
 import com.bowlink.rr.model.SurveyPages;
 import com.bowlink.rr.model.SurveyQuestions;
@@ -49,8 +49,6 @@ public interface surveyDAO {
     
     List <SurveyQuestions> getAllSurveyQuestions(Integer surveyId) throws Exception;
     
-    List<SurveyAnswers> getSurveyAnswers(Integer questionId) throws Exception;
-    
     Integer createSurveyPage (SurveyPages surveyPage) throws Exception;
     
     void updateSurveyPage (SurveyPages surveyPage) throws Exception;
@@ -66,6 +64,8 @@ public interface surveyDAO {
     void saveSurveyQuestion(SurveyQuestions surveyQuestion) throws Exception;
     
     List getQuestionForSelectedPage(Integer pageId, Integer questionId) throws Exception;
+    
+    List<SurveyQuestionChoices> getQuestionChoices(Integer questionId) throws Exception;
     
     
 }

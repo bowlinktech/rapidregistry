@@ -7,7 +7,7 @@ package com.bowlink.rr.service.impl;
 
 import com.bowlink.rr.dao.surveyDAO;
 import com.bowlink.rr.model.AnswerTypes;
-import com.bowlink.rr.model.SurveyAnswers;
+import com.bowlink.rr.model.SurveyQuestionChoices;
 import com.bowlink.rr.model.SurveyChangeLogs;
 import com.bowlink.rr.model.SurveyPages;
 import com.bowlink.rr.model.SurveyQuestions;
@@ -117,15 +117,9 @@ public class surveyManagerImpl implements surveyManager {
 
     @Override
     @Transactional
-    public List<SurveyQuestions> getSurveyQuestions(Integer surveyPageId)
-            throws Exception {
+    public List<SurveyQuestions> getSurveyQuestions(Integer surveyPageId) throws Exception {
         List<SurveyQuestions> surveyQuestions = surveyDAO.getSurveyQuestions(surveyPageId);
-        /**
-         * we get answers here *
-         */
-        for (SurveyQuestions question : surveyQuestions) {
-            question.setSurveyAnswers(getSurveyAnswers(question.getId()));
-        }
+        
         return surveyQuestions;
     }
     
@@ -133,13 +127,6 @@ public class surveyManagerImpl implements surveyManager {
     @Transactional
     public List <SurveyQuestions> getAllSurveyQuestions(Integer surveyId) throws Exception {
          return surveyDAO.getAllSurveyQuestions(surveyId);
-    }
-
-    @Override
-    @Transactional
-    public List<SurveyAnswers> getSurveyAnswers(Integer questionId)
-            throws Exception {
-        return surveyDAO.getSurveyAnswers(questionId);
     }
 
     @Override
@@ -162,12 +149,9 @@ public class surveyManagerImpl implements surveyManager {
 
     @Override
     @Transactional
-    public SurveyQuestions getSurveyQuestionById(Integer questionId)
-            throws Exception {
+    public SurveyQuestions getSurveyQuestionById(Integer questionId) throws Exception {
         SurveyQuestions question = surveyDAO.getSurveyQuestionById(questionId);
-        if (question != null) {
-            question.setSurveyAnswers(getSurveyAnswers(question.getId()));
-        }
+        
         return question;
     }
     
@@ -194,5 +178,10 @@ public class surveyManagerImpl implements surveyManager {
     public List getQuestionForSelectedPage(Integer pageId, Integer questionId) throws Exception {
         return surveyDAO.getQuestionForSelectedPage(pageId, questionId);
     }
-
+    
+    @Override
+    @Transactional
+    public List<SurveyQuestionChoices> getQuestionChoices(Integer questionId) throws Exception {
+        return surveyDAO.getQuestionChoices(questionId);
+    }
 }

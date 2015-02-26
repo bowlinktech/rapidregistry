@@ -8,7 +8,7 @@ package com.bowlink.rr.dao.impl;
 import com.bowlink.rr.dao.surveyDAO;
 import com.bowlink.rr.model.AnswerTypes;
 import com.bowlink.rr.model.EngagementSurveys;
-import com.bowlink.rr.model.SurveyAnswers;
+import com.bowlink.rr.model.SurveyQuestionChoices;
 import com.bowlink.rr.model.SurveyChangeLogs;
 import com.bowlink.rr.model.SurveyPages;
 import com.bowlink.rr.model.SurveyQuestions;
@@ -206,19 +206,6 @@ public class surveyDAOImpl implements surveyDAO {
         return criteria.list();
     }
 
-    /**
-     * survey answers will be ordered by Id. When an answer is changed we will delete old entry and insert a new one 
-	 * *
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public List<SurveyAnswers> getSurveyAnswers(Integer questionId)
-            throws Exception {
-        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SurveyAnswers.class);
-        criteria.add(Restrictions.eq("questionId", questionId));
-        criteria.addOrder(Order.asc("answerOrder"));
-        return criteria.list();
-    }
 
     @Override
     public Integer createSurveyPage(SurveyPages surveyPage) throws Exception {
@@ -278,6 +265,21 @@ public class surveyDAOImpl implements surveyDAO {
                 .setParameter("questionId", questionId)
                 .setParameter("pageId", pageId);
 
+        return query.list();
+    }
+    
+    /**
+     * The 'getQuestionChoices' function will return the list of choices set for a question.
+     * 
+     * @param questionId    The id of the selected question
+     * @return  This function will return a list of survey question choices
+     * @throws Exception 
+     */
+    @Override
+    public List<SurveyQuestionChoices> getQuestionChoices(Integer questionId) throws Exception {
+        Query query = sessionFactory.getCurrentSession().createQuery("from SurveyQuestionChoices where questionId = :questionId order by id asc");
+        query.setParameter("questionId", questionId);
+        
         return query.list();
     }
 }
