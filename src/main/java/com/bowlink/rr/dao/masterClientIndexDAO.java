@@ -5,8 +5,8 @@
  */
 package com.bowlink.rr.dao;
 
-import com.bowlink.rr.model.programMCIAlgorithms;
-import com.bowlink.rr.model.programMCIFields;
+import com.bowlink.rr.model.programUpload_MCIalgorithms;
+import com.bowlink.rr.model.programUpload_MCIFields;
 import java.util.List;
 
 
@@ -16,17 +16,17 @@ import java.util.List;
  */
 public interface masterClientIndexDAO {
     
-    List<programMCIAlgorithms> getProgramMCIAlgorithms(Integer programId) throws Exception;
+    List<programUpload_MCIalgorithms> getProgramUploadMCIalgorithms(Integer programId) throws Exception;
     
-    List<programMCIFields> getProgramMCIFields(Integer mciId) throws Exception;
+    List<programUpload_MCIFields> getProgramUploadMCIFields(Integer mciId) throws Exception;
     
-    Integer createMCIAlgorithm(programMCIAlgorithms newMCIAlgorithm) throws Exception;
+    Integer createMCIAlgorithm(programUpload_MCIalgorithms newMCIAlgorithm) throws Exception;
     
-    void updateMCIAlgorithm(programMCIAlgorithms MCIAlgorithm) throws Exception;
+    void updateMCIAlgorithm(programUpload_MCIalgorithms MCIAlgorithm) throws Exception;
     
-    void createMCIAlgorithmFields(programMCIFields newField) throws Exception;
+    void createMCIAlgorithmFields(programUpload_MCIFields newField) throws Exception;
     
-    programMCIAlgorithms getMCIAlgorithm(Integer mpiId) throws Exception;
+    programUpload_MCIalgorithms getMCIAlgorithm(Integer mpiId) throws Exception;
     
     void removeAlgorithmField(Integer algorithmFieldId) throws Exception;
     

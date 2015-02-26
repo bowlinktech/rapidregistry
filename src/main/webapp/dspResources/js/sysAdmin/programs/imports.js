@@ -78,7 +78,16 @@ require(['./main'], function () {
             }
             
         });
-       
         
     });
 });
+
+
+function helPaths(show) {
+	if (show) {
+		$("#helPaths").show();
+	} else {
+		$("#helPaths").hide();
+	}
+}
+

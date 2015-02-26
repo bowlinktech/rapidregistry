@@ -65,4 +65,87 @@ UPDATE `rapidregistry`.`lu_engagementMatchingActions` SET `id`='2' WHERE `id`='6
 UPDATE `rapidregistry`.`lu_engagementMatchingActions` SET `id`='3' WHERE `id`='7';
 UPDATE `rapidregistry`.`lu_engagementMatchingActions` SET `id`='4' WHERE `id`='8';
 UPDATE `rapidregistry`.`lu_engagementMatchingActions` SET `id`='5' WHERE `id`='9';
- 
+
+/** grace 02262015 10:27AM **/
+CREATE TABLE `rapidregistry`.`lu_MCI_Categories` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `displayText` VARCHAR(45) NOT NULL,
+  `status` BIT NOT NULL DEFAULT 1,
+  `dateCreated` DATETIME NOT NULL DEFAULT current_timestamp,
+  PRIMARY KEY (`id`));
+
+INSERT INTO `rapidregistry`.`lu_MCI_Categories` (`displayText`) VALUES ('Patient');
+INSERT INTO `rapidregistry`.`lu_MCI_Categories` (`displayText`) VALUES ('Visit');
+
+
+ALTER TABLE `rapidregistry`.`programuploadtypes` 
+CHANGE COLUMN `useMCI` `useHEL` BIT(1) NULL DEFAULT b'1' ;
+
+
+DROP TABLE if exists `rapidregistry`.`program_mcienrollmethod`;
+DROP TABLE if exists `rapidregistry`.`program_mcimatchingmethod`;
+
+DROP TABLE if exists `rapidregistry`.`programUploadHELPaths`;
+
+ALTER TABLE `rapidregistry`.`programuploadtypes` 
+CHANGE COLUMN `useHEL` `useHEL` BIT(1) NULL DEFAULT 0 ,
+ADD COLUMN `HELDropPath` VARCHAR(75) NULL AFTER `useHEL`,
+ADD COLUMN `HELPickUpPath` VARCHAR(75) NULL AFTER `HELDropPath`,
+CHANGE COLUMN `dateCreated` `dateCreated` DATETIME NOT NULL 
+DEFAULT CURRENT_TIMESTAMP AFTER `HELPickUpPath`;
+
+
+ALTER TABLE `rapidregistry`.`programuploads` 
+ADD COLUMN `batchFileName` VARCHAR(55) NULL AFTER `fileName`,
+ADD COLUMN `batchId` VARCHAR(55) NULL AFTER `UTAssignedFileName`;
+
+
+ALTER TABLE `rapidregistry`.`programuploads` 
+ADD COLUMN `statusId` INT NOT NULL AFTER `UTBatchId`;
+
+ALTER TABLE `rapidregistry`.`programuploadtypes` 
+CHANGE COLUMN `useHEL` `useHEL` BIT(1) NOT NULL DEFAULT b'0' ;
+
+ALTER TABLE `rapidregistry`.`program_mcialgorithms` 
+ADD COLUMN `programUploadTypeId` INT NOT NULL AFTER `programId`;
+
+ALTER TABLE `rapidregistry`.`program_mcialgorithms` 
+RENAME TO  `rapidregistry`.`programUpload_mcialgorithms` ;
+
+ALTER TABLE `rapidregistry`.`programUpload_mcialgorithms` 
+ADD INDEX `fk_programUploadId_idx` (`programUploadTypeId` ASC);
+ALTER TABLE `rapidregistry`.`programUpload_mcialgorithms` 
+ADD CONSTRAINT `fk_programUploadId`
+  FOREIGN KEY (`programUploadTypeId`)
+  REFERENCES `rapidregistry`.`programuploadtypes` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+  
+ALTER TABLE `rapidregistry`.`programUpload_mcialgorithms` 
+DROP FOREIGN KEY `fk_programMPIAlgorithms_programId`;
+ALTER TABLE `rapidregistry`.`programUpload_mcialgorithms` 
+DROP COLUMN `programId`,
+DROP INDEX `programId` ;
+  
+ALTER TABLE `rapidregistry`.`programUpload_MCIalgorithms` 
+CHANGE COLUMN `dateCreated` `dateCreated` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ,
+ADD COLUMN `mci_CategoryId` INT NOT NULL DEFAULT 1 AFTER `action`;
+
+ALTER TABLE `rapidregistry`.`programUpload_MCIalgorithms` 
+ADD INDEX `mciCategoryId_idx` (`mci_CategoryId` ASC);
+ALTER TABLE `rapidregistry`.`programUpload_MCIalgorithms` 
+ADD CONSTRAINT `mciCategoryId`
+  FOREIGN KEY (`mci_CategoryId`)
+  REFERENCES `rapidregistry`.`lu_MCI_Categories` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+  
+ALTER TABLE `rapidregistry`.`programuploadtypes` 
+CHANGE COLUMN `HELDropPath` `HELDropPath` VARCHAR(100) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL DEFAULT NULL ,
+CHANGE COLUMN `HELPickUpPath` `HELPickUpPath` VARCHAR(100) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL DEFAULT NULL ;
+  
+
+
+
+
+

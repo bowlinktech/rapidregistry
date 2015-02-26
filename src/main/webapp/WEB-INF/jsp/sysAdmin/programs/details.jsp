@@ -56,7 +56,7 @@
                        		</div>
 	                        <div class="form-group col-md-4">
 		                        <spring:bind path="shareAcrossHierarchy">
-		                            <div class="form-group ${shareAcrossHierarchy.error ? 'has-error' : '' }">
+		                            <div class="form-group ${status.error ? 'has-error' : '' }">
 		                                <label class="control-label" for="status">Share Across ${lastHierarchyName} *</label>
 		                                <div>
 		                                    <label class="radio-inline">
@@ -71,7 +71,7 @@
 	                        </div>
                         </div>
                         <spring:bind path="visitsPerDay">
-		                            <div class="form-group ${visitsPerDay.error ? 'has-error' : '' }">
+		                            <div class="form-group ${status.error ? 'has-error' : '' }">
 		                                <label class="control-label" for="visitsPerDay">Visit(s) Allowed Per Day *</label>
 		                                <form:select path="visitsPerDay" id="visitsPerDay" class="form-control half visitsPerDay">
                                 <c:forEach begin="1" end="20" var="number">
@@ -84,7 +84,7 @@
                         <div class="row">                           
                             <div class="form-group col-md-4">
 		                        <spring:bind path="patientRecon">
-		                            <div class="form-group ${patientRecon.error ? 'has-error' : '' }">
+		                            <div class="form-group ${status.error ? 'has-error' : '' }">
 		                                <label class="control-label" for="patientRecon">Patient Reconciliation *</label>
 		                                <form:select path="patientRecon" id="patientRecon" class="form-control half patientRecon">
                                     <option value="1" <c:if test="${action.id == program.patientRecon}">selected</c:if>>No Action</option>
@@ -96,7 +96,7 @@
                        		</div>
 	                        <div class="form-group col-md-4">
 		                        <spring:bind path="visitRecon">
-		                            <div class="form-group ${visitRecon.error ? 'has-error' : '' }">
+		                            <div class="form-group ${status.error ? 'has-error' : '' }">
 		                                <label class="control-label" for="visitRecon">Visit Reconciliation *</label>
 		                                <form:select path="visitRecon" id="visitRecon" class="form-control half visitRecon">
                                 <option value="0" label=" - Select - " >- Select An Action - </option>

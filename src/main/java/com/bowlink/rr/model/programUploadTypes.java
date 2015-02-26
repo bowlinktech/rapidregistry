@@ -28,9 +28,6 @@ public class programUploadTypes {
     @Transient
     private int totalFields = 0;
     
-    @Transient
-    private String templateFileName;
-    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID", nullable = false)
@@ -51,72 +48,87 @@ public class programUploadTypes {
     @Column(name = "STATUS", nullable = false)
     private boolean status = true;
     
-    @Column(name = "USEMCI", nullable = false)
-    private boolean useMCI = true;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public Integer getProgramId() {
-        return programId;
-    }
-
-    public void setProgramId(Integer programId) {
-        this.programId = programId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Date getDateCreated() {
-        return dateCreated;
-    }
-
-    public void setDateCreated(Date dateCreated) {
-        this.dateCreated = dateCreated;
-    }
-
-    public boolean isStatus() {
-        return status;
-    }
-
-    public void setStatus(boolean status) {
-        this.status = status;
-    }
-
-    public boolean isUseMCI() {
-        return useMCI;
-    }
-
-    public void setUseMCI(boolean useMCI) {
-        this.useMCI = useMCI;
-    }
-
-    public int getTotalFields() {
-        return totalFields;
-    }
-
-    public void setTotalFields(int totalFields) {
-        this.totalFields = totalFields;
-    }
-
-    public String getTemplateFileName() {
-        return templateFileName;
-    }
-
-    public void setTemplateFileName(String templateFileName) {
-        this.templateFileName = templateFileName;
-    }
+    @Column(name = "useHEL", nullable = false)
+    private boolean useHEL = false;
     
+    @NoHtml
+    @Column(name = "HELPickUpPath", nullable = false)
+    private String helPickUpPath;
     
+    @NoHtml
+    @Column(name = "HELDropPath", nullable = false)
+    private String helDropPath;
+
+	public int getTotalFields() {
+		return totalFields;
+	}
+
+	public void setTotalFields(int totalFields) {
+		this.totalFields = totalFields;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public Integer getProgramId() {
+		return programId;
+	}
+
+	public void setProgramId(Integer programId) {
+		this.programId = programId;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Date getDateCreated() {
+		return dateCreated;
+	}
+
+	public void setDateCreated(Date dateCreated) {
+		this.dateCreated = dateCreated;
+	}
+
+	public boolean isStatus() {
+		return status;
+	}
+
+	public void setStatus(boolean status) {
+		this.status = status;
+	}
+
+	public boolean isUseHEL() {
+		return useHEL;
+	}
+
+	public void setUseHEL(boolean useHEL) {
+		this.useHEL = useHEL;
+	}
+
+	public String getHelPickUpPath() {
+		return helPickUpPath;
+	}
+
+	public void setHelPickUpPath(String helPickUpPath) {
+		this.helPickUpPath = helPickUpPath;
+	}
+
+	public String getHelDropPath() {
+		return helDropPath;
+	}
+
+	public void setHelDropPath(String helDropPath) {
+		this.helDropPath = helDropPath;
+	}
+
 }

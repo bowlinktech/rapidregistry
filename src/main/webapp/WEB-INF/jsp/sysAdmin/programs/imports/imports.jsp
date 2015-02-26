@@ -44,7 +44,7 @@
                             <tr>
                                 <th scope="col">Name</th>
                                 <th scope="col" class="center-text">Status</th>
-                                <th scope="col" class="center-text">Use MCI</th>
+                                <th scope="col" class="center-text">Use Health-e-link</th>
                                 <th scope="col" class="center-text">Date Created</th>
                                 <th scope="col" class="center-text"></th>
                             </tr>
@@ -61,7 +61,7 @@
                                                 <c:choose><c:when test="${importType.status == true}">Active</c:when><c:otherwise>Inactive</c:otherwise></c:choose>
                                             </td>
                                             <td class="center-text">
-                                                <c:choose><c:when test="${importType.useMCI == true}">Yes</c:when><c:otherwise>No, overwrite existing records</c:otherwise></c:choose>
+                                                <c:choose><c:when test="${importType.useHEL == true}">Yes</c:when><c:otherwise>No</c:otherwise></c:choose>
                                             </td>
                                             <td class="center-text"><fmt:formatDate value="${importType.dateCreated}" type="date" pattern="M/dd/yyyy" /></td>
                                             <td class="actions-col">
@@ -73,7 +73,7 @@
                                                     <span class="glyphicon glyphicon-align-justify"></span>
                                                     Fields
                                                 </a>
-                                                <a href="/sysAdmin/programs/${programName}/imports/fields?s=${importType.id}"  class="btn btn-link" title="View rules on how to process this import type.">
+                                                <a href="/sysAdmin/programs/${programName}/mci-algorithms"  class="btn btn-link" title="View rules on how to process this import type." rel="${importType.id}">
                                                     <span class="glyphicon glyphicon-saved"></span>
                                                     Rules
                                                 </a>

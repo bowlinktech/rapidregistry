@@ -31,19 +31,7 @@
                             </div>
                         </div>
                     </spring:bind> 
-                    <spring:bind path="useMCI">
-                        <div class="form-group ${status.error ? 'has-error' : '' }">
-                            <label class="control-label" for="useMCI">Use MCI *</label>
-                            <div>
-                                <label class="radio-inline">
-                                    <form:radiobutton id="useMCI" path="useMCI" value="true" /> Yes
-                                </label>
-                                <label class="radio-inline">
-                                    <form:radiobutton id="useMCI" path="useMCI" value="false" /> No, overwrite matching records
-                                </label>
-                            </div>
-                        </div>
-                    </spring:bind>  
+                    <%-- if yes display paths --%>
                     <spring:bind path="name">
                         <div class="form-group ${status.error ? 'has-error' : '' }">
                             <label class="control-label" for="name">Name *</label>
@@ -51,6 +39,39 @@
                             <form:errors path="name" cssClass="control-label" element="label" />
                         </div>
                     </spring:bind>
+                    <spring:bind path="useHEL">
+                        <div class="form-group ${status.error ? 'has-error' : '' }">
+                            <label class="control-label" for="useHEL">Use Health-e-link *</label>
+                            <div>
+                                <label class="radio-inline">
+                                    <form:radiobutton id="useHEL" path="useHEL" value="true" onClick="helPaths(true);"/> Yes
+                                </label>
+                                <label class="radio-inline">
+                                    <form:radiobutton id="useHEL" path="useHEL" value="false" onClick="helPaths(false);" /> No
+                                </label>
+                            </div>
+                            </div>
+                      </spring:bind>
+                          
+                        <div id="helPaths" <c:if test="${not importTypeDetails.useHEL}">style="display:none"</c:if>>
+                        <spring:bind path="helDropPath">
+                        	<div class="form-group ${status.error ? 'has-error' : '' }">
+	                            <label class="control-label" for="name">Health-e-link Input Path *</label>
+	                            <form:input path="helDropPath" id="helDropPath" class="form-control" type="text" maxLength="100" />
+	                            <form:errors path="helDropPath" cssClass="control-label" element="label" />
+                        	</div>
+                   		</spring:bind>
+	                    <spring:bind path="helPickUpPath">
+	                        <div class="form-group ${status.error ? 'has-error' : '' }">
+	                            <label class="control-label" for="name">Health-e-link Output Path *</label>
+	                            <form:input path="helPickUpPath" id="helPickUpPath" class="form-control" type="text" maxLength="100" />
+	                            <form:errors path="helPickUpPath" cssClass="control-label" element="label" />
+	                        </div>
+	                    </spring:bind>
+                    </div>
+                            
+                    
+                    
                 </div>
                 <div class="form-group">
                     <input type="button" id="submitImportType" role="button" class="btn btn-primary" value="Save"/>

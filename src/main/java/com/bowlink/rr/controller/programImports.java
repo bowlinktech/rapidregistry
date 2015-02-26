@@ -143,6 +143,13 @@ public class programImports {
             return mav;
         }
         
+        //if use HEL is no, we do not overwrite old paths, we leave old paths there in case they want to reuse it in the future
+        if (! importTypeDetails.isUseHEL()) {
+        	programUploadTypes oldImportTypeDeatail = importManager.getUploadTypeById(importTypeDetails.getId());
+        	importTypeDetails.setHelDropPath(oldImportTypeDeatail.getHelDropPath());
+        	importTypeDetails.setHelPickUpPath(oldImportTypeDeatail.getHelPickUpPath());
+        }
+        
         importManager.saveUploadType(importTypeDetails);
 
         ModelAndView mav = new ModelAndView();

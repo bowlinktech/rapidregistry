@@ -6,8 +6,8 @@
 package com.bowlink.rr.service.impl;
 
 import com.bowlink.rr.dao.masterClientIndexDAO;
-import com.bowlink.rr.model.programMCIAlgorithms;
-import com.bowlink.rr.model.programMCIFields;
+import com.bowlink.rr.model.programUpload_MCIalgorithms;
+import com.bowlink.rr.model.programUpload_MCIFields;
 import com.bowlink.rr.service.masterClientIndexManager;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,37 +26,37 @@ public class masterClientIndexManagerImpl implements masterClientIndexManager {
     
     @Override
     @Transactional
-    public List<programMCIAlgorithms> getProgramMCIAlgorithms(Integer programId) throws Exception {
-        return masterClientIndexDAO.getProgramMCIAlgorithms(programId);
+    public List<programUpload_MCIalgorithms> getProgramUploadMCIalgorithms(Integer programId) throws Exception {
+        return masterClientIndexDAO.getProgramUploadMCIalgorithms(programId);
     }
     
     @Override
     @Transactional
-    public List<programMCIFields> getProgramMCIFields(Integer mciId) throws Exception {
-        return masterClientIndexDAO.getProgramMCIFields(mciId);
+    public List<programUpload_MCIFields> getProgramUploadMCIFields(Integer mciId) throws Exception {
+        return masterClientIndexDAO.getProgramUploadMCIFields(mciId);
     }
     
     @Override
     @Transactional
-    public Integer createMCIAlgorithm(programMCIAlgorithms newMCIAlgorithm) throws Exception {
+    public Integer createMCIAlgorithm(programUpload_MCIalgorithms newMCIAlgorithm) throws Exception {
         return masterClientIndexDAO.createMCIAlgorithm(newMCIAlgorithm);
     }
     
     @Override
     @Transactional
-    public void updateMCIAlgorithm(programMCIAlgorithms MCIAlgorithm) throws Exception {
+    public void updateMCIAlgorithm(programUpload_MCIalgorithms MCIAlgorithm) throws Exception {
         masterClientIndexDAO.updateMCIAlgorithm(MCIAlgorithm);
     }
     
     @Override
     @Transactional
-    public void createMCIAlgorithmFields(programMCIFields newField) throws Exception {
+    public void createMCIAlgorithmFields(programUpload_MCIFields newField) throws Exception {
         masterClientIndexDAO.createMCIAlgorithmFields(newField);
     }
     
     @Override
     @Transactional
-    public programMCIAlgorithms getMCIAlgorithm(Integer mciId) throws Exception {
+    public programUpload_MCIalgorithms getMCIAlgorithm(Integer mciId) throws Exception {
         return masterClientIndexDAO.getMCIAlgorithm(mciId);
     }
     

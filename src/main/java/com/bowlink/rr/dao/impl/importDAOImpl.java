@@ -33,7 +33,7 @@ public class importDAOImpl implements importDAO {
     @Override
     public List<programUploadTypes> getUploadTypes(Integer programId) throws Exception {
         
-        String sqlQuery = "select id, programId, name, dateCreated, status, useMCI from programUploadTypes where programId = " + programId;
+        String sqlQuery = "select id, programId, name, dateCreated, status, useHEL from programUploadTypes where programId = " + programId;
         
         Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery) 
         .setResultTransformer(Transformers.aliasToBean(programUploadTypes.class)
