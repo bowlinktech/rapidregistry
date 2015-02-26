@@ -9,7 +9,7 @@ ALTER TABLE `rapidregistry`.`programs`
 ADD COLUMN `patientRecon` INT NULL DEFAULT 1 AFTER `visitsPerDay`,
 ADD COLUMN `visitRecon` INT NULL DEFAULT 1 AFTER `patientRecon`;
 
-CREATE TABLE `lu_engagementActions` (
+CREATE TABLE `lu_engagementMatchingActions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `displayText` varchar(45) NOT NULL,
   `status` bit(1) NOT NULL DEFAULT b'1',
@@ -35,7 +35,37 @@ ADD CONSTRAINT `hierarchyDetailsId`
   REFERENCES `rapidregistry`.`programorghierarchy_details` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
+  
+  
+ /** grace 02262015 09:21 AM **/
+ 
+ drop table if exists `rapidregistry`.lu_engagemenActions;
+ 
+ 
+  drop table if exists `rapidregistry`.lu_engagementMatchingActions;
 
+ CREATE TABLE `rapidregistry`.`lu_engagementMatchingActions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `displayText` varchar(45) NOT NULL,
+  `status` bit(1) NOT NULL DEFAULT b'1',
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+
+
+INSERT INTO `rapidregistry`.`lu_engagementMatchingActions` (`displayText`) VALUES ('No Action');
+INSERT INTO `rapidregistry`.`lu_engagementMatchingActions` (`displayText`) VALUES ('Overwrite');
+INSERT INTO `rapidregistry`.`lu_engagementMatchingActions` (`displayText`) VALUES ('Reject');
+INSERT INTO `rapidregistry`.`lu_engagementMatchingActions` (`displayText`) VALUES ('Use Last Visit');
+INSERT INTO `rapidregistry`.`lu_engagementMatchingActions` (`displayText`) VALUES ('Put In Queue');
+ 
+ 
+UPDATE `rapidregistry`.`lu_engagementMatchingActions` SET `id`='1' WHERE `id`='5';
+UPDATE `rapidregistry`.`lu_engagementMatchingActions` SET `id`='2' WHERE `id`='6';
+UPDATE `rapidregistry`.`lu_engagementMatchingActions` SET `id`='3' WHERE `id`='7';
+UPDATE `rapidregistry`.`lu_engagementMatchingActions` SET `id`='4' WHERE `id`='8';
+UPDATE `rapidregistry`.`lu_engagementMatchingActions` SET `id`='5' WHERE `id`='9';
+ 
 /** chad 02262015 08:29 AM **/
 ALTER TABLE `rapidregistry`.`survey_questions` 
 ADD COLUMN `alphabeticallySort` BIT(1) NOT NULL DEFAULT b'0' AFTER `validationId`,
