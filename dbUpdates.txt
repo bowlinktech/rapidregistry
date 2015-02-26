@@ -113,7 +113,7 @@ ADD COLUMN `batchId` VARCHAR(55) NULL AFTER `batchFileName`;
 
 
 ALTER TABLE `rapidregistry`.`programuploads` 
-ADD COLUMN `statusId` INT NOT NULL AFTER `UTBatchId`;
+ADD COLUMN `statusId` INT NOT NULL AFTER `batchId`;
 
 ALTER TABLE `rapidregistry`.`programuploadtypes` 
 CHANGE COLUMN `useHEL` `useHEL` BIT(1) NOT NULL DEFAULT b'0' ;
