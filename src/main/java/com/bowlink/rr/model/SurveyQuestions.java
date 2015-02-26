@@ -14,7 +14,6 @@ import javax.persistence.Transient;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import com.bowlink.rr.validator.NoHtml;
 
 /**
  *
@@ -25,7 +24,7 @@ import com.bowlink.rr.validator.NoHtml;
 public class SurveyQuestions {
 
     @Transient
-    List<SurveyAnswers> SurveyAnswers;
+    List<SurveyQuestionChoices> questionChoices;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -81,7 +80,16 @@ public class SurveyQuestions {
     
     @Column(name = "validationId", nullable = false)
     private int validationId = 1;
-
+    
+    @Column(name = "alphabeticallySort", nullable = false)
+    private boolean alphabeticallySort = false;
+    
+    @Column(name = "choiceLayout", nullable = true)
+    private String choiceLayout = "";
+    
+    @Column(name = "populateFromTable", nullable = true)
+    private String populateFromTable = "";
+    
     public int getId() {
         return id;
     }
@@ -194,12 +202,12 @@ public class SurveyQuestions {
         this.questionNum = questionNum;
     }
 
-    public List<SurveyAnswers> getSurveyAnswers() {
-        return SurveyAnswers;
+    public List<SurveyQuestionChoices> getquestionChoices() {
+        return questionChoices;
     }
 
-    public void setSurveyAnswers(List<SurveyAnswers> surveyAnswers) {
-        SurveyAnswers = surveyAnswers;
+    public void setquestionChoices(List<SurveyQuestionChoices> questionChoices) {
+        questionChoices = questionChoices;
     }
 
     public String getRequiredResponse() {
@@ -217,6 +225,29 @@ public class SurveyQuestions {
     public void setValidationId(int validationId) {
         this.validationId = validationId;
     }
-    
+
+    public boolean isAlphabeticallySort() {
+        return alphabeticallySort;
+    }
+
+    public void setAlphabeticallySort(boolean alphabeticallySort) {
+        this.alphabeticallySort = alphabeticallySort;
+    }
+
+    public String getChoiceLayout() {
+        return choiceLayout;
+    }
+
+    public void setChoiceLayout(String choiceLayout) {
+        this.choiceLayout = choiceLayout;
+    }
+
+    public String getPopulateFromTable() {
+        return populateFromTable;
+    }
+
+    public void setPopulateFromTable(String populateFromTable) {
+        this.populateFromTable = populateFromTable;
+    }
     
 }

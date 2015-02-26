@@ -36,3 +36,11 @@ ADD CONSTRAINT `hierarchyDetailsId`
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
+/** chad 02262015 08:29 AM **/
+ALTER TABLE `rapidregistry`.`survey_questions` 
+ADD COLUMN `alphabeticallySort` BIT(1) NOT NULL DEFAULT b'0' AFTER `validationId`,
+ADD COLUMN `choiceLayout` VARCHAR(45) NULL DEFAULT NULL AFTER `alphabeticallySort`,
+ADD COLUMN `populateFromTable` VARCHAR(45) NULL DEFAULT NULL AFTER `choiceLayout`;
+
+ALTER TABLE `rapidregistry`.`survey_questionChoices` 
+ADD COLUMN `choiceValue` INT(11) NULL DEFAULT '0' AFTER `defAnswer`;

@@ -358,6 +358,31 @@ require(['./main'], function () {
             
         });
         
+        /** Funtion to show the auto populate table list **/
+        $(document).on('change', '#populate', function() {
+            
+           if($(this).is(':checked')) {
+               $('#manual').attr('checked', false);
+               $('#autoPopulateDiv').show();
+           }
+           else {
+               $('#autoPopulateDiv').hide();
+           }
+            
+        });
+        
+        /** Function to show the multiple choice column display div for the edit/add question **/
+        $(document).on('change', '#choiceLayout', function() {
+           
+           if($(this).is(':checked')) {
+               $('#choiceLayoutDiv').show();
+           }
+           else {
+               $('#choiceLayoutDiv').hide();
+           }
+            
+        });
+        
         /** Function to populate the list of questions for the selected page **/
         $(document).on('change', '.moveToPage', function() {
             var pageId = $(this).val();

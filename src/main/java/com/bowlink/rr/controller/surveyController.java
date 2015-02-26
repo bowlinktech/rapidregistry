@@ -13,19 +13,24 @@ import com.bowlink.rr.model.User;
 import com.bowlink.rr.model.activityCodes;
 import com.bowlink.rr.model.surveys;
 import com.bowlink.rr.model.Log_userSurveyActivity;
+import com.bowlink.rr.model.SurveyQuestionChoices;
+import com.bowlink.rr.model.programAvailableTables;
 import com.bowlink.rr.security.decryptObject;
 import com.bowlink.rr.security.encryptObject;
 import com.bowlink.rr.service.activityCodeManager;
 import com.bowlink.rr.service.dataElementManager;
 import com.bowlink.rr.service.programFormsManager;
+import com.bowlink.rr.service.programManager;
 import com.bowlink.rr.service.surveyManager;
 import com.bowlink.rr.service.userManager;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -67,6 +72,9 @@ public class surveyController {
     
     @Autowired
     programFormsManager programFormsManager;
+    
+    @Autowired
+    programManager programmanager;
 
     private String controllerName = "survey";
     
@@ -534,11 +542,19 @@ public class surveyController {
         /** Multiple Choice **/
         if(questionType == 1) {
             mav.setViewName("/programAdmin/surveys/questionTypes/multipleChoice");
+            
+            /** Get a list of available tables to auto-populate from **/
+            List<programAvailableTables> availableTables = programmanager.getAvailableTablesForSurveys((Integer) session.getAttribute("selprogramId"));
+            mav.addObject("availableTables", availableTables);
         }
         
         /** Drop down (select box) **/
         else if(questionType == 2) {
             mav.setViewName("/programAdmin/surveys/questionTypes/dropDown");
+            
+            /** Get a list of available tables to auto-populate from **/
+            List<programAvailableTables> availableTables = programmanager.getAvailableTablesForSurveys((Integer) session.getAttribute("selprogramId"));
+            mav.addObject("availableTables", availableTables);
         }
         
         /** Single text box **/
@@ -599,6 +615,17 @@ public class surveyController {
         surveyQuestion.setSurveyPageId(pageId);
         surveyQuestion.setQuestionNum(qnum);
         
+        /* Create 3 blank answers */
+        if(questionType == 1 || questionType == 2) {
+            List<SurveyQuestionChoices> questionChoices = new CopyOnWriteArrayList<SurveyQuestionChoices>();
+            
+            for(int i = 1; i <= 3; i++) {
+                SurveyQuestionChoices questionChoice = new SurveyQuestionChoices();
+                questionChoices.add(questionChoice);
+            }
+            surveyQuestion.setquestionChoices(questionChoices);
+        }
+        
         mav.addObject("surveyQuestion", surveyQuestion);
        
         mav.addObject("s",s);
@@ -616,6 +643,11 @@ public class surveyController {
         /* Return a list of pages */
         List<SurveyPages> pages = surveymanager.getSurveyPages(surveyId, false);
         mav.addObject("pages", pages);
+        
+        /* Get the list of programs in the system */
+        List<activityCodes> activityCodes = activitycodemanager.getActivityCodesByProgram((Integer) session.getAttribute("selprogramId"));
+        mav.addObject("activityCodes", activityCodes);
+       
         
         return mav;
         
@@ -637,18 +669,32 @@ public class surveyController {
         ModelAndView mav = new ModelAndView();
         
         SurveyQuestions questionDetails = surveymanager.getSurveyQuestionById(questionId);
-        mav.addObject("surveyQuestion", questionDetails);
         mav.addObject("qnum", questionDetails.getQuestionNum());
-       
+        
+        /* Get question choices */
+        if(questionDetails.getAnswerTypeId() == 1 || questionDetails.getAnswerTypeId() == 2) {
+            List<SurveyQuestionChoices> questionChoices = surveymanager.getQuestionChoices(questionId);
+            questionDetails.setquestionChoices(questionChoices);
+        }
+        
+        mav.addObject("surveyQuestion", questionDetails);
         
         /** Multiple Choice **/
         if(questionDetails.getAnswerTypeId() == 1) {
             mav.setViewName("/programAdmin/surveys/questionTypes/multipleChoice");
+            
+            /** Get a list of available tables to auto-populate from **/
+            List<programAvailableTables> availableTables = programmanager.getAvailableTablesForSurveys((Integer) session.getAttribute("selprogramId"));
+            mav.addObject("availableTables", availableTables);
         }
         
         /** Drop down (select box) **/
         else if(questionDetails.getAnswerTypeId() == 2) {
             mav.setViewName("/programAdmin/surveys/questionTypes/dropDown");
+            
+            /** Get a list of available tables to auto-populate from **/
+            List<programAvailableTables> availableTables = programmanager.getAvailableTablesForSurveys((Integer) session.getAttribute("selprogramId"));
+            mav.addObject("availableTables", availableTables);
         }
         
         /** Single text box **/
@@ -704,6 +750,10 @@ public class surveyController {
         /* Return a list of pages */
         List<SurveyPages> pages = surveymanager.getSurveyPages(surveyId, false);
         mav.addObject("pages", pages);
+        
+        /* Get the list of programs in the system */
+        List<activityCodes> activityCodes = activitycodemanager.getActivityCodesByProgram((Integer) session.getAttribute("selprogramId"));
+        mav.addObject("activityCodes", activityCodes);
         
         return mav;
         
