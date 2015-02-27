@@ -1,0 +1,22 @@
+/** grace 02272015 11:15AM **/
+
+drop trigger if exists rapidregistry.survey_pages_track_d;
+drop trigger if exists rapidregistry.survey_pages_track_u;
+DROP TRIGGER IF EXISTS `rapidregistry`.`survey_questions_track_u`;
+DROP TRIGGER IF EXISTS `rapidregistry`.`survey_questions_track_d`;
+
+USE `rapidregistry`;
+
+DELIMITER $$
+
+USE `rapidregistry`$$
+DROP TRIGGER IF EXISTS `rapidregistry`.`survey_track_u` $$
+DELIMITER ;
+USE `rapidregistry`;
+
+DELIMITER $$
+
+USE `rapidregistry`$$
+DROP TRIGGER IF EXISTS `rapidregistry`.`survey_track_d` $$
+DELIMITER ;
+
