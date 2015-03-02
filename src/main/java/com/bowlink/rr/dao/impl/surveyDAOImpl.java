@@ -277,9 +277,46 @@ public class surveyDAOImpl implements surveyDAO {
      */
     @Override
     public List<SurveyQuestionChoices> getQuestionChoices(Integer questionId) throws Exception {
-        Query query = sessionFactory.getCurrentSession().createQuery("from SurveyQuestionChoices where questionId = :questionId order by id asc");
+        
+        SurveyQuestions questionDetails = getSurveyQuestionById(questionId);
+        
+        Query query;
+        
+        if(questionDetails.isAlphabeticallySort()) {
+            query = sessionFactory.getCurrentSession().createQuery("from SurveyQuestionChoices where questionId = :questionId order by choiceText asc");
+        
+        }
+        else {
+            query = sessionFactory.getCurrentSession().createQuery("from SurveyQuestionChoices where questionId = :questionId order by id asc");
+        
+        }
+        
         query.setParameter("questionId", questionId);
         
         return query.list();
+    }
+    
+    /**
+     * The 'removeQuestionChoices' function will remove the choices associated to the passed in question.
+     * 
+     * @param questionId The id of the selected question.
+     * @throws Exception 
+     */
+    @Override
+    public void removeQuestionChoices(Integer questionId) throws Exception {
+        Query deleteQuestionChoices = sessionFactory.getCurrentSession().createQuery("delete from SurveyQuestionChoices where questionId = :questionId");
+        deleteQuestionChoices.setParameter("questionId", questionId);
+        deleteQuestionChoices.executeUpdate();
+    }
+    
+    /**
+     * The 'saveQuestionChoice' function will save the question choices.
+     * 
+     * @param questionChoice The object containing the question choice details
+     * @throws Exception 
+     */
+    @Override
+    public void saveQuestionChoice(SurveyQuestionChoices questionChoice) throws Exception {
+        sessionFactory.getCurrentSession().save(questionChoice);
     }
 }

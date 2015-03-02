@@ -207,7 +207,7 @@ public class SurveyQuestions {
     }
 
     public void setquestionChoices(List<SurveyQuestionChoices> questionChoices) {
-        questionChoices = questionChoices;
+        this.questionChoices = questionChoices;
     }
 
     public String getRequiredResponse() {

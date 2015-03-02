@@ -54,32 +54,102 @@
                     <c:when test="${not empty page.surveyQuestions}">
                         <c:forEach var="question" items="${page.surveyQuestions}">
                             <div class="questionDiv row" id="questionDiv${question.id}" rel="${question.id}" style="width: 98%; padding: 5px; margin-left: 5px; margin-bottom: 30px;">
-                                <div class="pull-left">
-                                    <span><h4><c:if test="${question.required == true}">*&nbsp;</c:if>${question.questionNum}. ${question.question}</h4></span>
+                                <div class="row" style="width: 98%; padding: 5px; margin-left: 5px;">
+                                    <div class="pull-left">
+                                        <span><h4><c:if test="${question.required == true}">*&nbsp;</c:if>${question.questionNum}. ${question.question}</h4></span>
+                                    </div>
+                                    <div class="pull-right" id="questionBtns${question.id}" style="display:none;">
+                                        <button type="button" class="btn btn-primary btn-sm questionButton" pane="editPane" rel="${question.id}">
+                                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit
+                                        </button>
+                                        <button type="button" class="btn btn-default btn-sm questionButton" pane="optionsPane" rel="${question.id}">
+                                            <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Options
+                                        </button> 
+                                        <c:if test="${question.answerTypeId == 1 || question.answerTypeId == 2}">
+                                            <button type="button" class="btn btn-default btn-sm questionButton" pane="logicPane" rel="${question.id}">
+                                                <span class="glyphicon glyphicon-random" aria-hidden="true"></span> Logic
+                                            </button>
+                                        </c:if>
+                                        <button type="button" class="btn btn-default btn-sm questionButton" pane="movePane" rel="${question.id}">
+                                            <span class="glyphicon glyphicon-move" aria-hidden="true"></span> Move
+                                        </button>  
+                                        <button type="button" class="btn btn-default btn-sm questionButton" pane="copyPane" rel="${question.id}">
+                                            <span class="glyphicon glyphicon-tag" aria-hidden="true"></span> Copy
+                                        </button>   
+                                        <button type="button" class="btn btn-danger btn-sm deleteQuestion" rel="${question.id}">
+                                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Delete
+                                        </button>         
+                                    </div>
+                                </div>
+                                <div class="row" style="width: 98%; padding: 5px; margin-left: 5px;">
                                     <c:choose>
                                         <c:when test="${question.answerTypeId == 3}">
                                             <div class="form-group">
                                                 <input type="text" placeholder="Enter your Question" class="form-control" type="text" maxLength="255" disabled style="background-color:#ffffff; width:500px;" />
                                             </div>
                                         </c:when>
+                                        <c:when test="${question.answerTypeId == 1}">
+                                            <c:choose>
+                                                <c:when test="${not empty question.questionChoices}">
+                                                    <c:choose>
+                                                        <c:when test="${question.choiceLayout == '1 Column'}">
+                                                            <c:forEach items="${question.questionChoices}" var="choiceDetails">
+                                                                <div class="form-group">
+                                                                    <label class="radio">
+                                                                        <input type="radio" disabled="disabled" /> ${choiceDetails.choiceText}
+                                                                    </label>
+                                                                </div>
+                                                             </c:forEach>   
+                                                        </c:when>
+                                                        <c:when test="${question.choiceLayout == '2 Columns'}">
+                                                            <div class="row">
+                                                                <c:forEach items="${question.questionChoices}" var="choiceDetails">
+                                                                    <div class="col-md-6">
+                                                                        <label class="radio">
+                                                                            <input type="radio" disabled="disabled" /> ${choiceDetails.choiceText}
+                                                                        </label>
+                                                                    </div>
+                                                                 </c:forEach>   
+                                                            </div>
+                                                        </c:when>
+                                                        <c:when test="${question.choiceLayout == '3 Columns'}">
+                                                            <div class="row">
+                                                                <c:forEach items="${question.questionChoices}" var="choiceDetails">
+                                                                    <div class="col-md-4">
+                                                                        <label class="radio">
+                                                                            <input type="radio" disabled="disabled" /> ${choiceDetails.choiceText}
+                                                                        </label>
+                                                                    </div>
+                                                                 </c:forEach>   
+                                                            </div>
+                                                        </c:when>
+                                                        <c:when test="${question.choiceLayout == 'Horizontal'}">
+                                                            <div class="form-inline">
+                                                                <c:forEach items="${question.questionChoices}" var="choiceDetails">
+                                                                    <label class="radio">
+                                                                        <input type="radio" disabled="disabled" /> ${choiceDetails.choiceText}
+                                                                    </label>
+                                                                 </c:forEach>   
+                                                            </div>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <div class="form-group">
+                                                                <c:forEach items="${question.questionChoices}" var="choiceDetails">
+                                                                    <label class="radio">
+                                                                        <input type="radio" disabled="disabled" /> ${choiceDetails.choiceText}
+                                                                    </label>
+                                                                </c:forEach>
+                                                            </div>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <span>No Question Choices have been set up.</span>
+                                                </c:otherwise>
+                                            </c:choose>
+                                            
+                                        </c:when>
                                     </c:choose>
-                                </div>
-                                <div class="pull-right" id="questionBtns${question.id}" style="display:none;">
-                                    <button type="button" class="btn btn-primary btn-sm questionButton" pane="editPane" rel="${question.id}">
-                                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit
-                                    </button>
-                                    <button type="button" class="btn btn-default btn-sm questionButton" pane="optionsPane" rel="${question.id}">
-                                        <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Options
-                                    </button>  
-                                    <button type="button" class="btn btn-default btn-sm questionButton" pane="movePane" rel="${question.id}">
-                                        <span class="glyphicon glyphicon-move" aria-hidden="true"></span> Move
-                                    </button>  
-                                    <button type="button" class="btn btn-default btn-sm questionButton" pane="copyPane" rel="${question.id}">
-                                        <span class="glyphicon glyphicon-tag" aria-hidden="true"></span> Copy
-                                    </button>   
-                                    <button type="button" class="btn btn-danger btn-sm deleteQuestion" rel="${question.id}">
-                                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Delete
-                                    </button>         
                                 </div>
                             </div>
                             <div id="editQuestionDiv_${question.id}" class="row" style="display:none;"></div>            

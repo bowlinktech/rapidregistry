@@ -393,4 +393,14 @@ public class dataElementDAOImpl implements dataElementDAO {
 
         return query.list();
     }
+    
+    @Override
+    @SuppressWarnings("rawtypes")
+    @Transactional
+    public List getLookupTableValues(String tableName) throws Exception {
+        
+        Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT id, displayText from " + tableName + " where status = 1 order by displayText asc");
+
+        return query.list();
+    }
 }

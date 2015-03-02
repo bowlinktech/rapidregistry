@@ -67,5 +67,9 @@ public interface surveyDAO {
     
     List<SurveyQuestionChoices> getQuestionChoices(Integer questionId) throws Exception;
     
+    void removeQuestionChoices(Integer questionId) throws Exception;
+    
+    void saveQuestionChoice(SurveyQuestionChoices questionChoice) throws Exception;
+    
     
 }
