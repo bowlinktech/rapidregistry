@@ -190,7 +190,7 @@ public class surveyDAOImpl implements surveyDAO {
         
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SurveyQuestions.class);
         criteria.add(Restrictions.eq("surveyPageId", surveyPageId));
-        criteria.add(Restrictions.eq("hide", false));
+        criteria.add(Restrictions.eq("deleted", false));
         criteria.addOrder(Order.asc("questionNum"));
         return criteria.list();
     }
@@ -201,7 +201,7 @@ public class surveyDAOImpl implements surveyDAO {
         
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SurveyQuestions.class);
         criteria.add(Restrictions.eq("surveyId", surveyId));
-        criteria.add(Restrictions.eq("hide", false));
+        criteria.add(Restrictions.eq("deleted", false));
         criteria.addOrder(Order.asc("questionNum"));
         return criteria.list();
     }
@@ -261,7 +261,7 @@ public class surveyDAOImpl implements surveyDAO {
      */
     @Override
     public List getQuestionForSelectedPage(Integer pageId, Integer questionId) throws Exception {
-        Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT id, question, questionNum FROM survey_questions where id <> :questionId and hide = false and surveyPageId = :pageId order by questionNum asc")
+        Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT id, question, questionNum FROM survey_questions where id <> :questionId and deleted = false and surveyPageId = :pageId order by questionNum asc")
                 .setParameter("questionId", questionId)
                 .setParameter("pageId", pageId);
 
@@ -318,5 +318,18 @@ public class surveyDAOImpl implements surveyDAO {
     @Override
     public void saveQuestionChoice(SurveyQuestionChoices questionChoice) throws Exception {
         sessionFactory.getCurrentSession().save(questionChoice);
+    }
+    
+    /**
+     * The 'deleteSurveyPage' function will remove the passed in page. 
+     * 
+     * @param pageId    The id of the selected page
+     * @throws Exception 
+     */
+    @Override
+    public void deleteSurveyPage(Integer pageId) throws Exception {
+        Query deleteSurveyPage = sessionFactory.getCurrentSession().createQuery("delete from SurveyPages where id = :pageId");
+        deleteSurveyPage.setParameter("pageId", pageId);
+        deleteSurveyPage.executeUpdate();
     }
 }

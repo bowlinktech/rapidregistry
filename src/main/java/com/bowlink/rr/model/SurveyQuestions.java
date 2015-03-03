@@ -25,6 +25,9 @@ public class SurveyQuestions {
 
     @Transient
     List<SurveyQuestionChoices> questionChoices;
+    
+    @Transient
+    private Integer pageNum = 0;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -85,10 +88,14 @@ public class SurveyQuestions {
     private boolean alphabeticallySort = false;
     
     @Column(name = "choiceLayout", nullable = true)
-    private String choiceLayout = "";
+    private String choiceLayout = "1 Column";
     
     @Column(name = "populateFromTable", nullable = true)
     private String populateFromTable = "";
+    
+    @Column(name = "deleted", nullable = false)
+    private boolean deleted = false;
+
     
     public int getId() {
         return id;
@@ -249,5 +256,22 @@ public class SurveyQuestions {
     public void setPopulateFromTable(String populateFromTable) {
         this.populateFromTable = populateFromTable;
     }
+
+    public Integer getPageNum() {
+        return pageNum;
+    }
+
+    public void setPageNum(Integer pageNum) {
+        this.pageNum = pageNum;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+    
     
 }

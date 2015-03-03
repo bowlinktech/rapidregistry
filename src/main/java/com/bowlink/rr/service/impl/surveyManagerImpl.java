@@ -196,4 +196,10 @@ public class surveyManagerImpl implements surveyManager {
     public void saveQuestionChoice(SurveyQuestionChoices questionChoice) throws Exception {
         surveyDAO.saveQuestionChoice(questionChoice);
     }
+    
+    @Override
+    @Transactional
+    public void deleteSurveyPage(Integer pageId) throws Exception {
+        surveyDAO.deleteSurveyPage(pageId);
+    }
 }

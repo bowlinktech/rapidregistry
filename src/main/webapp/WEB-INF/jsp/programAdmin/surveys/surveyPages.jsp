@@ -31,29 +31,38 @@
     </div>
     <div class="row">               
         <div class="panel panel-default">
-            <div class="panel-heading" style="background-color: #4B7C88">
-                <h4 id="pageTitleHeading_${page.id}">
-                    <span class="editTitle">
-                        <a href="javascript:void(0);" class="btn-link-lg editPageTitle" rel="${page.id}" title="Edit Page Title" role="button">
-                            <span id="pageTitleSpan_${page.id}" style="color:#ffffff">${page.pageTitle}</span> <span class="glyphicon glyphicon-edit" style="color: #ffffff; cursor: pointer;"></span>
-                        </a>
-                    </span>
-                </h4>
-                <div id="pageTitleEdit_${page.id}" style="display:none;">
-                    <form class="form-inline">
-                      <div id="pageTitleDiv_${page.id}" class="form-group">
-                        <input type="text" id="pageTitle_${page.id}" class="form-control" value="${page.pageTitle}" />
-                      </div>
-                      <button type="button" rel="${page.id}" class="btn btn-default submitPageTitleChanges">Save</button>
-                    </form>
+            <div class="panel-heading clearfix" style="background-color: #4B7C88">
+                <div class="pull-left">
+                    <h4 id="pageTitleHeading_${page.id}">
+                        <span class="editTitle">
+                            <a href="javascript:void(0);" class="btn-link-lg editPageTitle" rel="${page.id}" title="Edit Page Title" role="button">
+                                <span id="pageTitleSpan_${page.id}" style="color:#ffffff">${page.pageTitle}</span> <span class="glyphicon glyphicon-edit" style="color: #ffffff; cursor: pointer;"></span>
+                            </a>
+                        </span>
+                    </h4>
+                    <div id="pageTitleEdit_${page.id}" style="display:none;">
+                        <form class="form-inline">
+                          <div id="pageTitleDiv_${page.id}" class="form-group">
+                            <input type="text" id="pageTitle_${page.id}" class="form-control" value="${page.pageTitle}" />
+                          </div>
+                          <button type="button" rel="${page.id}" class="btn btn-default submitPageTitleChanges">Save</button>
+                        </form>
+                    </div>
                 </div>
+                <c:if test="${empty page.surveyQuestions}">
+                    <div class="pull-right">
+                        <button type="button" class="btn btn-danger btn-sm deletePage" rel="${page.id}">
+                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Delete Page
+                        </button>   
+                    </div>
+                </c:if> 
             </div>
              <div class="panel-body pageQuestionsPanel" id="pagePanel_${page.id}" rel="${page.id}" style="background-color: #EFEFEF">
                  <section>
                 <c:choose>
                     <c:when test="${not empty page.surveyQuestions}">
                         <c:forEach var="question" items="${page.surveyQuestions}">
-                            <div class="questionDiv row" id="questionDiv${question.id}" rel="${question.id}" style="width: 98%; padding: 5px; margin-left: 5px; margin-bottom: 30px;">
+                            <div class="questionDiv row ${question.hide == true ? 'hiddenQuestion' : ''}" id="questionDiv${question.id}" rel="${question.id}" style="width: 98%; padding: 5px; margin-left: 5px; margin-bottom: 30px;">
                                 <div class="row" style="width: 98%; padding: 5px; margin-left: 5px;">
                                     <div class="pull-left">
                                         <span><h4><c:if test="${question.required == true}">*&nbsp;</c:if>${question.questionNum}. ${question.question}</h4></span>
@@ -75,7 +84,19 @@
                                         </button>  
                                         <button type="button" class="btn btn-default btn-sm questionButton" pane="copyPane" rel="${question.id}">
                                             <span class="glyphicon glyphicon-tag" aria-hidden="true"></span> Copy
-                                        </button>   
+                                        </button>
+                                        <c:choose>
+                                            <c:when test="${question.hide == true}">
+                                                <button type="button" class="btn btn-danger btn-sm unhideQuestion" rel="${question.id}">
+                                                    <span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span> Show
+                                                </button>  
+                                            </c:when>
+                                            <c:otherwise>
+                                                <button type="button" class="btn btn-danger btn-sm hideQuestion" rel="${question.id}">
+                                                    <span class="glyphicon glyphicon-ban-circle" aria-hidden="true"></span> Hide
+                                                </button>    
+                                            </c:otherwise>
+                                        </c:choose>  
                                         <button type="button" class="btn btn-danger btn-sm deleteQuestion" rel="${question.id}">
                                             <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Delete
                                         </button>         
