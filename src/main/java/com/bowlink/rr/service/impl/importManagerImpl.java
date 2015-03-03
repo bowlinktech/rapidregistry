@@ -6,10 +6,13 @@
 package com.bowlink.rr.service.impl;
 
 import com.bowlink.rr.dao.importDAO;
+import com.bowlink.rr.model.fileTypes;
 import com.bowlink.rr.model.programUploadTypes;
 import com.bowlink.rr.model.programUploadTypesFormFields;
 import com.bowlink.rr.service.importManager;
+
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -77,4 +80,10 @@ public class importManagerImpl implements importManager {
     public void removeImportType(Integer importTypeId) throws Exception {
         importDAO.removeImportType(importTypeId);
     }
+
+	@Override
+	@Transactional
+	public List <fileTypes> getFileTypes(Integer fileTypeId) throws Exception {
+		return importDAO.getFileTypes(fileTypeId);
+	}
 }

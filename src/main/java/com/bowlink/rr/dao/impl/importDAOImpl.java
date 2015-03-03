@@ -6,11 +6,17 @@
 package com.bowlink.rr.dao.impl;
 
 import com.bowlink.rr.dao.importDAO;
+import com.bowlink.rr.model.crosswalks;
+import com.bowlink.rr.model.fileTypes;
 import com.bowlink.rr.model.programUploadTypes;
 import com.bowlink.rr.model.programUploadTypesFormFields;
+
 import java.util.List;
+
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -151,5 +157,25 @@ public class importDAOImpl implements importDAO {
         deleteImportType.setParameter("importTypeId", importTypeId);
         deleteImportType.executeUpdate();
     }
+
+
+    /**
+     * The 'getFileTypes' function will return a list of file types and its id
+     * 
+     * @param fileTypeId  The id of the clicked file type
+     * Use 0 if we would like the entire list
+     * @throws Exception 
+     */
+	@Override
+	public List <fileTypes> getFileTypes(Integer fileTypeId) throws Exception {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(fileTypes.class);
+		
+		if (fileTypeId != 0) {
+			criteria.add(Restrictions.eq("id", fileTypeId));
+		}
+		List <fileTypes> fileTypeList =  criteria.list();
+		
+		return fileTypeList;
+	}
     
 }

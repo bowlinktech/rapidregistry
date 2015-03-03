@@ -68,11 +68,42 @@
 	                            <form:errors path="helPickUpPath" cssClass="control-label" element="label" />
 	                        </div>
 	                    </spring:bind>
+	                     </div>
+	                    <spring:bind path="fileTypeId">
+		                            <div class="form-group ${status.error ? 'has-error' : '' }">
+		                                <label class="control-label" for="fileTypeId">File Type*</label>
+		                                <form:select path="fileTypeId" id="fileTypeId" class="form-control half fileTypeId">
+                                <c:forEach items="${fileTypesList}" var="fileType">
+                                    <option value="${fileType.id}" <c:if test="${fileType.id == importTypeDetails.fileTypeId}">selected</c:if>>${fileType.fileType}</option>
+                                </c:forEach>
+                            </form:select>
+		                    </div>
+		                </spring:bind> 
+		                <spring:bind path="fileDelimId">
+		                            <div class="form-group ${status.error ? 'has-error' : '' }">
+		                                <label class="control-label" for="fileDelimId">File Delimiter*</label>
+		                                <form:select path="fileDelimId" id="fileDelimId" class="form-control half fileDelimId">
+                               <c:forEach items="${delimiters}" var="fileDelim" varStatus="dStatus">
+                                        <option value="${delimiters[dStatus.index][0]}" <c:if test="${delimiters[dStatus.index][0] == importTypeDetails.fileDelimId}">selected</c:if>>${delimiters[dStatus.index][1]}</option>
+                                    </c:forEach>
+                            </form:select>
+		                    </div>
+		                </spring:bind> 
+	                   <spring:bind path="maxFileSize">
+                                    <div id="maxFileSizeDiv" class="form-group ${status.error ? 'has-error' : '' }">
+                                        <label class="control-label" for="maxFileSize">Max File Size (mb) *</label>
+                                        <form:input path="maxFileSize" id="maxFileSize" class="form-control" type="text" maxLength="11"/>
+                                        <form:errors path="maxFileSize" cssClass="control-label" element="label" />
+                                        <span id="maxFileSizeMsg" class="control-label"></span>                                    
+                                    </div>
+                        </spring:bind>
+                    
+                    
                     </div>
                             
                     
                     
-                </div>
+               
                 <div class="form-group">
                     <input type="button" id="submitImportType" role="button" class="btn btn-primary" value="Save"/>
                 </div>
