@@ -25,10 +25,10 @@ import com.bowlink.rr.service.surveyManager;
 import com.bowlink.rr.service.userManager;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -288,7 +288,7 @@ public class surveyController {
              * we look up survey and send back survey object we look for survey --> pages --> questions --> answers we loop and display in jsp page
             *
              */
-            List<activityCodes> activityCodes = activitycodemanager.getActivityCodes((Integer) session.getAttribute("selprogramId"));
+            List<activityCodes> activityCodes = activitycodemanager.getActivityCodesByProgram((Integer) session.getAttribute("selprogramId"));
             mav.addObject("activityCodes", activityCodes);
             mav.addObject("survey", survey);
 
@@ -344,7 +344,7 @@ public class surveyController {
         mav.addObject("edit", "edit");
 
         if (result.hasErrors()) {
-            List<activityCodes> activityCodes = activitycodemanager.getActivityCodes(0);
+            List<activityCodes> activityCodes = activitycodemanager.getActivityCodesByProgram((Integer) session.getAttribute("selprogramId"));
             mav.addObject("activityCodes", activityCodes);
             mav.setViewName("/surveys/details");
             return mav;
@@ -470,6 +470,15 @@ public class surveyController {
             List<SurveyQuestions> questions = surveymanager.getSurveyQuestions(page.getId());
             
             if(questions != null && !questions.isEmpty()) {
+                
+                /* Get question choices */
+                for(SurveyQuestions question : questions) {
+                    if(question.getAnswerTypeId() == 1) {
+                        List<SurveyQuestionChoices> questionChoices = surveymanager.getQuestionChoices(question.getId());
+                        question.setquestionChoices(questionChoices);
+                    }
+                }
+                
                 page.setSurveyQuestions(questions);
             }
         }
@@ -614,10 +623,10 @@ public class surveyController {
         surveyQuestion.setAnswerTypeId(questionType);
         surveyQuestion.setSurveyPageId(pageId);
         surveyQuestion.setQuestionNum(qnum);
-        
+       
         /* Create 3 blank answers */
         if(questionType == 1 || questionType == 2) {
-            List<SurveyQuestionChoices> questionChoices = new CopyOnWriteArrayList<SurveyQuestionChoices>();
+            List<SurveyQuestionChoices> questionChoices = new CopyOnWriteArrayList<>();
             
             for(int i = 1; i <= 3; i++) {
                 SurveyQuestionChoices questionChoice = new SurveyQuestionChoices();
@@ -625,7 +634,6 @@ public class surveyController {
             }
             surveyQuestion.setquestionChoices(questionChoices);
         }
-        
         mav.addObject("surveyQuestion", surveyQuestion);
        
         mav.addObject("s",s);
@@ -652,7 +660,6 @@ public class surveyController {
         return mav;
         
     }
-    
     
     /**
      * The 'editPageQuestion.do' GET request will return the question edit page.
@@ -761,8 +768,9 @@ public class surveyController {
     
     
     /**
+     * The 'submitSurveyQuestion' POST request will submit the changes to the selected question.
      * 
-     * @param surveyQuestion
+     * @param surveyQuestion    The question object
      * @param session
      * @return
      * @throws Exception 
@@ -808,7 +816,295 @@ public class surveyController {
            surveymanager.saveChangeLogs(scl);
         }
         
+        /* If question type is mutliple choice or dropdown then insert the question choices */
+        if(surveyQuestion.getAnswerTypeId() == 1 || surveyQuestion.getAnswerTypeId() == 2) {
+            
+            /* Delete existing choices */
+            surveymanager.removeQuestionChoices(questionId);
+            
+            if(surveyQuestion.getquestionChoices() != null) {
+                
+                for(SurveyQuestionChoices questionChoice : surveyQuestion.getquestionChoices()) {
+                    
+                    if(!"".equals(questionChoice.getChoiceText())) {
+                     
+                        questionChoice.setQuestionId(questionId);
+
+                        surveymanager.saveQuestionChoice(questionChoice);
+                    }
+                }
+                
+            }
+        }
+        
         return questionId;
+    }
+    
+    
+    /**
+     * The 'getQuestionChoicesForSelTable.do' GET request will populate the question options with the value of the selected table.
+     * 
+     * @param s The encrypted id of the selected survey
+     * @param v The encrypted encryption key for
+     * @param pageId    The id of the current page
+     * @param questionId    The id of the selected question
+     * @param tableName The selected table
+     * @param session
+     * @return
+     * @throws Exception 
+     */
+    @RequestMapping(value = "getQuestionChoicesForSelTable.do", method = RequestMethod.GET)
+    public @ResponseBody ModelAndView getQuestionChoicesForSelTable(@RequestParam String s, @RequestParam String v, @RequestParam Integer pageId, @RequestParam Integer questionId, @RequestParam String tableName, HttpSession session) throws Exception {
+        
+        ModelAndView mav = new ModelAndView();
+        
+        SurveyQuestions questionDetails = surveymanager.getSurveyQuestionById(questionId);
+        List<SurveyQuestionChoices> currentquestionChoices = surveymanager.getQuestionChoices(questionId);
+        mav.addObject("qnum", questionDetails.getQuestionNum());
+        
+        if(!"".equals(tableName) && !questionDetails.getPopulateFromTable().equals(tableName)) {
+            
+            /* Delete current options */
+            surveymanager.removeQuestionChoices(questionId);
+            
+            questionDetails.setPopulateFromTable(tableName);
+            surveymanager.saveSurveyQuestion(questionDetails);
+            
+            /** Need to get all available rows for the selected table **/
+            List tableValues = dataelementmanager.getLookupTableValues(tableName);
+            
+            /* Create 3 blank answers */
+            if(tableValues != null && !tableValues.isEmpty()) {
+                List<SurveyQuestionChoices> questionChoices = new CopyOnWriteArrayList<>();
+                
+                for (ListIterator iter = tableValues.listIterator(); iter.hasNext();) {
+                    
+                    SurveyQuestionChoices questionChoice = new SurveyQuestionChoices();
+            
+                    Object[] row = (Object[]) iter.next();
+                    
+                    questionChoice.setChoiceText(String.valueOf(row[1]));
+                    questionChoice.setChoiceValue(Integer.parseInt(String.valueOf(row[0])));
+                    questionChoice.setQuestionId(questionId);
+                    
+                    questionChoices.add(questionChoice);
+                }
+
+                questionDetails.setquestionChoices(questionChoices);
+            }
+        }
+        else if(currentquestionChoices != null && !currentquestionChoices.isEmpty()) {
+            
+            questionDetails.setquestionChoices(currentquestionChoices);
+        }
+       
+        mav.addObject("surveyQuestion", questionDetails);
+        
+        /** Multiple Choice **/
+        if(questionDetails.getAnswerTypeId() == 1) {
+            mav.setViewName("/programAdmin/surveys/questionTypes/multipleChoice");
+            
+            /** Get a list of available tables to auto-populate from **/
+            List<programAvailableTables> availableTables = programmanager.getAvailableTablesForSurveys((Integer) session.getAttribute("selprogramId"));
+            mav.addObject("availableTables", availableTables);
+        }
+        
+        /** Drop down (select box) **/
+        else if(questionDetails.getAnswerTypeId() == 2) {
+            mav.setViewName("/programAdmin/surveys/questionTypes/dropDown");
+            
+            /** Get a list of available tables to auto-populate from **/
+            List<programAvailableTables> availableTables = programmanager.getAvailableTablesForSurveys((Integer) session.getAttribute("selprogramId"));
+            mav.addObject("availableTables", availableTables);
+        }
+        
+        /** Single text box **/
+        else if(questionDetails.getAnswerTypeId() == 3) {
+            mav.setViewName("/programAdmin/surveys/questionTypes/singleTextBox");
+        }
+        
+        /** Multiple text box **/
+        else if(questionDetails.getAnswerTypeId() == 4) {
+            mav.setViewName("/programAdmin/surveys/questionTypes/multipleTextBox");
+        }
+        
+        /** Comment box **/
+        else if(questionDetails.getAnswerTypeId() == 5) {
+            mav.setViewName("/programAdmin/surveys/questionTypes/commentBox");
+        }
+        
+        /** Date/Time **/
+        else if(questionDetails.getAnswerTypeId() == 6) {
+            mav.setViewName("/programAdmin/surveys/questionTypes/datetime");
+        }
+        
+        /** Display Text **/
+        else if(questionDetails.getAnswerTypeId() == 7) {
+            mav.setViewName("/programAdmin/surveys/questionTypes/displayText");
+        }
+        
+        /** Checkbox **/
+        else if(questionDetails.getAnswerTypeId() == 8) {
+            mav.setViewName("/programAdmin/surveys/questionTypes/checkbox");
+        }
+        
+        /* Decrypt the url */
+        decryptObject decrypt = new decryptObject();
+        
+        Object obj = decrypt.decryptObject(s, v);
+        
+        String[] result = obj.toString().split((","));
+        
+        int surveyId = Integer.parseInt(result[0].substring(4));
+        
+        mav.addObject("s",s);
+        mav.addObject("v",v);
+        
+        //Return a list of validation types
+        List validationTypes = dataelementmanager.getValidationTypes();
+        mav.addObject("validationTypes", validationTypes);
+        
+        /* Return a list of available fields */
+        List fields = programFormsManager.getFieldsForProgram((Integer) session.getAttribute("selprogramId"));
+        mav.addObject("fields", fields);
+        
+        /* Return a list of pages */
+        List<SurveyPages> pages = surveymanager.getSurveyPages(surveyId, false);
+        mav.addObject("pages", pages);
+        
+        /* Get the list of programs in the system */
+        List<activityCodes> activityCodes = activitycodemanager.getActivityCodesByProgram((Integer) session.getAttribute("selprogramId"));
+        mav.addObject("activityCodes", activityCodes);
+        
+        return mav;
+        
+    }
+    
+    /**
+     * The 'getQuestionManualChoices.do' GET request will populate the question options with the value of the selected table.
+     * 
+     * @param s The encrypted id of the selected survey
+     * @param v The encrypted encryption key for
+     * @param pageId    The id of the current page
+     * @param questionId    The id of the selected question
+     * @param tableName The selected table
+     * @param session
+     * @return
+     * @throws Exception 
+     */
+    @RequestMapping(value = "getQuestionManualChoices.do", method = RequestMethod.GET)
+    public @ResponseBody ModelAndView getQuestionManualChoices(@RequestParam String s, @RequestParam String v, @RequestParam Integer pageId, @RequestParam Integer questionId, HttpSession session) throws Exception {
+        
+        ModelAndView mav = new ModelAndView();
+        
+        SurveyQuestions questionDetails = surveymanager.getSurveyQuestionById(questionId);
+        
+        if(questionDetails.getPopulateFromTable() != null && !"".equals(questionDetails.getPopulateFromTable())) { 
+            /* Delete current options */
+            surveymanager.removeQuestionChoices(questionId);
+        }       
+        
+        questionDetails.setPopulateFromTable("");
+        surveymanager.saveSurveyQuestion(questionDetails);
+        
+        List<SurveyQuestionChoices> currentquestionChoices = surveymanager.getQuestionChoices(questionId);
+        mav.addObject("qnum", questionDetails.getQuestionNum());
+        
+        if(currentquestionChoices == null || currentquestionChoices.isEmpty()) {
+           /* Create 3 blank answers */
+            List<SurveyQuestionChoices> questionChoices = new CopyOnWriteArrayList<>();
+
+            for(int i = 1; i <= 3; i++) {
+                SurveyQuestionChoices questionChoice = new SurveyQuestionChoices();
+                questionChoices.add(questionChoice);
+            }
+            questionDetails.setquestionChoices(questionChoices);
+        }
+        else if(currentquestionChoices != null && !currentquestionChoices.isEmpty()) {
+            
+            questionDetails.setquestionChoices(currentquestionChoices);
+        }
+       
+        mav.addObject("surveyQuestion", questionDetails);
+        
+        /** Multiple Choice **/
+        if(questionDetails.getAnswerTypeId() == 1) {
+            mav.setViewName("/programAdmin/surveys/questionTypes/multipleChoice");
+            
+            /** Get a list of available tables to auto-populate from **/
+            List<programAvailableTables> availableTables = programmanager.getAvailableTablesForSurveys((Integer) session.getAttribute("selprogramId"));
+            mav.addObject("availableTables", availableTables);
+        }
+        
+        /** Drop down (select box) **/
+        else if(questionDetails.getAnswerTypeId() == 2) {
+            mav.setViewName("/programAdmin/surveys/questionTypes/dropDown");
+            
+            /** Get a list of available tables to auto-populate from **/
+            List<programAvailableTables> availableTables = programmanager.getAvailableTablesForSurveys((Integer) session.getAttribute("selprogramId"));
+            mav.addObject("availableTables", availableTables);
+        }
+        
+        /** Single text box **/
+        else if(questionDetails.getAnswerTypeId() == 3) {
+            mav.setViewName("/programAdmin/surveys/questionTypes/singleTextBox");
+        }
+        
+        /** Multiple text box **/
+        else if(questionDetails.getAnswerTypeId() == 4) {
+            mav.setViewName("/programAdmin/surveys/questionTypes/multipleTextBox");
+        }
+        
+        /** Comment box **/
+        else if(questionDetails.getAnswerTypeId() == 5) {
+            mav.setViewName("/programAdmin/surveys/questionTypes/commentBox");
+        }
+        
+        /** Date/Time **/
+        else if(questionDetails.getAnswerTypeId() == 6) {
+            mav.setViewName("/programAdmin/surveys/questionTypes/datetime");
+        }
+        
+        /** Display Text **/
+        else if(questionDetails.getAnswerTypeId() == 7) {
+            mav.setViewName("/programAdmin/surveys/questionTypes/displayText");
+        }
+        
+        /** Checkbox **/
+        else if(questionDetails.getAnswerTypeId() == 8) {
+            mav.setViewName("/programAdmin/surveys/questionTypes/checkbox");
+        }
+        
+        /* Decrypt the url */
+        decryptObject decrypt = new decryptObject();
+        
+        Object obj = decrypt.decryptObject(s, v);
+        
+        String[] result = obj.toString().split((","));
+        
+        int surveyId = Integer.parseInt(result[0].substring(4));
+        
+        mav.addObject("s",s);
+        mav.addObject("v",v);
+        
+        //Return a list of validation types
+        List validationTypes = dataelementmanager.getValidationTypes();
+        mav.addObject("validationTypes", validationTypes);
+        
+        /* Return a list of available fields */
+        List fields = programFormsManager.getFieldsForProgram((Integer) session.getAttribute("selprogramId"));
+        mav.addObject("fields", fields);
+        
+        /* Return a list of pages */
+        List<SurveyPages> pages = surveymanager.getSurveyPages(surveyId, false);
+        mav.addObject("pages", pages);
+        
+        /* Get the list of programs in the system */
+        List<activityCodes> activityCodes = activitycodemanager.getActivityCodesByProgram((Integer) session.getAttribute("selprogramId"));
+        mav.addObject("activityCodes", activityCodes);
+        
+        return mav;
+        
     }
     
     
@@ -876,9 +1172,13 @@ public class surveyController {
      * @throws Exception 
      */
     @RequestMapping(value = "moveSurveyQuestion.do", method = RequestMethod.POST)
-    public @ResponseBody Integer moveSurveyQuestion(@RequestParam Integer curQuestionId, @RequestParam Integer newPage, @RequestParam String position, @RequestParam Integer selQuestionId) throws Exception {
+    public @ResponseBody Integer moveSurveyQuestion(@RequestParam Integer curQuestionId, @RequestParam Integer newPage, @RequestParam String position, @RequestParam Integer selQuestionId, HttpSession session) throws Exception {
         
         SurveyQuestions curQuestionDetails = surveymanager.getSurveyQuestionById(curQuestionId);
+        
+        SurveyPages pageDetails = surveymanager.getSurveyPageById(newPage);
+        
+        Integer curPos = curQuestionDetails.getQuestionNum();
         
         if("after".equals(position)) {
            SurveyQuestions selQuestionDetails = surveymanager.getSurveyQuestionById(selQuestionId); 
@@ -888,18 +1188,20 @@ public class surveyController {
            /* Update all other survey page numbers */
            List<SurveyQuestions> surveyquestions = surveymanager.getAllSurveyQuestions(curQuestionDetails.getSurveyId());
            
-           if(newPos > curQuestionDetails.getQuestionNum()) {
+           if(newPos > curPos) {
                for(SurveyQuestions question : surveyquestions) {
                    if(question.getQuestionNum() ==  selQuestionDetails.getQuestionNum()) {
                        question.setQuestionNum(question.getQuestionNum()-1);
                        surveymanager.saveSurveyQuestion(question);
                    }
                }
-               curQuestionDetails.setQuestionNum(newPos-1);
+               newPos = newPos - 1;
+               curQuestionDetails.setQuestionNum(newPos);
+               
            }
-           else if (newPos < curQuestionDetails.getQuestionNum()) {
+           else if (newPos < curPos) {
               for(SurveyQuestions question : surveyquestions) {
-                   if(question.getQuestionNum() >= newPos) {
+                   if(question.getQuestionNum() >= newPos && question.getQuestionNum() <= curPos) {
                        question.setQuestionNum(question.getQuestionNum()+1);
                        surveymanager.saveSurveyQuestion(question);
                    }
@@ -909,6 +1211,15 @@ public class surveyController {
            
            curQuestionDetails.setSurveyPageId(newPage);
            surveymanager.saveSurveyQuestion(curQuestionDetails);
+           
+           /** Log the change **/
+           SurveyChangeLogs scl = new SurveyChangeLogs();
+
+           scl.setNotes("Question number " + curPos + " was moved to " + " position " + newPos + " on page " + pageDetails.getPageNum());
+           scl.setSurveyId(curQuestionDetails.getSurveyId());
+           User userDetails = (User) session.getAttribute("userDetails");
+           scl.setSystemUserId(userDetails.getId());
+           surveymanager.saveChangeLogs(scl);
         }
         /** Adding before a question **/
         else if("before".equals(position)) {
@@ -919,7 +1230,7 @@ public class surveyController {
            /* Update all other survey page numbers */
            List<SurveyQuestions> surveyquestions = surveymanager.getAllSurveyQuestions(curQuestionDetails.getSurveyId());
            
-           if(newPos > curQuestionDetails.getQuestionNum()) {
+           if(newPos > curPos) {
                for(SurveyQuestions question : surveyquestions) {
                    if(question.getQuestionNum() <=  newPos) {
                        question.setQuestionNum(question.getQuestionNum()-1);
@@ -928,18 +1239,28 @@ public class surveyController {
                }
                curQuestionDetails.setQuestionNum(newPos);
            }
-           else if (newPos < curQuestionDetails.getQuestionNum()) {
+           else if (newPos < curPos) {
               for(SurveyQuestions question : surveyquestions) {
-                   if(question.getQuestionNum() != newPos && question.getQuestionNum() > newPos && question.getQuestionNum() <= curQuestionDetails.getQuestionNum()) {
+                   if(question.getQuestionNum() != newPos && question.getQuestionNum() > newPos && question.getQuestionNum() <= curPos) {
                        question.setQuestionNum(question.getQuestionNum()+1);
                        surveymanager.saveSurveyQuestion(question);
                    }
               }
-              curQuestionDetails.setQuestionNum(newPos+1);
+              newPos = newPos + 1;
+              curQuestionDetails.setQuestionNum(newPos);
            }
            
            curQuestionDetails.setSurveyPageId(newPage);
            surveymanager.saveSurveyQuestion(curQuestionDetails);
+           
+           /** Log the change **/
+           SurveyChangeLogs scl = new SurveyChangeLogs();
+
+           scl.setNotes("Question number " + curPos + " was moved to " + " position " + newPos + " on page " + pageDetails.getPageNum());
+           scl.setSurveyId(curQuestionDetails.getSurveyId());
+           User userDetails = (User) session.getAttribute("userDetails");
+           scl.setSystemUserId(userDetails.getId());
+           surveymanager.saveChangeLogs(scl);
         }
         /** Adding to a blank page **/
         else {
@@ -956,12 +1277,12 @@ public class surveyController {
                 
                     Integer questionpageNum = surveymanager.getSurveyPageById(question.getSurveyPageId()).getPageNum();
 
-                    if(curQuestionDetails.getQuestionNum() < question.getQuestionNum() && pageNum > questionpageNum) {
+                    if(curPos < question.getQuestionNum() && pageNum > questionpageNum) {
                         newPos = question.getQuestionNum();
                         question.setQuestionNum(question.getQuestionNum() - 1);
                         surveymanager.saveSurveyQuestion(question);
                     }
-                    else if(curQuestionDetails.getQuestionNum() > question.getQuestionNum() && questionpageNum > pageNum ) {
+                    else if(curPos > question.getQuestionNum() && questionpageNum > pageNum ) {
                         newPos = question.getQuestionNum();
                         question.setQuestionNum(question.getQuestionNum() + 1);
                         surveymanager.saveSurveyQuestion(question);
@@ -973,6 +1294,15 @@ public class surveyController {
            curQuestionDetails.setSurveyPageId(newPage);
            
            surveymanager.saveSurveyQuestion(curQuestionDetails);
+           
+           /** Log the change **/
+           SurveyChangeLogs scl = new SurveyChangeLogs();
+
+           scl.setNotes("Question number " + curPos + " was moved to " + " position " + newPos + " on page " + pageDetails.getPageNum());
+           scl.setSurveyId(curQuestionDetails.getSurveyId());
+           User userDetails = (User) session.getAttribute("userDetails");
+           scl.setSystemUserId(userDetails.getId());
+           surveymanager.saveChangeLogs(scl);
         }
         
         return 1;
@@ -989,9 +1319,13 @@ public class surveyController {
      * @throws Exception 
      */
     @RequestMapping(value = "copySurveyQuestion.do", method = RequestMethod.POST)
-    public @ResponseBody Integer copySurveyQuestion(@RequestParam Integer curQuestionId, @RequestParam Integer newPage, @RequestParam String position, @RequestParam Integer selQuestionId) throws Exception {
+    public @ResponseBody Integer copySurveyQuestion(@RequestParam Integer curQuestionId, @RequestParam Integer newPage, @RequestParam String position, @RequestParam Integer selQuestionId, HttpSession session) throws Exception {
         
         SurveyQuestions curQuestionDetails = surveymanager.getSurveyQuestionById(curQuestionId);
+        
+        SurveyPages pageDetails = surveymanager.getSurveyPageById(newPage);
+        
+        Integer curPos = curQuestionDetails.getQuestionNum();
         
         /* Update all other survey page numbers */
         List<SurveyQuestions> surveyquestions = surveymanager.getAllSurveyQuestions(curQuestionDetails.getSurveyId());
@@ -1024,10 +1358,12 @@ public class surveyController {
         /* Update all other survey page numbers */
         List<SurveyQuestions> currsurveyquestions = surveymanager.getAllSurveyQuestions(curQuestionDetails.getSurveyId());
         
+        Integer newPos = 0;
+        
         if("after".equals(position)) {
            SurveyQuestions selQuestionDetails = surveymanager.getSurveyQuestionById(selQuestionId); 
            
-           Integer newPos = selQuestionDetails.getQuestionNum() + 1;
+           newPos = selQuestionDetails.getQuestionNum() + 1;
            
            if(newPos > newQuestionDetails.getQuestionNum()) {
                for(SurveyQuestions question : currsurveyquestions) {
@@ -1036,11 +1372,12 @@ public class surveyController {
                        surveymanager.saveSurveyQuestion(question);
                    }
                }
-               newQuestionDetails.setQuestionNum(newPos-1);
+               newPos = newPos - 1;
+               newQuestionDetails.setQuestionNum(newPos);
            }
            else if (newPos < newQuestionDetails.getQuestionNum()) {
               for(SurveyQuestions question : currsurveyquestions) {
-                   if(question.getQuestionNum() >= newPos) {
+                   if(question.getQuestionNum() >= newPos && question.getQuestionNum() <= newQuestionDetails.getQuestionNum()) {
                        question.setQuestionNum(question.getQuestionNum()+1);
                        surveymanager.saveSurveyQuestion(question);
                    }
@@ -1053,7 +1390,7 @@ public class surveyController {
         else if("before".equals(position)) {
            SurveyQuestions selQuestionDetails = surveymanager.getSurveyQuestionById(selQuestionId); 
            
-           Integer newPos = selQuestionDetails.getQuestionNum() - 1;
+           newPos = selQuestionDetails.getQuestionNum() - 1;
            
            if(newPos > newQuestionDetails.getQuestionNum()) {
                for(SurveyQuestions question : currsurveyquestions) {
@@ -1071,7 +1408,8 @@ public class surveyController {
                        surveymanager.saveSurveyQuestion(question);
                    }
               }
-              newQuestionDetails.setQuestionNum(newPos+1);
+              newPos = newPos + 1;
+              newQuestionDetails.setQuestionNum(newPos);
            }
         }
         /** Adding to a blank page **/
@@ -1079,7 +1417,7 @@ public class surveyController {
            
            Integer pageNum = surveymanager.getSurveyPageById(newQuestionDetails.getSurveyPageId()).getPageNum();
            
-           Integer newPos = newQuestionDetails.getQuestionNum();
+           newPos = newQuestionDetails.getQuestionNum();
           
            if(currsurveyquestions.size() > 1) {
                 for(SurveyQuestions question : currsurveyquestions) {
@@ -1103,6 +1441,15 @@ public class surveyController {
         }
         
         surveymanager.saveSurveyQuestion(newQuestionDetails);
+        
+        /** Log the change **/
+        SurveyChangeLogs scl = new SurveyChangeLogs();
+
+        scl.setNotes("Copied Question number " + curPos + ". The new question was moved to position " + newPos + " on page " + pageDetails.getPageNum());
+        scl.setSurveyId(curQuestionDetails.getSurveyId());
+        User userDetails = (User) session.getAttribute("userDetails");
+        scl.setSystemUserId(userDetails.getId());
+        surveymanager.saveChangeLogs(scl);
         
         return 1;
     }

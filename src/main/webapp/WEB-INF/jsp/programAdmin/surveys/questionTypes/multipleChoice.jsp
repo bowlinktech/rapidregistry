@@ -60,50 +60,56 @@
                         <input type="checkbox" id="populate" <c:if test="${not empty surveyQuestion.populateFromTable}">checked="checked"</c:if> />&nbsp;<label class="control-label" for="populateFromTable">Populate choices from an existing table</label>
                     </div>
                     <div class="well well-xsm" id="autoPopulateDiv" style="background-color:#ffffff; margin-bottom: 2px; height: 50px; ${not empty surveyQuestion.populateFromTable ? 'display:block;' : 'display:none;'}">
-                        <form:select path="populateFromTable" id="populateFromTable" class="form-control half sm-input">
-                            <option value="0">- Select Table -</option>
-                            <c:forEach items="${availableTables}" var="table" varStatus="ftype">
-                                <option value="${table.tableName}" <c:if test="${surveyQuestion.populateFromTable == table.tableName}">selected</c:if>>${table.tableName}</option>
-                            </c:forEach>
-                        </form:select>
+                        <c:choose>
+                            <c:when test="${surveyQuestion.id > 0}">
+                                <form:select path="populateFromTable" id="populateFromTable" class="form-control half sm-input">
+                                    <option value="">- Select Table -</option>
+                                    <c:forEach items="${availableTables}" var="table" varStatus="ftype">
+                                        <option value="${table.tableName}" <c:if test="${surveyQuestion.populateFromTable == table.tableName}">selected</c:if>>${table.tableName}</option>
+                                    </c:forEach>
+                                </form:select>
+                            </c:when>
+                            <c:otherwise>
+                                <span>The question must be saved before this option is available.</span>
+                            </c:otherwise>
+                        </c:choose>
                     </div>
                 </c:if>
                 <div class="well well-xsm" style="background-color:#ffffff; margin-bottom: 2px">
-                    <input type="checkbox" id="manual" <c:if test="${empty surveyQuestion.populateFromTable && not empty surveyQuestion.questionChoices}">checked="checked"</c:if> />&nbsp;<label class="control-label" for="populateFromTable">Manually enter choices</label>
+                   <input type="checkbox" id="manual" <c:if test="${empty surveyQuestion.populateFromTable && not empty surveyQuestion.questionChoices}">checked="checked"</c:if> />&nbsp;<label class="control-label" for="populateFromTable">Manually enter choices</label>
                 </div>
                     <c:if test="${surveyQuestion.questionChoices.size() > 0}">
                     <div class="panel" id="questionChoiceDiv">
                         <div class="panel-body">
-                            <table class="table" border="0">
+                            <table class="table choiceTable" border="0">
                                 <thead>
                                     <tr>
                                         <th>Answers</th>
-                                        <th></th>
-                                        <th>Default</th>
+                                        <th class="center-text"></th>
+                                        <th class="center-text">Default</th>
                                         <th>Associated Activity Code</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <c:forEach items="${surveyQuestion.questionChoices}" var="choiceDetails" varStatus="choice">
-                                        <input type="hidden" name="questionChoices[${choice.index}].id" value="${choiceDetails.id}" />
-                                        <input type="hidden" name="questionChoices[${choice.index}].questionId" value="${choiceDetails.questionId}" />
-                                        <input type="hidden" name="questionChoices[${choice.index}].skipToPageId" value="${choiceDetails.skipToPageId}" />
-                                        <input type="hidden" name="questionChoices[${choice.index}].skipToQuestionId" value="${choiceDetails.skipToQuestionId}" />
-                                        <input type="hidden" name="questionChoices[${choice.index}].choiceValue" value="${choiceDetails.choiceValue}" />
-                                        <tr>
+                                        <input type="hidden" id="id_${choice.index}" name="questionChoices[${choice.index}].id" value="${choiceDetails.id}" />
+                                        <input type="hidden" id="questionId_${choice.index}" name="questionChoices[${choice.index}].questionId" value="${choiceDetails.questionId}" />
+                                        <input type="hidden" id="choiceValue_${choice.index}" name="questionChoices[${choice.index}].choiceValue" value="${choiceDetails.choiceValue}" />
+                                        <tr rel="${choice.index}">
                                             <td>
-                                                <input type="text" name="questionChoices[${choice.index}].choiceText"  value="${choiceDetails.choiceText}" rel="${choice.index}" class="form-control fieldLabel formField" style="width:200px;" />
+                                                <input type="text" name="questionChoices[${choice.index}].choiceText"  value="${choiceDetails.choiceText}" rel="${choice.index}" class="form-control fieldLabel formField" />
+                                            </td>
+                                            <td style="vertical-align:top;">
+                                                <c:if test="${empty surveyQuestion.populateFromTable}"><i class="glyphicon glyphicon-plus-sign addChoice" style="font-size:1.7em; cursor: pointer"></i>&nbsp;</c:if>
+                                                <i class="glyphicon glyphicon-minus-sign removeChoice" style="font-size:1.7em; cursor: pointer"></i>
+                                            </td>
+                                            <td class="center-text">
+                                                <input type="radio" class="defAnswer" name="questionChoices[${choice.index}].defAnswer" value="1" <c:if test="${choiceDetails.defAnswer == true}">checked</c:if> />
                                             </td>
                                             <td>
-                                               <icon class="glyphicon glyphicon-minus-sign"></icon>
-                                            </td>
-                                            <td>
-                                                <input type="radio" name="defaultAnswer" value="1" <c:if test="${choiceDetails.defAnswer == true}">checked</c:if> />
-                                            </td>
-                                            <td>
-                                                <select name="questionChoices[${choice.index}].activityCodeId" class="form-control half">
+                                               <select name="questionChoices[${choice.index}].activityCodeId" class="form-control">
                                                     <option value="0" label=" - Select - " >- Select -</option>
-                                                    <c:forEach items="${activityCodes}"  varStatus="code">
+                                                    <c:forEach items="${activityCodes}" varStatus="code">
                                                         <option value="${activityCodes[code.index].id}" <c:if test="${choiceDetails.activityCodeId == activityCodes[code.index].id}">selected</c:if>>${activityCodes[code.index].codeDesc}</option>
                                                     </c:forEach>
                                                 </select>
@@ -116,6 +122,7 @@
                     </div>
                 </c:if>
             </div>
+            <%-- Question Options Div --%>
             <div class="tab-pane tab-pane-question fade optionsPane" id="options">
                 <div class="well well-xsm" style="background-color:#ffffff; margin-bottom: 2px">
                     <form:checkbox path="required" id="required" />&nbsp;<label class="control-label" for="pageTitle">Make this question required</label>
@@ -129,7 +136,7 @@
                     </div>
                 </div>
                 <div class="well well-xsm" style="background-color:#ffffff; margin-bottom: 2px">
-                    <input type="checkbox" id="alphabeticallySort" <c:if test="${surveyQuestion.alphabeticallySort == true}">checked="checked"</c:if> />&nbsp;<label class="control-label" for="alphabeticallySort">Alphabetically Sort Choices</label>
+                    <form:checkbox path="alphabeticallySort" id="alphabeticallySort" />&nbsp;<label class="control-label" for="alphabeticallySort">Alphabetically Sort Choices</label>
                 </div>
                 <div class="well well-xsm" style="background-color:#ffffff; margin-bottom: 2px">
                     <input type="checkbox" id="choiceLayout" <c:if test="${not empty surveyQuestion.choiceLayout}">checked="checked"</c:if> />&nbsp;<label class="control-label" for="choiceLayout">Change the layout for how choices are displayed</label>
@@ -143,7 +150,7 @@
                         </div>
                         <div class="form-group">
                             <label class="radio-inline control-label">
-                                <form:radiobutton path="choiceLayout" class="radio" value="2 Column" /> <strong>2 Columns</strong>
+                                <form:radiobutton path="choiceLayout" class="radio" value="2 Columns" /> <strong>2 Columns</strong>
                             </label>
                         </div>
                         <div class="form-group">
@@ -175,6 +182,52 @@
                     </div>
                 </div>    
             </div> 
+            <%-- Question Logic Div --%>
+            <div class="tab-pane tab-pane-question fade logicPane" id="logic">
+                <div class="panel" id="questionChoiceDiv">
+                    <div class="panel-body">
+                        <table class="table choiceTable" border="0">
+                            <thead>
+                                <tr>
+                                    <th>if answer is...</th>
+                                    <th>Then skip to...</th>
+                                    <th class="center-text">Clear All</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <c:forEach items="${surveyQuestion.questionChoices}" var="choiceDetails" varStatus="choice">
+                                    <tr>
+                                        <td>
+                                            <input type="text" value="${choiceDetails.choiceText}" class="form-control" disabled="disabled" />
+                                        </td>
+                                        <td>
+                                            <div class="form-inline">
+                                                <div class="form-group">
+                                                    <select id="logicskipToPage_${choice.index}" rel="${choice.index}" name="questionChoices[${choice.index}].skipToPageId" class="form-control logicskipToPage">
+                                                        <option value="">- Select A Page -</option>
+                                                        <c:forEach items="${pages}" var="page">
+                                                            <option value="${page.id}">${page.pageNum}. ${page.pageTitle}</option>
+                                                        </c:forEach>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <select id="logicskipToQuestion_${choice.index}" name="questionChoices[${choice.index}].skipToQuestionId" class="form-control logicskipQuestion" disabled="true">
+                                                        <option value=""></option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="center-text">
+                                           Clear
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>      
+            <%-- Question Move Div --%>
             <div class="tab-pane tab-pane-question fade movePane" id="move">
                 <div class="well well-xsm" style="background-color:#ffffff; margin-bottom: 2px">
                     <label class="control-label" for="move">Move this question to..</label>
@@ -206,6 +259,7 @@
                     </div>
                 </div>   
             </div> 
+            <%-- Question Copy Div --%>
             <div class="tab-pane tab-pane-question fade copyPane" id="copy">
                 <div class="well well-xsm" style="background-color:#ffffff; margin-bottom: 2px">
                     <label class="control-label" for="move">Duplicate this question and put it on...</label>
@@ -239,7 +293,7 @@
             </div>
             <div class="form-group" style="margin-top: 20px;">
                 <input type="button" id="submitQuestion" role="button" class="btn btn-primary saveQuestionBtn" value="Save"/>
-                <input type="button" id="cancelQuestion" role="button" rel="${qnum}" rel2="${surveyQuestion.id}" class="btn btn-danger" value="Cancel"/>
+                <input type="button" id="cancelQuestion" role="button" rel="${qnum}" rel2="${surveyQuestion.id}" rel3="${surveyQuestion.surveyPageId}" class="btn btn-danger" value="Cancel"/>
             </div>     
         </div> 
    </form:form>            

@@ -306,17 +306,18 @@ require(['./main'], function () {
             
             var qNum = $(this).attr('rel');
             var qId = $(this).attr('rel2');
+            var pageId = $(this).attr('rel3');
             
-            $('#newQuestionDiv_'+window.pageId).html("");
-            $('#newQuestionDiv_'+window.pageId).hide();
-            $('#editQuestionDiv_'+qId).html("");
-            $('#editQuestionDiv_'+qId).hide();
+            $('#newQuestionDiv_'+pageId).html("");
+            $('#newQuestionDiv_'+pageId).hide();
             
             if(qId > 0) {
+                $('#editQuestionDiv_'+qId).html("");
+                $('#editQuestionDiv_'+qId).hide();
                 $('#questionDiv'+qId).show();
             }
-            else if($('#pagePanel_'+window.pageId).children().children().length == 2) {
-                $('#emptyPageDiv_'+window.pageId).show();
+            else if($('#pagePanel_'+pageId).children().children().length == 2) {
+                $('#emptyPageDiv_'+pageId).show();
             }
             
             
@@ -358,16 +359,127 @@ require(['./main'], function () {
             
         });
         
-        /** Funtion to show the auto populate table list **/
+        /** Function to show the auto populate table list **/
         $(document).on('change', '#populate', function() {
-            
+           $('#questionChoiceDiv').hide();
+           $('#populateFromTable').val("");
            if($(this).is(':checked')) {
-               $('#manual').attr('checked', false);
+               $('#manual').prop('checked', false);
                $('#autoPopulateDiv').show();
            }
            else {
                $('#autoPopulateDiv').hide();
            }
+            
+        });
+        
+        /** Function to auto populate the answers when a table is selected **/
+        $(document).on('change', '#populateFromTable', function() {
+           
+            var selTable = $(this).val();
+            
+            var s = $('#s').val();
+            var v = $('#v').val();
+            
+            var questionId = window.questionId;
+            
+            $.ajax({
+                url: 'getQuestionChoicesForSelTable.do',
+                data: {'s':s, 'v': v, 'pageId': window.pageId, 'questionId': questionId, 'tableName':selTable},
+                type: "GET",
+                success: function(data) {
+                    $('#editQuestionDiv_'+questionId).html(data);
+                    $('#editQuestionDiv_'+questionId).show();
+                    $('#questionDiv'+questionId).hide();
+
+                    $('.tab-pane-question').removeClass("active");
+                    $('.tab-pane-question').removeClass("in");
+                    $('.nav-tabs-question li').removeClass("active");
+
+                    $('.editPane').addClass("active");
+                    $('.editPane').addClass("active");
+                    $('.editPane').addClass("in");
+                }
+             }); 
+            
+        });
+        
+        /** Function to show the auto populate table list **/
+        $(document).on('change', '#manual', function() {
+           $('#questionChoiceDiv').show();
+           $('#autoPopulateDiv').hide();
+           $('#populate').prop('checked', false);
+           
+           var s = $('#s').val();
+           var v = $('#v').val();
+
+           var questionId = window.questionId;
+
+           $.ajax({
+                url: 'getQuestionManualChoices.do',
+                data: {'s':s, 'v': v, 'pageId': window.pageId, 'questionId': questionId},
+                type: "GET",
+                success: function(data) {
+                    $('#editQuestionDiv_'+questionId).html(data);
+                    $('#editQuestionDiv_'+questionId).show();
+                    $('#questionDiv'+questionId).hide();
+
+                    $('.tab-pane-question').removeClass("active");
+                    $('.tab-pane-question').removeClass("in");
+                    $('.nav-tabs-question li').removeClass("active");
+
+                    $('.editPane').addClass("active");
+                    $('.editPane').addClass("active");
+                    $('.editPane').addClass("in");
+                }
+            }); 
+            
+        });
+        
+        /** Function to add a new question choice **/
+        $(document).on('click', '.addChoice', function() {
+            var newIndexVal = (($('.choiceTable tr:last').attr('rel')*1)+1);
+            
+            $('.choiceTable').append($('.choiceTable tr:last').clone());
+            
+            $('.choiceTable tr:last').attr("rel", newIndexVal);
+            
+            $('.choiceTable tr:last').find('input[type=text]').each(function() {
+               $(this).val(""); 
+               $(this).attr("name", 'questionChoices['+newIndexVal+'].choiceText');
+               $(this).attr("rel", newIndexVal);
+            });
+            
+            $('.choiceTable tr:last').find('input[type=radio]').each(function() {
+               $(this).attr("name", 'questionChoices['+newIndexVal+'].defAnswer');
+            });
+            
+            $('.choiceTable tr:last').find('select').each(function() {
+               $(this).val(0);
+               $(this).attr("name", 'questionChoices['+newIndexVal+'].activityCodeId');
+            });
+            
+        });
+        
+        /** Function to add a remove question choice **/
+        $(document).on('click', '.removeChoice', function() {
+            var indexVal = $(this).closest('tr').attr("rel");
+            $('#id_'+indexVal).remove();
+            $('#questionId_'+indexVal).remove();
+            $('#skipToPageId_'+indexVal).remove();
+            $('#skipToQuestionId_'+indexVal).remove();
+            $('#choiceValue_'+indexVal).remove();
+            $(this).closest('tr').remove();
+        });
+        
+        /** Function to clear out all other selected default answers **/
+        $(document).on('click', '.defAnswer', function() {
+           
+            $('.choiceTable').find('input[type=radio]').each(function() {
+                $(this).prop('checked', false);
+            });
+            
+            $(this).prop('checked', true);
             
         });
         
@@ -422,6 +534,45 @@ require(['./main'], function () {
                     else {
                         $('.movePositionDiv').hide();
                         $('.moveToQuestionDiv').hide();
+                    }
+                });
+            }
+            
+        })
+        
+        /** Function to populate the list of questions for the selected page **/
+        $(document).on('change', '.logicskipToPage', function() {
+            var pageId = $(this).val();
+            var indexVal = $(this).attr('rel');
+            
+            if(pageId == "") {
+                $('.logicskipQuestion').html("");
+            }
+            else {
+                /* Find out what tab */
+                var whichTab = $('.paneTabLi.active').attr('rel');
+                var questionId = window.questionId;
+                
+                
+                $.getJSON('getQuestionsForSelectedPage.do', {
+                    pageId: pageId, 
+                    questionId: questionId,
+                    ajax: true
+                }, function(data) {
+                    var html;
+                    var len = data.length;
+                    
+                    if(len > 0) {
+
+                        for (var i = 0; i < len; i++) {
+                         html += '<option value="' + data[i][0] + '">' + data[i][2] + '. ' + data[i][1] + '</option>';
+                        }
+
+                        $('#logicskipToQuestion_'+indexVal).html(html);
+                        $('#logicskipToQuestion_'+indexVal).removeAttr("disabled");
+                    }
+                    else {
+                       $('#logicskipQuestion_'+indexVal).html("");
                     }
                 });
             }
@@ -527,7 +678,7 @@ require(['./main'], function () {
         });
         
         /****************************************/
-        /**** Question Functions - Start ********/
+        /**** Question Functions - End ********/
         /****************************************/
      
       
@@ -550,6 +701,7 @@ function getSurveyPages() {
        }
     });  
 }
+
 
 
 

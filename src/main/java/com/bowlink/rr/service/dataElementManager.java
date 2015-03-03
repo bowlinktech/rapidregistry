@@ -64,4 +64,7 @@ public interface dataElementManager {
     
     @SuppressWarnings("rawtypes")
     List getLookupTableValues(Integer fieldId) throws Exception;
+    
+    @SuppressWarnings("rawtypes")
+    List getLookupTableValues(String tableName) throws Exception;
 }

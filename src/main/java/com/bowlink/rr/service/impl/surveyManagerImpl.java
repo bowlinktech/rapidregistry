@@ -184,4 +184,16 @@ public class surveyManagerImpl implements surveyManager {
     public List<SurveyQuestionChoices> getQuestionChoices(Integer questionId) throws Exception {
         return surveyDAO.getQuestionChoices(questionId);
     }
+    
+    @Override
+    @Transactional
+    public void removeQuestionChoices(Integer questionId) throws Exception {
+        surveyDAO.removeQuestionChoices(questionId);
+    }
+    
+    @Override
+    @Transactional
+    public void saveQuestionChoice(SurveyQuestionChoices questionChoice) throws Exception {
+        surveyDAO.saveQuestionChoice(questionChoice);
+    }
 }
