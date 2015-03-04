@@ -617,12 +617,16 @@ public class surveyController {
             qnum = surveyquestions.get(surveyquestions.size()-1).getQuestionNum()+1;
         }
         
+        /* Get the page details */
+        SurveyPages pageDetails = surveymanager.getSurveyPageById(pageId);
+        
         /* Create a new empty question */
         SurveyQuestions surveyQuestion = new SurveyQuestions();
         surveyQuestion.setSurveyId(surveyId);
         surveyQuestion.setAnswerTypeId(questionType);
         surveyQuestion.setSurveyPageId(pageId);
         surveyQuestion.setQuestionNum(qnum);
+        surveyQuestion.setPageNum(pageDetails.getPageNum());
        
         /* Create 3 blank answers */
         if(questionType == 1 || questionType == 2) {
@@ -683,6 +687,10 @@ public class surveyController {
             List<SurveyQuestionChoices> questionChoices = surveymanager.getQuestionChoices(questionId);
             questionDetails.setquestionChoices(questionChoices);
         }
+        
+        /* Get the page details */
+        SurveyPages pageDetails = surveymanager.getSurveyPageById(questionDetails.getSurveyPageId());
+        questionDetails.setPageNum(pageDetails.getPageNum());
         
         mav.addObject("surveyQuestion", questionDetails);
         
@@ -1109,7 +1117,7 @@ public class surveyController {
     
     
     /**
-     * The 'removeSurveyQuestion' POST request will HIDE the question from the survey. We do not want to delete
+     * The 'removeSurveyQuestion' POST request will DELETE the question from the survey. We do not want to delete
      * the question so we can hold on to previous answers. When a question is hidden it will no longer show on the 
      * survey form and the survey build form.
      * 
@@ -1145,7 +1153,7 @@ public class surveyController {
         }
         
         /** Hide the question **/
-        questionDetails.setHide(true);
+        questionDetails.setDeleted(true);
         surveymanager.saveSurveyQuestion(questionDetails);
         
         /** Log the change **/
@@ -1160,6 +1168,141 @@ public class surveyController {
         return 1;
     }
 
+    
+    /**
+     * The 'hideSurveyQuestion' POST request will HIDE the question from the survey. 
+     * 
+     * @param s The encrypted surveyId
+     * @param v The encrypted pass phrase
+     * @param pageId    The page id the question is currently on
+     * @param questionId   The id of the selected question
+     * @param session
+     * @return
+     * @throws Exception 
+     */
+    @RequestMapping(value = "hideSurveyQuestion.do", method = RequestMethod.POST)
+    public @ResponseBody Integer hideSurveyQuestion(@RequestParam String s, @RequestParam String v, @RequestParam Integer pageId, @RequestParam Integer questionId, HttpSession session) throws Exception {
+        
+        decryptObject decrypt = new decryptObject();
+        
+        Object obj = decrypt.decryptObject(s, v);
+        
+        String[] result = obj.toString().split((","));
+        
+        int surveyId = Integer.parseInt(result[0].substring(4));
+        
+        SurveyQuestions questionDetails = surveymanager.getSurveyQuestionById(questionId);
+        
+        /** Update all question numbers **/
+        List<SurveyQuestions> surveyquestions = surveymanager.getAllSurveyQuestions(questionDetails.getSurveyId());
+
+        for(SurveyQuestions question : surveyquestions) {
+            if(question.getQuestionNum() > questionDetails.getQuestionNum()) {
+                question.setQuestionNum(question.getQuestionNum()-1);
+                surveymanager.saveSurveyQuestion(question);
+            }
+        }
+        
+        /** Hide the question **/
+        questionDetails.setHide(true);
+        surveymanager.saveSurveyQuestion(questionDetails);
+        
+        /** Log the change **/
+        SurveyChangeLogs scl = new SurveyChangeLogs();
+
+        scl.setNotes("Question number " + questionDetails.getQuestionNum() + " was hidden.");
+        scl.setSurveyId(surveyId);
+        User userDetails = (User) session.getAttribute("userDetails");
+        scl.setSystemUserId(userDetails.getId());
+        surveymanager.saveChangeLogs(scl);
+
+        return 1;
+    }
+    
+    /**
+     * The 'unhideSurveyQuestion' POST request will UNHIDE the question from the survey. 
+     * 
+     * @param s The encrypted surveyId
+     * @param v The encrypted pass phrase
+     * @param pageId    The page id the question is currently on
+     * @param questionId   The id of the selected question
+     * @param session
+     * @return
+     * @throws Exception 
+     */
+    @RequestMapping(value = "unhideSurveyQuestion.do", method = RequestMethod.POST)
+    public @ResponseBody Integer unhideSurveyQuestion(@RequestParam String s, @RequestParam String v, @RequestParam Integer pageId, @RequestParam Integer questionId, HttpSession session) throws Exception {
+        
+        decryptObject decrypt = new decryptObject();
+        
+        Object obj = decrypt.decryptObject(s, v);
+        
+        String[] result = obj.toString().split((","));
+        
+        int surveyId = Integer.parseInt(result[0].substring(4));
+        
+        SurveyQuestions questionDetails = surveymanager.getSurveyQuestionById(questionId);
+        
+        /** Update all question numbers **/
+        List<SurveyQuestions> surveyquestions = surveymanager.getAllSurveyQuestions(questionDetails.getSurveyId());
+
+        for(SurveyQuestions question : surveyquestions) {
+            if(question.getId() != questionId && question.getQuestionNum() >= questionDetails.getQuestionNum()) {
+                question.setQuestionNum(question.getQuestionNum()+1);
+                surveymanager.saveSurveyQuestion(question);
+            }
+        }
+        
+        /** Hide the question **/
+        questionDetails.setHide(false);
+        surveymanager.saveSurveyQuestion(questionDetails);
+        
+        /** Log the change **/
+        SurveyChangeLogs scl = new SurveyChangeLogs();
+
+        scl.setNotes("Question number " + questionDetails.getQuestionNum() + " is now visible.");
+        scl.setSurveyId(surveyId);
+        User userDetails = (User) session.getAttribute("userDetails");
+        scl.setSystemUserId(userDetails.getId());
+        surveymanager.saveChangeLogs(scl);
+
+        return 1;
+    }
+    
+    /**
+     * The 'deleteSurveyPage' POST request will remove the selected survey page. 
+     * 
+     * @param pageId    The selected page id
+     * @param session
+     * @return
+     * @throws Exception 
+     */
+    @RequestMapping(value = "deleteSurveyPage.do", method = RequestMethod.POST)
+    public @ResponseBody Integer deleteSurveyPage(@RequestParam Integer pageId, HttpSession session) throws Exception {
+        
+        SurveyPages pageDetails = surveymanager.getSurveyPageById(pageId);
+        
+        List<SurveyPages> surveyPages = surveymanager.getSurveyPages(pageDetails.getSurveyId(), false);
+        for(SurveyPages page : surveyPages) {
+            if(page.getPageNum() > pageDetails.getPageNum()) {
+                page.setPageNum(page.getPageNum()-1);
+                surveymanager.updateSurveyPage(page);
+            }
+        }
+        
+        surveymanager.deleteSurveyPage(pageId);
+        
+        /** Log the change **/
+        SurveyChangeLogs scl = new SurveyChangeLogs();
+
+        scl.setNotes("Survey page number " + pageDetails.getPageNum()+ " was removed.");
+        scl.setSurveyId(pageDetails.getSurveyId());
+        User userDetails = (User) session.getAttribute("userDetails");
+        scl.setSystemUserId(userDetails.getId());
+        surveymanager.saveChangeLogs(scl);
+
+        return 1;
+    }
     
     /**
      * The 'moveSurveyQuestion.do' POST request will move the selected question to the selected position.

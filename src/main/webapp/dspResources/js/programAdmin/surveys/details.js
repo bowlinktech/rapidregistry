@@ -274,6 +274,22 @@ require(['./main'], function () {
                    $('.'+pane+'Tab').addClass("active");
                    $('.'+pane).addClass("active");
                    $('.'+pane).addClass("in");
+                   
+                   if(pane === "logicPane") {
+                       /* Loop through existing skip to pages to get columns */
+                       $('.logicskipToPage').each(function() {
+                            var indexVal = $(this).attr('rel');
+                            var pageId = $(this).val();
+                            
+                            if (pageId > 0) {
+                                
+                                var selValue = $('#logicskipToQuestion_'+indexVal).attr('rel2');
+
+                                populateTableValues(pageId, window.questionId, indexVal, selValue);
+                                
+                            }
+                       });
+                   }
                }
             }); 
         });
@@ -294,6 +310,22 @@ require(['./main'], function () {
                $('.movePositionDiv').hide();
                $('.moveToQuestionDiv').hide();
                $('.saveQuestionBtn').attr("id", "copyQuestion");
+           }
+           else if(whichPane === "#logic") {
+                /* Loop through existing skip to pages to get columns */
+                $('.logicskipToPage').each(function() {
+                     var indexVal = $(this).attr('rel');
+                     var pageId = $(this).val();
+
+                     if (pageId > 0) {
+
+                         var selValue = $('#logicskipToQuestion_'+indexVal).attr('rel2');
+
+                         populateTableValues(pageId, window.questionId, indexVal, selValue);
+
+                     }
+                });
+                $('.saveQuestionBtn').attr("id", "submitQuestion");
            }
            else {
                $('.saveQuestionBtn').attr("id", "submitQuestion");
@@ -538,12 +570,14 @@ require(['./main'], function () {
                 });
             }
             
-        })
+        });
         
         /** Function to populate the list of questions for the selected page **/
         $(document).on('change', '.logicskipToPage', function() {
             var pageId = $(this).val();
             var indexVal = $(this).attr('rel');
+            
+            $('#skipToPageId_'+indexVal).val(pageId);
             
             if(pageId == "") {
                 $('.logicskipQuestion').html("");
@@ -563,6 +597,7 @@ require(['./main'], function () {
                     var len = data.length;
                     
                     if(len > 0) {
+                        html += '<option value="0">- Select Question - </option>';
 
                         for (var i = 0; i < len; i++) {
                          html += '<option value="' + data[i][0] + '">' + data[i][2] + '. ' + data[i][1] + '</option>';
@@ -576,8 +611,17 @@ require(['./main'], function () {
                     }
                 });
             }
+        });
+        
+        
+        /** Function to populate the list of questions for the selected page **/
+        $(document).on('change', '.logicskipQuestion', function() {
+            var qid = $(this).val();
+            var indexVal = $(this).attr('rel');
             
-        })
+            $('#skipToQuestionId_'+indexVal).val(qid);
+            
+        });
         
         /** Function to move the question **/
         $(document).on('click', '#moveQuestion', function() {
@@ -653,14 +697,14 @@ require(['./main'], function () {
              
         });
         
-        /** Function to delete the selected field **/
+        /** Function to delete the selected question **/
         $(document).on('click', '.deleteQuestion', function() {
             var questionId = $(this).attr('rel');
             
             var s = $('#s').val();
             var v = $('#v').val();
             
-            var confirmed = confirm("Are you sure want to remove this question?");
+            var confirmed = confirm("Are you sure want to remove this question?\n\nThis action can not be undone.");
             
             if(confirmed == true) {
             
@@ -674,7 +718,75 @@ require(['./main'], function () {
                     }
                 });
             }
+        });
+        
+        /** Function to hide the selected question **/
+        $(document).on('click', '.hideQuestion', function() {
+            var questionId = $(this).attr('rel');
             
+            var s = $('#s').val();
+            var v = $('#v').val();
+            
+            var confirmed = confirm("Are you sure want to hide this question?");
+            
+            if(confirmed == true) {
+            
+                $.ajax({
+                    url: "hideSurveyQuestion.do",
+                    data: {'s':s, 'v': v, 'pageId': window.pageId, 'questionId': questionId},
+                    type: "POST",
+                    async: false,
+                    success: function(data) {
+                        getSurveyPages();
+                    }
+                });
+            }
+            
+        });
+        
+        /** Function to unhide the selected question **/
+        $(document).on('click', '.unhideQuestion', function() {
+            var questionId = $(this).attr('rel');
+            
+            var s = $('#s').val();
+            var v = $('#v').val();
+            
+            var confirmed = confirm("Are you sure want to make this question visible?");
+            
+            if(confirmed == true) {
+            
+                $.ajax({
+                    url: "unhideSurveyQuestion.do",
+                    data: {'s':s, 'v': v, 'pageId': window.pageId, 'questionId': questionId},
+                    type: "POST",
+                    async: false,
+                    success: function(data) {
+                        getSurveyPages();
+                    }
+                });
+            }
+            
+        });
+        
+        /** Function to delete a blank page **/
+        $(document).on('click', '.deletePage', function() {
+           var pageId = $(this).attr('rel');
+           
+           var confirmed = confirm("Are you sure want to remove this blank page?");
+            
+            if(confirmed == true) {
+            
+                $.ajax({
+                    url: "deleteSurveyPage.do",
+                    data: {'pageId': pageId},
+                    type: "POST",
+                    async: false,
+                    success: function(data) {
+                        getSurveyPages();
+                    }
+                });
+            }
+           
         });
         
         /****************************************/
@@ -684,6 +796,37 @@ require(['./main'], function () {
       
     });
 });
+
+function populateTableValues(pageId, questionId, indexVal, selValue) {
+    $.getJSON('getQuestionsForSelectedPage.do', {
+        pageId: pageId, 
+        questionId: questionId,
+        ajax: true
+    }, function(data) {
+        var html;
+        var len = data.length;
+
+        if(len > 0) {
+            html += '<option value="0">- Select Question - </option>';
+
+            for (var i = 0; i < len; i++) {
+                if (selValue == data[i][0]) {
+                    html += '<option value="' + data[i][0] + '" selected>' + data[i][2] + '. ' + data[i][1] + '</option>';
+                }
+                else {
+                    html += '<option value="' + data[i][0] + '">' + data[i][2] + '. ' + data[i][1] + '</option>';
+                }
+                
+            }
+
+            $('#logicskipToQuestion_'+indexVal).html(html);
+            $('#logicskipToQuestion_'+indexVal).removeAttr("disabled");
+        }
+        else {
+           $('#logicskipQuestion_'+indexVal).html("");
+        }
+    });
+}
 
 function getSurveyPages() {
     

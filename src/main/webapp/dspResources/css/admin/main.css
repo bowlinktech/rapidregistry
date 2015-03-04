@@ -6484,3 +6484,6 @@ input[type="checkbox"] {
 .hoverQuestion {
     border: dashed 1px #0087e6;
 }
+.hiddenQuestion {
+    border: dashed 1px red;
+}

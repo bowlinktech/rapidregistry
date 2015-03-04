@@ -24,7 +24,7 @@
       </li>
       <c:if test="${surveyQuestion.id > 0}">
          <li class="paneTabLi logicPaneTab" rel="logic">
-            <a href="#logic" role="tab" data-toggle="tab" class="logicTab">
+            <a href="#logic" role="tab" data-toggle="tab" class="paneTab">
                 <icon class="glyphicon glyphicon-random"></icon> Logic
             </a>
         </li>
@@ -95,6 +95,8 @@
                                         <input type="hidden" id="id_${choice.index}" name="questionChoices[${choice.index}].id" value="${choiceDetails.id}" />
                                         <input type="hidden" id="questionId_${choice.index}" name="questionChoices[${choice.index}].questionId" value="${choiceDetails.questionId}" />
                                         <input type="hidden" id="choiceValue_${choice.index}" name="questionChoices[${choice.index}].choiceValue" value="${choiceDetails.choiceValue}" />
+                                        <input type="hidden" id="skipToPageId_${choice.index}" name="questionChoices[${choice.index}].skipToPageId" value="${choiceDetails.skipToPageId}" />
+                                        <input type="hidden" id="skipToQuestionId_${choice.index}" name="questionChoices[${choice.index}].skipToQuestionId" value="${choiceDetails.skipToQuestionId}" />
                                         <tr rel="${choice.index}">
                                             <td>
                                                 <input type="text" name="questionChoices[${choice.index}].choiceText"  value="${choiceDetails.choiceText}" rel="${choice.index}" class="form-control fieldLabel formField" />
@@ -198,20 +200,22 @@
                                 <c:forEach items="${surveyQuestion.questionChoices}" var="choiceDetails" varStatus="choice">
                                     <tr>
                                         <td>
-                                            <input type="text" value="${choiceDetails.choiceText}" class="form-control" disabled="disabled" />
+                                            <input type="text" value="${choiceDetails.choiceText}" class="form-control" disabled="disabled" style="width:300px;" />
                                         </td>
                                         <td>
                                             <div class="form-inline">
                                                 <div class="form-group">
-                                                    <select id="logicskipToPage_${choice.index}" rel="${choice.index}" name="questionChoices[${choice.index}].skipToPageId" class="form-control logicskipToPage">
-                                                        <option value="">- Select A Page -</option>
+                                                    <select style="width:250px;" id="logicskipToPage_${choice.index}" rel="${choice.index}" class="form-control logicskipToPage">
+                                                        <option value="0">- Select A Page -</option>
                                                         <c:forEach items="${pages}" var="page">
-                                                            <option value="${page.id}">${page.pageNum}. ${page.pageTitle}</option>
+                                                            <c:if test="${page.pageNum > surveyQuestion.pageNum}">
+                                                                <option value="${page.id}" <c:if test="${page.id == choiceDetails.skipToPageId}">selected</c:if>>${page.pageNum}. ${page.pageTitle}</option>
+                                                            </c:if>
                                                         </c:forEach>
                                                     </select>
                                                 </div>
                                                 <div class="form-group">
-                                                    <select id="logicskipToQuestion_${choice.index}" name="questionChoices[${choice.index}].skipToQuestionId" class="form-control logicskipQuestion" disabled="true">
+                                                    <select style="width:250px;" id="logicskipToQuestion_${choice.index}" rel="${choice.index}" rel2="${choiceDetails.skipToQuestionId}" class="form-control logicskipQuestion" disabled="true">
                                                         <option value=""></option>
                                                     </select>
                                                 </div>

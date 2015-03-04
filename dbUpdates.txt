@@ -21,6 +21,7 @@ DROP TRIGGER IF EXISTS `rapidregistry`.`survey_track_d` $$
 DELIMITER ;
 
 
+
 /** grace 03022015 08:30PM **/
 ALTER TABLE `rapidregistry`.`programuploadtypes` 
 ADD COLUMN `fileTypeId` INT NULL AFTER `HELPickUpPath`;
@@ -66,5 +67,11 @@ ADD COLUMN `statusDateTime` DATETIME NULL AFTER `statusId`;
 
 
 
+/** Chad 03032015 9:41 AM **/
+ALTER TABLE `rapidregistry`.`survey_questions` 
+ADD COLUMN `deleted` BIT(1) NULL DEFAULT b'0' AFTER `populateFromTable`;
 
+ALTER TABLE `rapidregistry`.`survey_pages` 
+DROP INDEX `uni_surveyIdPageNum` ,
+ADD INDEX `uni_surveyIdPageNum` (`surveyId` ASC);
 

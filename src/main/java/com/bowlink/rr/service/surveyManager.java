@@ -68,4 +68,6 @@ public interface surveyManager {
     
     void saveQuestionChoice(SurveyQuestionChoices questionChoice) throws Exception;
     
+    void deleteSurveyPage(Integer pageId) throws Exception;
+    
 }
