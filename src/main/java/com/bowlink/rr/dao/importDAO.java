@@ -5,9 +5,12 @@
  */
 package com.bowlink.rr.dao;
 
+import com.bowlink.rr.model.fileTypes;
 import com.bowlink.rr.model.programUploadTypes;
 import com.bowlink.rr.model.programUploadTypesFormFields;
+
 import java.util.List;
+
 import org.springframework.stereotype.Repository;
 
 /**
@@ -34,5 +37,7 @@ public interface importDAO {
     void saveImportField(programUploadTypesFormFields fieldDetails) throws Exception;
     
     void removeImportType(Integer importTypeId) throws Exception;
+    
+    List <fileTypes> getFileTypes (Integer fileTypeId) throws Exception;
     
 }

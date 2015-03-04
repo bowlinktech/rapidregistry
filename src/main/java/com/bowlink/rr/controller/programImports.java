@@ -6,6 +6,7 @@
 package com.bowlink.rr.controller;
 
 import com.bowlink.rr.model.dataElements;
+import com.bowlink.rr.model.fileTypes;
 import com.bowlink.rr.model.program;
 import com.bowlink.rr.model.programUploadTypes;
 import com.bowlink.rr.model.programUploadTypesFormFields;
@@ -13,13 +14,16 @@ import com.bowlink.rr.reference.fileSystem;
 import com.bowlink.rr.service.dataElementManager;
 import com.bowlink.rr.service.importManager;
 import com.bowlink.rr.service.programManager;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -108,6 +112,14 @@ public class programImports {
             mav.addObject("modalTitle", "Create New Import Type");
         }
 
+        List <fileTypes> fileTypesList =  importManager.getFileTypes(0);
+        mav.addObject("fileTypesList", fileTypesList);
+        
+        //Get the list of available file delimiters
+        @SuppressWarnings("rawtypes")
+        List delimiters = dataelementmanager.getDelimiters();
+        mav.addObject("delimiters", delimiters);
+        
         mav.addObject("importTypeDetails", uploadType);
        
         mav.addObject("programName", session.getAttribute("programName"));
@@ -127,9 +139,19 @@ public class programImports {
      */
     @RequestMapping(value = "/saveImportType", method = RequestMethod.POST)
     public @ResponseBody ModelAndView saveImportType(@Valid @ModelAttribute(value = "importTypeDetails") programUploadTypes importTypeDetails, BindingResult result, @RequestParam String action, HttpSession session) throws Exception {
-
+    	
+    	ModelAndView mav = new ModelAndView();
+    	
+    	List <fileTypes> fileTypesList =  importManager.getFileTypes(0);
+        mav.addObject("fileTypesList", fileTypesList);
+        
+        //Get the list of available file delimiters
+        @SuppressWarnings("rawtypes")
+        List delimiters = dataelementmanager.getDelimiters();
+        mav.addObject("delimiters", delimiters);
+    	
         if (result.hasErrors()) {
-            ModelAndView mav = new ModelAndView();
+            
             mav.setViewName("/sysAdmin/programs/imports/importForm");
             
             if(importTypeDetails.getId() > 0) {
@@ -152,7 +174,6 @@ public class programImports {
         
         importManager.saveUploadType(importTypeDetails);
 
-        ModelAndView mav = new ModelAndView();
         mav.setViewName("/sysAdmin/programs/imports/importForm");
         mav.addObject("programName", session.getAttribute("programName"));
         mav.addObject("success", "importTypeSaved");

@@ -5,8 +5,10 @@
  */
 package com.bowlink.rr.service;
 
+import com.bowlink.rr.model.fileTypes;
 import com.bowlink.rr.model.programUploadTypes;
 import com.bowlink.rr.model.programUploadTypesFormFields;
+
 import java.util.List;
 
 /**
@@ -32,5 +34,7 @@ public interface importManager {
     void saveImportField(programUploadTypesFormFields fieldDetails) throws Exception;
     
     void removeImportType(Integer importTypeId) throws Exception;
+    
+    List <fileTypes> getFileTypes (Integer fileTypeId) throws Exception;
     
 }

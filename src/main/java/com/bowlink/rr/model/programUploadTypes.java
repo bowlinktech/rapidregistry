@@ -58,6 +58,15 @@ public class programUploadTypes {
     @NoHtml
     @Column(name = "HELDropPath", nullable = false)
     private String helDropPath;
+    
+    @Column(name = "fileTypeId", nullable = false)
+    private Integer fileTypeId = 1;
+    
+    @Column(name = "MAXFILESIZE", nullable = false)
+    private int maxFileSize = 0;
+    
+    @Column(name = "fileDelimId", nullable = false)
+    private int fileDelimId = 1;
 
 	public int getTotalFields() {
 		return totalFields;
@@ -129,6 +138,30 @@ public class programUploadTypes {
 
 	public void setHelDropPath(String helDropPath) {
 		this.helDropPath = helDropPath;
+	}
+
+	public Integer getFileTypeId() {
+		return fileTypeId;
+	}
+
+	public void setFileTypeId(Integer fileTypeId) {
+		this.fileTypeId = fileTypeId;
+	}
+
+	public int getMaxFileSize() {
+		return maxFileSize;
+	}
+
+	public void setMaxFileSize(int maxFileSize) {
+		this.maxFileSize = maxFileSize;
+	}
+
+	public int getFileDelimId() {
+		return fileDelimId;
+	}
+
+	public void setFileDelimId(int fileDelimId) {
+		this.fileDelimId = fileDelimId;
 	}
 
 }
