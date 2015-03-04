@@ -17,11 +17,6 @@
               <icon class="glyphicon glyphicon-edit"></icon> Edit
           </a>
       </li>
-      <li class="paneTabLi optionsPaneTab" rel="options">
-          <a href="#options" role="tab" data-toggle="tab" class="paneTab">
-            <icon class="glyphicon glyphicon-cog"></icon> Options
-          </a>
-      </li>
       <c:if test="${surveyQuestion.id > 0}">
           <li class="paneTabLi movePaneTab" rel="move">
             <a href="#move" role="tab" data-toggle="tab" class="paneTab">
@@ -43,58 +38,17 @@
         <form:hidden path="answerTypeId" />
         <form:hidden path="questionNum" />
         <form:hidden path="dateCreated" />
+        <form:hidden path="question" id="questionVal" />
         <!-- Tab panes -->
         <div class="tab-content">
             <div class="tab-pane tab-pane-question fade active in editPane" id="edit">
                 <div class="form-group">
-                    <label class="control-label" for="pageTitle"><!--<span class="qNum">Q${qnum}</span>:--> Single Textbox</label>
-                    <form:input path="question" placeholder="Enter your Question" id="question" class="form-control" type="text"  maxLength="255" />
+                    <label class="control-label" for="pageTitle">Display Text</label>
+                </div>
+                <div class="form-group" style="background-color:#fff">
+                    <div id="question">${surveyQuestion.question}</div>
                 </div>
             </div>
-            <div class="tab-pane tab-pane-question fade optionsPane" id="options">
-                <div class="well well-xsm" style="background-color:#ffffff; margin-bottom: 2px">
-                    <form:checkbox path="required" id="required" />&nbsp;<label class="control-label" for="pageTitle">Make this question required</label>
-                </div>
-                <div class="panel" id="requiredResponseDiv" style="${surveyQuestion.required == true ? 'display:block;' : 'display:none;'}">
-                    <div class="panel-body">
-                        <div class="form-group">
-                            <label class="control-label" for="requiredResponse">Display this message when this question is not answered.</label>
-                            <form:input path="requiredResponse" placeholder="Required Error Message" id="requiredResponse" class="form-control" type="text"  maxLength="255" />
-                        </div>
-                    </div>
-                </div>
-                <div class="well well-xsm" style="background-color:#ffffff; margin-bottom: 2px">
-                    <input type="checkbox" id="validateField" <c:if test="${surveyQuestion.validationId > 1}">checked="checked"</c:if> />&nbsp;<label class="control-label" for="validationId">Validate Answer</label>
-                </div>
-                <div class="panel" id="validationDiv" style="${surveyQuestion.validationId > 1 ? 'display:block;' : 'display:none;'}">
-                    <div class="panel-body">
-                        <div class="form-group">
-                            <label class="control-label" for="fieldValidation">Select the field validation</label>
-                            <form:select path="validationId" id="fieldValidation" class="form-control half">
-                                <c:forEach items="${validationTypes}"  var="fieldvalidationtypes" varStatus="vtype">
-                                    <option value="${validationTypes[vtype.index][0]}" <c:if test="${surveyQuestion.validationId == validationTypes[vtype.index][0]}">selected</c:if>>${validationTypes[vtype.index][1]}</option>
-                                </c:forEach>
-                            </form:select>
-                        </div>
-                    </div>
-                </div>
-                <div class="well well-xsm" style="background-color:#ffffff; margin-bottom: 2px">
-                    <input type="checkbox" id="saveTo" <c:if test="${surveyQuestion.saveToFieldId > 0}">checked="checked"</c:if> />&nbsp;<label class="control-label" for="saveTo">Save the answer to an additional field</label>
-                </div>
-                <div class="panel" id="saveToDiv" style="${surveyQuestion.saveToFieldId > 0 ? 'display:block;' : 'display:none;'}">
-                    <div class="panel-body">
-                        <div class="form-group form-inline">
-                            <form:select path="saveToFieldId" id="saveToField" class="form-control half sm-input">
-                                <option value="0">- Select Field -</option>
-                                <c:forEach items="${fields}" var="field" varStatus="ftype">
-                                    <option value="${fields[ftype.index][0]}" <c:if test="${surveyQuestion.saveToFieldId == fields[ftype.index][0]}">selected</c:if>>${fields[ftype.index][1]}</option>
-                                </c:forEach>
-                            </form:select>&nbsp;&nbsp;&nbsp;
-                            <form:checkbox path="autoPopulateFromField" id="autoPopulateFromField" value="true" />&nbsp;<label class="control-label" for="autoPopulateFromField">Auto populate question with this field</label>
-                        </div>
-                    </div>
-                </div>    
-            </div> 
             <div class="tab-pane tab-pane-question fade movePane" id="move">
                 <div class="well well-xsm" style="background-color:#ffffff; margin-bottom: 2px">
                     <label class="control-label" for="move">Move this question to..</label>
@@ -156,11 +110,15 @@
                         </div>
                     </div>
                 </div>   
-            </div>
+            </div>     
             <div class="form-group" style="margin-top: 20px;">
-                <input type="button" id="submitQuestion" role="button" class="btn btn-primary saveQuestionBtn" value="Save"/>
+                <input type="button" id="submitQuestion" role="button" rel="displayText" class="btn btn-primary saveQuestionBtn" value="Save"/>
                 <input type="button" id="cancelQuestion" role="button" rel="${qnum}" rel2="${surveyQuestion.id}" rel3="${surveyQuestion.surveyPageId}" class="btn btn-danger" value="Cancel"/>
             </div>     
         </div> 
    </form:form>            
 </div>
+
+<script>
+    $('#question').summernote(); 
+</script>

@@ -11,14 +11,16 @@ require.config({
         'moment': '../vendor/moment',
         'daterangepicker': '../vendor/daterangepicker',
         'dataTables': '../vendor/jquery.dataTables.min',
-        'duallistbox': '../vendor/jquery.bootstrap-duallistbox'
+        'duallistbox': '../vendor/jquery.bootstrap-duallistbox',
+        'summernote' : '../vendor/summernote.min'
     },
     shim: {
         'bootstrap': ['jquery'],
         'responsive-tables': ['jquery'],
         'daterangepicker': ['jquery', 'bootstrap'],
         'dataTables': ['jquery'],
-        'duallistbox': ['jquery']
+        'duallistbox': ['jquery'],
+        'summernote': ['jquery']
     }
 });
 

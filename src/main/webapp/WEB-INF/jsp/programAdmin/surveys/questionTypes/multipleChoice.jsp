@@ -52,7 +52,7 @@
         <div class="tab-content">
             <div class="tab-pane tab-pane-question fade active in editPane" id="edit">
                 <div class="form-group">
-                    <label class="control-label" for="pageTitle">Q${qnum}: Multiple Choice</label>
+                    <label class="control-label" for="pageTitle"><!--<span class="qNum">Q${qnum}</span>:--> Multiple Choice</label>
                     <form:input path="question" placeholder="Enter your Question" id="question" class="form-control" type="text"  maxLength="255" />
                 </div>
                 <c:if test="${not empty availableTables}">
@@ -78,7 +78,7 @@
                 <div class="well well-xsm" style="background-color:#ffffff; margin-bottom: 2px">
                    <input type="checkbox" id="manual" <c:if test="${empty surveyQuestion.populateFromTable && not empty surveyQuestion.questionChoices}">checked="checked"</c:if> />&nbsp;<label class="control-label" for="populateFromTable">Manually enter choices</label>
                 </div>
-                    <c:if test="${surveyQuestion.questionChoices.size() > 0}">
+                <c:if test="${surveyQuestion.questionChoices.size() > 0}">
                     <div class="panel" id="questionChoiceDiv">
                         <div class="panel-body">
                             <table class="table choiceTable" border="0">
@@ -179,7 +179,7 @@
                                     <option value="${fields[ftype.index][0]}" <c:if test="${surveyQuestion.saveToFieldId == fields[ftype.index][0]}">selected</c:if>>${fields[ftype.index][1]}</option>
                                 </c:forEach>
                             </form:select>&nbsp;&nbsp;&nbsp;
-                            <form:checkbox path="autoPopulateFromField" id="autoPopulateFromField" value="true" />&nbsp;<label class="control-label" for=autoPopulateFromField">Auto populate question with this field</label>
+                            <form:checkbox path="autoPopulateFromField" id="autoPopulateFromField" value="true" />&nbsp;<label class="control-label" for="autoPopulateFromField">Auto populate question with this field</label>
                         </div>
                     </div>
                 </div>    
@@ -188,12 +188,12 @@
             <div class="tab-pane tab-pane-question fade logicPane" id="logic">
                 <div class="panel" id="questionChoiceDiv">
                     <div class="panel-body">
-                        <table class="table choiceTable" border="0">
+                        <table class="table" border="0">
                             <thead>
                                 <tr>
                                     <th>if answer is...</th>
                                     <th>Then skip to...</th>
-                                    <th class="center-text">Clear All</th>
+                                    <th class="center-text"></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -222,7 +222,7 @@
                                             </div>
                                         </td>
                                         <td class="center-text">
-                                           Clear
+                                            <button class="btn btn-sm btn-danger clearSkipLogic" rel="${choice.index}">Clear</button>
                                         </td>
                                     </tr>
                                 </c:forEach>
@@ -240,7 +240,7 @@
                     <div class="panel-body">
                         <div class="form-inline">
                             <div class="form-group">
-                                <label class="control-label" for=moveToPage">Page</label><br />
+                                <label class="control-label" for="moveToPage">Page</label><br />
                                 <select id="movemoveToPage" class="form-control moveToPage">
                                     <option value="">- Select A Page -</option>
                                     <c:forEach items="${pages}" var="page">
@@ -249,14 +249,14 @@
                                 </select>
                             </div>
                             <div class="form-group movePositionDiv" style="display:none;">
-                                <label class="control-label" for=position">Position</label><br />
+                                <label class="control-label" for="position">Position</label><br />
                                 <select id="moveposition" class="form-control">
                                     <option value="after">After</option>
                                     <option value="before">Before</option>
                                 </select>
                             </div>
                             <div class="form-group moveToQuestionDiv" style="display:none;">
-                                <label class="control-label" for=moveToQuestion">Question</label><br />
+                                <label class="control-label" for="moveToQuestion">Question</label><br />
                                 <select id="movemoveToQuestion" class="form-control moveToQuestion"></select>
                             </div>
                         </div>
@@ -272,7 +272,7 @@
                     <div class="panel-body">
                         <div class="form-inline">
                             <div class="form-group">
-                                <label class="control-label" for=moveToPage">Page</label><br />
+                                <label class="control-label" for="moveToPage">Page</label><br />
                                 <select id="copymoveToPage" class="form-control moveToPage">
                                     <option value="">- Select A Page -</option>
                                     <c:forEach items="${pages}" var="page">
@@ -281,14 +281,14 @@
                                 </select>
                             </div>
                             <div class="form-group movePositionDiv" style="display:none;">
-                                <label class="control-label" for=position">Position</label><br />
+                                <label class="control-label" for="position">Position</label><br />
                                 <select id="copyposition" class="form-control">
                                     <option value="after">After</option>
                                     <option value="before">Before</option>
                                 </select>
                             </div>
                             <div class="form-group moveToQuestionDiv" style="display:none;">
-                                <label class="control-label" for=moveToQuestion">Question</label><br />
+                                <label class="control-label" for="moveToQuestion">Question</label><br />
                                 <select id="copymoveToQuestion" class="form-control moveToQuestion"></select>
                             </div>
                         </div>

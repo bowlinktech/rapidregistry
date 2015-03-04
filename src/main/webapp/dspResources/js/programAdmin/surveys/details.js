@@ -5,7 +5,7 @@
  */
 
 require(['./main'], function () {
-    require(['jquery'], function($) {
+    require(['jquery', 'summernote'], function($) {
 
         //Fade out the updated/created message after being displayed.
         if ($('.alert').length > 0) {
@@ -36,10 +36,19 @@ require(['./main'], function () {
                 }
                 
                 var top = false;
-                $(".pageQuestionsPanel").each( function() {
+                var total = $('.pageQuestionsPanel').length;
+                $(".pageQuestionsPanel").each( function(index) {
                     var offset = $(this).offset();
                    
-                    if(((offset.top+100) > windowpos) && top == false) {
+                    if(windowpos + $(window).height() == $(document).height() && top == false) {
+                        if(index == total - 1) {
+                            
+                            window.pageId =  $(this).attr('rel');
+                            top = true;
+                            return false;
+                        }
+                    }
+                    else if(((offset.top+100) > windowpos) && top == false) {
                         window.pageId =  $(this).attr('rel');
                         top = true;
                         return false;
@@ -243,6 +252,7 @@ require(['./main'], function () {
 
             var questionId = $(this).attr('rel');
             var pane = $(this).attr('pane');
+            var qNum = $('#qNum'+questionId).attr('rel');
             
             window.questionId = questionId;
 
@@ -274,6 +284,9 @@ require(['./main'], function () {
                    $('.'+pane+'Tab').addClass("active");
                    $('.'+pane).addClass("active");
                    $('.'+pane).addClass("in");
+                   
+                   /* Set the question number */
+                   //$('.qNum').html("Q"+qNum);
                    
                    if(pane === "logicPane") {
                        /* Loop through existing skip to pages to get columns */
@@ -579,8 +592,10 @@ require(['./main'], function () {
             
             $('#skipToPageId_'+indexVal).val(pageId);
             
-            if(pageId == "") {
-                $('.logicskipQuestion').html("");
+            
+            if(pageId == 0) {
+                $('#logicskipToQuestion_'+indexVal).val(0);
+                $('#logicskipToQuestion_'+indexVal).attr("disabled", true);
             }
             else {
                 /* Find out what tab */
@@ -611,6 +626,16 @@ require(['./main'], function () {
                     }
                 });
             }
+        });
+        
+        /* Function to clear a skip logic */
+        $(document).on('click', '.clearSkipLogic', function(event) {
+            var indexVal = $(this).attr('rel');
+            $('#logicskipToPage_'+indexVal).val(0);
+            $('#logicskipToQuestion_'+indexVal).val(0);
+            $('#logicskipToQuestion_'+indexVal).attr("disabled", true);
+            event.preventDefault();
+               return false;
         });
         
         
@@ -682,6 +707,11 @@ require(['./main'], function () {
             
             var s = $('#s').val();
             var v = $('#v').val();
+            
+            if($(this).attr('rel') == 'displayText') {
+                var sHTML = $('#question').code();
+                $('#questionVal').val(sHTML);
+            }
              
             var formData = $("#surveyquestion").serialize();
 

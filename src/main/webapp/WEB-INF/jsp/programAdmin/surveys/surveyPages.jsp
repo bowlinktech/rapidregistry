@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="/dspResources/css/scroll.css" type="text/css" media="screen">
 
 <!-- survey pages, there should be at least one page -->
+<c:set var="qNum" value="0" scope="page" />
 <c:forEach var="page" items="${surveyPages}">
     <div class="row" id="page${page.id}" style="height: 50px;">
         <div class="pull-left">
@@ -61,11 +62,14 @@
                  <section>
                 <c:choose>
                     <c:when test="${not empty page.surveyQuestions}">
-                        <c:forEach var="question" items="${page.surveyQuestions}">
+                        <c:forEach var="question" items="${page.surveyQuestions}" >
                             <div class="questionDiv row ${question.hide == true ? 'hiddenQuestion' : ''}" id="questionDiv${question.id}" rel="${question.id}" style="width: 98%; padding: 5px; margin-left: 5px; margin-bottom: 30px;">
                                 <div class="row" style="width: 98%; padding: 5px; margin-left: 5px;">
                                     <div class="pull-left">
-                                        <span><h4><c:if test="${question.required == true}">*&nbsp;</c:if>${question.questionNum}. ${question.question}</h4></span>
+                                        <c:if test="${question.answerTypeId != 7}">
+                                            <c:set var="qNum" value="${qNum + 1}" scope="page"/>
+                                            <span id="qNum${question.id}" class="qNumber" rel="${qNum}"><h4><c:if test="${question.required == true}">*&nbsp;</c:if>${qNum}.&nbsp; ${question.question}</h4></span>
+                                        </c:if>
                                     </div>
                                     <div class="pull-right" id="questionBtns${question.id}" style="display:none;">
                                         <button type="button" class="btn btn-primary btn-sm questionButton" pane="editPane" rel="${question.id}">
@@ -104,6 +108,11 @@
                                 </div>
                                 <div class="row" style="width: 98%; padding: 5px; margin-left: 5px;">
                                     <c:choose>
+                                        <c:when test="${question.answerTypeId == 7}">
+                                            <div class="form-group">
+                                                ${question.question}
+                                            </div>
+                                        </c:when>
                                         <c:when test="${question.answerTypeId == 3}">
                                             <div class="form-group">
                                                 <input type="text" placeholder="Enter your Question" class="form-control" type="text" maxLength="255" disabled style="background-color:#ffffff; width:500px;" />

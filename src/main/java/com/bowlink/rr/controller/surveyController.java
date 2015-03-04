@@ -328,8 +328,9 @@ public class surveyController {
     
     
     /**
+     * The '/details' POST method will submit the changes to the selected survey.
      * 
-     * @param survey
+     * @param survey    The object holding the survey information
      * @param result
      * @param action
      * @param session
@@ -490,10 +491,11 @@ public class surveyController {
     }
     
     /**
+     * The 'addNewSurveyPage.do' POST request will generate a new page for the passed in survey.
      * 
-     * @param s
-     * @param v
-     * @param lastPageId
+     * @param s The encrypted survey Id
+     * @param v The decryption key
+     * @param lastPageId    The id of the last page in the survey.
      * @param session
      * @throws Exception 
      */
@@ -627,7 +629,7 @@ public class surveyController {
         surveyQuestion.setSurveyPageId(pageId);
         surveyQuestion.setQuestionNum(qnum);
         surveyQuestion.setPageNum(pageDetails.getPageNum());
-       
+        
         /* Create 3 blank answers */
         if(questionType == 1 || questionType == 2) {
             List<SurveyQuestionChoices> questionChoices = new CopyOnWriteArrayList<>();
@@ -1147,7 +1149,8 @@ public class surveyController {
 
         for(SurveyQuestions question : surveyquestions) {
             if(question.getQuestionNum() > questionDetails.getQuestionNum()) {
-                question.setQuestionNum(question.getQuestionNum()-1);
+                Integer newqNum = question.getQuestionNum()-1;
+                question.setQuestionNum(newqNum);
                 surveymanager.saveSurveyQuestion(question);
             }
         }
@@ -1198,7 +1201,8 @@ public class surveyController {
 
         for(SurveyQuestions question : surveyquestions) {
             if(question.getQuestionNum() > questionDetails.getQuestionNum()) {
-                question.setQuestionNum(question.getQuestionNum()-1);
+                Integer newqNum = question.getQuestionNum()-1;
+                question.setQuestionNum(newqNum);
                 surveymanager.saveSurveyQuestion(question);
             }
         }
@@ -1248,6 +1252,7 @@ public class surveyController {
 
         for(SurveyQuestions question : surveyquestions) {
             if(question.getId() != questionId && question.getQuestionNum() >= questionDetails.getQuestionNum()) {
+                Integer newqNum = question.getQuestionNum()+1;
                 question.setQuestionNum(question.getQuestionNum()+1);
                 surveymanager.saveSurveyQuestion(question);
             }
@@ -1334,7 +1339,8 @@ public class surveyController {
            if(newPos > curPos) {
                for(SurveyQuestions question : surveyquestions) {
                    if(question.getQuestionNum() ==  selQuestionDetails.getQuestionNum()) {
-                       question.setQuestionNum(question.getQuestionNum()-1);
+                       Integer newqNum = question.getQuestionNum()-1;
+                       question.setQuestionNum(newqNum);
                        surveymanager.saveSurveyQuestion(question);
                    }
                }
@@ -1345,7 +1351,8 @@ public class surveyController {
            else if (newPos < curPos) {
               for(SurveyQuestions question : surveyquestions) {
                    if(question.getQuestionNum() >= newPos && question.getQuestionNum() <= curPos) {
-                       question.setQuestionNum(question.getQuestionNum()+1);
+                       Integer newqNum = question.getQuestionNum()+1;
+                       question.setQuestionNum(newqNum);
                        surveymanager.saveSurveyQuestion(question);
                    }
               }
@@ -1376,7 +1383,8 @@ public class surveyController {
            if(newPos > curPos) {
                for(SurveyQuestions question : surveyquestions) {
                    if(question.getQuestionNum() <=  newPos) {
-                       question.setQuestionNum(question.getQuestionNum()-1);
+                       Integer newqNum = question.getQuestionNum()-1;
+                       question.setQuestionNum(newqNum);
                        surveymanager.saveSurveyQuestion(question);
                    }
                }
@@ -1385,7 +1393,8 @@ public class surveyController {
            else if (newPos < curPos) {
               for(SurveyQuestions question : surveyquestions) {
                    if(question.getQuestionNum() != newPos && question.getQuestionNum() > newPos && question.getQuestionNum() <= curPos) {
-                       question.setQuestionNum(question.getQuestionNum()+1);
+                       Integer newqNum = question.getQuestionNum()+1;
+                       question.setQuestionNum(newqNum);
                        surveymanager.saveSurveyQuestion(question);
                    }
               }
@@ -1422,12 +1431,14 @@ public class surveyController {
 
                     if(curPos < question.getQuestionNum() && pageNum > questionpageNum) {
                         newPos = question.getQuestionNum();
-                        question.setQuestionNum(question.getQuestionNum() - 1);
+                        Integer newqNum = question.getQuestionNum() - 1;
+                        question.setQuestionNum(newqNum);
                         surveymanager.saveSurveyQuestion(question);
                     }
                     else if(curPos > question.getQuestionNum() && questionpageNum > pageNum ) {
                         newPos = question.getQuestionNum();
-                        question.setQuestionNum(question.getQuestionNum() + 1);
+                        Integer newqNum = question.getQuestionNum() + 1;
+                        question.setQuestionNum(newqNum);
                         surveymanager.saveSurveyQuestion(question);
                     }
                 } 
@@ -1435,7 +1446,6 @@ public class surveyController {
            
            curQuestionDetails.setQuestionNum(newPos);
            curQuestionDetails.setSurveyPageId(newPage);
-           
            surveymanager.saveSurveyQuestion(curQuestionDetails);
            
            /** Log the change **/
@@ -1511,7 +1521,8 @@ public class surveyController {
            if(newPos > newQuestionDetails.getQuestionNum()) {
                for(SurveyQuestions question : currsurveyquestions) {
                    if(question.getQuestionNum() ==  selQuestionDetails.getQuestionNum()) {
-                       question.setQuestionNum(question.getQuestionNum()-1);
+                       Integer newqNum = question.getQuestionNum()-1;
+                       question.setQuestionNum(newqNum);
                        surveymanager.saveSurveyQuestion(question);
                    }
                }
@@ -1521,7 +1532,8 @@ public class surveyController {
            else if (newPos < newQuestionDetails.getQuestionNum()) {
               for(SurveyQuestions question : currsurveyquestions) {
                    if(question.getQuestionNum() >= newPos && question.getQuestionNum() <= newQuestionDetails.getQuestionNum()) {
-                       question.setQuestionNum(question.getQuestionNum()+1);
+                       Integer newqNum = question.getQuestionNum()+1;
+                       question.setQuestionNum(newqNum);
                        surveymanager.saveSurveyQuestion(question);
                    }
               }
@@ -1538,7 +1550,8 @@ public class surveyController {
            if(newPos > newQuestionDetails.getQuestionNum()) {
                for(SurveyQuestions question : currsurveyquestions) {
                    if(question.getQuestionNum() <=  newPos) {
-                       question.setQuestionNum(question.getQuestionNum()-1);
+                       Integer newqNum = question.getQuestionNum()-1;
+                       question.setQuestionNum(newqNum);
                        surveymanager.saveSurveyQuestion(question);
                    }
                }
@@ -1547,7 +1560,8 @@ public class surveyController {
            else if (newPos < newQuestionDetails.getQuestionNum()) {
               for(SurveyQuestions question : currsurveyquestions) {
                    if(question.getQuestionNum() != newPos && question.getQuestionNum() > newPos && question.getQuestionNum() <= curQuestionDetails.getQuestionNum()) {
-                       question.setQuestionNum(question.getQuestionNum()+1);
+                       Integer newqNum = question.getQuestionNum()+1;
+                       question.setQuestionNum(newqNum);
                        surveymanager.saveSurveyQuestion(question);
                    }
               }
@@ -1569,11 +1583,13 @@ public class surveyController {
                    
                     if(newQuestionDetails.getQuestionNum() < question.getQuestionNum() && pageNum > questionpageNum) {
                         newPos = question.getQuestionNum();
-                        question.setQuestionNum(question.getQuestionNum() - 1);
+                        Integer newqNum = question.getQuestionNum()-1;
+                        question.setQuestionNum(newqNum);
                         surveymanager.saveSurveyQuestion(question);
                     }
                     else if(newQuestionDetails.getQuestionNum() > question.getQuestionNum() && questionpageNum > pageNum ) {
                         newPos = question.getQuestionNum();
+                        Integer newqNum = question.getQuestionNum()+1;
                         question.setQuestionNum(question.getQuestionNum() + 1);
                         surveymanager.saveSurveyQuestion(question);
                     }

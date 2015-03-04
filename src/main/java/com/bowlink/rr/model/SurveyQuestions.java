@@ -95,7 +95,6 @@ public class SurveyQuestions {
     
     @Column(name = "deleted", nullable = false)
     private boolean deleted = false;
-
     
     public int getId() {
         return id;
@@ -272,6 +271,6 @@ public class SurveyQuestions {
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
     }
-    
+
     
 }

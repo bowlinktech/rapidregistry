@@ -22,6 +22,9 @@
 
     <!%-- Health-e-link theme --%>
     <link rel="stylesheet" href="<%=request.getContextPath()%>/dspResources/css/admin/themes/theme-rr.css">
+    <link rel="stylesheet" href="<%=request.getContextPath()%>/dspResources/css/summernote.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" />
+
     <jsp:text><![CDATA[<!--[if lte IE 9]>]]></jsp:text>
             <link rel="stylesheet" href="<%=request.getContextPath()%>/dspResources/css/admin/ie.css">
     <jsp:text><![CDATA[<![endif]-->]]></jsp:text>
