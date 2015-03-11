@@ -512,6 +512,7 @@ require(['./main'], function () {
             $('#id_'+indexVal).remove();
             $('#questionId_'+indexVal).remove();
             $('#skipToPageId_'+indexVal).remove();
+            $('#skipToEnd_'+indexVal).remove();
             $('#skipToQuestionId_'+indexVal).remove();
             $('#choiceValue_'+indexVal).remove();
             $(this).closest('tr').remove();
@@ -590,10 +591,16 @@ require(['./main'], function () {
             var pageId = $(this).val();
             var indexVal = $(this).attr('rel');
             
-            $('#skipToPageId_'+indexVal).val(pageId);
+            if(pageId == -1) {
+                $('#skipToPageId_'+indexVal).val("0");
+                $('#skipToEnd_'+indexVal).val(true);
+            }
+            else {
+                $('#skipToPageId_'+indexVal).val(pageId);
+                $('#skipToEnd_'+indexVal).val(false);
+            }
             
-            
-            if(pageId == 0) {
+            if(pageId <= 0) {
                 $('#logicskipToQuestion_'+indexVal).val(0);
                 $('#logicskipToQuestion_'+indexVal).attr("disabled", true);
             }
@@ -634,6 +641,9 @@ require(['./main'], function () {
             $('#logicskipToPage_'+indexVal).val(0);
             $('#logicskipToQuestion_'+indexVal).val(0);
             $('#logicskipToQuestion_'+indexVal).attr("disabled", true);
+            $('#skipToEnd_'+indexVal).val(false);
+            $('#skipToPageId_'+indexVal).val("0");
+            $('#skipToQuestionId_'+indexVal).val("0");
             event.preventDefault();
                return false;
         });

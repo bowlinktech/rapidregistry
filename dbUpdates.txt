@@ -75,3 +75,7 @@ ALTER TABLE `rapidregistry`.`survey_pages`
 DROP INDEX `uni_surveyIdPageNum` ,
 ADD INDEX `uni_surveyIdPageNum` (`surveyId` ASC);
 
+
+/** Chad 03112015 9:41 AM **/
+ALTER TABLE `rapidregistry`.`survey_questionChoices` 
+ADD COLUMN `skipToEnd` BIT(1) NOT NULL DEFAULT b'0' AFTER `choiceValue`;

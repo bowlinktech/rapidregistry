@@ -97,6 +97,7 @@
                                         <input type="hidden" id="choiceValue_${choice.index}" name="questionChoices[${choice.index}].choiceValue" value="${choiceDetails.choiceValue}" />
                                         <input type="hidden" id="skipToPageId_${choice.index}" name="questionChoices[${choice.index}].skipToPageId" value="${choiceDetails.skipToPageId}" />
                                         <input type="hidden" id="skipToQuestionId_${choice.index}" name="questionChoices[${choice.index}].skipToQuestionId" value="${choiceDetails.skipToQuestionId}" />
+                                        <input type="hidden" id="skipToEnd_${choice.index}" name="questionChoices[${choice.index}].skipToEnd" value="${choiceDetails.skipToEnd}" />
                                         <tr rel="${choice.index}">
                                             <td>
                                                 <input type="text" name="questionChoices[${choice.index}].choiceText"  value="${choiceDetails.choiceText}" rel="${choice.index}" class="form-control fieldLabel formField" />
@@ -212,6 +213,7 @@
                                                                 <option value="${page.id}" <c:if test="${page.id == choiceDetails.skipToPageId}">selected</c:if>>${page.pageNum}. ${page.pageTitle}</option>
                                                             </c:if>
                                                         </c:forEach>
+                                                        <option value="-1" <c:if test="${choiceDetails.skipToEnd == true}">selected</c:if>>End of the Survey</option>        
                                                     </select>
                                                 </div>
                                                 <div class="form-group">
