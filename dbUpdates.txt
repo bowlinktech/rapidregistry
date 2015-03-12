@@ -79,3 +79,25 @@ ADD INDEX `uni_surveyIdPageNum` (`surveyId` ASC);
 /** Chad 03112015 9:41 AM **/
 ALTER TABLE `rapidregistry`.`survey_questionChoices` 
 ADD COLUMN `skipToEnd` BIT(1) NOT NULL DEFAULT b'0' AFTER `choiceValue`;
+
+/** Chad 03122015 9:32 AM **/
+CREATE TABLE `rapidregistry`.`patient_completedSurveys` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `programpatientId` INT NOT NULL COMMENT '	',
+  `surveyId` INT NOT NULL,
+  `engagementId` INT NOT NULL DEFAULT '0',
+  `dateCreated` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `systemUserId` INT NOT NULL,
+  PRIMARY KEY (`id`));
+
+ALTER TABLE `rapidregistry`.`survey_patientAnswers` 
+ADD COLUMN `completedSurveyId` INT NOT NULL AFTER `id`, RENAME TO  `rapidregistry`.`patient_completedSurveyAnswers` ;
+
+DROP TABLE `rapidregistry`.`engagementSurveys`;
+
+ALTER TABLE `rapidregistry`.`patient_completedSurveys` 
+ADD COLUMN `programId` INT NOT NULL AFTER `id`;
+
+ALTER TABLE `rapidregistry`.`patient_completedSurveyAnswers` 
+ADD COLUMN `surveyPageId` INT(11) NOT NULL AFTER `programPatientId`;
+
