@@ -616,7 +616,12 @@ public class surveyController {
         else {
             List<SurveyQuestions> surveyquestions = surveymanager.getAllSurveyQuestions(surveyId);
             
-            qnum = surveyquestions.get(surveyquestions.size()-1).getQuestionNum()+1;
+            if(surveyquestions != null && !surveyquestions.isEmpty()) {
+                qnum = surveyquestions.get(surveyquestions.size()-1).getQuestionNum()+1;
+            }
+            else {
+                qnum = 1;
+            }
         }
         
         /* Get the page details */
@@ -628,7 +633,13 @@ public class surveyController {
         surveyQuestion.setAnswerTypeId(questionType);
         surveyQuestion.setSurveyPageId(pageId);
         surveyQuestion.setQuestionNum(qnum);
-        surveyQuestion.setPageNum(pageDetails.getPageNum());
+        
+        if(pageDetails != null) {
+            surveyQuestion.setPageNum(pageDetails.getPageNum());
+        }
+        else {
+            surveyQuestion.setPageNum(1);
+        }
         
         /* Create 3 blank answers */
         if(questionType == 1 || questionType == 2) {
@@ -662,7 +673,6 @@ public class surveyController {
         List<activityCodes> activityCodes = activitycodemanager.getActivityCodesByProgram((Integer) session.getAttribute("selprogramId"));
         mav.addObject("activityCodes", activityCodes);
        
-        
         return mav;
         
     }

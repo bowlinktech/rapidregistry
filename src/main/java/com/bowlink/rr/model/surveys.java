@@ -30,9 +30,6 @@ import com.bowlink.rr.validator.NoHtml;
 public class surveys {
     
     @Transient
-    private Integer timesTaken = 0;
-
-    @Transient
     private List<SurveyPages> surveyPages;
 
     
@@ -224,14 +221,6 @@ public class surveys {
 
     public void setDateModified(Date dateModified) {
         this.dateModified = dateModified;
-    }
-
-    public Integer getTimesTaken() {
-        return timesTaken;
-    }
-
-    public void setTimesTaken(Integer timesTaken) {
-        this.timesTaken = timesTaken;
     }
 
     public String getEncryptedId() {

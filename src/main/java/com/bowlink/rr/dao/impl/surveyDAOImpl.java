@@ -7,7 +7,6 @@ package com.bowlink.rr.dao.impl;
 
 import com.bowlink.rr.dao.surveyDAO;
 import com.bowlink.rr.model.AnswerTypes;
-import com.bowlink.rr.model.EngagementSurveys;
 import com.bowlink.rr.model.SurveyQuestionChoices;
 import com.bowlink.rr.model.SurveyChangeLogs;
 import com.bowlink.rr.model.SurveyPages;
@@ -64,13 +63,7 @@ public class surveyDAOImpl implements surveyDAO {
         criteria.add(Restrictions.eq("programId", programId));
 
         List<surveys> surveyList = criteria.list();
-        /**
-         * now we loop and calculate times taken *
-         */
-        for (surveys survey : surveyList) {
-            survey.setTimesTaken(surveyTakenTimes(survey.getId()));
-        }
-
+       
         return surveyList;
     }
 
@@ -86,12 +79,6 @@ public class surveyDAOImpl implements surveyDAO {
         Integer lastId = null;
         lastId = (Integer) sessionFactory.getCurrentSession().save(survey);
         return lastId;
-    }
-
-    public Integer surveyTakenTimes(Integer surveyId) throws Exception {
-        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(EngagementSurveys.class);
-        criteria.add(Restrictions.eq("surveyId", surveyId));
-        return criteria.list().size();
     }
 
     @SuppressWarnings("unchecked")

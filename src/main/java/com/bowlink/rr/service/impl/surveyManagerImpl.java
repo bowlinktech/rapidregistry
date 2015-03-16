@@ -56,12 +56,6 @@ public class surveyManagerImpl implements surveyManager {
 
     @Override
     @Transactional
-    public Integer surveyTakenTimes(Integer surveyId) throws Exception {
-        return surveyDAO.surveyTakenTimes(surveyId);
-    }
-
-    @Override
-    @Transactional
     public surveys getSurveyById(Integer surveyId) throws Exception {
         /**
          * first we get the survey details*

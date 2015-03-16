@@ -28,7 +28,6 @@
                             <thead>
                                 <tr>
                                     <th scope="col">Survey Title</th>
-                                    <th scope="col" class="center-text">Times Taken</th>
                                     <th scope="col" class="center-text">Date Created</th>
                                     <th scope="col" class="center-text">Last Modified</th>
                                     <th scope="col" class="center-text"></th>
@@ -44,9 +43,6 @@
                                                 <a href="surveys/details?s=${survey.encryptedId}&v=${survey.encryptedSecret}" class="btn-link" title="Edit this survey" role="button">${survey.title}&nbsp;                                               
                                                 <br />
                                                 (<c:choose><c:when test="${survey.status == true}">Active</c:when><c:otherwise>Inactive</c:otherwise></c:choose>)</a>
-                                            </td>
-                                            <td class="center-text">
-                                                ${survey.timesTaken}
                                             </td>
                                             <td class="center-text"><fmt:formatDate value="${survey.dateCreated}" type="Both" pattern="M/dd/yyyy h:mm a" /></td>
                                             <td class="center-text"><fmt:formatDate value="${survey.dateModified}" type="Both" pattern="M/dd/yyyy h:mm a" /></td>

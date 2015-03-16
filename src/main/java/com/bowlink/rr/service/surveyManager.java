@@ -28,8 +28,6 @@ public interface surveyManager {
     
     Integer saveSurvey (surveys survey) throws Exception;
     
-    Integer surveyTakenTimes (Integer surveyId) throws Exception;
-    
     surveys getSurveyById(Integer surveyId) throws Exception;
     
     void updateSurvey (surveys survey) throws Exception;
