@@ -101,3 +101,23 @@ ADD COLUMN `programId` INT NOT NULL AFTER `id`;
 ALTER TABLE `rapidregistry`.`patient_completedSurveyAnswers` 
 ADD COLUMN `surveyPageId` INT(11) NOT NULL AFTER `programPatientId`;
 
+/** Grace 03.13.2015 12:06PM **/
+CREATE TABLE `rapidregistry`.`lu_processstatus` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `category` varchar(45) NOT NULL,
+  `displayCode` varchar(5) DEFAULT NULL,
+  `displayText` varchar(45) DEFAULT NULL,
+  `description` text,
+  `status` bit(1) NOT NULL DEFAULT b'1',
+  `isCustom` bit(1) NOT NULL DEFAULT b'0',
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `endUserDisplayCode` varchar(5) DEFAULT NULL,
+  `endUserDisplayText` varchar(45) DEFAULT NULL,
+  `endUserDescription` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=latin1;
+
+
+INSERT INTO `rapidregistry`.`lu_processstatus` (`id` ,`category`, `displayCode`, `displayText`, `description`, `status`, `isCustom`, `endUserDisplayCode`, `endUserDisplayText`, `endUserDescription`) VALUES (1, 'Batch', 'LOH', 'Loaded on Health-e-Link', 'File is loaded into Health-e-Link for processing', 1, 0, 'LOH', 'Loaded on Health-e-Link', 'File is loaded into Health-e-Link for processing');
+
+
