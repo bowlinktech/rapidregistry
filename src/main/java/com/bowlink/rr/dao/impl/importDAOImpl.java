@@ -6,10 +6,10 @@
 package com.bowlink.rr.dao.impl;
 
 import com.bowlink.rr.dao.importDAO;
-import com.bowlink.rr.model.crosswalks;
 import com.bowlink.rr.model.fileTypes;
 import com.bowlink.rr.model.programUploadTypes;
 import com.bowlink.rr.model.programUploadTypesFormFields;
+import com.bowlink.rr.model.programUploads;
 
 import java.util.List;
 
@@ -177,5 +177,70 @@ public class importDAOImpl implements importDAO {
 		
 		return fileTypeList;
 	}
+
+
+
+	@Override
+	public List<programUploads> getProgramUploads(Integer statusId) throws Exception{
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(programUploads.class);
+		
+		if (statusId != 0) {
+			criteria.add(Restrictions.eq("statusid", statusId));
+		}
+		List <programUploads> programUploads =  criteria.list();
+		
+		return programUploads;
+
+	}
+
+
+
+	@Override
+	public void updateProgramUplaod(programUploads programUpload) throws Exception {
+		sessionFactory.getCurrentSession().update(programUpload);
+	}
+
+
+
+	@Override
+	public Integer saveProgramUplaod(programUploads programUpload) throws Exception{
+		Integer lastId = null;
+		lastId = (Integer) sessionFactory.getCurrentSession().save(programUpload);
+		return lastId;
+		
+	}
+
+
+
+	@Override
+	public programUploads getProgramUpload(Integer programUploadId)
+			throws Exception {
+		 Query query = sessionFactory.getCurrentSession().createQuery(" from programUploads where id = :id");
+	        query.setParameter("id", programUploadId);
+	      if (query.list().size() != 0) {
+	    	  return (programUploads) query.list().get(0);
+	      } else {
+	    	  return null;
+	      }
+	}
+
+
+
+	@Override
+	public programUploadTypes getProgramUploadType(Integer programUploadTypeId)
+			throws Exception {
+		Query query = sessionFactory.getCurrentSession().createQuery(" from programUploadTypes where id = :id");
+        query.setParameter("id", programUploadTypeId);
+      if (query.list().size() != 0) {
+    	  return (programUploadTypes) query.list().get(0);
+      } else {
+    	  return null;
+      }
+	}
+	
+	
+	
+	
+	
     
 }

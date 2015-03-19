@@ -435,7 +435,7 @@ public class programImports {
         
         program programDetails = programmanager.getProgramById(importTypeDetails.getProgramId());
 
-        programdir.setDir(programDetails.getProgramName().replaceAll(" ", "-").toLowerCase(), "import files");
+        programdir.setDir(programDetails.getProgramName().replaceAll(" ", "-").toLowerCase(), "importFiles");
         
         //Delete the existing file
         File sampleFile = new File(programdir.getDir() + importTypeDetails.getName().replaceAll(" ", "-").toLowerCase() + ".csv");

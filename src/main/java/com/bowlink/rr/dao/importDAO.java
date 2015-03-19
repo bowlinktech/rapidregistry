@@ -8,6 +8,7 @@ package com.bowlink.rr.dao;
 import com.bowlink.rr.model.fileTypes;
 import com.bowlink.rr.model.programUploadTypes;
 import com.bowlink.rr.model.programUploadTypesFormFields;
+import com.bowlink.rr.model.programUploads;
 
 import java.util.List;
 
@@ -39,5 +40,15 @@ public interface importDAO {
     void removeImportType(Integer importTypeId) throws Exception;
     
     List <fileTypes> getFileTypes (Integer fileTypeId) throws Exception;
+    
+    List <programUploads> getProgramUploads(Integer statusId) throws Exception;
+    
+    void updateProgramUplaod (programUploads programUpload) throws Exception;
+    
+    Integer saveProgramUplaod (programUploads programUpload) throws Exception;
+    
+    programUploads getProgramUpload(Integer programUpload) throws Exception;
+    
+    programUploadTypes getProgramUploadType (Integer programUploadTypeId) throws Exception;
     
 }
