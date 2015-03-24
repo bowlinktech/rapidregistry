@@ -12,6 +12,14 @@ require(['./main'], function () {
            selectedListLabel: 'Associated Activity Codes'
         });
         
+        $(document).on('change', '.changeCategory', function() {
+           var selCategory = $(this).val();
+           var programName = $(this).attr('rel');
+           
+           window.location.href='/sysAdmin/programs/'+programName+'/activity-codes?c='+selCategory;
+           
+        });
+        
         //The function that will be called when the "Save" button
         //is clicked
         $('#saveDetails').click(function() {

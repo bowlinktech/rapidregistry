@@ -6,6 +6,8 @@
 
 package com.bowlink.rr.service;
 
+import com.bowlink.rr.model.activityCodeAssocCategories;
+import com.bowlink.rr.model.activityCodeCategories;
 import com.bowlink.rr.model.activityCodes;
 import com.bowlink.rr.model.programActivityCodes;
 import java.util.List;
@@ -16,11 +18,21 @@ import java.util.List;
  */
 public interface activityCodeManager {
     
-    List<activityCodes> getActivityCodes(Integer programId) throws Exception;
+    List<activityCodeCategories> getActivityCodeCategories() throws Exception;
+    
+    void createActivityCodeCategory(activityCodeCategories categoryDetails) throws Exception;
+    
+    void updateActivityCodeCategory(activityCodeCategories categoryDetails) throws Exception;
+    
+    activityCodeCategories getActivityCodeCategoryById(Integer categoryId) throws Exception;
+    
+    List<activityCodes> getActivityCodes(Integer programId, Integer categoryId) throws Exception;
     
     List<activityCodes> getActivityCodesByProgram(Integer programId) throws Exception;
     
     activityCodes getActivityCodeById(Integer codeId) throws Exception;
+    
+    List<activityCodeAssocCategories> getSelActivityCodeCategories(Integer codeId) throws Exception;
     
     void createActivityCode(activityCodes codeDetails) throws Exception;
     
@@ -31,5 +43,9 @@ public interface activityCodeManager {
     void saveProgramActivityCode(programActivityCodes newCodeAssoc) throws Exception;
     
     void removeProgramActivityCodes(Integer programId) throws Exception;
+    
+    void saveActivityCodeCategoryAssoc(activityCodeAssocCategories newAssoc) throws Exception;
+    
+    void removeCategoryAssoc(Integer id) throws Exception;
     
 }

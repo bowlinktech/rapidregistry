@@ -187,7 +187,7 @@ public class surveyController {
         ModelAndView mav = new ModelAndView();
 
         if (result.hasErrors()) {
-            List<activityCodes> activityCodes = activitycodemanager.getActivityCodes((Integer) session.getAttribute("selprogramId"));
+            List<activityCodes> activityCodes = activitycodemanager.getActivityCodes((Integer) session.getAttribute("selprogramId"), 0);
             mav.addObject("activityCodes", activityCodes);
             mav.addObject("create", "create");
             mav.setViewName("/surveys/create");
@@ -199,7 +199,7 @@ public class surveyController {
         //we do not allow duplicate title
         List<surveys> existingTitle = surveymanager.getProgramSurveysByTitle(survey);
         if (!existingTitle.isEmpty()) {
-            List<activityCodes> activityCodes = activitycodemanager.getActivityCodes((Integer) session.getAttribute("selprogramId"));
+            List<activityCodes> activityCodes = activitycodemanager.getActivityCodes((Integer) session.getAttribute("selprogramId"), 0);
             mav.addObject("activityCodes", activityCodes);
             mav.addObject("existingTitle", "The survey title is in use by this program already.");
             mav.addObject("create", "create");
@@ -1787,7 +1787,7 @@ public class surveyController {
             return mav;
         }
 
-        List<activityCodes> activityCodes = activitycodemanager.getActivityCodes(0);
+        List<activityCodes> activityCodes = activitycodemanager.getActivityCodes(0, 0);
         mav.addObject("activityCodes", activityCodes);
         mav.addObject("survey", survey);
         mav.setViewName("/programAdmin/surveys/surveyModal");
@@ -1826,7 +1826,7 @@ public class surveyController {
             BindingResult result, HttpSession session) throws Exception {
 
         ModelAndView mav = new ModelAndView();
-        List<activityCodes> activityCodes = activitycodemanager.getActivityCodes(0);
+        List<activityCodes> activityCodes = activitycodemanager.getActivityCodes(0, 0);
         mav.addObject("activityCodes", activityCodes);
         mav.setViewName("/programAdmin/surveys/surveyModal");
 

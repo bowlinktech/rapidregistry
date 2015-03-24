@@ -16,14 +16,37 @@
         <put-attribute name="footer" value="/WEB-INF/jsp/common/footer.jsp" />
     </definition>
     
-    <!-- Programs -->
+    <!-- activity Code Categories -->
+    <definition name="/activityCodeCategories" extends="base.definition.activityCodeManager">
+        <put-attribute name="page-id" value="dashboard-details" />
+        <put-attribute name="page-section" value="section-dashboard" />
+        <put-attribute name="header" value="/WEB-INF/jsp/common/sysAdminHeader.jsp?sect=activitycodes" />
+        <put-attribute name="actions" value="/WEB-INF/jsp/sysAdmin/activityCodes/actionBar.jsp?page=categories" />
+        <put-attribute name="menu" value="/WEB-INF/jsp/sysAdmin/activityCodes/menu.jsp?page=categories" />
+        <put-attribute name="body" value="/WEB-INF/jsp/sysAdmin/activityCodes/categoryList.jsp" />
+        <put-attribute name="jscript" value="/dspResources/js/sysAdmin/activityCodes/categorylist.js" />
+    </definition>
+    
+    <!-- activity Codes -->
     <definition name="/activityCodes" extends="base.definition.activityCodeManager">
         <put-attribute name="page-id" value="dashboard-details" />
         <put-attribute name="page-section" value="section-dashboard" />
         <put-attribute name="header" value="/WEB-INF/jsp/common/sysAdminHeader.jsp?sect=activitycodes" />
-        <put-attribute name="actions" value="/WEB-INF/jsp/sysAdmin/activityCodes/actionBar.jsp?page=list" />
+        <put-attribute name="actions" value="/WEB-INF/jsp/sysAdmin/activityCodes/actionBar.jsp?page=codes" />
+        <put-attribute name="menu" value="/WEB-INF/jsp/sysAdmin/activityCodes/menu.jsp?page=codes" />
         <put-attribute name="body" value="/WEB-INF/jsp/sysAdmin/activityCodes/list.jsp" />
         <put-attribute name="jscript" value="/dspResources/js/sysAdmin/activityCodes/list.js" />
+    </definition>
+    
+    <!-- activity Codes -->
+    <definition name="/activityCodeDetails" extends="base.definition.activityCodeManager">
+        <put-attribute name="page-id" value="dashboard-details" />
+        <put-attribute name="page-section" value="section-dashboard" />
+        <put-attribute name="header" value="/WEB-INF/jsp/common/sysAdminHeader.jsp?sect=activitycodes" />
+        <put-attribute name="actions" value="/WEB-INF/jsp/sysAdmin/activityCodes/actionBar.jsp?page=details" />
+        <put-attribute name="menu" value="/WEB-INF/jsp/sysAdmin/activityCodes/menu.jsp?page=codes" />
+        <put-attribute name="body" value="/WEB-INF/jsp/sysAdmin/activityCodes/activityCodeDetails.jsp" />
+        <put-attribute name="jscript" value="/dspResources/js/sysAdmin/activityCodes/details.js" />
     </definition>
     
 </tiles-definitions>

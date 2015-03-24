@@ -7,6 +7,8 @@
 package com.bowlink.rr.service.impl;
 
 import com.bowlink.rr.dao.activityCodeDAO;
+import com.bowlink.rr.model.activityCodeAssocCategories;
+import com.bowlink.rr.model.activityCodeCategories;
 import com.bowlink.rr.model.activityCodes;
 import com.bowlink.rr.model.programActivityCodes;
 import com.bowlink.rr.service.activityCodeManager;
@@ -27,8 +29,32 @@ public class activityCodeManagerImpl implements activityCodeManager {
     
     @Override
     @Transactional
-    public List<activityCodes> getActivityCodes(Integer programId) throws Exception {
-        return activityCodeDAO.getActivityCodes(programId);
+    public List<activityCodeCategories> getActivityCodeCategories() throws Exception {
+        return activityCodeDAO.getActivityCodeCategories();
+    }
+    
+    @Override
+    @Transactional
+    public void createActivityCodeCategory(activityCodeCategories categoryDetails) throws Exception {
+        activityCodeDAO.createActivityCodeCategory(categoryDetails);
+    }
+    
+    @Override
+    @Transactional
+    public void updateActivityCodeCategory(activityCodeCategories categoryDetails) throws Exception {
+        activityCodeDAO.updateActivityCodeCategory(categoryDetails);
+    }
+    
+    @Override
+    @Transactional
+    public activityCodeCategories getActivityCodeCategoryById(Integer categoryId) throws Exception {
+        return activityCodeDAO.getActivityCodeCategoryById(categoryId);
+    }
+    
+    @Override
+    @Transactional
+    public List<activityCodes> getActivityCodes(Integer programId, Integer categoryId) throws Exception {
+        return activityCodeDAO.getActivityCodes(programId, categoryId);
     }
     
     @Override
@@ -41,6 +67,12 @@ public class activityCodeManagerImpl implements activityCodeManager {
     @Transactional
     public activityCodes getActivityCodeById(Integer codeId) throws Exception {
         return activityCodeDAO.getActivityCodeById(codeId);
+    }
+    
+    @Override
+    @Transactional
+    public List<activityCodeAssocCategories> getSelActivityCodeCategories(Integer codeId) throws Exception {
+        return activityCodeDAO.getSelActivityCodeCategories(codeId);
     }
     
     @Override
@@ -72,6 +104,18 @@ public class activityCodeManagerImpl implements activityCodeManager {
     @Transactional
     public void removeProgramActivityCodes(Integer programId) throws Exception {
         activityCodeDAO.removeProgramActivityCodes(programId);
+    }
+    
+    @Override
+    @Transactional
+    public void saveActivityCodeCategoryAssoc(activityCodeAssocCategories newAssoc) throws Exception {
+        activityCodeDAO.saveActivityCodeCategoryAssoc(newAssoc);
+    }
+    
+    @Override
+    @Transactional
+    public void removeCategoryAssoc(Integer id) throws Exception {
+        activityCodeDAO.removeCategoryAssoc(id);
     }
     
 }

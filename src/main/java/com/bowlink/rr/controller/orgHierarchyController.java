@@ -87,7 +87,7 @@ public class orgHierarchyController {
         if(id == 0) {
             programOrgHierarchy orgHierarchy = new programOrgHierarchy();
             orgHierarchy.setProgramId((Integer) session.getAttribute("programId"));
-            mav.addObject("modalTitle", "Add New Organization Hierarchy Entry");
+            mav.addObject("modalTitle", "Add New Organization Level");
             Integer maxDspPos = orghierarchymanager.getProgramOrgHierarchy((Integer) session.getAttribute("programId")).size()+1;
             mav.addObject("hierarchyDetails", orgHierarchy);
             mav.addObject("maxDspPos", maxDspPos);
@@ -96,7 +96,7 @@ public class orgHierarchyController {
             programOrgHierarchy orgHierarchy = orghierarchymanager.getOrgHierarchyById(id);
             Integer maxDspPos = orghierarchymanager.getProgramOrgHierarchy((Integer) session.getAttribute("programId")).size();
             mav.addObject("hierarchyDetails", orgHierarchy);
-            mav.addObject("modalTitle", "Edit Organization Hierarchy Entry");
+            mav.addObject("modalTitle", "Edit Organization Level");
             mav.addObject("maxDspPos", maxDspPos);
         }
         
@@ -126,13 +126,13 @@ public class orgHierarchyController {
             mav.addObject("programName", session.getAttribute("programName"));
             
             if(hierarchyDetails.getId() == 0) {
-                mav.addObject("modalTitle", "Add New Organization Hierarchy Entry");
+                mav.addObject("modalTitle", "Add New Organization Level");
                 Integer maxDspPos = orghierarchymanager.getProgramOrgHierarchy((Integer) session.getAttribute("programId")).size()+1;
                 mav.addObject("maxDspPos", maxDspPos);
             }
             else {
                 Integer maxDspPos = orghierarchymanager.getProgramOrgHierarchy((Integer) session.getAttribute("programId")).size();
-                mav.addObject("modalTitle", "Edit Organization Hierarchy Entry");
+                mav.addObject("modalTitle", "Edit Organization Level");
                 mav.addObject("maxDspPos", maxDspPos);
             }
             

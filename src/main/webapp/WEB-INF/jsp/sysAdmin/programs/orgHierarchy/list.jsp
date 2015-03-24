@@ -34,9 +34,9 @@
             <section class="panel panel-default">
                 <div class="panel-heading">
                     <div class="pull-right">
-                        <a href="#hierarchyDetailsModal" data-toggle="modal" class="btn btn-primary btn-xs btn-action" id="createNewHierarchy" title="Create New Program Organization Hierarchy">Create New Hierarchy</a>
+                        <a href="#hierarchyDetailsModal" data-toggle="modal" class="btn btn-primary btn-xs btn-action" id="createNewHierarchy" title="Create New Program Organization Level">Create New Level</a>
                     </div>
-                    <h3 class="panel-title">Organization Hierarchy</h3>
+                    <h3 class="panel-title">Organization Profiles</h3>
                 </div>
                 <div class="panel-body">
                     <div class="form-container scrollable"><br />

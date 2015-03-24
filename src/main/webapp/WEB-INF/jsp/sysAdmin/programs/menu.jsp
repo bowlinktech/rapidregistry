@@ -3,7 +3,7 @@
     <nav class="secondary-nav" role="navigation">
         <ul class="nav nav-pills nav-stacked" role="menu">
             <li role="menuitem" ${param['page'] == 'details' ? 'class="active"' : ''}><a href="/sysAdmin/programs/${sessionScope.programName}/details" title="Program Details">Details</a></li>
-            <li role="menuitem" ${param['page'] == 'hierarchy' ? 'class="active"' : ''} ${id > 0 ? '' : 'class="disabled"'}><a href="/sysAdmin/programs/${sessionScope.programName}/organization-hierarchy" title="Organization Hierarchy">Organization Hierarchy</a></li>
+            <li role="menuitem" ${param['page'] == 'hierarchy' ? 'class="active"' : ''} ${id > 0 ? '' : 'class="disabled"'}><a href="/sysAdmin/programs/${sessionScope.programName}/organization-hierarchy" title="Organization Profiles">Organization Profiles</a></li>
             <li role="menuitem" ${param['page'] == 'sharing' ? 'class="active"' : ''} ${id > 0 ? '' : 'class="disabled"'}><a href="/sysAdmin/programs/${sessionScope.programName}/patient-sharing" title="Program Patient Sharing">Patient Sharing</a></li>
             <li role="menuitem" ${param['page'] == 'modules' ? 'class="active"' : ''} ${id > 0 ? '' : 'class="disabled"'}><a href="/sysAdmin/programs/${sessionScope.programName}/program-modules" title="Program Modules">Program Modules</a></li>
             <li role="menuitem" ${param['page'] == 'patientsections' ? 'class="active"' : ''} ${id > 0 ? '' : 'class="disabled"'}><a href="/sysAdmin/programs/${sessionScope.programName}/forms/patient-sections" title="Patient Detail Sections">Patient Detail Sections</a></li>

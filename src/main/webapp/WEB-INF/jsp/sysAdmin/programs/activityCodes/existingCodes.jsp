@@ -26,12 +26,30 @@
             </section>
         </div>
     </div>
+     <div class="row-fluid">
+        <div class="col-md-12">
+            <section class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Narrow Activity Codes by a Category</h3>
+                </div>
+                <div class="panel-body">
+                    <select class="form-control half changeCategory" rel="${sessionScope.programName}">
+                        <option value="0">- Show All -</option>
+                        <c:forEach var="category" items="${availCategories}">
+                            <option value="${category.id}" <c:if test="${selCategory == category.id}">selected</c:if>>${category.category}</option>
+                        </c:forEach>
+                    </select>
+              </div>
+            </section>
+        </div>
+    </div>
     <div class="row-fluid">
         <div class="col-md-12">
             <section class="panel panel-default">
                 <div class="panel-body">
+                   
                     <div class="form-container scrollable">
-
+                        
                         <form id="activityCodeForm" action="" method="post">
                             <input type="hidden" name="activityCodeList" id="selCodes" value="" />
                             <input type="hidden" id="action" name="action" value="save" />

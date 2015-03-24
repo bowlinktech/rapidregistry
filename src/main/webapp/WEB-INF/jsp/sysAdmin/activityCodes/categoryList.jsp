@@ -10,8 +10,8 @@
                 <div class="alert alert-success">
                     <strong>Success!</strong> 
                     <c:choose>
-                        <c:when test="${param.msg == 'updated'}">The activity code has been successfully updated!</c:when>
-                        <c:when test="${param.msg == 'created'}">The activity code has been successfully added!</c:when>
+                        <c:when test="${param.msg == 'updated'}">The activity code category has been successfully updated!</c:when>
+                        <c:when test="${param.msg == 'created'}">The activity code category has been successfully added!</c:when>
                     </c:choose>
                 </div>
             </c:when>
@@ -20,36 +20,30 @@
         <section class="panel panel-default">
             <div class="panel-heading">
                 <div class="pull-right">
-                    <a href="#activityCodeModal" data-toggle="modal" class="btn btn-primary btn-xs btn-action" id="createNewCode" title="Create New Activity Code">Create New Activity Code</a>
+                    <a href="#activityCodeCategoryModal" data-toggle="modal" class="btn btn-primary btn-xs btn-action" id="createNewCategory" title="Create New Category">Create New Category</a>
                 </div>
-                <h3 class="panel-title">Activity Codes</h3>
+                <h3 class="panel-title">Activity Code Categories</h3>
             </div>
             <div class="panel-body">
 
                 <div class="form-container scrollable"><br />
-                    <table class="table table-striped table-hover table-default" <c:if test="${not empty activityCodes}">id="dataTable"</c:if>>
+                    <table class="table table-striped table-hover table-default" <c:if test="${not empty categories}">id="dataTable"</c:if>>
                         <thead>
                             <tr>
-                                <th scope="col">Code ${result}</th>
-                                <th scope="col">Code Desc</th>
-                                <th scope="col" class="center-text">Date Created</th>
+                                <th scope="col">Category ${result}</th>
                                 <th scope="col"></th>
                             </tr>
                         </thead>
                         <tbody>
                             <c:choose>
-                                <c:when test="${not empty activityCodes}">
-                                    <c:forEach var="code" items="${activityCodes}">
+                                <c:when test="${not empty categories}">
+                                    <c:forEach var="category" items="${categories}">
                                         <tr>
                                             <td scope="row">
-                                                <a href="${code.id}/details" title="Edit this activity code" >${code.code}</a>
+                                                <a href="#activityCodeCategoryModal" data-toggle="modal" rel="${category.id}" title="Edit this activity code category" class="editCategory">${category.category}</a>
                                             </td>
-                                            <td>
-                                               ${code.codeDesc}
-                                            </td>
-                                            <td class="center-text"><fmt:formatDate value="${code.dateCreated}" type="date" pattern="M/dd/yyyy" /></td>
                                             <td class="actions-col">
-                                                <a href="${code.id}/details" class="btn btn-link" title="Edit this activity code" role="button">
+                                                <a href="#activityCodeCategoryModal" data-toggle="modal" rel="${category.id}" class="btn btn-link editCategory" title="Edit this activity code category" role="button">
                                                     <span class="glyphicon glyphicon-edit"></span>
                                                     Edit
                                                 </a>
@@ -58,7 +52,7 @@
                                     </c:forEach>
                                 </c:when>
                                 <c:otherwise>
-                                    <tr><td colspan="7" class="center-text">There are currently no activity codes set up.</td></tr>
+                                    <tr><td colspan="7" class="center-text">There are currently no activity code categories set up.</td></tr>
                                 </c:otherwise>
                             </c:choose>
                         </tbody>
@@ -70,4 +64,4 @@
 </div>
                                     
 <!-- Activity Code Details modal -->
-<div class="modal fade" id="activityCodeModal" role="dialog" tabindex="-1" aria-labeledby="Add Activity Code" aria-hidden="true" aria-describedby="Add Activity Code"></div>
+<div class="modal fade" id="activityCodeCategoryModal" role="dialog" tabindex="-1" aria-labeledby="Add Activity Code" aria-hidden="true" aria-describedby="Add Activity Code"></div>

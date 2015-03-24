@@ -8,6 +8,7 @@ package com.bowlink.rr.model;
 
 import com.bowlink.rr.validator.NoHtml;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -25,7 +26,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Entity
 @Table(name = "LU_ACTIVITYCODES")
 public class activityCodes {
-    
+   
     @Transient
     private boolean selected = false;
     
@@ -87,7 +88,5 @@ public class activityCodes {
     public void setSelected(boolean selected) {
         this.selected = selected;
     }
-    
-    
-    
+
 }
