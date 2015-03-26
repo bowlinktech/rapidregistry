@@ -21,13 +21,13 @@ CHANGE COLUMN `batchFileName` `assignedFileName` VARCHAR(55) CHARACTER SET 'utf8
 CHANGE COLUMN `batchId` `assignedId` VARCHAR(55) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL DEFAULT NULL ;
 
 /** Chad 3.24.2015 @ 10:05 AM **/
-CREATE TABLE `universaltranslator`.`lu_activityCodeCategories` (
+CREATE TABLE `rapidregistry`.`lu_activityCodeCategories` (
   `id` INT NOT NULL AUTO_INCREMENT COMMENT '	',
   `category` VARCHAR(55) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC));
 
-CREATE TABLE `universaltranslator`.`rel_activityCodeCategories` (
+CREATE TABLE `rapidregistry`.`rel_activityCodeCategories` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `activityCodeId` INT NOT NULL,
   `categoryId` INT NOT NULL,
