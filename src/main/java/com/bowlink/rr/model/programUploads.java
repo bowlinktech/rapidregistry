@@ -76,10 +76,6 @@ public class programUploads {
     private Date dateUploaded = new Date();
 
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
-    @Column(name = "DATECREATED", nullable = true)
-    private Date dateCreated = new Date();
-
-    @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
     @Column(name = "statusDateTime", nullable = true)
     private Date statusDateTime = new Date();
 
@@ -177,14 +173,6 @@ public class programUploads {
 
 	public void setDateUploaded(Date dateUploaded) {
 		this.dateUploaded = dateUploaded;
-	}
-
-	public Date getDateCreated() {
-		return dateCreated;
-	}
-
-	public void setDateCreated(Date dateCreated) {
-		this.dateCreated = dateCreated;
 	}
 
 	public Date getStatusDateTime() {

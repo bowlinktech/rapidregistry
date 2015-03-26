@@ -67,6 +67,10 @@ public class programUploadTypes {
     
     @Column(name = "fileDelimId", nullable = false)
     private int fileDelimId = 1;
+    
+    @Column(name = "encodingId", nullable = false)
+    private int encodingId = 1;
+    
 
 	public int getTotalFields() {
 		return totalFields;
@@ -162,6 +166,14 @@ public class programUploadTypes {
 
 	public void setFileDelimId(int fileDelimId) {
 		this.fileDelimId = fileDelimId;
+	}
+
+	public int getEncodingId() {
+		return encodingId;
+	}
+
+	public void setEncodingId(int encodingId) {
+		this.encodingId = encodingId;
 	}
 
 }
