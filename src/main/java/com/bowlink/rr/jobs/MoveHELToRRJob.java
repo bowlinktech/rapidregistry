@@ -30,7 +30,7 @@ public class MoveHELToRRJob implements Job {
     public void execute(JobExecutionContext context)  throws JobExecutionException {
     	try {
             SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
-            importmanager.moveHELtoRR();          
+            importmanager.moveHELFilestoRR();          
         } catch (Exception ex) {
             try {
                 throw new Exception("Error occurred moving HEL processed files back to RR schedule task",ex);

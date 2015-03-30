@@ -5,6 +5,7 @@
  */
 package com.bowlink.rr.service;
 
+import com.bowlink.rr.model.MoveFilesLog;
 import com.bowlink.rr.model.fileTypes;
 import com.bowlink.rr.model.programUploadTypes;
 import com.bowlink.rr.model.programUploadTypesFormFields;
@@ -56,5 +57,21 @@ public interface importManager {
     
     void processRRFiles();
     
-    void moveHELtoRR ();
+    void moveHELFilestoRR ();
+    
+    void processRRFile(programUploads programUpload) throws Exception;
+    
+    void moveHELFiletoRR (programUploadTypes programUploadType) throws Exception;
+    
+    List <programUploadTypes> getProgramUploadTypes (boolean usesHEL, boolean checkHEL, Integer status) throws Exception;
+
+    void sendImportErrorEmail (String subject, Exception ex) throws Exception;
+    
+    List <programUploadTypes> getDistinctHELPaths (Integer status) throws Exception;
+
+    Integer insertMoveFilesLog(MoveFilesLog moveJob) throws Exception;
+    
+    void updateMoveFilesLogRun(MoveFilesLog moveJob) throws Exception;
+    
+    
 }

@@ -5,6 +5,7 @@
  */
 package com.bowlink.rr.dao;
 
+import com.bowlink.rr.model.MoveFilesLog;
 import com.bowlink.rr.model.fileTypes;
 import com.bowlink.rr.model.programUploadTypes;
 import com.bowlink.rr.model.programUploadTypesFormFields;
@@ -50,5 +51,13 @@ public interface importDAO {
     programUploads getProgramUpload(Integer programUpload) throws Exception;
     
     programUploadTypes getProgramUploadType (Integer programUploadTypeId) throws Exception;
+    
+    List <programUploadTypes> getProgramUploadTypes (boolean usesHEL, boolean checkHEL, Integer status) throws Exception;
+    
+    List <programUploadTypes> getDistinctHELPaths (Integer status) throws Exception;
+    
+    Integer insertMoveFilesLog(MoveFilesLog moveJob) throws Exception;
+    
+    void updateMoveFilesLogRun(MoveFilesLog moveJob) throws Exception;
     
 }

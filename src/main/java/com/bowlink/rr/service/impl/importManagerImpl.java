@@ -6,6 +6,7 @@
 package com.bowlink.rr.service.impl;
 
 import com.bowlink.rr.dao.importDAO;
+import com.bowlink.rr.model.MoveFilesLog;
 import com.bowlink.rr.model.fileTypes;
 import com.bowlink.rr.model.mailMessage;
 import com.bowlink.rr.model.programUploadTypes;
@@ -20,6 +21,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -42,6 +44,13 @@ public class importManagerImpl implements importManager {
     private emailMessageManager emailMessageManager;
     
     private String archivePath = "/rapidRegistry/archivesIn/";
+    
+    //files that are ready to be loaded in RR are kept here
+    private String processPath = "/rapidRegistry/processFiles/";
+    
+    private String importErrorToEmail ="gchan123@yahoo.com";
+    
+    private String importErrorFromEmail ="information@health-e-link.com";
     
     
     @Override
@@ -110,29 +119,34 @@ public class importManagerImpl implements importManager {
 	 * be picked up and process by HEL
 	 **/
 	@Override
+	@Transactional
 	public void processUploadedFiles() {
 		
 		/**we get all the files that are not process, we loop them**/
 		try {
 			List<programUploads> puList = getProgramUploads (2); //ssa
-		
-		for(programUploads pu : puList) {
-			processUploadedFile (pu);
-		} 
-		
+			for(programUploads pu : puList) {
+				processUploadedFile (pu);
+			} 
 		}catch (Exception ex) {
 			ex.printStackTrace();
+			String subject = " Error job -  moving RR file to processed folder ";
+			try {
+				sendImportErrorEmail (subject, ex);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}	
-		
-		
-		/** we change status so that it will know not to move it again **/
-		
-		
-		
 	}
 
-	
+	/**
+	 * This method allows the system to process one file on demand
+	 * It checks the program upload to make sure it is SSA
+	 * If file uses HEL, it will move it to HEL for processing
+	 * If not, it will move it to RR process folder for job to pick up and import
+	 * **/
 	@Override
+	@Transactional
 	public void processUploadedFile(programUploads pu) throws Exception {
 				
 				pu = getProgramUpload(pu.getId());
@@ -151,7 +165,25 @@ public class importManagerImpl implements importManager {
 						}
 				} else {
 						//we set its status to be ready for RR processing
-						pu.setStatusId(40);
+						//we move the file to processFile
+						fileSystem programdir = new fileSystem();	
+						File newFile = new File(programdir.setPath(processPath) + pu.getAssignedFileName());
+			            //files are in archiveIn with assignedFileName  
+			            File archiveFile = new File(programdir.setPath(archivePath) + pu.getAssignedFileName());
+			            // now we move file
+			            Path source = archiveFile.toPath();
+			            Path target = newFile.toPath();
+			            try {
+			            	Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
+			            	pu.setStatusId(40);
+			            } catch (Exception ex) {
+			            	// send email with error
+			            	pu.setStatusId(42);
+						 	String subject = "ProgramUploadId - " + pu.getId() + " Error moving RR file to processed folder ";
+						 	sendImportErrorEmail (subject, ex); 			            	
+						 	
+			            }
+						
 				}
 					updateProgramUplaod(pu);
 				} 
@@ -160,9 +192,9 @@ public class importManagerImpl implements importManager {
 	/** **/
 	@Override
 	public Integer moveFileToHEL(programUploads pu) {
-		Integer sysError = 1;
 		try {
-			// all files get uploaded to archivesIn, we move it to UT folder
+			// all files get uploaded to archivesIn, we move it to HEL folder
+			//HEL path should be from root
 			//we encoded user's file if it is not
             File newFile = new File(pu.getProgUploadType().getHelDropPath() + pu.getAssignedFileName());
             //files are in archiveIn with assignedFileName  
@@ -171,34 +203,15 @@ public class importManagerImpl implements importManager {
             // now we move file
             Path source = archiveFile.toPath();
             Path target = newFile.toPath();
-            Files.copy(source, target);
+            Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING );
 			
 		} catch (Exception ex) {
+				//catching error so it moves onto next file
 				ex.printStackTrace();
-				// send email with error
-			 	mailMessage messageDetails = new mailMessage();
-			 	messageDetails.settoEmailAddress("gchan123@Yahoo.com");
-		        String subject = "Error moving RR file to HEL ";
-		        try {
-		        	messageDetails.setmessageSubject(subject  + InetAddress.getLocalHost().getHostAddress());
-				} catch (UnknownHostException e) {
-					e.printStackTrace();
-				}
-		        StringBuilder sb = new StringBuilder();
-		        sb.append(new Date().toString());
-		        sb.append("ProgramUploadId - " + pu.getId());
-		        sb.append("Stack Trace: " + Arrays.toString(ex.getStackTrace()));
-		        messageDetails.setmessageBody(sb.toString());
-		        messageDetails.setfromEmailAddress("information@health-e-link.com");
-		        try {
-						emailMessageManager.sendEmail(messageDetails);
-					} catch (Exception e) {
-						System.err.println("error sending alert regarding batch " + pu.getId() + " error");
-						e.printStackTrace();
-					}
+				
 		        return 1;
 		   } 
-		return sysError;
+		return 0;
 		}
 
 
@@ -246,6 +259,7 @@ public class importManagerImpl implements importManager {
 	 * sends the engagement records to proper location
 	 */
 	@Override
+	@Transactional
 	public void processRRFiles() {
 		// TODO Auto-generated method stub
 		
@@ -253,14 +267,132 @@ public class importManagerImpl implements importManager {
 
 	/** 
 	 * this job takes the output file and get it ready for RR processing
+	 * We pick up the distinct active paths from programUploadTypes and through the folder files 
+	 * we match the assigned file name from programUploads table 
+	 * update programUpload status so RR job can pick it up for import
+	 * @throws Exception 
+	 * 
 	 */
 	@Override
-	public void moveHELtoRR() {
+	@Transactional
+	public void moveHELFilestoRR(){
+		try {
+		//get HEL paths
+		List<programUploadTypes> pickUpPathList = getDistinctHELPaths(1);
+			for (programUploadTypes put : pickUpPathList) {
+				//we move it to process folder, set the status and let it finish processing on RR
+				moveHELFiletoRR(put);
+			}
+		
+		//we loop through the files in the folder and look up the bath info by Id
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			String subject = " Error job - moveHELFilestoRR";
+			try {
+				sendImportErrorEmail (subject, ex); 
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+	}
+	
+	/** this is so we can ask the system to move files for a particular programUploadType)
+	 * 
+	 * **/
+	@Override
+	public void moveHELFiletoRR(programUploadTypes programUploadType)  throws Exception {
+		
+		
+		//make sure we are not already checking this path or this path has issues
+		  //we insert job so if anything goes wrong or the scheduler overlaps, we won't be checking the same folder over and over
+        MoveFilesLog moveJob = new MoveFilesLog();
+        moveJob.setStatusId(1);
+        moveJob.setFolderPath(programUploadType.getHelPickUpPath());
+        moveJob.setTransportMethodId(5);
+        moveJob.setMethod(1);
+        Integer lastId = insertMoveFilesLog(moveJob);
+        moveJob.setId(lastId);
+
+        // check if directory exists, if not create
+        fileSystem fileSystem = new fileSystem();
+        //paths are from root instead of /home
+        String inPath = fileSystem.setPathFromRoot(programUploadType.getHelPickUpPath());
+        File f = new File(inPath);
+        if (!f.exists()) {
+            moveJob.setNotes(("Directory " + programUploadType.getHelPickUpPath() + " does not exist"));
+            updateMoveFilesLogRun(moveJob);
+            //need to get out of loop since set up was not done properly, will try to throw error
+            //sendEmailToAdmin((programUploadType.getHelPickUpPath() + " does not exist"), "moveHELFiletoRR Job Error");
+        }
+        //we look up path
+       
+        moveJob.setStatusId(2);
+        moveJob.setEndDateTime(new Date());
+        updateMoveFilesLogRun(moveJob);
+       
+		//we lock status of path
+		
+        //we check by file name, when we find the file
+		
+		//unlock path status
+		
+	}
+
+	@Override
+	public void processRRFile(programUploads programUpload)  throws Exception {
 		// TODO Auto-generated method stub
 		
 	}
 
+	@Override
+	@Transactional
+	public List<programUploadTypes> getProgramUploadTypes (boolean usesHEL, boolean checkHEL, Integer status) throws Exception {
+		return importDAO.getProgramUploadTypes(usesHEL, checkHEL, status);
+	}
 
-	
+	@Override
+	public void sendImportErrorEmail(String subject, Exception ex) throws Exception{
+		// send email with error
+	 	mailMessage messageDetails = new mailMessage();
+	 	messageDetails.settoEmailAddress(importErrorToEmail);
+	 	messageDetails.setfromEmailAddress(importErrorFromEmail);
+	    try {
+        	messageDetails.setmessageSubject(subject  + InetAddress.getLocalHost().getHostAddress());
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+        StringBuilder sb = new StringBuilder();
+        sb.append(new Date().toString() + "<br/>");
+        sb.append("Stack Trace: " + Arrays.toString(ex.getStackTrace()));
+        messageDetails.setmessageBody(sb.toString());
+        try {
+				emailMessageManager.sendEmail(messageDetails);
+			} catch (Exception e) {
+				System.err.println("sendImportErrorEmail Error");
+				e.printStackTrace();
+			}
+		
+	}
+
+	@Override
+	@Transactional
+	public List<programUploadTypes> getDistinctHELPaths(Integer status)
+			throws Exception {
+		return importDAO.getDistinctHELPaths(status);
+	}
+
+	@Override
+	@Transactional
+	public Integer insertMoveFilesLog(MoveFilesLog moveJob) throws Exception {
+		 return importDAO.insertMoveFilesLog(moveJob);
+	}
+
+	@Override
+	@Transactional
+	public void updateMoveFilesLogRun(MoveFilesLog moveJob) throws Exception {
+		importDAO.updateMoveFilesLogRun(moveJob);
+		
+	}
 	
 }

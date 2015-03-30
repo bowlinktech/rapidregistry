@@ -6,6 +6,7 @@
 package com.bowlink.rr.dao.impl;
 
 import com.bowlink.rr.dao.importDAO;
+import com.bowlink.rr.model.MoveFilesLog;
 import com.bowlink.rr.model.fileTypes;
 import com.bowlink.rr.model.programUploadTypes;
 import com.bowlink.rr.model.programUploadTypesFormFields;
@@ -20,6 +21,7 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -181,11 +183,12 @@ public class importDAOImpl implements importDAO {
 
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public List<programUploads> getProgramUploads(Integer statusId) throws Exception{
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(programUploads.class);
 		
 		if (statusId != 0) {
-			criteria.add(Restrictions.eq("statusid", statusId));
+			criteria.add(Restrictions.eq("statusId", statusId));
 		}
 		List <programUploads> programUploads =  criteria.list();
 		
@@ -237,7 +240,62 @@ public class importDAOImpl implements importDAO {
     	  return null;
       }
 	}
+
+
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<programUploadTypes> getProgramUploadTypes(boolean usesHEL, boolean checkHEL, Integer status)
+			throws Exception {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(programUploadTypes.class);
+		if (checkHEL) {
+			criteria.add(Restrictions.eq("useHEL", usesHEL));
+		}
+		if (status != 0) {
+			criteria.add(Restrictions.eq("status", status));
+		}
+		
+		List <programUploadTypes> programUploadTypes =  criteria.list();
+		
+		return programUploadTypes;
+	}
+
+
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<programUploadTypes> getDistinctHELPaths(Integer status)
+			throws Exception {
+		
+            String sql = ("select distinct heldroppath, helpickuppath "
+                    + " from programuploadtypes ");
+                    if (status != 0) {
+                    	sql = sql + " where status = :status";
+                    }
+                  
+            Query query = sessionFactory.getCurrentSession().createSQLQuery(sql)
+                    .setResultTransformer(
+                            Transformers.aliasToBean(programUploadTypes.class))
+                    .setParameter("status", status);
+
+            List<programUploadTypes> putList = query.list();
+            return putList;
+       
+	}
+
+
+
+	@Override
+	public Integer insertMoveFilesLog(MoveFilesLog moveJob)  throws Exception{
+		Integer lastId = null;
+		lastId = (Integer) sessionFactory.getCurrentSession().save(moveJob);
+		return lastId;
+	}
 	
+	@Override
+    public void updateMoveFilesLogRun(MoveFilesLog moveJob) throws Exception {
+            sessionFactory.getCurrentSession().update(moveJob);
+    }
 	
 	
 	
