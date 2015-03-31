@@ -15,7 +15,7 @@ import com.bowlink.rr.validator.NoHtml;
 
 @Entity
 @Table(name = "moveFilesLog")
-public class MoveFilesLog {
+public class moveFilesLog {
 
     
     @Id
@@ -23,18 +23,9 @@ public class MoveFilesLog {
     @Column(name = "ID", nullable = false)
     private int id;
     
-    @Column(name = "transportMethodId", nullable = true)
-    private int transportMethodId;
-
-    @Column(name = "transportId", nullable = true)
-    private int transportId;
-
-    @Column(name = "statusId", nullable = false)
-    private int statusId;
-    
-    @Column(name = "method", nullable = false)
-    private int method;   
-    
+   @Column(name = "statusId", nullable = false)
+    private int statusId = 1;
+  
     @NoHtml
     @Column(name = "folderPath", nullable = true)
     private String folderPath;
@@ -50,7 +41,7 @@ public class MoveFilesLog {
     @NoHtml
     @Column(name = "notes", nullable = true)
     private String notes;
-    
+
 	public int getId() {
 		return id;
 	}
@@ -59,20 +50,20 @@ public class MoveFilesLog {
 		this.id = id;
 	}
 
-	public int getTransportId() {
-		return transportId;
-	}
-
-	public void setTransportId(int transportId) {
-		this.transportId = transportId;
-	}
-
 	public int getStatusId() {
 		return statusId;
 	}
 
 	public void setStatusId(int statusId) {
 		this.statusId = statusId;
+	}
+
+	public String getFolderPath() {
+		return folderPath;
+	}
+
+	public void setFolderPath(String folderPath) {
+		this.folderPath = folderPath;
 	}
 
 	public Date getStartDateTime() {
@@ -91,30 +82,6 @@ public class MoveFilesLog {
 		this.endDateTime = endDateTime;
 	}
 
-	public int getMethod() {
-		return method;
-	}
-
-	public void setMethod(int method) {
-		this.method = method;
-	}
-
-	public String getFolderPath() {
-		return folderPath;
-	}
-
-	public void setFolderPath(String folderPath) {
-		this.folderPath = folderPath;
-	}
-
-	public int getTransportMethodId() {
-		return transportMethodId;
-	}
-
-	public void setTransportMethodId(int transportMethodId) {
-		this.transportMethodId = transportMethodId;
-	}
-
 	public String getNotes() {
 		return notes;
 	}
@@ -122,6 +89,6 @@ public class MoveFilesLog {
 	public void setNotes(String notes) {
 		this.notes = notes;
 	}
-	
+    
 	
 }

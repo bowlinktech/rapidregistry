@@ -70,7 +70,6 @@ public class programUploadTypes {
     
     @Column(name = "encodingId", nullable = false)
     private int encodingId = 1;
-    
 
 	public int getTotalFields() {
 		return totalFields;
@@ -175,5 +174,4 @@ public class programUploadTypes {
 	public void setEncodingId(int encodingId) {
 		this.encodingId = encodingId;
 	}
-
 }

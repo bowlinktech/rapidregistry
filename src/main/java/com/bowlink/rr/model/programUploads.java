@@ -78,6 +78,10 @@ public class programUploads {
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
     @Column(name = "statusDateTime", nullable = true)
     private Date statusDateTime = new Date();
+    
+    @Column(name = "transportId", nullable = false)
+    private Integer transportId = null;
+    
 
 	public programUploadTypes getProgUploadType() {
 		return progUploadType;
@@ -181,6 +185,14 @@ public class programUploads {
 
 	public void setStatusDateTime(Date statusDateTime) {
 		this.statusDateTime = statusDateTime;
+	}
+
+	public Integer getTransportId() {
+		return transportId;
+	}
+
+	public void setTransportId(Integer transportId) {
+		this.transportId = transportId;
 	}
 		
 }

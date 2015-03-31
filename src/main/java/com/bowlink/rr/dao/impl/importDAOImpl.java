@@ -6,7 +6,7 @@
 package com.bowlink.rr.dao.impl;
 
 import com.bowlink.rr.dao.importDAO;
-import com.bowlink.rr.model.MoveFilesLog;
+import com.bowlink.rr.model.moveFilesLog;
 import com.bowlink.rr.model.fileTypes;
 import com.bowlink.rr.model.programUploadTypes;
 import com.bowlink.rr.model.programUploadTypesFormFields;
@@ -183,6 +183,7 @@ public class importDAOImpl implements importDAO {
 
 
 	@Override
+	@Transactional
 	@SuppressWarnings("unchecked")
 	public List<programUploads> getProgramUploads(Integer statusId) throws Exception{
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(programUploads.class);
@@ -199,6 +200,7 @@ public class importDAOImpl implements importDAO {
 
 
 	@Override
+	@Transactional
 	public void updateProgramUplaod(programUploads programUpload) throws Exception {
 		sessionFactory.getCurrentSession().update(programUpload);
 	}
@@ -206,6 +208,7 @@ public class importDAOImpl implements importDAO {
 
 
 	@Override
+	@Transactional
 	public Integer saveProgramUplaod(programUploads programUpload) throws Exception{
 		Integer lastId = null;
 		lastId = (Integer) sessionFactory.getCurrentSession().save(programUpload);
@@ -216,6 +219,7 @@ public class importDAOImpl implements importDAO {
 
 
 	@Override
+	@Transactional
 	public programUploads getProgramUpload(Integer programUploadId)
 			throws Exception {
 		 Query query = sessionFactory.getCurrentSession().createQuery(" from programUploads where id = :id");
@@ -230,6 +234,7 @@ public class importDAOImpl implements importDAO {
 
 
 	@Override
+	@Transactional
 	public programUploadTypes getProgramUploadType(Integer programUploadTypeId)
 			throws Exception {
 		Query query = sessionFactory.getCurrentSession().createQuery(" from programUploadTypes where id = :id");
@@ -244,6 +249,7 @@ public class importDAOImpl implements importDAO {
 
 
 	@Override
+	@Transactional
 	@SuppressWarnings("unchecked")
 	public List<programUploadTypes> getProgramUploadTypes(boolean usesHEL, boolean checkHEL, Integer status)
 			throws Exception {
@@ -263,14 +269,15 @@ public class importDAOImpl implements importDAO {
 
 
 	@Override
+	@Transactional
 	@SuppressWarnings("unchecked")
 	public List<programUploadTypes> getDistinctHELPaths(Integer status)
 			throws Exception {
 		
-            String sql = ("select distinct heldroppath, helpickuppath "
-                    + " from programuploadtypes ");
+            String sql = ("select distinct helDropPath, helPickUpPath"
+                    + " from programuploadtypes where useHel = 1 ");
                     if (status != 0) {
-                    	sql = sql + " where status = :status";
+                    	sql = sql + " and status = :status";
                     }
                   
             Query query = sessionFactory.getCurrentSession().createSQLQuery(sql)
@@ -286,16 +293,54 @@ public class importDAOImpl implements importDAO {
 
 
 	@Override
-	public Integer insertMoveFilesLog(MoveFilesLog moveJob)  throws Exception{
+	@Transactional
+	public Integer insertMoveFilesLog(moveFilesLog moveJob)  throws Exception{
 		Integer lastId = null;
 		lastId = (Integer) sessionFactory.getCurrentSession().save(moveJob);
 		return lastId;
 	}
 	
 	@Override
-    public void updateMoveFilesLogRun(MoveFilesLog moveJob) throws Exception {
+	@Transactional
+    public void updateMoveFilesLogRun(moveFilesLog moveJob) throws Exception {
             sessionFactory.getCurrentSession().update(moveJob);
     }
+
+
+
+	@Override
+	@Transactional
+	@SuppressWarnings("unchecked")
+	public boolean movePathInUse(moveFilesLog moveJob) throws Exception {
+			
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(moveFilesLog.class);
+		criteria.add(Restrictions.eq("statusId", moveJob.getStatusId()));
+		criteria.add(Restrictions.eq("folderPath", moveJob.getFolderPath()));
+		
+		List <moveFilesLog> moveLogList =  criteria.list();
+		if (moveLogList == null) {
+			return true;
+		} else { 
+			return false;
+		}
+	}
+
+
+
+	@Override
+	@Transactional
+	@SuppressWarnings("unchecked")
+	public programUploads getProgramUploadByAssignedFileName(programUploads pu) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(programUploads.class);
+		criteria.add(Restrictions.eq("assignedFileName", pu.getAssignedFileName()));
+		
+		List <programUploads> programUploads =  criteria.list();
+		if (programUploads.size() == 1) {
+			return programUploads.get(0);
+		}
+		
+		return null;
+	}
 	
 	
 	

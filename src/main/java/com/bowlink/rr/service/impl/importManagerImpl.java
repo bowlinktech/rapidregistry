@@ -6,7 +6,7 @@
 package com.bowlink.rr.service.impl;
 
 import com.bowlink.rr.dao.importDAO;
-import com.bowlink.rr.model.MoveFilesLog;
+import com.bowlink.rr.model.moveFilesLog;
 import com.bowlink.rr.model.fileTypes;
 import com.bowlink.rr.model.mailMessage;
 import com.bowlink.rr.model.programUploadTypes;
@@ -15,17 +15,20 @@ import com.bowlink.rr.model.programUploads;
 import com.bowlink.rr.reference.fileSystem;
 import com.bowlink.rr.service.emailMessageManager;
 import com.bowlink.rr.service.importManager;
-
 import java.io.File;
+import java.io.FileFilter;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.io.filefilter.HiddenFileFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -119,7 +122,6 @@ public class importManagerImpl implements importManager {
 	 * be picked up and process by HEL
 	 **/
 	@Override
-	@Transactional
 	public void processUploadedFiles() {
 		
 		/**we get all the files that are not process, we loop them**/
@@ -146,7 +148,6 @@ public class importManagerImpl implements importManager {
 	 * If not, it will move it to RR process folder for job to pick up and import
 	 * **/
 	@Override
-	@Transactional
 	public void processUploadedFile(programUploads pu) throws Exception {
 				
 				pu = getProgramUpload(pu.getId());
@@ -216,38 +217,33 @@ public class importManagerImpl implements importManager {
 
 
 	@Override
-	@Transactional
 	public List<programUploads> getProgramUploads(Integer statusId) throws Exception {
 		return importDAO.getProgramUploads(statusId);
 	}
 
 	@Override
-	@Transactional
 	public void updateProgramUplaod(programUploads programUpload)  throws Exception{
 		importDAO.updateProgramUplaod(programUpload);	
 		
 	}
 
 	@Override
-	@Transactional
 	public Integer saveProgramUplaod(programUploads programUpload)  throws Exception{
 		return importDAO.saveProgramUplaod(programUpload);		
 	}
 
 	@Override
-	@Transactional
 	public programUploads getProgramUpload(Integer programUploadId)
 			throws Exception {
 		programUploads pu =  importDAO.getProgramUpload(programUploadId);
 		if (pu != null) {
 			//we get the details for the programUploadType
-			pu.setProgUploadType(getProgramUploadType(pu.getProgramId()));
+			pu.setProgUploadType(getProgramUploadType(pu.getProgramUploadTypeId()));
 		}
 		return pu;
 	}
 
 	@Override
-	@Transactional
 	public programUploadTypes getProgramUploadType(Integer programUploadTypeId)
 			throws Exception {
 		return importDAO.getProgramUploadType(programUploadTypeId);
@@ -259,7 +255,6 @@ public class importManagerImpl implements importManager {
 	 * sends the engagement records to proper location
 	 */
 	@Override
-	@Transactional
 	public void processRRFiles() {
 		// TODO Auto-generated method stub
 		
@@ -274,14 +269,24 @@ public class importManagerImpl implements importManager {
 	 * 
 	 */
 	@Override
-	@Transactional
 	public void moveHELFilestoRR(){
 		try {
 		//get HEL paths
 		List<programUploadTypes> pickUpPathList = getDistinctHELPaths(1);
 			for (programUploadTypes put : pickUpPathList) {
-				//we move it to process folder, set the status and let it finish processing on RR
-				moveHELFiletoRR(put);
+				//check path
+				moveFilesLog moveJob = new moveFilesLog();
+		        moveJob.setStatusId(1);
+		        moveJob.setFolderPath(put.getHelPickUpPath());
+				boolean pathInUse = movePathInUse (moveJob);
+				if  (!pathInUse) {
+					Integer lastId = insertMoveFilesLog(moveJob);
+			        moveJob.setId(lastId);
+					//we move it to process folder, set the status and let it finish processing on RR
+					moveHELFiletoRR(put);
+					moveJob.setStatusId(2);
+					updateMoveFilesLogRun(moveJob);		 
+				}
 			}
 		
 		//we loop through the files in the folder and look up the bath info by Id
@@ -302,41 +307,23 @@ public class importManagerImpl implements importManager {
 	 * **/
 	@Override
 	public void moveHELFiletoRR(programUploadTypes programUploadType)  throws Exception {
-		
-		
-		//make sure we are not already checking this path or this path has issues
-		  //we insert job so if anything goes wrong or the scheduler overlaps, we won't be checking the same folder over and over
-        MoveFilesLog moveJob = new MoveFilesLog();
-        moveJob.setStatusId(1);
-        moveJob.setFolderPath(programUploadType.getHelPickUpPath());
-        moveJob.setTransportMethodId(5);
-        moveJob.setMethod(1);
-        Integer lastId = insertMoveFilesLog(moveJob);
-        moveJob.setId(lastId);
-
-        // check if directory exists, if not create
+		// check if directory exists, if not create
         fileSystem fileSystem = new fileSystem();
         //paths are from root instead of /home
         String inPath = fileSystem.setPathFromRoot(programUploadType.getHelPickUpPath());
         File f = new File(inPath);
         if (!f.exists()) {
-            moveJob.setNotes(("Directory " + programUploadType.getHelPickUpPath() + " does not exist"));
-            updateMoveFilesLogRun(moveJob);
-            //need to get out of loop since set up was not done properly, will try to throw error
-            //sendEmailToAdmin((programUploadType.getHelPickUpPath() + " does not exist"), "moveHELFiletoRR Job Error");
+        	String subject = " Error path does not exist - moveHELFiletoRR";
+			try {
+				sendImportErrorEmail (subject, null); 
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+        } else  {
+        	//we move the file and update the programUpload status
+        	moveFilesByPath(programUploadType.getHelPickUpPath());
         }
-        //we look up path
-       
-        moveJob.setStatusId(2);
-        moveJob.setEndDateTime(new Date());
-        updateMoveFilesLogRun(moveJob);
-       
-		//we lock status of path
-		
-        //we check by file name, when we find the file
-		
-		//unlock path status
-		
+
 	}
 
 	@Override
@@ -346,7 +333,6 @@ public class importManagerImpl implements importManager {
 	}
 
 	@Override
-	@Transactional
 	public List<programUploadTypes> getProgramUploadTypes (boolean usesHEL, boolean checkHEL, Integer status) throws Exception {
 		return importDAO.getProgramUploadTypes(usesHEL, checkHEL, status);
 	}
@@ -358,7 +344,7 @@ public class importManagerImpl implements importManager {
 	 	messageDetails.settoEmailAddress(importErrorToEmail);
 	 	messageDetails.setfromEmailAddress(importErrorFromEmail);
 	    try {
-        	messageDetails.setmessageSubject(subject  + InetAddress.getLocalHost().getHostAddress());
+        	messageDetails.setmessageSubject(subject + " " + InetAddress.getLocalHost().getHostAddress());
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
@@ -384,15 +370,79 @@ public class importManagerImpl implements importManager {
 
 	@Override
 	@Transactional
-	public Integer insertMoveFilesLog(MoveFilesLog moveJob) throws Exception {
+	public Integer insertMoveFilesLog(moveFilesLog moveJob) throws Exception {
 		 return importDAO.insertMoveFilesLog(moveJob);
 	}
 
 	@Override
 	@Transactional
-	public void updateMoveFilesLogRun(MoveFilesLog moveJob) throws Exception {
+	public void updateMoveFilesLogRun(moveFilesLog moveJob) throws Exception {
 		importDAO.updateMoveFilesLogRun(moveJob);
 		
+	}
+
+	@Override
+	@Transactional
+	public boolean movePathInUse(moveFilesLog moveJob) throws Exception {
+		return importDAO.movePathInUse(moveJob);
+	}
+
+	/** 
+	 * This method will go to the pick up folder and move all the file to RR process folder
+	It will take the file name and match it up against the update the programUpload table's assignedFileName's status
+	**/
+	@Override
+	public void moveFilesByPath(String inPath) throws Exception {
+		fileSystem fileSystem = new fileSystem();
+        String fileInPath = fileSystem.setPathFromRoot(inPath);
+        File folder = new File(fileInPath);
+
+        //list files
+        //we only list visible files
+        File[] listOfFiles = folder.listFiles((FileFilter) HiddenFileFilter.VISIBLE);
+        String outPath = fileSystem.setPath(processPath);
+
+        //too many variables that could come into play regarding file types, will check files with one method
+        //loop files 
+        for (File file : listOfFiles) {
+            String fileName = file.getName();
+            Date date = new Date();
+            
+            if (!fileName.endsWith("_error")) {
+            	//we look for a match
+            	programUploads pu = new programUploads ();
+            	pu.setAssignedFileName(fileName);
+            	programUploads puNew = getProgramUploadByAssignedFileName(pu);
+            	if (puNew != null) {
+            		//we move the file and update the status
+            		 //we encoded user's file if it is not
+                    File newFile = new File(outPath + fileName);
+                    // now we move file
+                    Path source = file.toPath();
+                    Path target = newFile.toPath();
+                    Files.move(source, target);
+            		pu.setStatusDateTime(date);
+            		pu.setStatusId(40);
+            		updateProgramUplaod(puNew);
+            	} else {
+            		//no match, we rename the file and notify admin
+            		String subject = "Cannot find programUplaod with fileName " + fileName;
+        			try {
+        				sendImportErrorEmail (subject, null); 
+        			} catch (Exception e) {
+        				e.printStackTrace();
+        			}
+            		file.renameTo((new File(file.getAbsolutePath() + fileName + "_error")));            		
+            	}
+            }
+       }
+		
+	}
+
+	@Override
+	@Transactional
+	public programUploads getProgramUploadByAssignedFileName(programUploads pu) {
+		return importDAO.getProgramUploadByAssignedFileName(pu);
 	}
 	
 }

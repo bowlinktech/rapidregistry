@@ -5,25 +5,45 @@
     xsi:schemaLocation="http://www.quartz-scheduler.org/xml/JobSchedulingData 
         http://www.quartz-scheduler.org/xml/job_scheduling_data_1_8.xsd"
     version="1.8">
- <!--
+    
+    <!-- seconds, minutes /(at) minute to start, hours, day of month, month, day of week, year (optional) -->
+    <!-- starts on 1 every minute-->
+                
     <schedule>
         <job>
-            <name>changePW</name>
+            <name>processUploadedFiles</name>
             <group>processGroup</group>
-            <description>This changes the passwords</description>
-            <job-class>com.bowlink.rr.jobs.PWChangeJob</job-class>
+            <description>This will process the files that are uploaded with SSA status</description>
+            <job-class>com.bowlink.rr.jobs.ProcessUploadFilesJob</job-class>
         </job>
  
         <trigger>
             <cron>
-                <name>changePWTrigger</name>
-                <job-name>changePW</job-name>
+                <name>processUploadedFilesTrigger</name>
+                <job-name>processUploadedFiles</job-name>
                 <job-group>processGroup</job-group>
-                
-                <cron-expression>0 25/59 * * * ?</cron-expression>
+                <cron-expression>0 1/1 * * * ?</cron-expression>
             </cron>
         </trigger>
-    </schedule>   -->
+    </schedule>  
+
     
-    
+    <schedule>
+        <job>
+            <name>moveHELToRRJob</name>
+            <group>processGroup</group>
+            <description>This will move the files from HEL output folder to RR process folder</description>
+            <job-class>com.bowlink.rr.jobs.MoveHELToRRJob</job-class>
+        </job>
+ 
+        <trigger>
+            <cron>
+                <name>MoveHELToRRJobTrigger</name>
+                <job-name>moveHELToRRJob</job-name>
+                <job-group>processGroup</job-group>
+                <cron-expression>0 1/1 * * * ?</cron-expression>
+            </cron>
+        </trigger>
+    </schedule>  
+   
 </job-scheduling-data>

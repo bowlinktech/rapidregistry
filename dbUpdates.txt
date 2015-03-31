@@ -77,3 +77,30 @@ CREATE TABLE `rapidregistry`.`movefileslog` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
   
   
+/** Grace 03.30.2015 10:21AM **/
+CREATE TABLE `rapidregistry`.`lu_transportmethods` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `transportMethod` varchar(45) NOT NULL,
+  `active` bit(1) NOT NULL DEFAULT b'0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1; 
+
+
+ALTER TABLE `rapidregistry`.`programuploads` 
+ADD COLUMN `transportId` INT NULL AFTER `statusId`;
+
+drop table if exists `rapidregistry`.`movefileslog`;
+
+CREATE TABLE `rapidregistry`.`movefileslog` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `statusId` int(11) NOT NULL COMMENT '1 for started\n2 for done',
+  `startDateTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `endDateTime` datetime DEFAULT NULL,
+  `folderPath` varchar(75) DEFAULT NULL,
+  `notes` text,
+  PRIMARY KEY (`id`),
+  KEY `pathMethodInd` (`folderPath`,`statusId`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+  
