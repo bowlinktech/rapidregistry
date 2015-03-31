@@ -32,6 +32,7 @@
                     <li role="menuitem" class="${param['sect'] == 'dataelements' ? 'active' : 'none'}"><a href="<c:url value='/sysAdmin/data-elements/list' />" title="Data Element Manager">Data Element Manager</a><c:if test="${param['sect'] == 'dataelements'}"><span class="indicator-active arrow-up"></span></c:if></li>
                     <li role="menuitem" class="${param['sect'] == 'reports' ? 'active' : 'none'}"><a href="<c:url value='/sysAdmin/reports/list' />" title="Report Manager">Report Manager</a><c:if test="${param['sect'] == 'reports'}"><span class="indicator-active arrow-up"></span></c:if></li>
                     <li role="menuitem" class="${param['sect'] == 'systemadmins' ? 'active' : 'none'}"><a href="<c:url value='/sysAdmin/system-admins/' />" title="System Admins Manager">System Admins Manager</a><c:if test="${param['sect'] == 'systemadmins'}"><span class="indicator-active arrow-up"></span></c:if></li>
+                    <li role="menuitem" class="${param['sect'] == 'adminFns' ? 'active' : 'none'}"><a href="<c:url value='/sysAdmin/adminFns/importfile' />" title="Admin Functions">Admin Functions</a><c:if test="${param['sect'] == 'adminFns'}"><span class="indicator-active arrow-up"></span></c:if></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right" id="secondary-nav">
                   <li><a class="logout" href="<c:url value='/logout' />">Log out</a></li>

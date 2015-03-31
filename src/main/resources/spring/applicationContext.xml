@@ -37,6 +37,7 @@
                 <value>/WEB-INF/tileDefs/dataElementManager.xml</value>
                 <value>/WEB-INF/tileDefs/surveyManager.xml</value>
                 <value>/WEB-INF/tileDefs/staffMembers.xml</value>
+                <value>/WEB-INF/tileDefs/adminFns.xml</value>             
             </list>
         </property>
     </bean>

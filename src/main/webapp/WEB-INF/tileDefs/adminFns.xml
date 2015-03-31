@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+<tiles-definitions> 
+    
+    
+    <!-- Definitions -->
+      
+    <definition name="base.definition.adminFns" template="/WEB-INF/tiles/layout.jsp">
+        <put-attribute name="title" value="Rapid Registry - Program Admin" />
+        <put-attribute name="header" value="/WEB-INF/jsp/common/sysAdminheader.jsp" />
+        <put-attribute name="actions" value="" />
+        <put-attribute name="menu" value="" />
+        <put-attribute name="body" value="" />
+        <put-attribute name="footer" value="/WEB-INF/jsp/common/footer.jsp" />
+    </definition>
+    
+        <definition name="/importfile" extends="base.definition.adminFns">
+        <put-attribute name="page-id" value="dashboard-details" />
+        <put-attribute name="page-section" value="section-dashboard" />
+        <put-attribute name="header" value="/WEB-INF/jsp/common/sysAdminHeader.jsp?sect=adminFns" />
+        <put-attribute name="actions" value="/WEB-INF/jsp/sysAdmin/adminFns/actionBar.jsp?page=importfile" />
+        <put-attribute name="menu" value="/WEB-INF/jsp/sysAdmin/adminFns/menu.jsp?page=importfile" />
+        <put-attribute name="body" value="/WEB-INF/jsp/sysAdmin/adminFns/importfile.jsp" />
+        <put-attribute name="jscript" value="/dspResources/js/sysAdmin/adminFns/importfile.js" />
+    </definition>
+   
+</tiles-definitions>
