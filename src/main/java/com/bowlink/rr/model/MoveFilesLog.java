@@ -15,17 +15,16 @@ import com.bowlink.rr.validator.NoHtml;
 
 @Entity
 @Table(name = "moveFilesLog")
-public class moveFilesLog {
+public class MoveFilesLog {
 
-    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID", nullable = false)
     private int id;
-    
-   @Column(name = "statusId", nullable = false)
+
+    @Column(name = "statusId", nullable = false)
     private int statusId = 1;
-  
+
     @NoHtml
     @Column(name = "folderPath", nullable = true)
     private String folderPath;
@@ -42,53 +41,52 @@ public class moveFilesLog {
     @Column(name = "notes", nullable = true)
     private String notes;
 
-	public int getId() {
-		return id;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public int getStatusId() {
-		return statusId;
-	}
+    public int getStatusId() {
+        return statusId;
+    }
 
-	public void setStatusId(int statusId) {
-		this.statusId = statusId;
-	}
+    public void setStatusId(int statusId) {
+        this.statusId = statusId;
+    }
 
-	public String getFolderPath() {
-		return folderPath;
-	}
+    public String getFolderPath() {
+        return folderPath;
+    }
 
-	public void setFolderPath(String folderPath) {
-		this.folderPath = folderPath;
-	}
+    public void setFolderPath(String folderPath) {
+        this.folderPath = folderPath;
+    }
 
-	public Date getStartDateTime() {
-		return startDateTime;
-	}
+    public Date getStartDateTime() {
+        return startDateTime;
+    }
 
-	public void setStartDateTime(Date startDateTime) {
-		this.startDateTime = startDateTime;
-	}
+    public void setStartDateTime(Date startDateTime) {
+        this.startDateTime = startDateTime;
+    }
 
-	public Date getEndDateTime() {
-		return endDateTime;
-	}
+    public Date getEndDateTime() {
+        return endDateTime;
+    }
 
-	public void setEndDateTime(Date endDateTime) {
-		this.endDateTime = endDateTime;
-	}
+    public void setEndDateTime(Date endDateTime) {
+        this.endDateTime = endDateTime;
+    }
 
-	public String getNotes() {
-		return notes;
-	}
+    public String getNotes() {
+        return notes;
+    }
 
-	public void setNotes(String notes) {
-		this.notes = notes;
-	}
-    
-	
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
 }
