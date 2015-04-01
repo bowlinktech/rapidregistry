@@ -7,7 +7,7 @@ package com.bowlink.rr.service.impl;
 
 import com.bowlink.rr.dao.importDAO;
 import com.bowlink.rr.model.User;
-import com.bowlink.rr.model.moveFilesLog;
+import com.bowlink.rr.model.MoveFilesLog;
 import com.bowlink.rr.model.fileTypes;
 import com.bowlink.rr.model.mailMessage;
 import com.bowlink.rr.model.programUploadTypes;
@@ -277,7 +277,7 @@ public class importManagerImpl implements importManager {
 		List<programUploadTypes> pickUpPathList = getDistinctHELPaths(1);
 			for (programUploadTypes put : pickUpPathList) {
 				//check path
-				moveFilesLog moveJob = new moveFilesLog();
+				MoveFilesLog moveJob = new MoveFilesLog();
 		        moveJob.setStatusId(1);
 		        moveJob.setFolderPath(put.getHelPickUpPath());
 				boolean pathInUse = movePathInUse (moveJob);
@@ -372,20 +372,20 @@ public class importManagerImpl implements importManager {
 
 	@Override
 	@Transactional
-	public Integer insertMoveFilesLog(moveFilesLog moveJob) throws Exception {
+	public Integer insertMoveFilesLog(MoveFilesLog moveJob) throws Exception {
 		 return importDAO.insertMoveFilesLog(moveJob);
 	}
 
 	@Override
 	@Transactional
-	public void updateMoveFilesLogRun(moveFilesLog moveJob) throws Exception {
+	public void updateMoveFilesLogRun(MoveFilesLog moveJob) throws Exception {
 		importDAO.updateMoveFilesLogRun(moveJob);
 		
 	}
 
 	@Override
 	@Transactional
-	public boolean movePathInUse(moveFilesLog moveJob) throws Exception {
+	public boolean movePathInUse(MoveFilesLog moveJob) throws Exception {
 		return importDAO.movePathInUse(moveJob);
 	}
 

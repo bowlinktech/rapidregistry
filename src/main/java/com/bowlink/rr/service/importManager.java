@@ -6,7 +6,7 @@
 package com.bowlink.rr.service;
 
 import com.bowlink.rr.model.User;
-import com.bowlink.rr.model.moveFilesLog;
+import com.bowlink.rr.model.MoveFilesLog;
 import com.bowlink.rr.model.fileTypes;
 import com.bowlink.rr.model.programUploadTypes;
 import com.bowlink.rr.model.programUploadTypesFormFields;
@@ -70,11 +70,11 @@ public interface importManager {
     
     List <programUploadTypes> getDistinctHELPaths (Integer status) throws Exception;
 
-    Integer insertMoveFilesLog(moveFilesLog moveJob) throws Exception;
+    Integer insertMoveFilesLog(MoveFilesLog moveJob) throws Exception;
     
-    void updateMoveFilesLogRun(moveFilesLog moveJob) throws Exception;
+    void updateMoveFilesLogRun(MoveFilesLog moveJob) throws Exception;
     
-    boolean movePathInUse (moveFilesLog moveJob) throws Exception;
+    boolean movePathInUse (MoveFilesLog moveJob) throws Exception;
 
     public void moveFilesByPath(String inPath) throws Exception;
     
