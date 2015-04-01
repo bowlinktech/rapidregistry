@@ -102,5 +102,11 @@ CREATE TABLE `rapidregistry`.`movefileslog` (
   KEY `pathMethodInd` (`folderPath`,`statusId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+/** grace 04.01.2015 12:37AM **/
+ALTER TABLE `rapidregistry`.`programuploadtypes` 
+CHANGE COLUMN `HELDropPath` `helDropPath` VARCHAR(100) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL DEFAULT NULL ,
+CHANGE COLUMN `HELPickUpPath` `helPickUpPath` VARCHAR(100) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL DEFAULT NULL ;
+
+
 
   

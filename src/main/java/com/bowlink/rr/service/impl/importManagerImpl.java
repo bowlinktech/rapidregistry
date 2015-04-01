@@ -6,6 +6,7 @@
 package com.bowlink.rr.service.impl;
 
 import com.bowlink.rr.dao.importDAO;
+import com.bowlink.rr.model.User;
 import com.bowlink.rr.model.moveFilesLog;
 import com.bowlink.rr.model.fileTypes;
 import com.bowlink.rr.model.mailMessage;
@@ -15,6 +16,7 @@ import com.bowlink.rr.model.programUploads;
 import com.bowlink.rr.reference.fileSystem;
 import com.bowlink.rr.service.emailMessageManager;
 import com.bowlink.rr.service.importManager;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.net.InetAddress;
@@ -443,6 +445,17 @@ public class importManagerImpl implements importManager {
 	@Transactional
 	public programUploads getProgramUploadByAssignedFileName(programUploads pu) {
 		return importDAO.getProgramUploadByAssignedFileName(pu);
+	}
+
+	@Override
+	public List<programUploadTypes> getProgramUploadTypesByUserId(
+			Integer systemUserId, Integer statusId) throws Exception {
+		return importDAO.getProgramUploadTypesByUserId(systemUserId, statusId);
+	}
+
+	@Override
+	public List<User> getUsersForProgramUploadTypes(Integer statusId) {
+		return importDAO.getUsersForProgramUploadTypes(statusId);
 	}
 	
 }

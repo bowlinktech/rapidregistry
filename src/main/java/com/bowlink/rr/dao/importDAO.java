@@ -5,6 +5,7 @@
  */
 package com.bowlink.rr.dao;
 
+import com.bowlink.rr.model.User;
 import com.bowlink.rr.model.moveFilesLog;
 import com.bowlink.rr.model.fileTypes;
 import com.bowlink.rr.model.programUploadTypes;
@@ -64,4 +65,7 @@ public interface importDAO {
     
     programUploads getProgramUploadByAssignedFileName(programUploads pu);
     
+    List <programUploadTypes> getProgramUploadTypesByUserId (Integer systemUserId, Integer statusId) throws Exception;
+    
+    List<User> getUsersForProgramUploadTypes(Integer statusId);
 }

@@ -6,6 +6,7 @@
 package com.bowlink.rr.dao.impl;
 
 import com.bowlink.rr.dao.importDAO;
+import com.bowlink.rr.model.User;
 import com.bowlink.rr.model.moveFilesLog;
 import com.bowlink.rr.model.fileTypes;
 import com.bowlink.rr.model.programUploadTypes;
@@ -39,15 +40,15 @@ public class importDAOImpl implements importDAO {
      * @return The function will return a list of upload types in the system
      */
     @Override
+    @SuppressWarnings("unchecked")
     public List<programUploadTypes> getUploadTypes(Integer programId) throws Exception {
         
-        String sqlQuery = "select id, programId, name, dateCreated, status, useHEL from programUploadTypes where programId = " + programId;
+    	Criteria criteria = sessionFactory.getCurrentSession().createCriteria(programUploadTypes.class);
+		criteria.add(Restrictions.eq("programId", programId));
+		
+		List <programUploadTypes> programUploadTypeList =  criteria.list();
         
-        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery) 
-        .setResultTransformer(Transformers.aliasToBean(programUploadTypes.class)
-        );
-        
-        return query.list();
+        return programUploadTypeList;
     }
     
     
@@ -341,9 +342,55 @@ public class importDAOImpl implements importDAO {
 		
 		return null;
 	}
-	
-	
-	
-	
-    
+
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<programUploadTypes> getProgramUploadTypesByUserId(
+			Integer systemUserId, Integer statusId) {
+		
+		String sqlQuery = "select * from programuploadTypes where "
+				+ " programId in (select programId from user_programs "
+				+ " where systemUserId = :systemUserId)";
+        if (statusId != 0) {
+        	sqlQuery = sqlQuery + " and status = :statusId ";
+        }
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery) 
+        .setResultTransformer(Transformers.aliasToBean(programUploadTypes.class)
+        );
+        query.setParameter("systemUserId", systemUserId);
+        
+        if (statusId != 0) {
+        	query.setParameter("statusId", statusId);
+        }
+        return query.list();
+	}
+
+
+
+	/**
+	 * we only return users has permission to upload
+	 * **/
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<User> getUsersForProgramUploadTypes(Integer statusId) {
+		String sqlQuery = "select * from users where id in ("
+				+ " select systemuserid from user_programs where programid in ("
+				+ " select programid from programuploadtypes";
+        if (statusId != 0) {
+        	sqlQuery = sqlQuery + " where status = :statusId ";
+        }
+        sqlQuery = sqlQuery + " ))";
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery) 
+        .setResultTransformer(Transformers.aliasToBean(User.class)
+        );
+        if (statusId != 0) {
+        	query.setParameter("statusId", statusId);
+        }
+        return query.list();
+	}
+   
 }
