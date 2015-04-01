@@ -8,7 +8,7 @@
     
     <!-- seconds, minutes /(at) minute to start, hours, day of month, month, day of week, year (optional) -->
     <!-- starts on 1 every minute-->
-                
+                <!--  
     <schedule>
         <job>
             <name>processUploadedFiles</name>
@@ -45,5 +45,5 @@
             </cron>
         </trigger>
     </schedule>  
-   
+   -->
 </job-scheduling-data>
