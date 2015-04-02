@@ -27,6 +27,9 @@ public class SurveyQuestions {
     List<SurveyQuestionChoices> questionChoices;
     
     @Transient
+    List<SurveyDateQuestionRows> dateQuestionRows;
+    
+    @Transient
     private Integer pageNum = 0;
 
     @Id
@@ -95,6 +98,28 @@ public class SurveyQuestions {
     
     @Column(name = "deleted", nullable = false)
     private boolean deleted = false;
+    
+    @Column(name = "otherOption", nullable = true)
+    private boolean otherOption = false;
+    
+    @Column(name = "otherLabel", nullable = true)
+    private String otherLabel = "Other (please specify)";
+    
+    @Column(name = "otherDspChoice", nullable = true)
+    private int otherDspChoice = 0;
+    
+    @Column(name = "dateFormatType", nullable = true)
+    private int dateFormatType = 0;
+    
+    @Column(name = "collectDateInfo", nullable = true)
+    private boolean collectDateInfo = true;
+    
+    @Column(name = "collectTimeInfo", nullable = true)
+    private boolean collectTimeInfo = false;
+    
+    @Column(name = "dateDspType", nullable = true)
+    private int dateDspType = 0;
+    
     
     public int getId() {
         return id;
@@ -272,5 +297,68 @@ public class SurveyQuestions {
         this.deleted = deleted;
     }
 
+    public boolean isOtherOption() {
+        return otherOption;
+    }
+
+    public void setOtherOption(boolean otherOption) {
+        this.otherOption = otherOption;
+    }
+
+    public String getOtherLabel() {
+        return otherLabel;
+    }
+
+    public void setOtherLabel(String otherLabel) {
+        this.otherLabel = otherLabel;
+    }
+
+    public int getOtherDspChoice() {
+        return otherDspChoice;
+    }
+
+    public void setOtherDspChoice(int otherDspChoice) {
+        this.otherDspChoice = otherDspChoice;
+    }
+
+    public int getDateFormatType() {
+        return dateFormatType;
+    }
+
+    public void setDateFormatType(int dateFormatType) {
+        this.dateFormatType = dateFormatType;
+    }
+
+    public boolean isCollectDateInfo() {
+        return collectDateInfo;
+    }
+
+    public void setCollectDateInfo(boolean collectDateInfo) {
+        this.collectDateInfo = collectDateInfo;
+    }
+
+    public boolean isCollectTimeInfo() {
+        return collectTimeInfo;
+    }
+
+    public void setCollectTimeInfo(boolean collectTimeInfo) {
+        this.collectTimeInfo = collectTimeInfo;
+    }
+
+    public int getDateDspType() {
+        return dateDspType;
+    }
+
+    public void setDateDspType(int dateDspType) {
+        this.dateDspType = dateDspType;
+    }
+
+    public List<SurveyDateQuestionRows> getDateQuestionRows() {
+        return dateQuestionRows;
+    }
+
+    public void setDateQuestionRows(List<SurveyDateQuestionRows> dateQuestionRows) {
+        this.dateQuestionRows = dateQuestionRows;
+    }
     
 }

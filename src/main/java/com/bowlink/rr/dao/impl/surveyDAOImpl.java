@@ -9,6 +9,7 @@ import com.bowlink.rr.dao.surveyDAO;
 import com.bowlink.rr.model.AnswerTypes;
 import com.bowlink.rr.model.SurveyQuestionChoices;
 import com.bowlink.rr.model.SurveyChangeLogs;
+import com.bowlink.rr.model.SurveyDateQuestionRows;
 import com.bowlink.rr.model.SurveyPages;
 import com.bowlink.rr.model.SurveyQuestions;
 import com.bowlink.rr.model.surveys;
@@ -284,6 +285,24 @@ public class surveyDAOImpl implements surveyDAO {
     }
     
     /**
+     * The 'getDateRows' function will return the list of choices set for a question.
+     * 
+     * @param questionId    The id of the selected question
+     * @return  This function will return a list of survey date rows
+     * @throws Exception 
+     */
+    @Override
+    public List<SurveyDateQuestionRows> getDateRows(Integer questionId) throws Exception {
+        
+        SurveyQuestions questionDetails = getSurveyQuestionById(questionId);
+        
+        Query query = sessionFactory.getCurrentSession().createQuery("from SurveyDateQuestionRows where questionId = :questionId order by id asc");
+        query.setParameter("questionId", questionId);
+        
+        return query.list();
+    }
+    
+    /**
      * The 'removeQuestionChoices' function will remove the choices associated to the passed in question.
      * 
      * @param questionId The id of the selected question.
@@ -318,5 +337,29 @@ public class surveyDAOImpl implements surveyDAO {
         Query deleteSurveyPage = sessionFactory.getCurrentSession().createQuery("delete from SurveyPages where id = :pageId");
         deleteSurveyPage.setParameter("pageId", pageId);
         deleteSurveyPage.executeUpdate();
+    }
+    
+    /**
+     * The 'removeDateRows' function will remove the rows associated to the passed in question.
+     * 
+     * @param questionId The id of the selected question.
+     * @throws Exception 
+     */
+    @Override
+    public void removeDateRows(Integer questionId) throws Exception {
+        Query deleteQuestionChoices = sessionFactory.getCurrentSession().createQuery("delete from SurveyDateQuestionRows where questionId = :questionId");
+        deleteQuestionChoices.setParameter("questionId", questionId);
+        deleteQuestionChoices.executeUpdate();
+    }
+    
+    /**
+     * The 'saveDateRows' function will save the question date rows.
+     * 
+     * @param questionChoice The object containing the question date rows
+     * @throws Exception 
+     */
+    @Override
+    public void saveDateRows(SurveyDateQuestionRows row) throws Exception {
+        sessionFactory.getCurrentSession().save(row);
     }
 }

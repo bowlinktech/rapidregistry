@@ -109,4 +109,25 @@ CHANGE COLUMN `HELPickUpPath` `helPickUpPath` VARCHAR(100) CHARACTER SET 'utf8' 
 
 
 
-  
+/** Chad 04.01.2015 10:52 AM **/
+DELETE FROM `rapidregistry`.`lu_answerTypes` WHERE `id`='8';
+
+ALTER TABLE `rapidregistry`.`survey_questions` 
+ADD COLUMN `otherOption` BIT(1) NULL DEFAULT b'0' AFTER `deleted`,
+ADD COLUMN `otherLabel` VARCHAR(45) NULL AFTER `otherOption`,
+ADD COLUMN `otherDspChoice` INT NULL DEFAULT 0 COMMENT '0 = Empty\n1 = Display as answer choice\n2 = Display as comment field' AFTER `otherLabel`;
+
+ALTER TABLE `rapidregistry`.`survey_questions` 
+ADD COLUMN `dateFormatType` INT NULL DEFAULT '0' COMMENT '0 = empty\n1 = MM / DD / YYYY\n2 = DD/ MM / YYYY' AFTER `otherDspChoice`,
+ADD COLUMN `collectDateInfo` BIT(1) NULL DEFAULT b'0' AFTER `dateFormatType`,
+ADD COLUMN `collectTimeInfo` BIT(1) NULL DEFAULT b'0' AFTER `collectDateInfo`;
+
+ALTER TABLE `rapidregistry`.`survey_questions` 
+ADD COLUMN `dateDspType` INT(11) NULL DEFAULT '1' COMMENT '1 = Below\n2 = Side by Side' AFTER `collectTimeInfo`;
+
+CREATE TABLE `rapidregistry`.`survey_dateRows` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `questionId` INT NOT NULL,
+  `label` VARCHAR(45) NULL,
+  PRIMARY KEY (`id`));
+

@@ -9,6 +9,7 @@ import com.bowlink.rr.dao.surveyDAO;
 import com.bowlink.rr.model.AnswerTypes;
 import com.bowlink.rr.model.SurveyQuestionChoices;
 import com.bowlink.rr.model.SurveyChangeLogs;
+import com.bowlink.rr.model.SurveyDateQuestionRows;
 import com.bowlink.rr.model.SurveyPages;
 import com.bowlink.rr.model.SurveyQuestions;
 import com.bowlink.rr.model.surveys;
@@ -181,6 +182,12 @@ public class surveyManagerImpl implements surveyManager {
     
     @Override
     @Transactional
+    public List<SurveyDateQuestionRows> getDateRows(Integer questionId) throws Exception {
+        return surveyDAO.getDateRows(questionId);
+    }
+    
+    @Override
+    @Transactional
     public void removeQuestionChoices(Integer questionId) throws Exception {
         surveyDAO.removeQuestionChoices(questionId);
     }
@@ -196,4 +203,17 @@ public class surveyManagerImpl implements surveyManager {
     public void deleteSurveyPage(Integer pageId) throws Exception {
         surveyDAO.deleteSurveyPage(pageId);
     }
+    
+    @Override
+    @Transactional
+    public void removeDateRows(Integer questionId) throws Exception {
+        surveyDAO.removeDateRows(questionId);
+    }
+    
+    @Override
+    @Transactional
+    public void saveDateRows(SurveyDateQuestionRows row) throws Exception {
+        surveyDAO.saveDateRows(row);
+    }
 }
+

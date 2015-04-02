@@ -8,6 +8,7 @@ package com.bowlink.rr.service;
 import com.bowlink.rr.model.AnswerTypes;
 import com.bowlink.rr.model.SurveyQuestionChoices;
 import com.bowlink.rr.model.SurveyChangeLogs;
+import com.bowlink.rr.model.SurveyDateQuestionRows;
 import com.bowlink.rr.model.SurveyPages;
 import com.bowlink.rr.model.SurveyQuestions;
 import com.bowlink.rr.model.surveys;
@@ -62,10 +63,16 @@ public interface surveyManager {
     
     List<SurveyQuestionChoices> getQuestionChoices(Integer questionId) throws Exception;
     
+    List<SurveyDateQuestionRows> getDateRows(Integer questionId) throws Exception;
+    
     void removeQuestionChoices(Integer questionId) throws Exception;
     
     void saveQuestionChoice(SurveyQuestionChoices questionChoice) throws Exception;
     
     void deleteSurveyPage(Integer pageId) throws Exception;
+    
+    void removeDateRows(Integer questionId) throws Exception;
+    
+    void saveDateRows(SurveyDateQuestionRows row) throws Exception;
     
 }

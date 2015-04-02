@@ -52,7 +52,7 @@
         <div class="tab-content">
             <div class="tab-pane tab-pane-question fade active in editPane" id="edit">
                 <div class="form-group">
-                    <label class="control-label" for="pageTitle"><!--<span class="qNum">Q${qnum}</span>:--> Multiple Choice</label>
+                    <label class="control-label" for="pageTitle"><!--<span class="qNum">Q${qnum}</span>:--> Dropdown</label>
                     <form:input path="question" placeholder="Enter your Question" id="question" class="form-control" type="text"  maxLength="255" />
                 </div>
                 <c:if test="${not empty availableTables}">
@@ -125,7 +125,25 @@
                     </div>
                 </c:if>
                 <div class="well well-xsm" style="background-color:#ffffff;">
-                <form:checkbox path="allowMultipleAns" id="allowMultipleAns" />&nbsp;<label class="control-label" for="allowMultipleAns">Allow more than one answer to this question (use checkboxes)</label>
+                    <form:checkbox path="otherOption" id="otherOption" />&nbsp;<label class="control-label" for="otherOption">Add an "Other" Answer option or Comment Field</label>
+                </div>
+                <div class="panel" id="otherOptionDiv" style="${surveyQuestion.otherOption == true ? 'display:block;' : 'display:none;'}">
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label class="control-label" for="otherLabel">Label</label>
+                            <form:input path="otherLabel" id="otherLabel" class="form-control" type="text"  maxLength="45" />
+                        </div>
+                        <div class="form-group">
+                            <label class="radio-inline control-label">
+                                <form:radiobutton path="otherDspChoice" class="radio" value="1" /> <strong>Display as answer choice</strong>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label class="radio-inline control-label">
+                                <form:radiobutton path="otherDspChoice" class="radio" value="2" /> <strong>Display as comment field</strong>
+                            </label>
+                        </div>
+                    </div>
                 </div>
             </div>
             <%-- Question Options Div --%>
@@ -143,33 +161,6 @@
                 </div>
                 <div class="well well-xsm" style="background-color:#ffffff; margin-bottom: 2px">
                     <form:checkbox path="alphabeticallySort" id="alphabeticallySort" />&nbsp;<label class="control-label" for="alphabeticallySort">Alphabetically Sort Choices</label>
-                </div>
-                <div class="well well-xsm" style="background-color:#ffffff; margin-bottom: 2px">
-                    <input type="checkbox" id="choiceLayout" <c:if test="${not empty surveyQuestion.choiceLayout}">checked="checked"</c:if> />&nbsp;<label class="control-label" for="choiceLayout">Change the layout for how choices are displayed</label>
-                </div>
-                <div class="panel" id="choiceLayoutDiv" style="${not empty surveyQuestion.choiceLayout ? 'display:block;' : 'display:none;'}">
-                    <div class="panel-body">
-                        <div class="form-group">
-                            <label class="radio-inline control-label">
-                                <form:radiobutton path="choiceLayout" class="radio" value="1 Column" /> <strong>1 Column</strong>
-                            </label>
-                        </div>
-                        <div class="form-group">
-                            <label class="radio-inline control-label">
-                                <form:radiobutton path="choiceLayout" class="radio" value="2 Columns" /> <strong>2 Columns</strong>
-                            </label>
-                        </div>
-                        <div class="form-group">
-                            <label class="radio-inline control-label">
-                                <form:radiobutton path="choiceLayout" class="radio" value="3 Columns" /> <strong>3 Columns</strong>
-                            </label>
-                        </div>
-                        <div class="form-group">
-                            <label class="radio-inline control-label">
-                                <form:radiobutton path="choiceLayout" class="radio" value="Horizontal" /> <strong>Horizontal</strong>
-                            </label>
-                        </div>
-                    </div>
                 </div>
                 <div class="well well-xsm" style="background-color:#ffffff; margin-bottom: 2px">
                     <input type="checkbox" id="saveTo" <c:if test="${surveyQuestion.saveToFieldId > 0}">checked="checked"</c:if> />&nbsp;<label class="control-label" for="saveTo">Save the answer to an additional field</label>

@@ -13,6 +13,7 @@ import com.bowlink.rr.model.User;
 import com.bowlink.rr.model.activityCodes;
 import com.bowlink.rr.model.surveys;
 import com.bowlink.rr.model.Log_userSurveyActivity;
+import com.bowlink.rr.model.SurveyDateQuestionRows;
 import com.bowlink.rr.model.SurveyQuestionChoices;
 import com.bowlink.rr.model.programAvailableTables;
 import com.bowlink.rr.security.decryptObject;
@@ -478,6 +479,10 @@ public class surveyController {
                         List<SurveyQuestionChoices> questionChoices = surveymanager.getQuestionChoices(question.getId());
                         question.setquestionChoices(questionChoices);
                     }
+                    else if(question.getAnswerTypeId() == 6) {
+                        List<SurveyDateQuestionRows> rows = surveymanager.getDateRows(question.getId());
+                        question.setDateQuestionRows(rows);
+                    }
                 }
                 
                 page.setSurveyQuestions(questions);
@@ -592,12 +597,7 @@ public class surveyController {
         else if(questionType == 7) {
             mav.setViewName("/programAdmin/surveys/questionTypes/displayText");
         }
-        
-        /** Checkbox **/
-        else if(questionType == 8) {
-            mav.setViewName("/programAdmin/surveys/questionTypes/checkbox");
-        }
-        
+      
         /* Decrypt the url */
         decryptObject decrypt = new decryptObject();
         
@@ -651,6 +651,18 @@ public class surveyController {
             }
             surveyQuestion.setquestionChoices(questionChoices);
         }
+        /* Create 1 blank row for a date / time question */
+        else if(questionType == 6) {
+            List<SurveyDateQuestionRows> dateRows = new CopyOnWriteArrayList<>();
+            
+            for(int i = 1; i <= 1; i++) {
+                SurveyDateQuestionRows dateRow = new SurveyDateQuestionRows();
+                dateRows.add(dateRow);
+            }
+            surveyQuestion.setDateQuestionRows(dateRows);
+        }
+        
+        
         mav.addObject("surveyQuestion", surveyQuestion);
        
         mav.addObject("s",s);
@@ -698,6 +710,10 @@ public class surveyController {
         if(questionDetails.getAnswerTypeId() == 1 || questionDetails.getAnswerTypeId() == 2) {
             List<SurveyQuestionChoices> questionChoices = surveymanager.getQuestionChoices(questionId);
             questionDetails.setquestionChoices(questionChoices);
+        }
+        else if(questionDetails.getAnswerTypeId() == 6) {
+            List<SurveyDateQuestionRows> dateRows = surveymanager.getDateRows(questionId);
+            questionDetails.setDateQuestionRows(dateRows);
         }
         
         /* Get the page details */
@@ -749,10 +765,6 @@ public class surveyController {
             mav.setViewName("/programAdmin/surveys/questionTypes/displayText");
         }
         
-        /** Checkbox **/
-        else if(questionDetails.getAnswerTypeId() == 8) {
-            mav.setViewName("/programAdmin/surveys/questionTypes/checkbox");
-        }
         
         /* Decrypt the url */
         decryptObject decrypt = new decryptObject();
@@ -854,6 +866,24 @@ public class surveyController {
                     }
                 }
                 
+            }
+        }
+        else if(surveyQuestion.getAnswerTypeId() == 6) {
+            
+            /* Delete existing date / time rows */
+            surveymanager.removeDateRows(questionId);
+            
+            if(surveyQuestion.getDateQuestionRows()!= null) {
+                
+                for(SurveyDateQuestionRows row : surveyQuestion.getDateQuestionRows()) {
+                    
+                    if(!"".equals(row.getLabel())) {
+                     
+                        row.setQuestionId(questionId);
+
+                        surveymanager.saveDateRows(row);
+                    }
+                }
             }
         }
         
@@ -961,11 +991,6 @@ public class surveyController {
         /** Display Text **/
         else if(questionDetails.getAnswerTypeId() == 7) {
             mav.setViewName("/programAdmin/surveys/questionTypes/displayText");
-        }
-        
-        /** Checkbox **/
-        else if(questionDetails.getAnswerTypeId() == 8) {
-            mav.setViewName("/programAdmin/surveys/questionTypes/checkbox");
         }
         
         /* Decrypt the url */
@@ -1088,11 +1113,6 @@ public class surveyController {
         /** Display Text **/
         else if(questionDetails.getAnswerTypeId() == 7) {
             mav.setViewName("/programAdmin/surveys/questionTypes/displayText");
-        }
-        
-        /** Checkbox **/
-        else if(questionDetails.getAnswerTypeId() == 8) {
-            mav.setViewName("/programAdmin/surveys/questionTypes/checkbox");
         }
         
         /* Decrypt the url */

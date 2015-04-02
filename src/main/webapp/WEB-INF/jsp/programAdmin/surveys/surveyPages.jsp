@@ -118,6 +118,150 @@
                                                 <input type="text" placeholder="Enter your Question" class="form-control" type="text" maxLength="255" disabled style="background-color:#ffffff; width:500px;" />
                                             </div>
                                         </c:when>
+                                        <c:when test="${question.answerTypeId == 5}">
+                                            <div class="form-group">
+                                                <textarea class="form-control" type="text"  rows="10"  disabled style="background-color:#ffffff; width:500px;"></textarea>
+                                            </div>
+                                        </c:when>
+                                        <c:when test="${question.answerTypeId == 2}">
+                                            <div class="form-group">
+                                                <select class="form-control" type="text" maxLength="255" disabled style="background-color:#ffffff; width:500px;"></select>
+                                            </div>
+                                            <c:if test="${question.otherOption == true && question.otherDspChoice == 2}">
+                                                <div class="form-group">
+                                                    <p>${question.otherLabel}</p>
+                                                    <input type="text"class="form-control" type="text" disabled style="background-color:#ffffff; width:500px;" />
+                                                </div>
+                                            </c:if>
+                                        </c:when>
+                                        <c:when test="${question.answerTypeId == 6}">
+                                            <c:choose>
+                                                <c:when test="${question.dateDspType == 2}">
+                                                    <c:forEach items="${question.dateQuestionRows}" var="row">
+                                                        <div class="col-md-4">
+                                                            <div class="row">
+                                                                <label>${row.label}</label>
+                                                            </div>
+                                                            <div class="row">
+                                                                <c:choose>
+                                                                    <c:when test="${question.dateFormatType == 1}">
+                                                                        <div class="col-md-2" style="width:55px;">
+                                                                            <div class="row text-center">MM</div>
+                                                                            <div class="row">
+                                                                                <input type="text" class="form-control" type="text" disabled style="background-color:#ffffff; width:50px;" /> 
+                                                                            </div>
+                                                                        </div>
+                                                                         <div class="col-md-2" style="width:55px;">
+                                                                            <div class="row text-center">DD</div>
+                                                                            <div class="row ">
+                                                                                <input type="text" class="form-control" type="text" disabled style="background-color:#ffffff; width:50px;" />
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-2" style="width:55px;">
+                                                                            <div class="row text-center">YYYY</div>
+                                                                            <div class="row">
+                                                                                <input type="text" class="form-control" type="text" disabled style="background-color:#ffffff; width:55px;" />
+                                                                            </div>
+                                                                        </div>
+                                                                    </c:when>
+                                                                    <c:otherwise>
+                                                                        <div class="col-md-2" style="width:55px;">
+                                                                            <div class="row text-center">DD</div>
+                                                                            <div class="row">
+                                                                                <input type="text" class="form-control" type="text" disabled style="background-color:#ffffff; width:50px;" /> 
+                                                                            </div>
+                                                                        </div>
+                                                                         <div class="col-md-2" style="width:55px;">
+                                                                            <div class="row text-center">MM</div>
+                                                                            <div class="row ">
+                                                                                <input type="text" class="form-control" type="text" disabled style="background-color:#ffffff; width:50px;" />
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-2" style="width:55px;">
+                                                                            <div class="row text-center">YYYY</div>
+                                                                            <div class="row">
+                                                                                <input type="text" class="form-control" type="text" disabled style="background-color:#ffffff; width:55px;" />
+                                                                             </div>
+                                                                        </div>
+                                                                    </c:otherwise>
+                                                                </c:choose>
+                                                                <c:if test="${question.collectTimeInfo == true}">
+                                                                    <div class="col-md-2" style="padding-left: 30px; width:55px;">
+                                                                        <div class="row text-center">hh</div>
+                                                                        <div class="row">
+                                                                            <input type="text"class="form-control" type="text" disabled style="background-color:#ffffff; width:50px;" /> 
+                                                                        </div>
+                                                                    </div>
+                                                                     <div class="col-md-2" style="padding-left: 30px; width:55px;">
+                                                                        <div class="row text-center">mm</div>
+                                                                        <div class="row ">
+                                                                            <input type="text"class="form-control" type="text" disabled style="background-color:#ffffff; width:50px;" />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-2" style="padding-left: 30px; width:55px;">
+                                                                        <div class="row text-center">AM/PM</div>
+                                                                        <div class="row">
+                                                                            <select disabled class="form-control" style="background-color:#ffffff; width:55px;"></select>
+                                                                         </div>
+                                                                    </div>
+                                                                </c:if>
+                                                            </div>
+                                                        </div>
+                                                    </c:forEach>
+                                                </c:when>  
+                                                <c:when test="${question.dateDspType == 1}">
+                                                    <c:forEach items="${question.dateQuestionRows}" var="row">
+                                                        <div class="row" style="margin-bottom: 10px;">
+                                                             <div class="col-md-2">
+                                                                <label style="padding-top:20px;">${row.label}</label>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <div class="row">
+                                                                    <div class="col-md-2" style="width:55px;">
+                                                                        <div class="row text-center">DD</div>
+                                                                        <div class="row">
+                                                                            <input type="text"class="form-control" type="text" disabled style="background-color:#ffffff; width:50px;" /> 
+                                                                        </div>
+                                                                    </div>
+                                                                     <div class="col-md-2" style="width:55px;">
+                                                                        <div class="row text-center">YY</div>
+                                                                        <div class="row ">
+                                                                            <input type="text"class="form-control" type="text" disabled style="background-color:#ffffff; width:50px;" />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-2" style="width:55px;">
+                                                                        <div class="row text-center">YYYY</div>
+                                                                        <div class="row">
+                                                                            <input type="text"class="form-control" type="text" disabled style="background-color:#ffffff; width:55px;" />
+                                                                        </div>
+                                                                    </div>
+                                                                    <c:if test="${question.collectTimeInfo == true}">
+                                                                        <div class="col-md-2" style="padding-left: 30px; width:55px;">
+                                                                            <div class="row text-center">hh</div>
+                                                                            <div class="row">
+                                                                                <input type="text"class="form-control" type="text" disabled style="background-color:#ffffff; width:50px;" /> 
+                                                                            </div>
+                                                                        </div>
+                                                                         <div class="col-md-2" style="padding-left: 30px; width:55px;">
+                                                                            <div class="row text-center">mm</div>
+                                                                            <div class="row ">
+                                                                                <input type="text"class="form-control" type="text" disabled style="background-color:#ffffff; width:50px;" />
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-2" style="padding-left: 30px; width:55px;">
+                                                                            <div class="row text-center">AM/PM</div>
+                                                                            <div class="row">
+                                                                                <select disabled class="form-control" style="background-color:#ffffff; width:55px;"></select>
+                                                                             </div>
+                                                                        </div>
+                                                                    </c:if>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </c:forEach>
+                                                </c:when>  
+                                            </c:choose>
+                                        </c:when>
                                         <c:when test="${question.answerTypeId == 1}">
                                             <c:choose>
                                                 <c:when test="${not empty question.questionChoices}">
@@ -126,7 +270,7 @@
                                                             <c:forEach items="${question.questionChoices}" var="choiceDetails">
                                                                 <div class="form-group">
                                                                     <label class="radio">
-                                                                        <input type="radio" disabled="disabled" /> ${choiceDetails.choiceText}
+                                                                        <input type="${question.allowMultipleAns == true ? 'checkbox' : 'radio'}" disabled="disabled" /> ${choiceDetails.choiceText}
                                                                     </label>
                                                                 </div>
                                                              </c:forEach>   
@@ -136,7 +280,7 @@
                                                                 <c:forEach items="${question.questionChoices}" var="choiceDetails">
                                                                     <div class="col-md-6">
                                                                         <label class="radio">
-                                                                            <input type="radio" disabled="disabled" /> ${choiceDetails.choiceText}
+                                                                            <input type="${question.allowMultipleAns == true ? 'checkbox' : 'radio'}" disabled="disabled" /> ${choiceDetails.choiceText}
                                                                         </label>
                                                                     </div>
                                                                  </c:forEach>   
@@ -147,7 +291,7 @@
                                                                 <c:forEach items="${question.questionChoices}" var="choiceDetails">
                                                                     <div class="col-md-4">
                                                                         <label class="radio">
-                                                                            <input type="radio" disabled="disabled" /> ${choiceDetails.choiceText}
+                                                                            <input type="${question.allowMultipleAns == true ? 'checkbox' : 'radio'}" disabled="disabled" /> ${choiceDetails.choiceText}
                                                                         </label>
                                                                     </div>
                                                                  </c:forEach>   
@@ -157,7 +301,7 @@
                                                             <div class="form-inline">
                                                                 <c:forEach items="${question.questionChoices}" var="choiceDetails">
                                                                     <label class="radio">
-                                                                        <input type="radio" disabled="disabled" /> ${choiceDetails.choiceText}
+                                                                        <input type="${question.allowMultipleAns == true ? 'checkbox' : 'radio'}" disabled="disabled" /> ${choiceDetails.choiceText}
                                                                     </label>
                                                                  </c:forEach>   
                                                             </div>
@@ -166,7 +310,7 @@
                                                             <div class="form-group">
                                                                 <c:forEach items="${question.questionChoices}" var="choiceDetails">
                                                                     <label class="radio">
-                                                                        <input type="radio" disabled="disabled" /> ${choiceDetails.choiceText}
+                                                                        <input type="${question.allowMultipleAns == true ? 'checkbox' : 'radio'}" disabled="disabled" /> ${choiceDetails.choiceText}
                                                                     </label>
                                                                 </c:forEach>
                                                             </div>

@@ -518,6 +518,50 @@ require(['./main'], function () {
             $(this).closest('tr').remove();
         });
         
+        /** Function to add a new date / time label row **/
+        $(document).on('click', '.addRow', function() {
+            var newIndexVal = (($('.dateQuestionRowTable tr:last').attr('rel')*1)+1);
+            
+            var labelNum = 0;
+            
+            $('.dateQuestionRowTable').find('tr').each(function() {
+                labelNum+=1;
+            });
+            
+            $('.dateQuestionRowTable').append($('.dateQuestionRowTable tr:last').clone());
+            
+            $('.dateQuestionRowTable tr:last').attr("rel", newIndexVal);
+            
+            $('.dateQuestionRowTable tr:last').find('td:eq(0)').html('Label '+ (labelNum*1));
+            
+            $('.dateQuestionRowTable tr:last').find('input[type=text]').each(function() {
+               $(this).val(""); 
+               $(this).attr("name", 'dateQuestionRows['+newIndexVal+'].label');
+               $(this).attr("rel", newIndexVal);
+            });
+            
+        });
+        
+        /** Function to remove a new date / time label row **/
+        $(document).on('click', '.removeRow', function() {
+            var indexVal = $(this).closest('tr').attr("rel");
+            if(indexVal > 0) {
+                
+                $('#id_'+indexVal).remove();
+                $('#questionId_'+indexVal).remove();
+
+                $(this).closest('tr').remove();
+                
+                var labelNum = 0;
+                $('.dateQuestionRowTable').find('tr').each(function() {
+                    labelNum+=1;
+                    $(this).find('td:eq(0)').html('Label '+ ((labelNum*1)-1));
+                });
+            }
+            
+        });
+        
+        
         /** Function to clear out all other selected default answers **/
         $(document).on('click', '.defAnswer', function() {
            
@@ -537,6 +581,18 @@ require(['./main'], function () {
            }
            else {
                $('#choiceLayoutDiv').hide();
+           }
+            
+        });
+        
+        /** Function to show the dropdown OTHER column display div for the edit/add question **/
+        $(document).on('change', '#otherOption', function() {
+           
+           if($(this).is(':checked')) {
+               $('#otherOptionDiv').show();
+           }
+           else {
+               $('#otherOptionDiv').hide();
            }
             
         });
