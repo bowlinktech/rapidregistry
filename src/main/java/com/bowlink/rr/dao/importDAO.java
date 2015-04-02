@@ -7,6 +7,7 @@ package com.bowlink.rr.dao;
 
 import com.bowlink.rr.model.User;
 import com.bowlink.rr.model.MoveFilesLog;
+import com.bowlink.rr.model.delimiters;
 import com.bowlink.rr.model.fileTypes;
 import com.bowlink.rr.model.programUploadTypes;
 import com.bowlink.rr.model.programUploadTypesFormFields;
@@ -45,7 +46,7 @@ public interface importDAO {
     
     List <programUploads> getProgramUploads(Integer statusId) throws Exception;
     
-    void updateProgramUplaod (programUploads programUpload) throws Exception;
+    void updateProgramUpload (programUploads programUpload) throws Exception;
     
     Integer saveProgramUplaod (programUploads programUpload) throws Exception;
     
@@ -68,4 +69,6 @@ public interface importDAO {
     List <programUploadTypes> getProgramUploadTypesByUserId (Integer systemUserId, Integer statusId) throws Exception;
     
     List<User> getUsersForProgramUploadTypes(Integer statusId);
+    
+    delimiters getDelimiter (Integer delimId) throws Exception;
 }

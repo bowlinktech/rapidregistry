@@ -4,7 +4,22 @@
 
 <div class="main clearfix" role="main">
     <div class="col-md-12">
-
+	<c:if test="${not empty errorCodes}" >
+                <div class="alert alert-danger">
+                    <strong>The last file uploaded failed our validation!</strong> 
+                    <br />
+                    <c:forEach items="${errorCodes}" var="code">
+                        <c:choose>
+                            <c:when test="${code == 1}">- The file uploaded was empty.</c:when>
+                            <c:when test="${code == 2}">- The file uploaded exceeded the max size.</c:when>
+                            <c:when test="${code == 3}">- The file uploaded was not the correct file type associated to your selected message type.</c:when>
+                            <c:when test="${code == 4}">- The file uploaded did not contain the correct delimiter.</c:when>
+                            <c:when test="${code == 5}">- You tried to upload a file with multiple message types but your system is not configured for that.</c:when>
+                        </c:choose>
+                        <br />
+                    </c:forEach>
+                </div>
+            </c:if>
         <section class="panel panel-default">
             <div class="panel-heading">
                 <div class="pull-right">

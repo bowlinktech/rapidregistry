@@ -130,4 +130,12 @@ CREATE TABLE `rapidregistry`.`survey_dateRows` (
   `questionId` INT NOT NULL,
   `label` VARCHAR(45) NULL,
   PRIMARY KEY (`id`));
+  
+  
+  /** grace 04.01.2015 05:09PM **/
+ALTER TABLE `rapidregistry`.`lu_transportmethods` 
+CHANGE COLUMN `active` `status` BIT(1) NOT NULL DEFAULT b'0' ;
+INSERT INTO `rapidregistry`.`lu_transportmethods` (`transportMethod`, `status`) VALUES ('File Upload', 1);
+
+  
 

@@ -30,9 +30,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 public class programUploads {
     
 	@Transient
-    private programUploadTypes progUploadType;
+    private programUploadTypes programUploadType;
     
-	
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID", nullable = false)
@@ -47,11 +46,26 @@ public class programUploads {
     @Column(name = "systemUserId", nullable = false)
     private Integer systemUserId = null;
     
+    @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
+    @Column(name = "dateUploaded", nullable = true)
+    private Date dateUploaded = new Date();
+
+    
     @Column(name = "totalRows", nullable = false)
     private Integer totalRows = 0;
     
     @Column(name = "totalInError", nullable = false)
     private Integer totalInError = 0;
+    
+    @NotEmpty
+    @NoHtml
+    @Column(name = "uploadedFileName", nullable = true)
+    private String uploadedFileName = "";
+    
+    @NotEmpty
+    @NoHtml
+    @Column(name = "assignedFileName", nullable = true)
+    private String assignedFileName = "";
     
     @NotEmpty
     @NoHtml
@@ -61,34 +75,20 @@ public class programUploads {
     @Column(name = "statusId", nullable = false)
     private Integer statusId = null;
     
-    @NotEmpty
-    @NoHtml
-    @Column(name = "assignedFileName", nullable = true)
-    private String assignedFileName = "";
-    
-    @NotEmpty
-    @NoHtml
-    @Column(name = "uploadedFileName", nullable = true)
-    private String uploadedFileName = "";
-    
-    @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
-    @Column(name = "dateUploaded", nullable = true)
-    private Date dateUploaded = new Date();
-
-    @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
-    @Column(name = "statusDateTime", nullable = true)
-    private Date statusDateTime = new Date();
     
     @Column(name = "transportId", nullable = false)
     private Integer transportId = null;
     
+    @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
+    @Column(name = "statusDateTime", nullable = true)
+    private Date statusDateTime = new Date();
 
-	public programUploadTypes getProgUploadType() {
-		return progUploadType;
+	public programUploadTypes getProgramUploadType() {
+		return programUploadType;
 	}
 
-	public void setProgUploadType(programUploadTypes progUploadType) {
-		this.progUploadType = progUploadType;
+	public void setProgramUploadType(programUploadTypes programUploadType) {
+		this.programUploadType = programUploadType;
 	}
 
 	public int getId() {
@@ -123,6 +123,14 @@ public class programUploads {
 		this.systemUserId = systemUserId;
 	}
 
+	public Date getDateUploaded() {
+		return dateUploaded;
+	}
+
+	public void setDateUploaded(Date dateUploaded) {
+		this.dateUploaded = dateUploaded;
+	}
+
 	public Integer getTotalRows() {
 		return totalRows;
 	}
@@ -137,6 +145,22 @@ public class programUploads {
 
 	public void setTotalInError(Integer totalInError) {
 		this.totalInError = totalInError;
+	}
+
+	public String getUploadedFileName() {
+		return uploadedFileName;
+	}
+
+	public void setUploadedFileName(String uploadedFileName) {
+		this.uploadedFileName = uploadedFileName;
+	}
+
+	public String getAssignedFileName() {
+		return assignedFileName;
+	}
+
+	public void setAssignedFileName(String assignedFileName) {
+		this.assignedFileName = assignedFileName;
 	}
 
 	public String getAssignedId() {
@@ -155,28 +179,12 @@ public class programUploads {
 		this.statusId = statusId;
 	}
 
-	public String getAssignedFileName() {
-		return assignedFileName;
+	public Integer getTransportId() {
+		return transportId;
 	}
 
-	public void setAssignedFileName(String assignedFileName) {
-		this.assignedFileName = assignedFileName;
-	}
-
-	public String getUploadedFileName() {
-		return uploadedFileName;
-	}
-
-	public void setUploadedFileName(String uploadedFileName) {
-		this.uploadedFileName = uploadedFileName;
-	}
-
-	public Date getDateUploaded() {
-		return dateUploaded;
-	}
-
-	public void setDateUploaded(Date dateUploaded) {
-		this.dateUploaded = dateUploaded;
+	public void setTransportId(Integer transportId) {
+		this.transportId = transportId;
 	}
 
 	public Date getStatusDateTime() {
@@ -186,13 +194,5 @@ public class programUploads {
 	public void setStatusDateTime(Date statusDateTime) {
 		this.statusDateTime = statusDateTime;
 	}
-
-	public Integer getTransportId() {
-		return transportId;
-	}
-
-	public void setTransportId(Integer transportId) {
-		this.transportId = transportId;
-	}
-		
+    
 }

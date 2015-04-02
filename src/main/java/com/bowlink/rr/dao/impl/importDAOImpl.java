@@ -8,6 +8,7 @@ package com.bowlink.rr.dao.impl;
 import com.bowlink.rr.dao.importDAO;
 import com.bowlink.rr.model.User;
 import com.bowlink.rr.model.MoveFilesLog;
+import com.bowlink.rr.model.delimiters;
 import com.bowlink.rr.model.fileTypes;
 import com.bowlink.rr.model.programUploadTypes;
 import com.bowlink.rr.model.programUploadTypesFormFields;
@@ -194,7 +195,7 @@ public class importDAOImpl implements importDAO {
 
     @Override
     @Transactional
-    public void updateProgramUplaod(programUploads programUpload) throws Exception {
+    public void updateProgramUpload(programUploads programUpload) throws Exception {
         sessionFactory.getCurrentSession().update(programUpload);
     }
 
@@ -294,13 +295,16 @@ public class importDAOImpl implements importDAO {
 
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(MoveFilesLog.class);
         criteria.add(Restrictions.eq("statusId", moveJob.getStatusId()));
-        criteria.add(Restrictions.eq("folderPath", moveJob.getFolderPath()));
-
-        List<MoveFilesLog> moveLogList = criteria.list();
-        if (moveLogList == null) {
-            return true;
+        if (moveJob.getFolderPath() != null) {
+        	criteria.add(Restrictions.eq("folderPath", moveJob.getFolderPath()));
         } else {
+        	criteria.add(Restrictions.isNull("folderPath"));
+        }
+        List<MoveFilesLog> moveLogList = criteria.list();
+        if (moveLogList.size() == 0) {
             return false;
+        } else {
+            return true;
         }
     }
 
@@ -365,5 +369,18 @@ public class importDAOImpl implements importDAO {
         }
         return query.list();
     }
+
+	@Override
+	@Transactional
+	public delimiters getDelimiter(Integer delimId) throws Exception {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(delimiters.class);
+
+        if (delimId != 0) {
+            criteria.add(Restrictions.eq("id", delimId));
+        }
+        List<delimiters> delimeterList = criteria.list();
+        
+        return delimeterList.get(0);
+	}
 
 }
