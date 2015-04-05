@@ -96,7 +96,7 @@ public interface importManager {
     
     String saveUploadedFile(programUploads pu, MultipartFile fileUpload) throws Exception;
     
-    Integer chkUploadBatchFile(programUploads pu, File processFile) throws Exception;
+    Integer chkUploadedFile(programUploads pu, File processFile) throws Exception;
 
     void insertError(programUpload_Errors uploadError) throws Exception;
     

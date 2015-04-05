@@ -174,4 +174,20 @@ INSERT INTO `rapidregistry`.`lu_errorcodes` (`id`, `displayText`, `description`,
 
 DELETE FROM `rapidregistry`.`lu_processstatus` WHERE `id`='44';
 
+/** grace 04/05/2015 03:40 AM **/
+
+INSERT INTO `rapidregistry`.`lu_filetypes` (`id`, `fileType`) VALUES ('11', 'xlsx');
+
+ALTER TABLE `rapidregistry`.`programUpload_MCIalgorithms` 
+RENAME TO  `rapidregistry`.`program_MCIAlgorithms` ;
+
+ALTER TABLE `rapidregistry`.`program_MCIAlgorithms` 
+CHANGE COLUMN `programUploadTypeId` `programId` INT(11) NOT NULL;
+
+ALTER TABLE `rapidregistry`.`program_MCIAlgorithms` 
+ADD COLUMN `categoryId` INT NULL COMMENT '1. patient\n2. engagement' AFTER `mci_CategoryId`,
+ADD COLUMN `processOrder` INT NULL DEFAULT 1 AFTER `categoryId`;
+
+
+
 

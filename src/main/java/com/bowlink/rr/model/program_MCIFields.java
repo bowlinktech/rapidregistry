@@ -19,8 +19,8 @@ import javax.persistence.Transient;
  * @author chadmccue
  */
 @Entity
-@Table(name = "programUpload_MCIFields")
-public class programUpload_MCIFields {
+@Table(name = "program_mcifields")
+public class program_MCIFields {
     
     @Transient
     private String fieldName = null;

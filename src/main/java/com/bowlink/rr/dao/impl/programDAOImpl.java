@@ -12,14 +12,18 @@ import com.bowlink.rr.model.program;
 import com.bowlink.rr.model.programAdmin;
 import com.bowlink.rr.model.programAvailableTables;
 import com.bowlink.rr.model.programPatientEntryMethods;
+import com.bowlink.rr.model.programUploadTypes;
+
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -413,6 +417,21 @@ public class programDAOImpl implements programDAO {
 		Query query = sessionFactory.getCurrentSession().createQuery("from engagementMatchingActions order by id asc");
 		List<engagementMatchingActions> actionList = query.list();
         return actionList;
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	@Transactional
+	public List<programUploadTypes> getProgramUploadTypes(
+			Integer programId) throws Exception {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(programUploadTypes.class);
+        if (programId != 0) {
+        	criteria.add(Restrictions.eq("programId", programId));
+        }
+       
+		List<programUploadTypes> putList = criteria.list();
+        
+        return putList;
 	}
     
     

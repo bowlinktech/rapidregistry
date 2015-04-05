@@ -6,8 +6,8 @@
 package com.bowlink.rr.dao.impl;
 
 import com.bowlink.rr.dao.masterClientIndexDAO;
-import com.bowlink.rr.model.programUpload_MCIalgorithms;
-import com.bowlink.rr.model.programUpload_MCIFields;
+import com.bowlink.rr.model.program_MCIAlgorithms;
+import com.bowlink.rr.model.program_MCIFields;
 import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
@@ -30,27 +30,27 @@ public class masterClientIndexDAOImpl implements masterClientIndexDAO {
      * @return The function will return a list of programs in the system
      */
     @Override
-    public List<programUpload_MCIalgorithms> getProgramUploadMCIalgorithms(Integer programId) throws Exception {
-        Query query = sessionFactory.getCurrentSession().createQuery("from programUpload_MCIalgorithms where programUploadTypeId = :programId order by id asc");
+    public List<program_MCIAlgorithms> getProgramUploadMCIalgorithms(Integer programId) throws Exception {
+        Query query = sessionFactory.getCurrentSession().createQuery("from program_MCIAlgorithms where programId = :programId order by id asc");
         query.setParameter("programId", programId);
 
-        List<programUpload_MCIalgorithms> MCIList = query.list();
+        List<program_MCIAlgorithms> MCIList = query.list();
         return MCIList;
     }
     
     /**
-     * The 'getProgramUploadMCIFields' function will get a list of fields associated to teach MCI Algorithm.
+     * The 'getProgramUploadMCIFields' function will get a list of fields associated to each MCI Algorithm.
      * 
      * @param mciId The id of the MCI Algorithm
      * @return  This function will return a list of MCI Fields
      * @throws Exception 
      */
     @Override
-    public List<programUpload_MCIFields> getProgramUploadMCIFields(Integer mciId) throws Exception {
-        Query query = sessionFactory.getCurrentSession().createQuery("from programUpload_MCIFields where mciId = :mciId order by id asc");
+    public List<program_MCIFields> getProgramUploadMCIFields(Integer mciId) throws Exception {
+        Query query = sessionFactory.getCurrentSession().createQuery("from program_MCIFields where mciId = :mciId order by id asc");
         query.setParameter("mciId", mciId);
 
-        List<programUpload_MCIFields> fieldList = query.list();
+        List<program_MCIFields> fieldList = query.list();
         return fieldList;
     }
     
@@ -62,7 +62,7 @@ public class masterClientIndexDAOImpl implements masterClientIndexDAO {
      * @return This function will return the id from the new algorithm
      */
     @Override
-    public Integer createMCIAlgorithm(programUpload_MCIalgorithms newMCIAlgorithm) throws Exception {
+    public Integer createMCIAlgorithm(program_MCIAlgorithms newMCIAlgorithm) throws Exception {
         Integer lastId = null;
 
         lastId = (Integer) sessionFactory.getCurrentSession().save(newMCIAlgorithm);
@@ -78,7 +78,7 @@ public class masterClientIndexDAOImpl implements masterClientIndexDAO {
      * @return This function will not return anything
      */
     @Override
-    public void updateMCIAlgorithm(programUpload_MCIalgorithms MCIAlgorithm) throws Exception {
+    public void updateMCIAlgorithm(program_MCIAlgorithms MCIAlgorithm) throws Exception {
         sessionFactory.getCurrentSession().update(MCIAlgorithm);
     }
     
@@ -90,7 +90,7 @@ public class masterClientIndexDAOImpl implements masterClientIndexDAO {
      * 
      */
     @Override
-    public void createMCIAlgorithmFields(programUpload_MCIFields newField) throws Exception {
+    public void createMCIAlgorithmFields(program_MCIFields newField) throws Exception {
         sessionFactory.getCurrentSession().save(newField);
     }
     
@@ -102,11 +102,11 @@ public class masterClientIndexDAOImpl implements masterClientIndexDAO {
      * @throws Exception 
      */
     @Override
-    public programUpload_MCIalgorithms getMCIAlgorithm(Integer mciId) throws Exception {
-        Query query = sessionFactory.getCurrentSession().createQuery("from programUpload_MCIAlgorithms where id = :mciId");
+    public program_MCIAlgorithms getMCIAlgorithm(Integer mciId) throws Exception {
+        Query query = sessionFactory.getCurrentSession().createQuery("from program_MCIAlgorithms where id = :mciId");
         query.setParameter("mciId", mciId);
 
-        return (programUpload_MCIalgorithms) query.uniqueResult();
+        return (program_MCIAlgorithms) query.uniqueResult();
     }
 
     /**
@@ -116,7 +116,7 @@ public class masterClientIndexDAOImpl implements masterClientIndexDAO {
      */
     @Override
     public void removeAlgorithmField(Integer algorithmFieldId) throws Exception {
-        Query deleteAlgorithmField = sessionFactory.getCurrentSession().createQuery("delete from programUpload_MCIFields where id = :algorithmFieldId");
+        Query deleteAlgorithmField = sessionFactory.getCurrentSession().createQuery("delete from program_MCIFields where id = :algorithmFieldId");
         deleteAlgorithmField.setParameter("algorithmFieldId", algorithmFieldId);
         deleteAlgorithmField.executeUpdate();
     }
@@ -128,11 +128,11 @@ public class masterClientIndexDAOImpl implements masterClientIndexDAO {
      */
     @Override
     public void removeAlgorithm(Integer algorithmId) throws Exception {
-        Query deleteAlgorithmField = sessionFactory.getCurrentSession().createQuery("delete from programUpload_MCIFields where mciId = :algorithmId");
+        Query deleteAlgorithmField = sessionFactory.getCurrentSession().createQuery("delete from program_MCIFields where mciId = :algorithmId");
         deleteAlgorithmField.setParameter("algorithmId", algorithmId);
         deleteAlgorithmField.executeUpdate();
         
-        Query deleteAlgorithm = sessionFactory.getCurrentSession().createQuery("delete from programUpload_MCIAlgorithms where id = :algorithmId");
+        Query deleteAlgorithm = sessionFactory.getCurrentSession().createQuery("delete from program_MCIAlgorithms where id = :algorithmId");
         deleteAlgorithm.setParameter("algorithmId", algorithmId);
         deleteAlgorithm.executeUpdate();
     }

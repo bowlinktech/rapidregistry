@@ -569,7 +569,7 @@ public class importManagerImpl implements importManager {
 	}
 	
 	@Override
-    public Integer chkUploadBatchFile(programUploads pu, File loadFile) throws Exception {
+    public Integer chkUploadedFile(programUploads pu, File loadFile) throws Exception {
 		Integer errors = 0;
         try {
             long fileSize = loadFile.length();
@@ -612,10 +612,14 @@ public class importManagerImpl implements importManager {
 
             fileSystem dir = new fileSystem();
 
-            /* Make sure the file has the correct delimiter : ERROR CODE 5 */
-            //Check to make sure the file contains the selected delimiter
-            int delimCount = (Integer) dir.checkFileDelimiter(loadFile, pu.getProgramUploadType().getDelimChar());
-
+            /* Make sure the file has the correct delimiter : ERROR CODE 15 */
+            /**Check to make sure the file contains the selected delimiter, this should only be for 
+            txt or csv only
+            **/
+            int delimCount = 3;
+            if (fileType.equalsIgnoreCase("txt") || fileType.equalsIgnoreCase("csv")) {
+            	delimCount = (Integer) dir.checkFileDelimiter(loadFile, pu.getProgramUploadType().getDelimChar());
+            }
             if (delimCount < 3 && !"xml".equals(pu.getProgramUploadType().getFileExt())) {
             	error.setErrorId(15);
                 insertError(error); 
@@ -711,7 +715,7 @@ public class importManagerImpl implements importManager {
     	
     	//we check encoding, delmiter, file size etc
     	if (decodedString != null) {
-    		chkUploadBatchFile(pu, loadFile);
+    		chkUploadedFile(pu, loadFile);
     	}
     	
     	//remove load file

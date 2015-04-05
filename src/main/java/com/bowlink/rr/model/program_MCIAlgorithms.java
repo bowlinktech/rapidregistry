@@ -22,19 +22,19 @@ import org.springframework.format.annotation.DateTimeFormat;
  * @author chadmccue
  */
 @Entity
-@Table(name = "programUpload_mcialgorithms")
-public class programUpload_MCIalgorithms {
+@Table(name = "program_MCIAlgorithms")
+public class program_MCIAlgorithms {
     
     @Transient
-    private List<programUpload_MCIFields> fields = null;
+    private List<program_MCIFields> fields = null;
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID", nullable = false)
     private int id;
     
-    @Column(name = "programUploadTypeId", nullable = false)
-    private Integer programUploadTypeId = null;
+    @Column(name = "programId", nullable = false)
+    private Integer programId = null;
     
     @Column(name = "STATUS", nullable = false)
     private boolean status = false;
@@ -49,11 +49,11 @@ public class programUpload_MCIalgorithms {
     @Column(name = "DATECREATED", nullable = true)
     private Date dateCreated = new Date();
 
-	public List<programUpload_MCIFields> getFields() {
+	public List<program_MCIFields> getFields() {
 		return fields;
 	}
 
-	public void setFields(List<programUpload_MCIFields> fields) {
+	public void setFields(List<program_MCIFields> fields) {
 		this.fields = fields;
 	}
 
@@ -65,12 +65,12 @@ public class programUpload_MCIalgorithms {
 		this.id = id;
 	}
 
-	public Integer getProgramUploadTypeId() {
-		return programUploadTypeId;
+	public Integer getProgramId() {
+		return programId;
 	}
 
-	public void setProgramUploadTypeId(Integer programUploadTypeId) {
-		this.programUploadTypeId = programUploadTypeId;
+	public void setProgramId(Integer programId) {
+		this.programId = programId;
 	}
 
 	public boolean isStatus() {
