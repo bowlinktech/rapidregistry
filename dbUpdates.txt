@@ -188,6 +188,12 @@ ALTER TABLE `rapidregistry`.`program_MCIAlgorithms`
 ADD COLUMN `categoryId` INT NULL COMMENT '1. patient\n2. engagement' AFTER `mci_CategoryId`,
 ADD COLUMN `processOrder` INT NULL DEFAULT 1 AFTER `categoryId`;
 
+ALTER TABLE `rapidregistry`.`program_MCIAlgorithms` 
+DROP COLUMN `categoryId`;
+
+UPDATE `rapidregistry`.`lu_MCI_Categories` SET `displayText`='Engagement' WHERE `id`='2';
+
+
 
 
 

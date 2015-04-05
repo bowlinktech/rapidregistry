@@ -11,9 +11,7 @@
             <li role="menuitem" ${param['page'] == 'activitycodes' ? 'class="active"' : ''} ${id > 0 ? '' : 'class="disabled"'}><a href="/sysAdmin/programs/${sessionScope.programName}/activity-codes" title="Activity Codes">Activity Codes</a></li>
             <li role="menuitem" ${param['page'] == 'cannedreports' ? 'class="active"' : ''} ${id > 0 ? '' : 'class="disabled"'}><a href="/sysAdmin/programs/${sessionScope.programName}/canned-reports" title="Canned Reports">Canned Reports</a></li>
             <li role="menuitem" ${param['page'] == 'imports' ? 'class="active"' : ''} ${id > 0 ? '' : 'class="disabled"'}><a href="/sysAdmin/programs/${sessionScope.programName}/imports" title="Imports">Imports</a></li>
-            <%-- part of import - rules  gsc 02262015
             <li role="menuitem" ${param['page'] == 'mci' ? 'class="active"' : ''} ${id > 0 ? '' : 'class="disabled"'}><a href="/sysAdmin/programs/${sessionScope.programName}/mci-algorithms" title="MCI Algorithms">MCI Algorithms</a></li>
-             --%>
             <li role="menuitem" ${param['page'] == 'admins' ? 'class="active"' : ''} ${id > 0 ? '' : 'class="disabled"'}><a href="/sysAdmin/programs/${sessionScope.programName}/program-admins" title="Program Admins">Program Admins</a></li>
         </ul>
     </nav>
