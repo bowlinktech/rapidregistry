@@ -1,20 +1,9 @@
 package com.bowlink.rr.controller;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import com.bowlink.rr.model.User;
 import com.bowlink.rr.model.programUploadTypes;
 import com.bowlink.rr.model.programUploads;
-import com.bowlink.rr.reference.fileSystem;
 import com.bowlink.rr.service.fileManager;
 import com.bowlink.rr.service.importManager;
 
@@ -51,16 +40,7 @@ public class adminFnsController {
     
     @Autowired
     fileManager filemanager;
-
-    private String archivePath = "/rapidRegistry/archivesIn/";
-    
-    //files that are ready to be loaded in RR are kept here
-    private String processPath = "/rapidRegistry/processFiles/";
-    
-    //files that are ready to be loaded in RR are kept here
-    private String loadPath = "/rapidRegistry/loadFiles/";
-    
-    
+      
     /**
      * The '/importfile' request will serve up the user list drop down of program types so the 
      * admin can upload as
@@ -115,112 +95,34 @@ public class adminFnsController {
     		@RequestParam(value = "programUplaodTypeId", required = true) Integer programUploadTypeId, 
     		@RequestParam(value = "uploadedFile", required = true) MultipartFile uploadedFile) throws Exception {
     	
+    		Integer programUploadId = importmanager.submitUploadFile(userId,programUploadTypeId, uploadedFile);
     	
-    	//we get our programUploadType
-    	programUploadTypes put = importmanager.getProgramUploadType(programUploadTypeId);
-    	put.setDelimChar(importmanager.getDelimiter(put.getFileDelimId()).getDelimChar());
-    	put.setFileExt(importmanager.getFileTypes(put.getFileTypeId()).get(0).getFileType());
-    	
-    	//we assign a batch id
-    	DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmssS");
-        Date date = new Date();
-        //adding transport method id to UT batch name - rr_transport method_putypeId_dateTime_uId_1.txt
-        String assignedId = new StringBuilder().append("rr_t1_p").append(put.getId()).append("_")
-        		.append(dateFormat.format(date)).append("_u").append(userId).toString();
+    		programUploads pu = importmanager.getProgramUpload(programUploadId);
         
-        String fileName = uploadedFile.getOriginalFilename();
-        
-        String fileExt = "";
-        if (uploadedFile.getOriginalFilename().lastIndexOf(".") != -1) {
-        	fileExt = fileName.substring(uploadedFile.getOriginalFilename().lastIndexOf("."), (uploadedFile.getOriginalFilename().length()));
-        }
-        
-        programUploads pu = new programUploads();
-        pu.setAssignedFileName(assignedId + fileExt);
-        pu.setAssignedId(assignedId);
-        pu.setUploadedFileName(uploadedFile.getOriginalFilename());
-        pu.setProgramId(put.getProgramId());
-        pu.setProgramUploadTypeId(put.getId());
-        pu.setStatusDateTime(date);
-        pu.setStatusId(1); // SFV
-        pu.setSystemUserId(userId);
-        pu.setTransportId(1);
-        pu.setDateUploaded(date);
-        pu.setTotalInError(0);
-        pu.setTotalRows(0);
-        Integer programUploadId = importmanager.saveProgramUplaod(pu);
-        
-    	// we save the file to archivesIn
-        fileName = importmanager.saveUploadedFile(pu, uploadedFile);
-        
-        fileSystem dir = new fileSystem();
-        File archiveFile = new File(dir.setPath(archivePath) + pu.getAssignedFileName());
-        File loadFile = new File(dir.setPath(loadPath) + pu.getAssignedFileName());
-        
-        //now we start our checks
-        Map<String, String> fileResults = new HashMap<String, String>();
-        String decodedString = "";
-        if (put.getEncodingId() == 2) {
-    		decodedString = filemanager.decodeFileToBase64Binary(archiveFile);
-    		if (decodedString == null) {
-    			fileResults.put("wrongEncoding", "5");
-    		} else  {
-	    		//write it to load folder
-	    		filemanager.writeFile(loadFile.getAbsolutePath(), decodedString);
-    		}
-        } else {
-        	Files.copy(archiveFile.toPath(), loadFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        }
-    	
-    	//we check encoding, delmiter, file size etc
-    	if (decodedString != null) {
-    		fileResults = importmanager.chkUploadBatchFile(put, loadFile);
-    	}
-        
-            List<Integer> errorCodes = new ArrayList<Integer>();
-
-            Object emptyFileVal = fileResults.get("emptyFile");
-            if (emptyFileVal != null) {
-                errorCodes.add(1);
-            }
-
-            Object wrongSizeVal = fileResults.get("wrongSize");
-            if (wrongSizeVal != null) {
-                errorCodes.add(2);
-            }
-
-            Object wrongFileTypeVal = fileResults.get("wrongFileType");
-            if (wrongFileTypeVal != null) {
-                errorCodes.add(3);
-            }
-
-            Object wrongDelimVal = fileResults.get("wrongDelim");
-            if (wrongDelimVal != null) {
-                errorCodes.add(4);
-            }
-            
-            Object wrongEncoding = fileResults.get("wrongEncoding");
-            if (wrongEncoding != null) {
-                errorCodes.add(5);
-            }
-
+        	
             ModelAndView mav = new ModelAndView();
             mav.setViewName("/importfile");
             
-            if (0 == errorCodes.size()) {
+            if (pu.getErrors().size() == 0) {
                 pu.setStatusId(2);
                 importmanager.updateProgramUpload(pu);
                 mav.addObject("savedStatus", "uploaded");
 
             } else {
-            	mav.addObject("savedStatus", "error");
-                mav.addObject("errorCodes", errorCodes);
+            	//we query for errors
+            	mav.addObject("savedStatus", "error");   
+                //we get program upload types for user and set it 
+                List <programUploadTypes> puts = importmanager.getProgramUploadTypesByUserId(userId, 1);
+                mav.addObject("programUploadTypes", puts);
+                mav.addObject("puUserId", pu.getSystemUserId());
+                mav.addObject("programUploadTypeId", pu.getProgramUploadTypeId());
+                mav.addObject("errorCodes", pu.getErrors());
+                
             }
-
             
             List<User> userList = importmanager.getUsersForProgramUploadTypes(1);
             mav.addObject("users", userList);
-            
+           
             return mav;
 
     }

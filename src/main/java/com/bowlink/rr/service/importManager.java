@@ -8,14 +8,18 @@ package com.bowlink.rr.service;
 import com.bowlink.rr.model.User;
 import com.bowlink.rr.model.MoveFilesLog;
 import com.bowlink.rr.model.delimiters;
+import com.bowlink.rr.model.errorCodes;
 import com.bowlink.rr.model.fileTypes;
 import com.bowlink.rr.model.programUploadTypes;
 import com.bowlink.rr.model.programUploadTypesFormFields;
+import com.bowlink.rr.model.programUpload_Errors;
 import com.bowlink.rr.model.programUploads;
+
 import java.io.File;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -92,6 +96,14 @@ public interface importManager {
     
     String saveUploadedFile(programUploads pu, MultipartFile fileUpload) throws Exception;
     
-    Map<String, String> chkUploadBatchFile(programUploadTypes put, File processFile) throws Exception;
+    Integer chkUploadBatchFile(programUploads pu, File processFile) throws Exception;
 
+    void insertError(programUpload_Errors uploadError) throws Exception;
+    
+    List <programUpload_Errors> getProgramUploadErrorList (Integer id, String type) throws Exception;
+    
+    List <errorCodes> getErrorCodes (Integer status) throws Exception;
+    
+    Integer submitUploadFile(Integer userId,Integer programUploadTypeId,MultipartFile uploadedFile) throws Exception;
+    
 }

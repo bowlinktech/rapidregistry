@@ -9,17 +9,17 @@
                     <strong>The last file uploaded failed our validation!</strong> 
                     <br />
                     <c:forEach items="${errorCodes}" var="code">
-                        <c:choose>
-                            <c:when test="${code == 1}">- The file uploaded was empty.</c:when>
-                            <c:when test="${code == 2}">- The file uploaded exceeded the max size.</c:when>
-                            <c:when test="${code == 3}">- The file uploaded was not the correct file type associated to your selected message type.</c:when>
-                            <c:when test="${code == 4}">- The file uploaded did not contain the correct delimiter.</c:when>
-                            <c:when test="${code == 5}">- You tried to upload a file with multiple message types but your system is not configured for that.</c:when>
-                        </c:choose>
+                        ${code.errorDisplayText}
                         <br />
                     </c:forEach>
                 </div>
-            </c:if>
+        </c:if>
+        <c:if test="${not empty savedStatus}" >
+                     <div class="alert alert-success">
+                        <strong>Success!</strong> 
+                        Your file is successfully uploaded.
+                       </div>             
+         </c:if>
         <section class="panel panel-default">
             <div class="panel-heading">
                 <div class="pull-right">
@@ -35,17 +35,18 @@
                     <select id="userId" name="userId" class="form-control half userId">
                         <option  value="">- Users - </option>
                         <c:forEach items="${users}" var="user">
-                            <option value="${user.id}">${user.firstName} ${user.lastName} - ${user.email}</option>
+                            <option value="${user.id}" <c:if test="${puUserId == user.id}">selected</c:if>>${user.firstName} ${user.lastName} - ${user.email}</option>
                         </c:forEach>                        
                     </select>
                     <span id="userIdMsg" class="control-label"></span>
                 </div>
-                <div id="programUploadTypeIdDiv" class="form-group ${status.error ? 'has-error' : '' }" style="display:none">
+                
+                <div id="programUploadTypeIdDiv" class="form-group ${status.error ? 'has-error' : '' }" <c:if test="${empty programUploadTypeId}">style="display:none"</c:if>>
                     <label for="programUploadTypeId">Select the program you are uploading for *</label>
                     <select id="programUploadTypeId" name="programUplaodTypeId" class="form-control half">
                         <option  value="">- Program Upload Types - </option>
                         <c:forEach items="${programUploadTypes}" var="programUploadType">
-                            <option value="${programUploadType.id}">${programUploadType.name}</option>
+                            <option value="${programUploadType.id}" <c:if test="${programUploadTypeId == programUploadType.id}">selected</c:if>>${programUploadType.name}</option>
                         </c:forEach>                        
                     </select>
                     <span id="programUploadTypeIdMsg" class="control-label"></span>

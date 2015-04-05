@@ -31,7 +31,10 @@ public class programUploads {
     
 	@Transient
     private programUploadTypes programUploadType;
-    
+	
+	@Transient
+	private List <programUpload_Errors> errors;
+	
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID", nullable = false)
@@ -89,6 +92,14 @@ public class programUploads {
 
 	public void setProgramUploadType(programUploadTypes programUploadType) {
 		this.programUploadType = programUploadType;
+	}
+
+	public List<programUpload_Errors> getErrors() {
+		return errors;
+	}
+
+	public void setErrors(List<programUpload_Errors> errors) {
+		this.errors = errors;
 	}
 
 	public int getId() {
@@ -194,5 +205,5 @@ public class programUploads {
 	public void setStatusDateTime(Date statusDateTime) {
 		this.statusDateTime = statusDateTime;
 	}
-    
+
 }

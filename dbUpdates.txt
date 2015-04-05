@@ -138,4 +138,40 @@ CHANGE COLUMN `active` `status` BIT(1) NOT NULL DEFAULT b'0' ;
 INSERT INTO `rapidregistry`.`lu_transportmethods` (`transportMethod`, `status`) VALUES ('File Upload', 1);
 
   
+  /** grace 04.03.2015 06:59PM **/
+  drop table if exists  `rapidregistry`.`lu_errorcodes` ;
+CREATE TABLE `rapidregistry`.`lu_errorcodes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `displayText` varchar(45) NOT NULL,
+  `description` varchar(200) DEFAULT NULL,
+  `isCustom` bit(1) NOT NULL DEFAULT b'0',
+  `status` bit(1) NOT NULL DEFAULT b'1',
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `dateModified` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+  
+  
+INSERT INTO `rapidregistry`.`lu_errorcodes` VALUES (1,'Required Field Check Failed','Value not provided for required field','\0','','2014-01-27 11:22:47','2014-01-27 11:22:47'),(2,'Failed Validation','Failed Validation','\0','','2014-01-27 11:22:47','2014-01-27 11:22:47'),(3,'Failed Crosswalk','Failed Crosswalk','\0','','2014-01-27 11:22:47','2014-01-27 11:22:47'),(4,'Failed Macros','Failed Macros','\0','','2014-02-11 20:02:08','2014-02-11 20:02:08'),(5,'System Error','System Error, could be from crosswalks or macros','\0','','2014-03-05 23:41:09','2014-03-05 23:41:09'),(6,'Invalid Configuration','Transaction does not match a valid configuration','\0','','2014-03-10 12:08:40','2014-03-10 12:08:40'),(7,'No Valid Transactions Found for Batch','No Valid Transactions Found for Batch','\0','','2014-03-10 12:14:50','2014-03-10 12:14:50'),(8,'Batch Handling Error','Batch Handling Error','\0','','2014-03-13 19:41:02','2014-03-13 19:41:02'),(9,'Invalid Target Organization for Configuration','Invalid Target Organization for Configuration','\0','','2014-03-14 15:07:18','2014-03-14 15:07:18'),(10,'No Connections','Source Configuration does not have valid connections set up','\0','','2014-03-18 03:06:57','2014-03-18 03:06:57'),(11,'Submitter is not a valid sender','User is not a valid sender','\0','','2014-04-17 01:17:17','2014-04-17 01:17:17'),(12,'Invalid File Size','File size is invalid','\0','','2014-05-13 06:08:14','2014-05-13 06:08:14'),(13,'Invalid File Extension','Invalid File Extension','\0','','2014-05-13 06:08:14','2014-05-13 06:08:14'),(14,'Invalid Set Up','File with same extension, delimiter should be set up either contain headers or do not contain headers.','\0','','2014-05-16 17:17:51','2014-05-16 17:17:51'),(15,'Invalid Delimiter','Delimiter is invalid for this type of file','\0','','2014-05-16 17:17:51','2014-05-16 17:17:51'),(16,'Cannot Determine Encoding Type for File','Multiple encodings found for file','\0','','2014-05-28 00:43:28','2014-05-28 00:43:28'),(17,'File Did Not Decode Correctly','System was not able to decode file','\0','','2014-05-28 00:43:29','2014-05-28 00:43:29'),(18,'Can not process file','Transport method contains both hr/ccd and another file type','\0','','2014-07-01 21:21:57','2014-07-01 21:21:57'),(19,'Web Service Header Block Invalid','Inbound soap message contains an invalid header block','\0','','2014-08-14 21:28:13','2014-08-14 21:28:13'),(20,'Web Service Invalid Sender','Sender from web service is invalid','\0','','2014-08-14 21:28:13','2014-08-14 21:28:13'),(21,'Web Services Send Message Error','Web Services Send Message Error','\0','','2014-08-28 22:18:02','2014-08-28 22:18:02'),(22,'Invalid File Content','File content is not valid for expected file type.','\0','','2014-09-05 13:35:06','2014-09-05 13:35:06'),(23,'Invalid target site','Target Site is not a valid site for target organization','\0','','2014-09-12 12:17:14','2014-09-12 12:17:14'),(24,'Attachment not found','No valid attachment is found for Web Service message','\0','','2015-03-09 16:44:52','2015-03-09 16:44:52'),(25,'Valid Tag was not found','No valid tag was found in Web Service Attachment','\0','','2015-03-09 16:44:52','2015-03-09 16:44:52'),(26,'Multiple organizations were found for WS doma','Cannot determine sending org','\0','','2015-03-23 13:40:54','2015-03-23 13:40:54');
+  
+ALTER TABLE `rapidregistry`.`programUpload_errors` 
+CHANGE COLUMN `fieldNo` `fieldNo` INT(11) NULL ,
+ADD COLUMN `errorId` INT NULL AFTER `programUploadId`;
+
+
+ALTER TABLE `rapidregistry`.`programUpload_errors` 
+ADD COLUMN `engagementId` INT NULL AFTER `programUploadId`;
+
+  /** grace 04.04.2015 11:25PM **/
+ALTER TABLE `rapidregistry`.`programUpload_errors` 
+ADD COLUMN `engagementId` INT NULL AFTER `programUploadId`;
+
+ALTER TABLE `rapidregistry`.`programUpload_errors` 
+DROP COLUMN `errorDesc`,
+DROP COLUMN `fieldDesc`;
+
+INSERT INTO `rapidregistry`.`lu_errorcodes` (`id`, `displayText`, `description`, `isCustom`, `status`) VALUES ('27', 'Empty File', 'File is empty', 0, 1);
+
+DELETE FROM `rapidregistry`.`lu_processstatus` WHERE `id`='44';
+
 

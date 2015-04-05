@@ -8,9 +8,11 @@ package com.bowlink.rr.dao;
 import com.bowlink.rr.model.User;
 import com.bowlink.rr.model.MoveFilesLog;
 import com.bowlink.rr.model.delimiters;
+import com.bowlink.rr.model.errorCodes;
 import com.bowlink.rr.model.fileTypes;
 import com.bowlink.rr.model.programUploadTypes;
 import com.bowlink.rr.model.programUploadTypesFormFields;
+import com.bowlink.rr.model.programUpload_Errors;
 import com.bowlink.rr.model.programUploads;
 
 import java.util.List;
@@ -71,4 +73,10 @@ public interface importDAO {
     List<User> getUsersForProgramUploadTypes(Integer statusId);
     
     delimiters getDelimiter (Integer delimId) throws Exception;
+    
+    void insertError(programUpload_Errors uploadError) throws Exception;
+    
+    List <programUpload_Errors> getProgramUploadErrorList (Integer id, String type) throws Exception;
+    
+    List <errorCodes> getErrorCodes (Integer status) throws Exception;
 }
