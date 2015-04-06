@@ -194,6 +194,75 @@ DROP COLUMN `categoryId`;
 UPDATE `rapidregistry`.`lu_MCI_Categories` SET `displayText`='Engagement' WHERE `id`='2';
 
 
+/** grace 04/05/15 03:52PM **/
+ALTER TABLE `rapidregistry`.`program_MCIAlgorithms` 
+DROP FOREIGN KEY `mciCategoryId`;
+ALTER TABLE `rapidregistry`.`program_MCIAlgorithms` 
+CHANGE COLUMN `mci_CategoryId` `program_engagementSectionId` INT(11) NOT NULL ;
+ALTER TABLE `rapidregistry`.`program_MCIAlgorithms` 
+ADD CONSTRAINT `mciCategoryId`
+  FOREIGN KEY (`program_engagementSectionId`)
+  REFERENCES `rapidregistry`.`lu_MCI_Categories` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+  
+ALTER TABLE `rapidregistry`.`programUpload_errors` 
+CHANGE COLUMN `engagementId` `program_engagementSectionId` INT(11) NULL DEFAULT NULL ,
+ADD COLUMN `programUploadRecordId` INT NULL AFTER `program_engagementSectionId`;
+  
+  
+ALTER TABLE `rapidregistry`.`programUpload_errors` 
+ADD CONSTRAINT `programUploadIdFK`
+  FOREIGN KEY (`programUploadId`)
+  REFERENCES `rapidregistry`.`programuploads` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+  
+ALTER TABLE `rapidregistry`.`program_MCIAlgorithms` 
+DROP FOREIGN KEY `mciCategoryId`;
+ALTER TABLE `rapidregistry`.`program_MCIAlgorithms` 
+DROP INDEX `mciCategoryId_idx` ;
+
+DROP TABLE `rapidregistry`.`lu_MCI_Categories`;
+
+
+ALTER TABLE `rapidregistry`.`program_MCIAlgorithms` 
+ADD INDEX `engagementIdFK_idx` (`program_engagementSectionId` ASC);
+ALTER TABLE `rapidregistry`.`program_MCIAlgorithms` 
+ADD CONSTRAINT `engagementIdFK`
+  FOREIGN KEY (`program_engagementSectionId`)
+  REFERENCES `rapidregistry`.`program_engagementSections` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+ALTER TABLE `rapidregistry`.`program_MCIAlgorithms` 
+DROP COLUMN `programId`,
+DROP INDEX `fk_programUploadId_idx` ;
+
+ALTER TABLE `rapidregistry`.`program_MCIAlgorithms` 
+RENAME TO  `rapidregistry`.`programEngagementSection_MCIAlgorithms` ;
+
+ALTER TABLE `rapidregistry`.`program_MCIFields` 
+RENAME TO  `rapidregistry`.`programEngagementSection_mciFields` ;
+
+ALTER TABLE `rapidregistry`.`programEngagementSection_MCIAlgorithms` 
+DROP FOREIGN KEY `engagementIdFK`;
+ALTER TABLE `rapidregistry`.`programEngagementSection_MCIAlgorithms` 
+CHANGE COLUMN `program_engagementSectionId` `programEngagementSectionId` INT(11) NOT NULL ;
+ALTER TABLE `rapidregistry`.`programEngagementSection_MCIAlgorithms` 
+ADD CONSTRAINT `engagementIdFK`
+  FOREIGN KEY (`programEngagementSectionId`)
+  REFERENCES `rapidregistry`.`program_engagementSections` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+
+
+  
+  
+
+
+
 
 
 

@@ -22,18 +22,18 @@ import org.springframework.format.annotation.DateTimeFormat;
  * @author chadmccue
  */
 @Entity
-@Table(name = "program_MCIAlgorithms")
-public class program_MCIAlgorithms {
+@Table(name = "programEngagementSection_MCIAlgorithms")
+public class programEngagementSection_MCIAlgorithms {
     
     @Transient
-    private List<program_MCIFields> fields = null;
+    private List<programEngagementSection_mciFields> fields = null;
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID", nullable = false)
     private int id;
     
-    @Column(name = "programId", nullable = false)
+    @Transient
     private Integer programId = null;
     
     @Column(name = "STATUS", nullable = false)
@@ -42,64 +42,92 @@ public class program_MCIAlgorithms {
     @Column(name = "ACTION", nullable = false)
     private Integer action = 3;
     
-    @Column(name = "mci_CategoryId", nullable = false)
-    private Integer mci_CategoryId = 1;
+    @Column(name = "programEngagementSectionId", nullable = false)
+    private Integer programEngagementSectionId;
+    
+    @Column(name = "processOrder", nullable = false)
+    private Integer processOrder = 1;
+    
     
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
     @Column(name = "DATECREATED", nullable = true)
     private Date dateCreated = new Date();
 
-	public List<program_MCIFields> getFields() {
+
+	public List<programEngagementSection_mciFields> getFields() {
 		return fields;
 	}
 
-	public void setFields(List<program_MCIFields> fields) {
+
+	public void setFields(List<programEngagementSection_mciFields> fields) {
 		this.fields = fields;
 	}
+
 
 	public int getId() {
 		return id;
 	}
 
+
 	public void setId(int id) {
 		this.id = id;
 	}
+
 
 	public Integer getProgramId() {
 		return programId;
 	}
 
+
 	public void setProgramId(Integer programId) {
 		this.programId = programId;
 	}
+
 
 	public boolean isStatus() {
 		return status;
 	}
 
+
 	public void setStatus(boolean status) {
 		this.status = status;
 	}
+
 
 	public Integer getAction() {
 		return action;
 	}
 
+
 	public void setAction(Integer action) {
 		this.action = action;
 	}
 
-	public Integer getMci_CategoryId() {
-		return mci_CategoryId;
+
+	public Integer getProgramEngagementSectionId() {
+		return programEngagementSectionId;
 	}
 
-	public void setMci_CategoryId(Integer mci_CategoryId) {
-		this.mci_CategoryId = mci_CategoryId;
+
+	public void setProgramEngagementSectionId(Integer programEngagementSectionId) {
+		this.programEngagementSectionId = programEngagementSectionId;
 	}
+
+
+	public Integer getProcessOrder() {
+		return processOrder;
+	}
+
+
+	public void setProcessOrder(Integer processOrder) {
+		this.processOrder = processOrder;
+	}
+
 
 	public Date getDateCreated() {
 		return dateCreated;
 	}
+
 
 	public void setDateCreated(Date dateCreated) {
 		this.dateCreated = dateCreated;

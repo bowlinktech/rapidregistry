@@ -6,13 +6,16 @@
 package com.bowlink.rr.dao.impl;
 
 import com.bowlink.rr.dao.masterClientIndexDAO;
-import com.bowlink.rr.model.program_MCIAlgorithms;
-import com.bowlink.rr.model.program_MCIFields;
+import com.bowlink.rr.model.programEngagementSection_MCIAlgorithms;
+import com.bowlink.rr.model.programEngagementSection_mciFields;
+
 import java.util.List;
+
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -30,27 +33,29 @@ public class masterClientIndexDAOImpl implements masterClientIndexDAO {
      * @return The function will return a list of programs in the system
      */
     @Override
-    public List<program_MCIAlgorithms> getProgramUploadMCIalgorithms(Integer programId) throws Exception {
-        Query query = sessionFactory.getCurrentSession().createQuery("from program_MCIAlgorithms where programId = :programId order by id asc");
-        query.setParameter("programId", programId);
+    @Transactional
+    public List<programEngagementSection_MCIAlgorithms> getEngagementSectionMCIalgorithms(Integer programEngagementSectionId) throws Exception {
+        Query query = sessionFactory.getCurrentSession().createQuery("from programEngagementSection_MCIAlgorithms where programEngagementSectionId = :programEngagementSectionId order by id asc");
+        query.setParameter("programEngagementSectionId", programEngagementSectionId);
 
-        List<program_MCIAlgorithms> MCIList = query.list();
+        List<programEngagementSection_MCIAlgorithms> MCIList = query.list();
         return MCIList;
     }
     
     /**
-     * The 'getProgramUploadMCIFields' function will get a list of fields associated to each MCI Algorithm.
+     * The 'getProgramMCIFields' function will get a list of fields associated to each MCI Algorithm.
      * 
      * @param mciId The id of the MCI Algorithm
      * @return  This function will return a list of MCI Fields
      * @throws Exception 
      */
     @Override
-    public List<program_MCIFields> getProgramUploadMCIFields(Integer mciId) throws Exception {
-        Query query = sessionFactory.getCurrentSession().createQuery("from program_MCIFields where mciId = :mciId order by id asc");
+    @Transactional
+    public List<programEngagementSection_mciFields> getMCIAlgorithmFields(Integer mciId) throws Exception {
+        Query query = sessionFactory.getCurrentSession().createQuery("from programEngagementSection_mciFields where mciId = :mciId order by id asc");
         query.setParameter("mciId", mciId);
 
-        List<program_MCIFields> fieldList = query.list();
+        List<programEngagementSection_mciFields> fieldList = query.list();
         return fieldList;
     }
     
@@ -62,7 +67,7 @@ public class masterClientIndexDAOImpl implements masterClientIndexDAO {
      * @return This function will return the id from the new algorithm
      */
     @Override
-    public Integer createMCIAlgorithm(program_MCIAlgorithms newMCIAlgorithm) throws Exception {
+    public Integer createMCIAlgorithm(programEngagementSection_MCIAlgorithms newMCIAlgorithm) throws Exception {
         Integer lastId = null;
 
         lastId = (Integer) sessionFactory.getCurrentSession().save(newMCIAlgorithm);
@@ -78,7 +83,7 @@ public class masterClientIndexDAOImpl implements masterClientIndexDAO {
      * @return This function will not return anything
      */
     @Override
-    public void updateMCIAlgorithm(program_MCIAlgorithms MCIAlgorithm) throws Exception {
+    public void updateMCIAlgorithm(programEngagementSection_MCIAlgorithms MCIAlgorithm) throws Exception {
         sessionFactory.getCurrentSession().update(MCIAlgorithm);
     }
     
@@ -90,7 +95,7 @@ public class masterClientIndexDAOImpl implements masterClientIndexDAO {
      * 
      */
     @Override
-    public void createMCIAlgorithmFields(program_MCIFields newField) throws Exception {
+    public void createMCIAlgorithmFields(programEngagementSection_mciFields newField) throws Exception {
         sessionFactory.getCurrentSession().save(newField);
     }
     
@@ -102,11 +107,12 @@ public class masterClientIndexDAOImpl implements masterClientIndexDAO {
      * @throws Exception 
      */
     @Override
-    public program_MCIAlgorithms getMCIAlgorithm(Integer mciId) throws Exception {
-        Query query = sessionFactory.getCurrentSession().createQuery("from program_MCIAlgorithms where id = :mciId");
+    @Transactional
+    public programEngagementSection_MCIAlgorithms getMCIAlgorithm(Integer mciId) throws Exception {
+        Query query = sessionFactory.getCurrentSession().createQuery("from programEngagementSection_MCIAlgorithms where id = :mciId");
         query.setParameter("mciId", mciId);
 
-        return (program_MCIAlgorithms) query.uniqueResult();
+        return (programEngagementSection_MCIAlgorithms) query.uniqueResult();
     }
 
     /**
@@ -116,7 +122,7 @@ public class masterClientIndexDAOImpl implements masterClientIndexDAO {
      */
     @Override
     public void removeAlgorithmField(Integer algorithmFieldId) throws Exception {
-        Query deleteAlgorithmField = sessionFactory.getCurrentSession().createQuery("delete from program_MCIFields where id = :algorithmFieldId");
+        Query deleteAlgorithmField = sessionFactory.getCurrentSession().createQuery("delete from programEngagementSection_mciFields where id = :algorithmFieldId");
         deleteAlgorithmField.setParameter("algorithmFieldId", algorithmFieldId);
         deleteAlgorithmField.executeUpdate();
     }
@@ -128,13 +134,13 @@ public class masterClientIndexDAOImpl implements masterClientIndexDAO {
      */
     @Override
     public void removeAlgorithm(Integer algorithmId) throws Exception {
-        Query deleteAlgorithmField = sessionFactory.getCurrentSession().createQuery("delete from program_MCIFields where mciId = :algorithmId");
+        Query deleteAlgorithmField = sessionFactory.getCurrentSession().createQuery("delete from programEngagementSection_mciFields where mciId = :algorithmId");
         deleteAlgorithmField.setParameter("algorithmId", algorithmId);
         deleteAlgorithmField.executeUpdate();
         
-        Query deleteAlgorithm = sessionFactory.getCurrentSession().createQuery("delete from program_MCIAlgorithms where id = :algorithmId");
+        Query deleteAlgorithm = sessionFactory.getCurrentSession().createQuery("delete from programEngagementSection_MCIAlgorithms where id = :algorithmId");
         deleteAlgorithm.setParameter("algorithmId", algorithmId);
         deleteAlgorithm.executeUpdate();
     }
-    
+
 }

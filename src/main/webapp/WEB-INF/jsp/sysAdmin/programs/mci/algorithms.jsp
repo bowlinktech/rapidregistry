@@ -39,6 +39,7 @@
             </section>  
         </div>
     </div>
+    <c:forEach var="programEngagementSection" items="${programEngagementSections}">
     <div class="row-fluid">
         <div class="col-md-12">
             <section class="panel panel-default">
@@ -46,11 +47,11 @@
                     <div class="pull-right">
                         <a href="#algorithmDetailsModal" data-toggle="modal" class="btn btn-primary btn-xs btn-action" id="createNewAlgorithm" title="Create New Algorithm">Create New Algorithm</a>
                     </div>
-                    <h3 class="panel-title">MCI Algorithms</h3>
+                    <h3 class="panel-title">MCI Algorithms for ${programEngagementSection.sectionName}</h3>
                 </div>
                 <div class="panel-body">
                     <div class="form-container scrollable"><br />
-                        <table class="table table-striped table-hover table-default" <c:if test="${not empty mciAlgorithms}">id="dataTable"</c:if>>
+                       <table class="table table-striped table-hover table-default" <c:if test="${not empty programEngagementSection.mciAlgorithms}">id="dataTable"</c:if>>
                                 <thead>
                                     <tr>
                                         <th scope="col">Selected Fields</th>
@@ -61,8 +62,8 @@
                                 </thead>
                                 <tbody>
                                 <c:choose>
-                                    <c:when test="${not empty mciAlgorithms}">
-                                        <c:forEach var="algorithm" items="${mciAlgorithms}">
+                                    <c:when test="${not empty programEngagementSection.mciAlgorithms}">
+                                        <c:forEach var="algorithm" items="${programEngagementSection.mciAlgorithms}">
                                             <tr>
                                                 <td>
                                                     <c:forEach items="${algorithm.fields}" var="field" varStatus="fIndex">
@@ -99,9 +100,15 @@
                     </div>
                 </div>
             </section>
+          
         </div>
-
-    </div>
+	</div>
+      </c:forEach>
+      <c:if test="${empty programEngagementSections}">
+      		<div>
+               There are currently no engagement sections set up.  Please add an engagement section first.
+             </div>
+      </c:if>
 </div>
 
 
