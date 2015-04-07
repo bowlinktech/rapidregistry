@@ -35,4 +35,7 @@ public interface masterClientIndexManager {
     
     List <programEngagementSections> getMCIAlgorithms(List <programEngagementSections> engagementSections) throws Exception;
   
+    Integer getMaxProcessOrder (Integer sectionId) throws Exception;
+    
+    void reorderAlgorithm (Integer sectionId) throws Exception;
 }

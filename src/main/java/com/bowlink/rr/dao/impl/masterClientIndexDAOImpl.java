@@ -6,13 +6,16 @@
 package com.bowlink.rr.dao.impl;
 
 import com.bowlink.rr.dao.masterClientIndexDAO;
+import com.bowlink.rr.model.MoveFilesLog;
 import com.bowlink.rr.model.programEngagementSection_MCIAlgorithms;
 import com.bowlink.rr.model.programEngagementSection_mciFields;
 
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,15 +33,16 @@ public class masterClientIndexDAOImpl implements masterClientIndexDAO {
     /**
      * The 'getProgramUploadMCIalgorithms' function will return a list of the programs in the system.
      * 
-     * @return The function will return a list of programs in the system
+     * @return The function will return a list of algorithms for a particular section of a program
      */
     @Override
     @Transactional
+    @SuppressWarnings("unchecked")
     public List<programEngagementSection_MCIAlgorithms> getEngagementSectionMCIalgorithms(Integer programEngagementSectionId) throws Exception {
-        Query query = sessionFactory.getCurrentSession().createQuery("from programEngagementSection_MCIAlgorithms where programEngagementSectionId = :programEngagementSectionId order by id asc");
+        Query query = sessionFactory.getCurrentSession().createQuery("from programEngagementSection_MCIAlgorithms where programEngagementSectionId = :programEngagementSectionId order by processOrder asc");
         query.setParameter("programEngagementSectionId", programEngagementSectionId);
 
-        List<programEngagementSection_MCIAlgorithms> MCIList = query.list();
+		List<programEngagementSection_MCIAlgorithms> MCIList = query.list();
         return MCIList;
     }
     
@@ -51,6 +55,7 @@ public class masterClientIndexDAOImpl implements masterClientIndexDAO {
      */
     @Override
     @Transactional
+    @SuppressWarnings("unchecked")
     public List<programEngagementSection_mciFields> getMCIAlgorithmFields(Integer mciId) throws Exception {
         Query query = sessionFactory.getCurrentSession().createQuery("from programEngagementSection_mciFields where mciId = :mciId order by id asc");
         query.setParameter("mciId", mciId);
@@ -109,7 +114,7 @@ public class masterClientIndexDAOImpl implements masterClientIndexDAO {
     @Override
     @Transactional
     public programEngagementSection_MCIAlgorithms getMCIAlgorithm(Integer mciId) throws Exception {
-        Query query = sessionFactory.getCurrentSession().createQuery("from programEngagementSection_MCIAlgorithms where id = :mciId");
+        Query query = sessionFactory.getCurrentSession().createQuery("from programEngagementSection_MCIAlgorithms where id = :mciId order by processOrder");
         query.setParameter("mciId", mciId);
 
         return (programEngagementSection_MCIAlgorithms) query.uniqueResult();
@@ -142,5 +147,21 @@ public class masterClientIndexDAOImpl implements masterClientIndexDAO {
         deleteAlgorithm.setParameter("algorithmId", algorithmId);
         deleteAlgorithm.executeUpdate();
     }
+
+	@Override
+	@Transactional
+	@SuppressWarnings("unchecked")
+	public Integer getMaxProcessOrder(Integer sectionId) throws Exception {
+		Query query = sessionFactory.getCurrentSession().createQuery("from programEngagementSection_MCIAlgorithms where programEngagementSectionId = :sectionId order by processOrder desc");
+        query.setParameter("sectionId", sectionId);
+
+        List<programEngagementSection_MCIAlgorithms> algorithmList = query.list();
+        if (algorithmList.size() != 0) {
+        	return algorithmList.get(0).getProcessOrder();
+        } else {
+        	return 0;
+        }
+       
+	}
 
 }

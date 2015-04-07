@@ -9,6 +9,7 @@ import com.bowlink.rr.dao.masterClientIndexDAO;
 import com.bowlink.rr.model.programEngagementSections;
 import com.bowlink.rr.model.programEngagementSection_MCIAlgorithms;
 import com.bowlink.rr.model.programEngagementSection_mciFields;
+import com.bowlink.rr.service.dataElementManager;
 import com.bowlink.rr.service.masterClientIndexManager;
 
 import java.util.List;
@@ -27,6 +28,9 @@ public class masterClientIndexManagerImpl implements masterClientIndexManager {
     @Autowired
     masterClientIndexDAO masterClientIndexDAO;
     
+    @Autowired
+    dataElementManager dataelementmanager;
+    
     @Override
     @Transactional
     public List<programEngagementSection_MCIAlgorithms> getEngagementSectionMCIalgorithms(Integer programSectionId) throws Exception {
@@ -43,7 +47,15 @@ public class masterClientIndexManagerImpl implements masterClientIndexManager {
     @Override
     @Transactional
     public List<programEngagementSection_mciFields> getMCIAlgorithmFields(Integer mciId) throws Exception {
-        return masterClientIndexDAO.getMCIAlgorithmFields(mciId);
+    	//need to set field names
+    	List<programEngagementSection_mciFields> fieldList = masterClientIndexDAO.getMCIAlgorithmFields(mciId);
+    	//set fieldName
+    	for (programEngagementSection_mciFields field : fieldList) {
+    		String fieldName = dataelementmanager.getfieldName(field.getFieldId());
+    		field.setFieldName(fieldName);
+    	}
+    	
+        return fieldList;
     }
     
     @Override
@@ -91,6 +103,26 @@ public class masterClientIndexManagerImpl implements masterClientIndexManager {
 			 pes.setMciAlgorithms(getEngagementSectionMCIalgorithms(pes.getId()));		 
 		}
 		return engagementSections;
+	}
+
+	@Override
+	public Integer getMaxProcessOrder(Integer sectionId) throws Exception {
+		return masterClientIndexDAO.getMaxProcessOrder(sectionId);
+	}
+
+	@Override
+	@Transactional
+	public void reorderAlgorithm(Integer sectionId) throws Exception {
+		//first we get all algorithm for section 
+		List<programEngagementSection_MCIAlgorithms> algorithms = getEngagementSectionMCIalgorithms(sectionId);
+		//we loop through and reorder
+		int order = 1;
+		for (programEngagementSection_MCIAlgorithms algorithm : algorithms) {
+			algorithm.setProcessOrder(order);
+			updateMCIAlgorithm(algorithm);
+			order ++;
+		}
+		
 	}
 
 }

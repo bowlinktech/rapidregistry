@@ -6,6 +6,7 @@
 package com.bowlink.rr.controller;
 
 import com.bowlink.rr.model.program;
+import com.bowlink.rr.model.programEngagementFields;
 import com.bowlink.rr.model.programEngagementSections;
 import com.bowlink.rr.model.programEngagementSection_MCIAlgorithms;
 import com.bowlink.rr.model.programEngagementSection_mciFields;
@@ -92,29 +93,31 @@ public class masterClientIndex {
      * @Objects (1) An object that will hold the blank MCI Algorithm
      */
     @RequestMapping(value = "/algorithm.create", method = RequestMethod.GET)
-    @ResponseBody public ModelAndView newMCIAlgorithmForm(HttpSession session) throws Exception {
+    @ResponseBody public ModelAndView newMCIAlgorithmForm(HttpSession session, @RequestParam Integer sectionId) throws Exception {
         ModelAndView mav = new ModelAndView();
         mav.setViewName("/sysAdmin/programs/mci/details");
 
         //Create a new blank provider.
         programEngagementSection_MCIAlgorithms mci = new programEngagementSection_MCIAlgorithms();
-        mci.setProgramId((Integer) session.getAttribute("programId"));
-        
-        /* Get a list of available fields */
-        List<programPatientFields> existingPatientFields = programformsmanager.getAllPatientFields((Integer) session.getAttribute("programId"));
+        programEngagementSections section = programformsmanager.getEngagementSectionById(sectionId);
+        mci.setProgramEngagementSectionId(sectionId);
+        /* Get a list of available fields for the section*/
+        List<programEngagementFields> existingEngagementFields = programformsmanager.getEngagementFields((Integer) session.getAttribute("programId"), sectionId);
 
         String fieldName;
 
-        for (programPatientFields field : existingPatientFields) {
+        for (programEngagementFields field : existingEngagementFields) {
             //Get the field name by id
             fieldName = dataelementmanager.getfieldName(field.getFieldId());
             field.setFieldName(fieldName);
 
         }
-        mav.addObject("availableFields", existingPatientFields);
-
+        
+        mav.addObject("availableFields", existingEngagementFields);
+        mav.addObject("section", section);
         mav.addObject("btnValue", "Create");
         mav.addObject("mcidetails", mci);
+        
 
         return mav;
     }
@@ -134,29 +137,35 @@ public class masterClientIndex {
      */
     @RequestMapping(value = "/create_mcialgorithm", method = RequestMethod.POST)
     public @ResponseBody
-    ModelAndView createMCIAlgorithm(@Valid @ModelAttribute(value = "mcidetails") programEngagementSection_MCIAlgorithms mcidetails, BindingResult result,  @RequestParam(value = "fieldIds", required = true) List<Integer> fieldIds, @RequestParam(value = "fieldAction", required = true) List<String> fieldAction, HttpSession session) throws Exception {
-
+    ModelAndView createMCIAlgorithm(@Valid @ModelAttribute(value = "mcidetails") programEngagementSection_MCIAlgorithms mcidetails, 
+    		BindingResult result,  @RequestParam(value = "fieldIds", required = true) List<Integer> fieldIds, 
+    		@RequestParam(value = "fieldAction", required = true) List<String> fieldAction, HttpSession session) 
+    				throws Exception {
+    	
+    	programEngagementSections section = programformsmanager.getEngagementSectionById(mcidetails.getProgramEngagementSectionId());
+        
         
         if (result.hasErrors()) {
             ModelAndView mav = new ModelAndView();
             mav.setViewName("/sysAdmin/programs/mci/details");
             /* Get a list of available fields */
-            List<programPatientFields> existingPatientFields = programformsmanager.getAllPatientFields((Integer) session.getAttribute("programId"));
-
+            List<programEngagementFields> existingEngagementFields = programformsmanager.getEngagementFields((Integer) session.getAttribute("programId"), mcidetails.getProgramEngagementSectionId());
+            
             String fieldName;
 
-            for (programPatientFields field : existingPatientFields) {
+            for (programEngagementFields field : existingEngagementFields) {
                 //Get the field name by id
                 fieldName = dataelementmanager.getfieldName(field.getFieldId());
                 field.setFieldName(fieldName);
 
             }
-            mav.addObject("availableFields", existingPatientFields);
+            mav.addObject("availableFields", existingEngagementFields);
             mav.addObject("btnValue", "Create");
             return mav;
         }
-
-
+        
+        //look for max process order
+        mcidetails.setProcessOrder((mcimanager.getMaxProcessOrder(mcidetails.getProgramEngagementSectionId()) +1));
         Integer mciId = mcimanager.createMCIAlgorithm(mcidetails);
         
         int i = 0;
@@ -166,14 +175,14 @@ public class masterClientIndex {
             newField.setMciId(mciId);
             
             String selFieldAction = fieldAction.get(i);
-            newField.setAction(selFieldAction);
-            
+            newField.setAction(selFieldAction);           
             mcimanager.createMCIAlgorithmFields(newField);
             
             i+=1;
         }
 
         ModelAndView mav = new ModelAndView("/sysAdmin/programs/mci/details");
+        mav.addObject("section", section);
         mav.addObject("success", "algorithmCreated");
         return mav;
     }
@@ -192,24 +201,27 @@ public class masterClientIndex {
      */
     @RequestMapping(value = "/update_mcialgorithm", method = RequestMethod.POST)
     public @ResponseBody
-    ModelAndView updateMCIAlgorithm(@Valid @ModelAttribute(value = "mcidetails") programEngagementSection_MCIAlgorithms mcidetails, BindingResult result,  @RequestParam(value = "fieldIds", required = true) List<Integer> fieldIds, @RequestParam(value = "fieldAction", required = true) List<String> fieldAction, HttpSession session) throws Exception {
+    ModelAndView updateMCIAlgorithm(@Valid @ModelAttribute(value = "mcidetails") programEngagementSection_MCIAlgorithms mcidetails, BindingResult result,  
+    		@RequestParam(value = "fieldIds", required = true) List<Integer> fieldIds, @RequestParam(value = "fieldAction", required = true) List<String> fieldAction, HttpSession session) throws Exception {
 
+    	programEngagementSections section = programformsmanager.getEngagementSectionById(mcidetails.getProgramEngagementSectionId());
         
+    	
         if (result.hasErrors()) {
             ModelAndView mav = new ModelAndView();
             mav.setViewName("/sysAdmin/programs/mci/details");
             /* Get a list of available fields */
-            List<programPatientFields> existingPatientFields = programformsmanager.getAllPatientFields((Integer) session.getAttribute("programId"));
-
+            List<programEngagementFields> existingEngagementFields = programformsmanager.getEngagementFields((Integer) session.getAttribute("programId"), mcidetails.getProgramEngagementSectionId());
+            
             String fieldName;
 
-            for (programPatientFields field : existingPatientFields) {
+            for (programEngagementFields field : existingEngagementFields) {
                 //Get the field name by id
                 fieldName = dataelementmanager.getfieldName(field.getFieldId());
                 field.setFieldName(fieldName);
 
             }
-            mav.addObject("availableFields", existingPatientFields);
+            mav.addObject("availableFields", existingEngagementFields);
             mav.addObject("btnValue", "Create");
             return mav;
         }
@@ -232,6 +244,7 @@ public class masterClientIndex {
         }
 
         ModelAndView mav = new ModelAndView("/sysAdmin/programs/mci/details");
+        mav.addObject("section", section);
         mav.addObject("success", "algorithmUpdated");
         return mav;
     }
@@ -247,21 +260,22 @@ public class masterClientIndex {
     @ResponseBody public ModelAndView editMCIAlgorithmForm(@RequestParam Integer mciId, HttpSession session) throws Exception {
         ModelAndView mav = new ModelAndView();
         mav.setViewName("/sysAdmin/programs/mci/details");
-
+        
         //Create a new blank provider.
         programEngagementSection_MCIAlgorithms mci = mcimanager.getMCIAlgorithm(mciId);
+        programEngagementSections section = programformsmanager.getEngagementSectionById(mci.getProgramEngagementSectionId());
         
         /* Get a list of available fields */
-        List<programPatientFields> existingPatientFields = programformsmanager.getAllPatientFields((Integer) session.getAttribute("programId"));
-
+        List<programEngagementFields> existingEngagementFields = programformsmanager.getEngagementFields((Integer) session.getAttribute("programId"), mci.getProgramEngagementSectionId());
+        
         String fieldName;
 
-        for (programPatientFields field : existingPatientFields) {
+        for (programEngagementFields field : existingEngagementFields) {
             //Get the field name by id
             fieldName = dataelementmanager.getfieldName(field.getFieldId());
             field.setFieldName(fieldName);
         }
-        mav.addObject("availableFields", existingPatientFields);
+        mav.addObject("availableFields", existingEngagementFields);
         
         List<programEngagementSection_mciFields> fields = mcimanager.getMCIAlgorithmFields(mciId);
         
@@ -271,7 +285,8 @@ public class masterClientIndex {
             field.setFieldName(selfieldName);
         }
         mav.addObject("selFields", fields);
-
+        mav.addObject("section", section);
+        
         mav.addObject("btnValue", "Update");
         mav.addObject("mcidetails", mci);
 
@@ -287,11 +302,12 @@ public class masterClientIndex {
      * @return Will return a 1 when the field is successfully removed.
      */
     @RequestMapping(value = "/removeAlgorithmField.do", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody Integer removeAlgorithmField(@RequestParam Integer algorithmfieldId, HttpSession session) throws Exception {
+    public @ResponseBody Integer removeAlgorithmField(@RequestParam Integer algorithmfieldId, 
+    		HttpSession session) throws Exception {
         
-        mcimanager.removeAlgorithmField(algorithmfieldId);
+    	mcimanager.removeAlgorithmField(algorithmfieldId);
         
-        return 1;
+    	return 1;
     }
     
     /**
@@ -303,9 +319,11 @@ public class masterClientIndex {
      * @return Will return a 1 when the field is successfully removed.
      */
     @RequestMapping(value = "/removeAlgorithm.do", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody Integer removeAlgorithm(@RequestParam Integer algorithmId, HttpSession session) throws Exception {
-        
+    public @ResponseBody Integer removeAlgorithm(@RequestParam Integer algorithmId, @RequestParam Integer sectionId, 
+    		HttpSession session) throws Exception {
+    	/** we need to reorder the rest of the algorithm **/
         mcimanager.removeAlgorithm(algorithmId);
+        mcimanager.reorderAlgorithm(sectionId);
         
         return 1;
     }

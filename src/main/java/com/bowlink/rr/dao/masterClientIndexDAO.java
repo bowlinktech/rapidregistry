@@ -5,7 +5,6 @@
  */
 package com.bowlink.rr.dao;
 
-import com.bowlink.rr.model.programEngagementSections;
 import com.bowlink.rr.model.programEngagementSection_MCIAlgorithms;
 import com.bowlink.rr.model.programEngagementSection_mciFields;
 
@@ -33,5 +32,7 @@ public interface masterClientIndexDAO {
     void removeAlgorithmField(Integer algorithmFieldId) throws Exception;
     
     void removeAlgorithm(Integer algorithmId) throws Exception;
+    
+    Integer getMaxProcessOrder (Integer sectionId) throws Exception;
     
 }

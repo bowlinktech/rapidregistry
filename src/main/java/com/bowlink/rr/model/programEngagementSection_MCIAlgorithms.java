@@ -28,13 +28,13 @@ public class programEngagementSection_MCIAlgorithms {
     @Transient
     private List<programEngagementSection_mciFields> fields = null;
     
+    @Transient
+    private Integer programId = null;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID", nullable = false)
     private int id;
-    
-    @Transient
-    private Integer programId = null;
     
     @Column(name = "STATUS", nullable = false)
     private boolean status = false;
@@ -46,8 +46,7 @@ public class programEngagementSection_MCIAlgorithms {
     private Integer programEngagementSectionId;
     
     @Column(name = "processOrder", nullable = false)
-    private Integer processOrder = 1;
-    
+    private Integer processOrder = 1;    
     
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
     @Column(name = "DATECREATED", nullable = true)
