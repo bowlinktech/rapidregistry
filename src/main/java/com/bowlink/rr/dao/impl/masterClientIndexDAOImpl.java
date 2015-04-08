@@ -6,16 +6,13 @@
 package com.bowlink.rr.dao.impl;
 
 import com.bowlink.rr.dao.masterClientIndexDAO;
-import com.bowlink.rr.model.MoveFilesLog;
 import com.bowlink.rr.model.programEngagementSection_MCIAlgorithms;
 import com.bowlink.rr.model.programEngagementSection_mciFields;
 
 import java.util.List;
 
-import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -164,4 +161,21 @@ public class masterClientIndexDAOImpl implements masterClientIndexDAO {
        
 	}
 
+	@Override
+	@Transactional
+	@SuppressWarnings("unchecked")
+	public programEngagementSection_MCIAlgorithms getMCIAlgorithmByProcessOrder(
+			Integer processOrder, Integer sectionId) throws Exception {
+		Query query = sessionFactory.getCurrentSession().createQuery("from programEngagementSection_MCIAlgorithms where processOrder = :processOrder and programEngagementSectionId = :sectionId order by processOrder desc");
+        query.setParameter("sectionId", sectionId);
+        query.setParameter("processOrder", processOrder);
+
+        List<programEngagementSection_MCIAlgorithms> algorithmList = query.list();
+        if (algorithmList.size() != 0) {
+        	return algorithmList.get(0);
+        } else {
+        	return null;
+        }
+	}
+	
 }

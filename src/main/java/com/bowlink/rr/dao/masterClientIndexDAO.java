@@ -35,4 +35,7 @@ public interface masterClientIndexDAO {
     
     Integer getMaxProcessOrder (Integer sectionId) throws Exception;
     
+    programEngagementSection_MCIAlgorithms getMCIAlgorithmByProcessOrder(Integer processOrder, Integer sectionId) throws Exception;
+
+    
 }

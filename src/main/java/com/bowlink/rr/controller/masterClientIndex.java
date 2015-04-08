@@ -10,12 +10,10 @@ import com.bowlink.rr.model.programEngagementFields;
 import com.bowlink.rr.model.programEngagementSections;
 import com.bowlink.rr.model.programEngagementSection_MCIAlgorithms;
 import com.bowlink.rr.model.programEngagementSection_mciFields;
-import com.bowlink.rr.model.programPatientFields;
 import com.bowlink.rr.service.dataElementManager;
 import com.bowlink.rr.service.masterClientIndexManager;
 import com.bowlink.rr.service.programFormsManager;
 import com.bowlink.rr.service.programManager;
-
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -327,4 +325,34 @@ public class masterClientIndex {
         
         return 1;
     }
+    
+    /**
+     * The 'updateProcessOrder.do' function will handle updating the process order.
+     *
+     * @param   sectionId This will hold the section id of the algorithms that we want to reorder
+     * @param	currOrder will hold the order of the current algorithm
+     * @param	newOrder This will hold the new process order for the algorithm
+     *
+     * @Return	1	The function will simply return a 1 back to the ajax call
+     */
+    @RequestMapping(value = "/updateProcessOrder.do", 
+    		method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody
+    Integer updateFormDisplayOrder(
+    @RequestParam(value = "sectionId", required = true) Integer sectionId, @RequestParam(value = "currOrder", required = true) 
+    Integer currOrder, @RequestParam(value = "newOrder", required = true) Integer newOrder) throws Exception {
+
+    	//we get algorithm info for the algorithm with the new order and the current order
+    	programEngagementSection_MCIAlgorithms mciCurrent = mcimanager.getMCIAlgorithmByProcessOrder(currOrder,  sectionId);
+    	programEngagementSection_MCIAlgorithms mciNew =  mcimanager.getMCIAlgorithmByProcessOrder(newOrder,  sectionId);
+    	
+    	//we switch and update
+    	mciCurrent.setProcessOrder(newOrder);
+    	mcimanager.updateMCIAlgorithm(mciCurrent);
+    	mciNew.setProcessOrder(currOrder);
+    	mcimanager.updateMCIAlgorithm(mciNew);
+    	
+        return 1;
+    }
+    
 }

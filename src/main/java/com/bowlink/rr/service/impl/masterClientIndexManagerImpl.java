@@ -125,4 +125,10 @@ public class masterClientIndexManagerImpl implements masterClientIndexManager {
 		
 	}
 
+	@Override
+	public programEngagementSection_MCIAlgorithms getMCIAlgorithmByProcessOrder(
+			Integer processOrder, Integer sectionId) throws Exception {
+		return masterClientIndexDAO.getMCIAlgorithmByProcessOrder(processOrder, sectionId);
+	}
+
 }

@@ -125,21 +125,20 @@ require(['./main'], function () {
         $(document).on('change', '.processOrder', function() {
             //Store the current position
             var currPos = $(this).attr('rel');
-            var section = $(this).attr('rel2');
+            var sectionId = $(this).attr('rel2');
             var newPos = $(this).val();
             
-            $('.displayOrder').each(function() {
-                if ($(this).attr('rel') == newDspPos) {
-                    //Need to update the saved process order
-                    $.ajax({
-                        url: 'updateProcessOrder.do',
-                        data: {'section' : section, 'currOrder' : currPos,  'newOrder': newPos},
+            $('.processOrder').each(function() {
+                if ($(this).attr('rel') == newPos  && $(this).attr('rel2') == sectionId) {
+                	//Need to update the saved process order
+                	$.ajax({
+                        url: 'mci-algorithms/updateProcessOrder.do',
+                        data: {'sectionId' : sectionId, 'currOrder' : currPos,  'newOrder': newPos},
                         type: "POST",
                         success: function(data) {
                             $('#processOrderMsgDiv').show();
-                            reorderFields(1);
                         }
-                    });
+                    });                    
                     $(this).val(currPos);
                     $(this).attr('rel', currPos);
                 }
@@ -153,19 +152,5 @@ require(['./main'], function () {
     });
 });
 
-function reorderFields(reload) {
-    
-    var sectionId = $('#sectionId').val();
-    var section = $('#sectionName').val();
-    
-    $.ajax({
-        url: '../getFields.do',
-        type: "GET",
-        data: {'reload': reload, 'section': section, 'sectionId': sectionId},
-        success: function(data) {
-            $("#existingFields").html(data);
-        }
-    });
-}    
 
 
