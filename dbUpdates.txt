@@ -158,10 +158,6 @@ ALTER TABLE `rapidregistry`.`programUpload_errors`
 CHANGE COLUMN `fieldNo` `fieldNo` INT(11) NULL ,
 ADD COLUMN `errorId` INT NULL AFTER `programUploadId`;
 
-
-ALTER TABLE `rapidregistry`.`programUpload_errors` 
-ADD COLUMN `engagementId` INT NULL AFTER `programUploadId`;
-
   /** grace 04.04.2015 11:25PM **/
 ALTER TABLE `rapidregistry`.`programUpload_errors` 
 ADD COLUMN `engagementId` INT NULL AFTER `programUploadId`;
@@ -257,9 +253,6 @@ ADD CONSTRAINT `engagementIdFK`
   ON UPDATE NO ACTION;
 
 
-
-  
-  
 
 
 
