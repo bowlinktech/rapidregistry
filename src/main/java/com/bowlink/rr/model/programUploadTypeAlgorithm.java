@@ -22,11 +22,11 @@ import org.springframework.format.annotation.DateTimeFormat;
  * @author chadmccue
  */
 @Entity
-@Table(name = "programEngagementSection_MCIAlgorithms")
-public class programEngagementSection_MCIAlgorithms {
+@Table(name = "put_algorithms")
+public class programUploadTypeAlgorithm {
     
     @Transient
-    private List<programEngagementSection_mciFields> fields = null;
+    private List<programUploadTypeAlgorithmFields> fields = null;
     
     @Transient
     private Integer programId = null;
@@ -42,8 +42,8 @@ public class programEngagementSection_MCIAlgorithms {
     @Column(name = "ACTION", nullable = false)
     private Integer action = 3;
     
-    @Column(name = "programEngagementSectionId", nullable = false)
-    private Integer programEngagementSectionId;
+    @Column(name = "programUploadTypeId", nullable = false)
+    private Integer importTypeId;
     
     @Column(name = "processOrder", nullable = false)
     private Integer processOrder = 1;    
@@ -53,12 +53,12 @@ public class programEngagementSection_MCIAlgorithms {
     private Date dateCreated = new Date();
 
 
-	public List<programEngagementSection_mciFields> getFields() {
+	public List<programUploadTypeAlgorithmFields> getFields() {
 		return fields;
 	}
 
 
-	public void setFields(List<programEngagementSection_mciFields> fields) {
+	public void setFields(List<programUploadTypeAlgorithmFields> fields) {
 		this.fields = fields;
 	}
 
@@ -102,14 +102,15 @@ public class programEngagementSection_MCIAlgorithms {
 		this.action = action;
 	}
 
+	
 
-	public Integer getProgramEngagementSectionId() {
-		return programEngagementSectionId;
+	public Integer getImportTypeId() {
+		return importTypeId;
 	}
 
 
-	public void setProgramEngagementSectionId(Integer programEngagementSectionId) {
-		this.programEngagementSectionId = programEngagementSectionId;
+	public void setImportTypeId(Integer importTypeId) {
+		this.importTypeId = importTypeId;
 	}
 
 

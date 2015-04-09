@@ -19,8 +19,8 @@ import javax.persistence.Transient;
  * @author chadmccue
  */
 @Entity
-@Table(name = "programEngagementSection_mciFields")
-public class programEngagementSection_mciFields {
+@Table(name = "put_AlgorithmFields")
+public class programUploadTypeAlgorithmFields {
     
     @Transient
     private String fieldName = null;
@@ -30,8 +30,8 @@ public class programEngagementSection_mciFields {
     @Column(name = "ID", nullable = false)
     private int id;
     
-    @Column(name = "MCIID", nullable = false)
-    private Integer mciId = null;
+    @Column(name = "algorithmId", nullable = false)
+    private Integer algorithmId = null;
     
     @Column(name = "FIELDID", nullable = false)
     private Integer fieldId = null;
@@ -45,14 +45,6 @@ public class programEngagementSection_mciFields {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public Integer getMciId() {
-        return mciId;
-    }
-
-    public void setMciId(Integer mciId) {
-        this.mciId = mciId;
     }
 
     public Integer getFieldId() {
@@ -78,7 +70,13 @@ public class programEngagementSection_mciFields {
     public void setFieldName(String fieldName) {
         this.fieldName = fieldName;
     }
-    
-    
-    
+
+	public Integer getAlgorithmId() {
+		return algorithmId;
+	}
+
+	public void setAlgorithmId(Integer algorithmId) {
+		this.algorithmId = algorithmId;
+	}
+
 }

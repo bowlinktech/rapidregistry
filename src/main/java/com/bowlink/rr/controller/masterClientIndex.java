@@ -6,14 +6,15 @@
 package com.bowlink.rr.controller;
 
 import com.bowlink.rr.model.program;
-import com.bowlink.rr.model.programEngagementFields;
-import com.bowlink.rr.model.programEngagementSections;
-import com.bowlink.rr.model.programEngagementSection_MCIAlgorithms;
-import com.bowlink.rr.model.programEngagementSection_mciFields;
+import com.bowlink.rr.model.programUploadTypeAlgorithm;
+import com.bowlink.rr.model.programUploadTypeAlgorithmFields;
+import com.bowlink.rr.model.programUploadTypes;
+import com.bowlink.rr.model.programUploadTypesFormFields;
 import com.bowlink.rr.service.dataElementManager;
+import com.bowlink.rr.service.importManager;
 import com.bowlink.rr.service.masterClientIndexManager;
-import com.bowlink.rr.service.programFormsManager;
 import com.bowlink.rr.service.programManager;
+
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -46,9 +47,10 @@ public class masterClientIndex {
     
     @Autowired
     dataElementManager dataelementmanager;
-    
+
     @Autowired
-    programFormsManager programformsmanager;
+    importManager importmanager;
+    
 
     /**
      * The '/{programName}/mci-algorithms' GET request will display the program MCI Algorithms.
@@ -61,23 +63,22 @@ public class masterClientIndex {
      *
     */ 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public ModelAndView programEngagementSection_MCIAlgorithms(HttpSession session) throws Exception {
+    public ModelAndView put_algorithms(HttpSession session, 
+    		@RequestParam(value = "s", required = true) Integer importTypeId) throws Exception {
 
-        ModelAndView mav = new ModelAndView();
+        
+    	ModelAndView mav = new ModelAndView();
         mav.setViewName("/mcialgorithms");
         mav.addObject("id", session.getAttribute("programId"));
 
         program programDetails = programmanager.getProgramById((Integer) session.getAttribute("programId"));
         mav.addObject("programDetails", programDetails);
-
-        // get engagement sections
-        List <programEngagementSections> engagementSectionList = programformsmanager.getEngagementSections((Integer) session.getAttribute("programId"));
-        if (engagementSectionList.size() > 0) {
-        	//we set the MCIAlgorithms that goes with that section
-        	engagementSectionList = mcimanager.getMCIAlgorithms(engagementSectionList);
-        	mav.addObject("programEngagementSections", engagementSectionList);
-        }
+        programUploadTypes importType = importmanager.getProgramUploadType(importTypeId);
         
+        //get program rules
+        List<programUploadTypeAlgorithm> algorithmList = mcimanager.getProgramUploadTypeAlgorithm(importTypeId);
+        mav.addObject("algorithmList", algorithmList);
+        mav.addObject("importType", importType);
         
         return mav;
 
@@ -91,28 +92,28 @@ public class masterClientIndex {
      * @Objects (1) An object that will hold the blank MCI Algorithm
      */
     @RequestMapping(value = "/algorithm.create", method = RequestMethod.GET)
-    @ResponseBody public ModelAndView newMCIAlgorithmForm(HttpSession session, @RequestParam Integer sectionId) throws Exception {
+    @ResponseBody public ModelAndView newMCIAlgorithmForm(HttpSession session, 
+    		@RequestParam Integer importTypeId) throws Exception {
         ModelAndView mav = new ModelAndView();
         mav.setViewName("/sysAdmin/programs/mci/details");
 
         //Create a new blank provider.
-        programEngagementSection_MCIAlgorithms mci = new programEngagementSection_MCIAlgorithms();
-        programEngagementSections section = programformsmanager.getEngagementSectionById(sectionId);
-        mci.setProgramEngagementSectionId(sectionId);
-        /* Get a list of available fields for the section*/
-        List<programEngagementFields> existingEngagementFields = programformsmanager.getEngagementFields((Integer) session.getAttribute("programId"), sectionId);
+        programUploadTypeAlgorithm mci = new programUploadTypeAlgorithm();
+        mci.setImportTypeId(importTypeId);
+        /* Get a list of available fields for this upload type*/
+        List<programUploadTypesFormFields> existingFormFields = importmanager.getImportTypeFields(importTypeId);
 
         String fieldName;
 
-        for (programEngagementFields field : existingEngagementFields) {
+        for (programUploadTypesFormFields field : existingFormFields) {
             //Get the field name by id
             fieldName = dataelementmanager.getfieldName(field.getFieldId());
             field.setFieldName(fieldName);
 
         }
         
-        mav.addObject("availableFields", existingEngagementFields);
-        mav.addObject("section", section);
+        mav.addObject("availableFields", existingFormFields);
+        mav.addObject("importTypeId", importTypeId);
         mav.addObject("btnValue", "Create");
         mav.addObject("mcidetails", mci);
         
@@ -135,42 +136,41 @@ public class masterClientIndex {
      */
     @RequestMapping(value = "/create_mcialgorithm", method = RequestMethod.POST)
     public @ResponseBody
-    ModelAndView createMCIAlgorithm(@Valid @ModelAttribute(value = "mcidetails") programEngagementSection_MCIAlgorithms mcidetails, 
+    ModelAndView createMCIAlgorithm(@Valid @ModelAttribute(value = "mcidetails") programUploadTypeAlgorithm mcidetails, 
     		BindingResult result,  @RequestParam(value = "fieldIds", required = true) List<Integer> fieldIds, 
     		@RequestParam(value = "fieldAction", required = true) List<String> fieldAction, HttpSession session) 
     				throws Exception {
     	
-    	programEngagementSections section = programformsmanager.getEngagementSectionById(mcidetails.getProgramEngagementSectionId());
+        List<programUploadTypesFormFields> existingFormFields = importmanager.getImportTypeFields(mcidetails.getImportTypeId());
+        programUploadTypes importType = importmanager.getProgramUploadType(mcidetails.getImportTypeId());
         
         
         if (result.hasErrors()) {
             ModelAndView mav = new ModelAndView();
             mav.setViewName("/sysAdmin/programs/mci/details");
-            /* Get a list of available fields */
-            List<programEngagementFields> existingEngagementFields = programformsmanager.getEngagementFields((Integer) session.getAttribute("programId"), mcidetails.getProgramEngagementSectionId());
             
             String fieldName;
 
-            for (programEngagementFields field : existingEngagementFields) {
+            for (programUploadTypesFormFields field : existingFormFields) {
                 //Get the field name by id
                 fieldName = dataelementmanager.getfieldName(field.getFieldId());
                 field.setFieldName(fieldName);
 
             }
-            mav.addObject("availableFields", existingEngagementFields);
+            mav.addObject("availableFields", existingFormFields);
             mav.addObject("btnValue", "Create");
             return mav;
         }
         
         //look for max process order
-        mcidetails.setProcessOrder((mcimanager.getMaxProcessOrder(mcidetails.getProgramEngagementSectionId()) +1));
-        Integer mciId = mcimanager.createMCIAlgorithm(mcidetails);
+        mcidetails.setProcessOrder((mcimanager.getMaxProcessOrder(mcidetails.getImportTypeId()) +1));
+        Integer algorithmId = mcimanager.createMCIAlgorithm(mcidetails);
         
         int i = 0;
         for(Integer fieldId : fieldIds) {
-            programEngagementSection_mciFields newField = new programEngagementSection_mciFields();
+            programUploadTypeAlgorithmFields newField = new programUploadTypeAlgorithmFields();
             newField.setFieldId(fieldId);
-            newField.setMciId(mciId);
+            newField.setAlgorithmId(algorithmId);
             
             String selFieldAction = fieldAction.get(i);
             newField.setAction(selFieldAction);           
@@ -180,7 +180,7 @@ public class masterClientIndex {
         }
 
         ModelAndView mav = new ModelAndView("/sysAdmin/programs/mci/details");
-        mav.addObject("section", section);
+        mav.addObject("importType", importType);
         mav.addObject("success", "algorithmCreated");
         return mav;
     }
@@ -199,27 +199,25 @@ public class masterClientIndex {
      */
     @RequestMapping(value = "/update_mcialgorithm", method = RequestMethod.POST)
     public @ResponseBody
-    ModelAndView updateMCIAlgorithm(@Valid @ModelAttribute(value = "mcidetails") programEngagementSection_MCIAlgorithms mcidetails, BindingResult result,  
+    ModelAndView updateMCIAlgorithm(@Valid @ModelAttribute(value = "mcidetails") programUploadTypeAlgorithm mcidetails, BindingResult result,  
     		@RequestParam(value = "fieldIds", required = true) List<Integer> fieldIds, @RequestParam(value = "fieldAction", required = true) List<String> fieldAction, HttpSession session) throws Exception {
 
-    	programEngagementSections section = programformsmanager.getEngagementSectionById(mcidetails.getProgramEngagementSectionId());
-        
+    	List<programUploadTypesFormFields> existingFormFields = importmanager.getImportTypeFields(mcidetails.getImportTypeId());
+
     	
         if (result.hasErrors()) {
             ModelAndView mav = new ModelAndView();
             mav.setViewName("/sysAdmin/programs/mci/details");
-            /* Get a list of available fields */
-            List<programEngagementFields> existingEngagementFields = programformsmanager.getEngagementFields((Integer) session.getAttribute("programId"), mcidetails.getProgramEngagementSectionId());
             
             String fieldName;
 
-            for (programEngagementFields field : existingEngagementFields) {
+            for (programUploadTypesFormFields field : existingFormFields) {
                 //Get the field name by id
                 fieldName = dataelementmanager.getfieldName(field.getFieldId());
                 field.setFieldName(fieldName);
 
             }
-            mav.addObject("availableFields", existingEngagementFields);
+            mav.addObject("availableFields", existingFormFields);
             mav.addObject("btnValue", "Create");
             return mav;
         }
@@ -229,9 +227,9 @@ public class masterClientIndex {
         
         int i = 0;
         for(Integer fieldId : fieldIds) {
-            programEngagementSection_mciFields newField = new programEngagementSection_mciFields();
+            programUploadTypeAlgorithmFields newField = new programUploadTypeAlgorithmFields();
             newField.setFieldId(fieldId);
-            newField.setMciId(mcidetails.getId());
+            newField.setAlgorithmId(mcidetails.getId());
             
             String selFieldAction = fieldAction.get(i);
             newField.setAction(selFieldAction);
@@ -242,7 +240,7 @@ public class masterClientIndex {
         }
 
         ModelAndView mav = new ModelAndView("/sysAdmin/programs/mci/details");
-        mav.addObject("section", section);
+        mav.addObject("importTypeId", mcidetails.getImportTypeId());
         mav.addObject("success", "algorithmUpdated");
         return mav;
     }
@@ -255,35 +253,36 @@ public class masterClientIndex {
      * @Objects (1) An object that will hold the blank MCI Algorithm
      */
     @RequestMapping(value = "/algorithm.edit", method = RequestMethod.GET)
-    @ResponseBody public ModelAndView editMCIAlgorithmForm(@RequestParam Integer mciId, HttpSession session) throws Exception {
+    @ResponseBody public ModelAndView editMCIAlgorithmForm(@RequestParam Integer algorithmId, HttpSession session) throws Exception {
         ModelAndView mav = new ModelAndView();
         mav.setViewName("/sysAdmin/programs/mci/details");
         
         //Create a new blank provider.
-        programEngagementSection_MCIAlgorithms mci = mcimanager.getMCIAlgorithm(mciId);
-        programEngagementSections section = programformsmanager.getEngagementSectionById(mci.getProgramEngagementSectionId());
+        programUploadTypeAlgorithm mci = mcimanager.getMCIAlgorithm(algorithmId);
         
         /* Get a list of available fields */
-        List<programEngagementFields> existingEngagementFields = programformsmanager.getEngagementFields((Integer) session.getAttribute("programId"), mci.getProgramEngagementSectionId());
+        List<programUploadTypesFormFields> existingFormFields = importmanager.getImportTypeFields(mci.getId());
+        //get info
+        programUploadTypes importType = importmanager.getProgramUploadType(mci.getImportTypeId());
         
         String fieldName;
 
-        for (programEngagementFields field : existingEngagementFields) {
+        for (programUploadTypesFormFields field : existingFormFields) {
             //Get the field name by id
             fieldName = dataelementmanager.getfieldName(field.getFieldId());
             field.setFieldName(fieldName);
         }
-        mav.addObject("availableFields", existingEngagementFields);
+        mav.addObject("availableFields", existingFormFields);
         
-        List<programEngagementSection_mciFields> fields = mcimanager.getMCIAlgorithmFields(mciId);
+        List<programUploadTypeAlgorithmFields> fields = mcimanager.getMCIAlgorithmFields(mci.getImportTypeId());
         
-        for(programEngagementSection_mciFields field : fields) {
+        for(programUploadTypeAlgorithmFields field : fields) {
             //Get the field name by id
             String selfieldName = dataelementmanager.getfieldName(field.getFieldId());
             field.setFieldName(selfieldName);
         }
         mav.addObject("selFields", fields);
-        mav.addObject("section", section);
+        mav.addObject("importType", importType);
         
         mav.addObject("btnValue", "Update");
         mav.addObject("mcidetails", mci);
@@ -343,8 +342,8 @@ public class masterClientIndex {
     Integer currOrder, @RequestParam(value = "newOrder", required = true) Integer newOrder) throws Exception {
 
     	//we get algorithm info for the algorithm with the new order and the current order
-    	programEngagementSection_MCIAlgorithms mciCurrent = mcimanager.getMCIAlgorithmByProcessOrder(currOrder,  sectionId);
-    	programEngagementSection_MCIAlgorithms mciNew =  mcimanager.getMCIAlgorithmByProcessOrder(newOrder,  sectionId);
+    	programUploadTypeAlgorithm mciCurrent = mcimanager.getMCIAlgorithmByProcessOrder(currOrder,  sectionId);
+    	programUploadTypeAlgorithm mciNew =  mcimanager.getMCIAlgorithmByProcessOrder(newOrder,  sectionId);
     	
     	//we switch and update
     	mciCurrent.setProcessOrder(newOrder);

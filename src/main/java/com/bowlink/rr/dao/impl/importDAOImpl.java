@@ -206,7 +206,7 @@ public class importDAOImpl implements importDAO {
 
     @Override
     @Transactional
-    public Integer saveProgramUplaod(programUploads programUpload) throws Exception {
+    public Integer saveProgramUpload(programUploads programUpload) throws Exception {
         Integer lastId = null;
         lastId = (Integer) sessionFactory.getCurrentSession().save(programUpload);
         return lastId;

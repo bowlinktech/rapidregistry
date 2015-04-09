@@ -9,7 +9,7 @@ require(['./main'], function () {
 
         //Fade out the updated/created message after being displayed.
         if ($('.alert').length > 0) {
-            $('.alert').delay(2000).fadeOut(1000);
+            $('.alert').delay(2000).fadeOut(5000);
         }
 
         $("input:text,form").attr("autocomplete", "off");
@@ -20,10 +20,10 @@ require(['./main'], function () {
         
         //This function will launch the new MCI Algorithm overlay with a blank screen
         $(document).on('click', '#createNewAlgorithm', function() {
-        	var sectionId = $(this).attr('rel');
+        	var importTypeId = $(this).attr('rel');
             $.ajax({
                 url: 'mci-algorithms/algorithm.create',
-                data:{'sectionId':sectionId},
+                data:{'importTypeId':importTypeId},
                 type: "GET",
                 success: function(data) {
                     $("#algorithmDetailsModal").html(data);
@@ -48,6 +48,7 @@ require(['./main'], function () {
             var formData = $("#mcidetailsform").serialize();
 
             var actionValue = $(this).attr('rel').toLowerCase();
+            var algorithmId = $("#importTypeId").val();
 
             $.ajax({
                 url: 'mci-algorithms/'+actionValue+'_mcialgorithm',
@@ -57,11 +58,11 @@ require(['./main'], function () {
                 success: function(data) {
 
                     if (data.indexOf('algorithmUpdated') != -1) {
-                        window.location.href = "mci-algorithms?msg=updated";
+                        window.location.href = "mci-algorithms?s=" + algorithmId + "&msg=updated";
 
                     }
                     else if (data.indexOf('algorithmCreated') != -1) {
-                        window.location.href = "mci-algorithms?msg=created";
+                        window.location.href = "mci-algorithms?s=" + algorithmId + "&msg=created";
 
                     }
                     else {
@@ -76,11 +77,11 @@ require(['./main'], function () {
 
 
         $(document).on('click', '.editAlgorithm', function() {
-            var mciId = $(this).attr('rel');
+            var algorithmId = $(this).attr('rel');
             
             $.ajax({
                 url: 'mci-algorithms/algorithm.edit',
-                data: {'mciId': mciId},
+                data: {'algorithmId': algorithmId},
                 type: "GET",
                 success: function(data) {
                     $("#algorithmDetailsModal").html(data);
@@ -102,13 +103,13 @@ require(['./main'], function () {
         
         $(document).on('click', '.deleteAlgorithm', function() {
             var id = $(this).attr('rel');
-            var sectionId = $(this).attr('rel2');
+            var importTypeId = $(this).attr('rel2');
             
             
             if(confirm("Are you sure you want to remvoe this MCI algorithm?")) {
                 $.ajax({
                     url: 'mci-algorithms/removeAlgorithm.do',
-                    data: {'algorithmId': id, 'sectionId': sectionId},
+                    data: {'algorithmId': id, 'importTypeId': importTypeId},
                     type: "POST",
                     success: function(data) {
                         window.location.href = "mci-algorithms?msg=deleted";
@@ -125,11 +126,11 @@ require(['./main'], function () {
         $(document).on('change', '.processOrder', function() {
             //Store the current position
             var currPos = $(this).attr('rel');
-            var sectionId = $(this).attr('rel2');
+            var importTypeId = $(this).attr('rel2');
             var newPos = $(this).val();
             
             $('.processOrder').each(function() {
-                if ($(this).attr('rel') == newPos  && $(this).attr('rel2') == sectionId) {
+                if ($(this).attr('rel') == newPos  && $(this).attr('rel2') == importTypeId) {
                 	//Need to update the saved process order
                 	$.ajax({
                         url: 'mci-algorithms/updateProcessOrder.do',

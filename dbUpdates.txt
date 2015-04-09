@@ -236,16 +236,16 @@ DROP COLUMN `programId`,
 DROP INDEX `fk_programUploadId_idx` ;
 
 ALTER TABLE `rapidregistry`.`program_MCIAlgorithms` 
-RENAME TO  `rapidregistry`.`programEngagementSection_MCIAlgorithms` ;
+RENAME TO  `rapidregistry`.`put_algorithms` ;
 
 ALTER TABLE `rapidregistry`.`program_MCIFields` 
 RENAME TO  `rapidregistry`.`programEngagementSection_mciFields` ;
 
-ALTER TABLE `rapidregistry`.`programEngagementSection_MCIAlgorithms` 
+ALTER TABLE `rapidregistry`.`put_algorithms` 
 DROP FOREIGN KEY `engagementIdFK`;
-ALTER TABLE `rapidregistry`.`programEngagementSection_MCIAlgorithms` 
+ALTER TABLE `rapidregistry`.`put_algorithms` 
 CHANGE COLUMN `program_engagementSectionId` `programEngagementSectionId` INT(11) NOT NULL ;
-ALTER TABLE `rapidregistry`.`programEngagementSection_MCIAlgorithms` 
+ALTER TABLE `rapidregistry`.`put_algorithms` 
 ADD CONSTRAINT `engagementIdFK`
   FOREIGN KEY (`programEngagementSectionId`)
   REFERENCES `rapidregistry`.`program_engagementSections` (`id`)
@@ -254,7 +254,57 @@ ADD CONSTRAINT `engagementIdFK`
 
 
 
+/** 04.09.2015 10:48AM Grace **/
+ALTER TABLE `rapidregistry`.`put_algorithms` 
+RENAME TO  `rapidregistry`.`put_algorithms` ;
 
+ALTER TABLE `rapidregistry`.`put_algorithms` 
+DROP FOREIGN KEY `engagementIdFK`;
+ALTER TABLE `rapidregistry`.`put_algorithms` 
+DROP INDEX `engagementIdFK_idx` ;
+
+ALTER TABLE `rapidregistry`.`put_algorithms` 
+CHANGE COLUMN `programEngagementSectionId` `programUploadTypeId` INT(11) NOT NULL ;
+
+ALTER TABLE `rapidregistry`.`programEngagementSection_mciFields` 
+DROP FOREIGN KEY `fk_programMPIFields__mciId`;
+
+ALTER TABLE `rapidregistry`.`programEngagementSection_mciFields` 
+RENAME TO  `rapidregistry`.`put_algorithmFields` ;
+
+ALTER TABLE `rapidregistry`.`put_algorithmFields` 
+ADD CONSTRAINT `algorithmFK`
+  FOREIGN KEY (`mciId`)
+  REFERENCES `rapidregistry`.`put_algorithms` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+  
+ALTER TABLE `rapidregistry`.`put_algorithmFields` 
+DROP FOREIGN KEY `algorithmFK`;
+ALTER TABLE `rapidregistry`.`put_algorithmFields` 
+CHANGE COLUMN `mciId` `algorithmId` INT(11) NOT NULL ;
+ALTER TABLE `rapidregistry`.`put_algorithmFields` 
+ADD CONSTRAINT `ruleIdFK`
+  FOREIGN KEY (`algorithmId`)
+  REFERENCES `rapidregistry`.`put_algorithms` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+  
+ALTER TABLE `rapidregistry`.`programUploadType_formFields` 
+RENAME TO  `rapidregistry`.`put_formFields` ;
+
+CREATE TABLE `rapidregistry`.`lu_algorithmCategories` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `mapToTable` VARCHAR(45) NOT NULL,
+  `mapToColumn` VARCHAR(45) NULL,
+  `displayName` VARCHAR(100) NULL,
+  PRIMARY KEY (`id`));
+
+ALTER TABLE `rapidregistry`.`lu_engagementMatchingActions` 
+RENAME TO  `rapidregistry`.`lu_algorithmMatchingActions` ;
+
+INSERT INTO `rapidregistry`.`lu_algorithmCategories` (`mapToTable`, `mapToColumn`, `displayName`) VALUES ('programPatients', 'id', 'Patient');
+INSERT INTO `rapidregistry`.`lu_algorithmCategories` (`mapToTable`, `mapToColumn`, `displayName`) VALUES ('storage_engagements', 'id', 'Engagement');
 
 
 

@@ -92,7 +92,7 @@ public class adminFnsController {
     public @ResponseBody
     ModelAndView submitFileUpload(RedirectAttributes redirectAttr, 
     		HttpSession session, @RequestParam(value = "userId", required = true) Integer userId, 
-    		@RequestParam(value = "programUplaodTypeId", required = true) Integer programUploadTypeId, 
+    		@RequestParam(value = "programUploadTypeId", required = true) Integer programUploadTypeId, 
     		@RequestParam(value = "uploadedFile", required = true) MultipartFile uploadedFile) throws Exception {
     	
     		Integer programUploadId = importmanager.submitUploadFile(userId,programUploadTypeId, uploadedFile);

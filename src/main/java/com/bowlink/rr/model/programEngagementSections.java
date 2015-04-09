@@ -8,15 +8,12 @@ package com.bowlink.rr.model;
 import com.bowlink.rr.validator.NoHtml;
 
 import java.util.Date;
-import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -29,9 +26,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Table(name = "PROGRAM_ENGAGEMENTSECTIONS")
 public class programEngagementSections {
     
-	@Transient
-	private List<programEngagementSection_MCIAlgorithms> mciAlgorithms;
-	
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID", nullable = false)
@@ -55,13 +49,6 @@ public class programEngagementSections {
     @Column(name = "DATECREATED", nullable = true)
     private Date dateCreated = new Date();
 
-	public List<programEngagementSection_MCIAlgorithms> getMciAlgorithms() {
-		return mciAlgorithms;
-	}
-
-	public void setMciAlgorithms(List<programEngagementSection_MCIAlgorithms> mciAlgorithms) {
-		this.mciAlgorithms = mciAlgorithms;
-	}
 
 	public int getId() {
 		return id;

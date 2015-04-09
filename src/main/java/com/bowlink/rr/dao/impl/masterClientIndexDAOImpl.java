@@ -6,8 +6,8 @@
 package com.bowlink.rr.dao.impl;
 
 import com.bowlink.rr.dao.masterClientIndexDAO;
-import com.bowlink.rr.model.programEngagementSection_MCIAlgorithms;
-import com.bowlink.rr.model.programEngagementSection_mciFields;
+import com.bowlink.rr.model.programUploadTypeAlgorithm;
+import com.bowlink.rr.model.programUploadTypeAlgorithmFields;
 
 import java.util.List;
 
@@ -35,29 +35,28 @@ public class masterClientIndexDAOImpl implements masterClientIndexDAO {
     @Override
     @Transactional
     @SuppressWarnings("unchecked")
-    public List<programEngagementSection_MCIAlgorithms> getEngagementSectionMCIalgorithms(Integer programEngagementSectionId) throws Exception {
-        Query query = sessionFactory.getCurrentSession().createQuery("from programEngagementSection_MCIAlgorithms where programEngagementSectionId = :programEngagementSectionId order by processOrder asc");
-        query.setParameter("programEngagementSectionId", programEngagementSectionId);
-
-		List<programEngagementSection_MCIAlgorithms> MCIList = query.list();
+    public List<programUploadTypeAlgorithm> getProgramUploadTypeAlgorithm(Integer programUploadTypeId) throws Exception {
+        Query query = sessionFactory.getCurrentSession().createQuery(" from programUploadTypeAlgorithm where programUploadTypeId = :programUploadTypeId order by processOrder asc");
+        query.setParameter("programUploadTypeId", programUploadTypeId);
+		List<programUploadTypeAlgorithm> MCIList = query.list();
         return MCIList;
     }
     
     /**
      * The 'getProgramMCIFields' function will get a list of fields associated to each MCI Algorithm.
      * 
-     * @param mciId The id of the MCI Algorithm
+     * @param algorithmId The id of the MCI Algorithm
      * @return  This function will return a list of MCI Fields
      * @throws Exception 
      */
     @Override
     @Transactional
     @SuppressWarnings("unchecked")
-    public List<programEngagementSection_mciFields> getMCIAlgorithmFields(Integer mciId) throws Exception {
-        Query query = sessionFactory.getCurrentSession().createQuery("from programEngagementSection_mciFields where mciId = :mciId order by id asc");
-        query.setParameter("mciId", mciId);
+    public List<programUploadTypeAlgorithmFields> getMCIAlgorithmFields(Integer algorithmId) throws Exception {
+        Query query = sessionFactory.getCurrentSession().createQuery("from programUploadTypeAlgorithmFields where algorithmId = :algorithmId order by id asc");
+        query.setParameter("algorithmId", algorithmId);
 
-        List<programEngagementSection_mciFields> fieldList = query.list();
+        List<programUploadTypeAlgorithmFields> fieldList = query.list();
         return fieldList;
     }
     
@@ -69,7 +68,7 @@ public class masterClientIndexDAOImpl implements masterClientIndexDAO {
      * @return This function will return the id from the new algorithm
      */
     @Override
-    public Integer createMCIAlgorithm(programEngagementSection_MCIAlgorithms newMCIAlgorithm) throws Exception {
+    public Integer createMCIAlgorithm(programUploadTypeAlgorithm newMCIAlgorithm) throws Exception {
         Integer lastId = null;
 
         lastId = (Integer) sessionFactory.getCurrentSession().save(newMCIAlgorithm);
@@ -85,7 +84,7 @@ public class masterClientIndexDAOImpl implements masterClientIndexDAO {
      * @return This function will not return anything
      */
     @Override
-    public void updateMCIAlgorithm(programEngagementSection_MCIAlgorithms MCIAlgorithm) throws Exception {
+    public void updateMCIAlgorithm(programUploadTypeAlgorithm MCIAlgorithm) throws Exception {
         sessionFactory.getCurrentSession().update(MCIAlgorithm);
     }
     
@@ -97,24 +96,24 @@ public class masterClientIndexDAOImpl implements masterClientIndexDAO {
      * 
      */
     @Override
-    public void createMCIAlgorithmFields(programEngagementSection_mciFields newField) throws Exception {
+    public void createMCIAlgorithmFields(programUploadTypeAlgorithmFields newField) throws Exception {
         sessionFactory.getCurrentSession().save(newField);
     }
     
     /**
      * The 'getMCIAlgorithm' function will return the details of the passed in MCI algorithm.
      * 
-     * @param mciId The id of the selected MCI algorithm
+     * @param algorithmId The id of the selected MCI algorithm
      * @return
      * @throws Exception 
      */
     @Override
     @Transactional
-    public programEngagementSection_MCIAlgorithms getMCIAlgorithm(Integer mciId) throws Exception {
-        Query query = sessionFactory.getCurrentSession().createQuery("from programEngagementSection_MCIAlgorithms where id = :mciId order by processOrder");
-        query.setParameter("mciId", mciId);
+    public programUploadTypeAlgorithm getMCIAlgorithm(Integer algorithmid) throws Exception {
+        Query query = sessionFactory.getCurrentSession().createQuery("from programUploadTypeAlgorithm where id = :algorithmid order by processOrder");
+        query.setParameter("algorithmid", algorithmid);
 
-        return (programEngagementSection_MCIAlgorithms) query.uniqueResult();
+        return (programUploadTypeAlgorithm) query.uniqueResult();
     }
 
     /**
@@ -124,7 +123,7 @@ public class masterClientIndexDAOImpl implements masterClientIndexDAO {
      */
     @Override
     public void removeAlgorithmField(Integer algorithmFieldId) throws Exception {
-        Query deleteAlgorithmField = sessionFactory.getCurrentSession().createQuery("delete from programEngagementSection_mciFields where id = :algorithmFieldId");
+        Query deleteAlgorithmField = sessionFactory.getCurrentSession().createQuery("delete from programUploadTypeAlgorithmFields where id = :algorithmFieldId");
         deleteAlgorithmField.setParameter("algorithmFieldId", algorithmFieldId);
         deleteAlgorithmField.executeUpdate();
     }
@@ -136,11 +135,11 @@ public class masterClientIndexDAOImpl implements masterClientIndexDAO {
      */
     @Override
     public void removeAlgorithm(Integer algorithmId) throws Exception {
-        Query deleteAlgorithmField = sessionFactory.getCurrentSession().createQuery("delete from programEngagementSection_mciFields where mciId = :algorithmId");
+        Query deleteAlgorithmField = sessionFactory.getCurrentSession().createQuery("delete from programUploadTypeAlgorithmFields where algorithmid = :algorithmId");
         deleteAlgorithmField.setParameter("algorithmId", algorithmId);
         deleteAlgorithmField.executeUpdate();
         
-        Query deleteAlgorithm = sessionFactory.getCurrentSession().createQuery("delete from programEngagementSection_MCIAlgorithms where id = :algorithmId");
+        Query deleteAlgorithm = sessionFactory.getCurrentSession().createQuery("delete from programUploadTypeAlgorithm where id = :algorithmId");
         deleteAlgorithm.setParameter("algorithmId", algorithmId);
         deleteAlgorithm.executeUpdate();
     }
@@ -148,11 +147,11 @@ public class masterClientIndexDAOImpl implements masterClientIndexDAO {
 	@Override
 	@Transactional
 	@SuppressWarnings("unchecked")
-	public Integer getMaxProcessOrder(Integer sectionId) throws Exception {
-		Query query = sessionFactory.getCurrentSession().createQuery("from programEngagementSection_MCIAlgorithms where programEngagementSectionId = :sectionId order by processOrder desc");
-        query.setParameter("sectionId", sectionId);
+	public Integer getMaxProcessOrder(Integer programUploadTypeId) throws Exception {
+		Query query = sessionFactory.getCurrentSession().createQuery("from programUploadTypeAlgorithm where programUploadTypeId = :programUploadTypeId order by processOrder desc");
+        query.setParameter("programUploadTypeId", programUploadTypeId);
 
-        List<programEngagementSection_MCIAlgorithms> algorithmList = query.list();
+        List<programUploadTypeAlgorithm> algorithmList = query.list();
         if (algorithmList.size() != 0) {
         	return algorithmList.get(0).getProcessOrder();
         } else {
@@ -164,13 +163,13 @@ public class masterClientIndexDAOImpl implements masterClientIndexDAO {
 	@Override
 	@Transactional
 	@SuppressWarnings("unchecked")
-	public programEngagementSection_MCIAlgorithms getMCIAlgorithmByProcessOrder(
-			Integer processOrder, Integer sectionId) throws Exception {
-		Query query = sessionFactory.getCurrentSession().createQuery("from programEngagementSection_MCIAlgorithms where processOrder = :processOrder and programEngagementSectionId = :sectionId order by processOrder desc");
-        query.setParameter("sectionId", sectionId);
+	public programUploadTypeAlgorithm getMCIAlgorithmByProcessOrder(
+			Integer processOrder, Integer programUploadTypeId) throws Exception {
+		Query query = sessionFactory.getCurrentSession().createQuery("from programUploadTypeAlgorithm where processOrder = :processOrder and programUploadTypeId = :programUploadTypeId order by processOrder desc");
+        query.setParameter("programUploadTypeId", programUploadTypeId);
         query.setParameter("processOrder", processOrder);
 
-        List<programEngagementSection_MCIAlgorithms> algorithmList = query.list();
+        List<programUploadTypeAlgorithm> algorithmList = query.list();
         if (algorithmList.size() != 0) {
         	return algorithmList.get(0);
         } else {

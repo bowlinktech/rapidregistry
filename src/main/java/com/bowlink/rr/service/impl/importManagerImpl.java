@@ -248,8 +248,8 @@ public class importManagerImpl implements importManager {
 	}
 
 	@Override
-	public Integer saveProgramUplaod(programUploads programUpload)  throws Exception{
-		return importDAO.saveProgramUplaod(programUpload);		
+	public Integer saveProgramUpload(programUploads programUpload)  throws Exception{
+		return importDAO.saveProgramUpload(programUpload);		
 	}
 
 	@Override
@@ -482,7 +482,7 @@ public class importManagerImpl implements importManager {
             		updateProgramUpload(puNew);
             	} else {
             		//no match, we rename the file and notify admin
-            		String subject = "Cannot find programUplaod with fileName " + fileName;
+            		String subject = "Cannot find programUpload with fileName " + fileName;
         			try {
         				sendImportErrorEmail (subject, null); 
         			} catch (Exception e) {
@@ -687,7 +687,7 @@ public class importManagerImpl implements importManager {
         pu.setTotalInError(0);
         pu.setTotalRows(0);
         pu.setProgramUploadType(put);
-        Integer programUploadId = saveProgramUplaod(pu);
+        Integer programUploadId = saveProgramUpload(pu);
         
         // we save the file to archivesIn
         fileName = saveUploadedFile(pu, uploadedFile);

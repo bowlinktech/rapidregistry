@@ -43,7 +43,7 @@
                 
                 <div id="programUploadTypeIdDiv" class="form-group ${status.error ? 'has-error' : '' }" <c:if test="${empty programUploadTypeId}">style="display:none"</c:if>>
                     <label for="programUploadTypeId">Select the program you are uploading for *</label>
-                    <select id="programUploadTypeId" name="programUplaodTypeId" class="form-control half">
+                    <select id="programUploadTypeId" name="programUploadTypeId" class="form-control half">
                         <option  value="">- Program Upload Types - </option>
                         <c:forEach items="${programUploadTypes}" var="programUploadType">
                             <option value="${programUploadType.id}" <c:if test="${programUploadTypeId == programUploadType.id}">selected</c:if>>${programUploadType.name}</option>

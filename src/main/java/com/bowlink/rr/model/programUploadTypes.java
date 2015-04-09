@@ -61,11 +61,11 @@ public class programUploadTypes {
     private boolean useHEL = false;
     
     @NoHtml
-    @Column(name = "HELPickUpPath", nullable = false)
+    @Column(name = "HELPickUpPath", nullable = true)
     private String helPickUpPath;
     
     @NoHtml
-    @Column(name = "HELDropPath", nullable = false)
+    @Column(name = "HELDropPath", nullable = true)
     private String helDropPath;
     
     @Column(name = "fileTypeId", nullable = false)

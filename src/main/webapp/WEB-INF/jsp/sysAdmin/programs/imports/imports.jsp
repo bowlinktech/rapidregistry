@@ -73,7 +73,7 @@
                                                     <span class="glyphicon glyphicon-align-justify"></span>
                                                     Fields
                                                 </a>
-                                                <a href="/sysAdmin/programs/${programName}/mci-algorithms"  class="btn btn-link" title="View rules on how to process this import type." rel="${importType.id}">
+                                                <a href="/sysAdmin/programs/${programName}/mci-algorithms?s=${importType.id}"  class="btn btn-link" title="View rules on how to process this import type." rel="${importType.id}">
                                                     <span class="glyphicon glyphicon-saved"></span>
                                                     Rules
                                                 </a>

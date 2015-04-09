@@ -5,9 +5,8 @@
  */
 package com.bowlink.rr.service;
 
-import com.bowlink.rr.model.programEngagementSections;
-import com.bowlink.rr.model.programEngagementSection_MCIAlgorithms;
-import com.bowlink.rr.model.programEngagementSection_mciFields;
+import com.bowlink.rr.model.programUploadTypeAlgorithm;
+import com.bowlink.rr.model.programUploadTypeAlgorithmFields;
 
 import java.util.List;
 
@@ -17,27 +16,25 @@ import java.util.List;
  */
 public interface masterClientIndexManager {
     
-    List<programEngagementSection_MCIAlgorithms> getEngagementSectionMCIalgorithms(Integer programId) throws Exception;
+	List<programUploadTypeAlgorithm> getProgramUploadTypeAlgorithm(Integer programUploadTypeId) throws Exception;
+	 
+    List<programUploadTypeAlgorithmFields> getMCIAlgorithmFields(Integer algorithmId) throws Exception;
     
-    List<programEngagementSection_mciFields> getMCIAlgorithmFields(Integer mciId) throws Exception;
+    Integer createMCIAlgorithm(programUploadTypeAlgorithm newMCIAlgorithm) throws Exception;
     
-    Integer createMCIAlgorithm(programEngagementSection_MCIAlgorithms newMCIAlgorithm) throws Exception;
+    void updateMCIAlgorithm(programUploadTypeAlgorithm MCIAlgorithm) throws Exception;
     
-    void updateMCIAlgorithm(programEngagementSection_MCIAlgorithms MCIAlgorithm) throws Exception;
+    void createMCIAlgorithmFields(programUploadTypeAlgorithmFields newField) throws Exception;
     
-    void createMCIAlgorithmFields(programEngagementSection_mciFields newField) throws Exception;
-    
-    programEngagementSection_MCIAlgorithms getMCIAlgorithm(Integer mciId) throws Exception;
+    programUploadTypeAlgorithm getMCIAlgorithm(Integer algorithmId) throws Exception;
    
     void removeAlgorithmField(Integer algorithmFieldId) throws Exception;
     
     void removeAlgorithm(Integer algorithmId) throws Exception;
     
-    List <programEngagementSections> getMCIAlgorithms(List <programEngagementSections> engagementSections) throws Exception;
-  
     Integer getMaxProcessOrder (Integer sectionId) throws Exception;
     
     void reorderAlgorithm (Integer sectionId) throws Exception;
     
-    programEngagementSection_MCIAlgorithms getMCIAlgorithmByProcessOrder(Integer processOrder, Integer sectionId) throws Exception;
+    programUploadTypeAlgorithm getMCIAlgorithmByProcessOrder(Integer processOrder, Integer programUploadTypeId) throws Exception;
 }

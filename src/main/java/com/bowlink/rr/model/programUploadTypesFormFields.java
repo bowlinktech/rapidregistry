@@ -20,7 +20,7 @@ import org.springframework.format.annotation.DateTimeFormat;
  * @author chadmccue
  */
 @Entity
-@Table(name = "PROGRAMUPLOADTYPE_FORMFIELDS")
+@Table(name = "put_formfields")
 public class programUploadTypesFormFields {
     
     @Transient

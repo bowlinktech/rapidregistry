@@ -58,7 +58,7 @@ public interface importManager {
     
     void updateProgramUpload (programUploads programUpload) throws Exception;
     
-    Integer saveProgramUplaod (programUploads programUpload) throws Exception;
+    Integer saveProgramUpload (programUploads programUpload) throws Exception;
     
     programUploads getProgramUpload(Integer programUpload) throws Exception;
     
