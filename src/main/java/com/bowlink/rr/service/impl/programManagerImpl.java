@@ -7,7 +7,7 @@
 package com.bowlink.rr.service.impl;
 
 import com.bowlink.rr.dao.programDAO;
-import com.bowlink.rr.model.engagementMatchingActions;
+import com.bowlink.rr.model.algorithmMatchingActions;
 import com.bowlink.rr.model.program;
 import com.bowlink.rr.model.programAdmin;
 import com.bowlink.rr.model.programAvailableTables;
@@ -188,8 +188,8 @@ public class programManagerImpl implements programManager {
 
 	@Override
 	@Transactional
-	public List<engagementMatchingActions> getEngagementMatchingActions() throws Exception {
-		return programDAO.getEngagementMatchingActions();
+	public List<algorithmMatchingActions> getAlgorithmMatchingActions() throws Exception {
+		return programDAO.getAlgorithmMatchingActions();
 	}
 
 	@Override

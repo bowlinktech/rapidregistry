@@ -1,7 +1,7 @@
 package com.bowlink.rr.controller;
 
 import com.bowlink.rr.model.User;
-import com.bowlink.rr.model.engagementMatchingActions;
+import com.bowlink.rr.model.algorithmMatchingActions;
 import com.bowlink.rr.model.program;
 import com.bowlink.rr.model.programAdmin;
 import com.bowlink.rr.model.programAvailableTables;
@@ -189,7 +189,7 @@ public class programController {
         	lastHierarchyName = programOrgHierarchy.get(programOrgHierarchy.size() -1 ).getName();
         }
         //drop down of possible actions for patient and visit reconciliation
-        List<engagementMatchingActions> actionList = programmanager.getEngagementMatchingActions();
+        List<algorithmMatchingActions> actionList = programmanager.getAlgorithmMatchingActions();
         mav.addObject("actionList", actionList);
         
         mav.addObject("lastHierarchyName", lastHierarchyName);

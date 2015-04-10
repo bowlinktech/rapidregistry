@@ -23,8 +23,8 @@ import org.springframework.format.annotation.DateTimeFormat;
  * @author chadmccue
  */
 @Entity
-@Table(name = "lu_engagementMatchingActions")
-public class engagementMatchingActions {
+@Table(name = "lu_algorithmMatchingActions")
+public class algorithmMatchingActions {
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

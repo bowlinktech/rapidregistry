@@ -7,7 +7,7 @@
 package com.bowlink.rr.dao.impl;
 
 import com.bowlink.rr.dao.programDAO;
-import com.bowlink.rr.model.engagementMatchingActions;
+import com.bowlink.rr.model.algorithmMatchingActions;
 import com.bowlink.rr.model.program;
 import com.bowlink.rr.model.programAdmin;
 import com.bowlink.rr.model.programAvailableTables;
@@ -413,9 +413,9 @@ public class programDAOImpl implements programDAO {
     
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<engagementMatchingActions> getEngagementMatchingActions() throws Exception {
-		Query query = sessionFactory.getCurrentSession().createQuery("from engagementMatchingActions order by id asc");
-		List<engagementMatchingActions> actionList = query.list();
+	public List<algorithmMatchingActions> getAlgorithmMatchingActions() throws Exception {
+		Query query = sessionFactory.getCurrentSession().createQuery("from algorithmMatchingActions order by id asc");
+		List<algorithmMatchingActions> actionList = query.list();
         return actionList;
 	}
 
