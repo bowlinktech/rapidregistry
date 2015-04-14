@@ -9,7 +9,7 @@ require(['./main'], function () {
 
         //Fade out the updated/created message after being displayed.
         if ($('.alert').length > 0) {
-            $('.alert').delay(2000).fadeOut(5000);
+            $('.alert').delay(2000).fadeOut(10000);
         }
 
         $("input:text,form").attr("autocomplete", "off");
@@ -44,12 +44,36 @@ require(['./main'], function () {
         //Function to submit the changes to an existing user or 
         //submit the new user fields from the modal window.
         $(document).on('click', '#submitButton', function(event) {
-           
-            var formData = $("#mcidetailsform").serialize();
-
+        	
+        	var formData = $("#mcidetailsform").serialize();
             var actionValue = $(this).attr('rel').toLowerCase();
-            var algorithmId = $("#importTypeId").val();
+            var importTypeId = $(this).attr('rel2').toLowerCase();
+            var errorCount = 0;
 
+            /** we make sure there is a categoryId, an action and there are fields selected **/
+            $('div.form-group').removeClass("has-error");
+            $('span.control-label').removeClass("has-error");
+            $('span.control-label').html("");
+            
+            if ($('#categoryId').val() == '') {
+            	$('#categoryIdDiv').addClass("has-error");
+                $('#categoryIdMsg').addClass("has-error");
+                $('#categoryIdMsg').html('A category must be selected for the algorithm.');
+            	errorCount++;
+            }
+            
+            if ($('#action').val() == '') {
+            	$('#actionDiv').addClass("has-error");
+                $('#actionMsg').addClass("has-error");
+                $('#actionMsg').html('An action must be selected for the algorithm.');
+            	errorCount++;
+            }
+            
+            if (errorCount > 0) {
+            	return false;
+             
+            }
+            
             $.ajax({
                 url: 'mci-algorithms/'+actionValue+'_mcialgorithm',
                 data: formData,
@@ -58,11 +82,11 @@ require(['./main'], function () {
                 success: function(data) {
 
                     if (data.indexOf('algorithmUpdated') != -1) {
-                        window.location.href = "mci-algorithms?s=" + algorithmId + "&msg=updated";
+                        window.location.href = "mci-algorithms?s=" + importTypeId + "&msg=updated";
 
                     }
                     else if (data.indexOf('algorithmCreated') != -1) {
-                        window.location.href = "mci-algorithms?s=" + algorithmId + "&msg=created";
+                        window.location.href = "mci-algorithms?s=" + importTypeId + "&msg=created";
 
                     }
                     else {
@@ -72,7 +96,7 @@ require(['./main'], function () {
             });
             event.preventDefault();
             return false;
-
+           
         });
 
 
@@ -112,7 +136,7 @@ require(['./main'], function () {
                     data: {'algorithmId': id, 'importTypeId': importTypeId},
                     type: "POST",
                     success: function(data) {
-                        window.location.href = "mci-algorithms?msg=deleted";
+                        window.location.href = "mci-algorithms?s="+ importTypeId +"&msg=deleted";
                     }
                 });
             }
@@ -134,7 +158,7 @@ require(['./main'], function () {
                 	//Need to update the saved process order
                 	$.ajax({
                         url: 'mci-algorithms/updateProcessOrder.do',
-                        data: {'sectionId' : sectionId, 'currOrder' : currPos,  'newOrder': newPos},
+                        data: {'importTypeId' : importTypeId, 'currOrder' : currPos,  'newOrder': newPos},
                         type: "POST",
                         success: function(data) {
                             $('#processOrderMsgDiv').show();

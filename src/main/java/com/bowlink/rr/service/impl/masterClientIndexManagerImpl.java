@@ -6,11 +6,14 @@
 package com.bowlink.rr.service.impl;
 
 import com.bowlink.rr.dao.masterClientIndexDAO;
+import com.bowlink.rr.model.algorithmCategories;
+import com.bowlink.rr.model.algorithmMatchingActions;
 import com.bowlink.rr.model.programUploadTypeAlgorithm;
 import com.bowlink.rr.model.programUploadTypeAlgorithmFields;
 import com.bowlink.rr.service.dataElementManager;
 import com.bowlink.rr.service.masterClientIndexManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -119,4 +122,34 @@ public class masterClientIndexManagerImpl implements masterClientIndexManager {
 		return masterClientIndexDAO.getMCIAlgorithmByProcessOrder(processOrder, programUploadTypeId);
 	}
 
+	@Override
+	@Transactional
+	public List<algorithmMatchingActions> getAlgorithmMatchingActions(Boolean status) throws Exception {
+		return masterClientIndexDAO.getAlgorithmMatchingActions(status);
+	}
+
+	@Override
+	public List<algorithmCategories> getAlgorithmCategories(Boolean status)
+			throws Exception {
+		return masterClientIndexDAO.getAlgorithmCategories(status);
+	}
+
+	@Override
+	public List<algorithmCategories> getAlgorithmsByCatForUploadType(
+			Integer importTypeId) throws Exception {
+		//1. get the categories
+		List<algorithmCategories> algorithmCategories = masterClientIndexDAO.getCategoriesForUploadType(importTypeId);
+		// loop categories and get algorithms
+		for (algorithmCategories category : algorithmCategories) {
+			category.setAlgorithms(masterClientIndexDAO.getPUTAlgorithmByCategory(category.getId(), importTypeId));
+			for (programUploadTypeAlgorithm algorithm : category.getAlgorithms()) {
+				//this set fields and names
+				algorithm.setFields(masterClientIndexDAO.getMCIAlgorithmFields(algorithm.getId()));				
+			}
+		}
+		
+		
+		return algorithmCategories;
+	}
+	
 }

@@ -65,8 +65,6 @@ public interface programDAO {
     void removeAdminProgram(Integer programId, Integer adminid) throws Exception;
     
     List<program> getAvailbleProgramsForUser(Integer userId) throws Exception;
-   
-    List <algorithmMatchingActions> getAlgorithmMatchingActions () throws Exception;
     
     List<programUploadTypes> getProgramUploadTypes(Integer programId) throws Exception;
     

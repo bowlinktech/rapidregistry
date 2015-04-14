@@ -188,9 +188,6 @@ public class programController {
         if (programOrgHierarchy.size() != 0) {
         	lastHierarchyName = programOrgHierarchy.get(programOrgHierarchy.size() -1 ).getName();
         }
-        //drop down of possible actions for patient and visit reconciliation
-        List<algorithmMatchingActions> actionList = programmanager.getAlgorithmMatchingActions();
-        mav.addObject("actionList", actionList);
         
         mav.addObject("lastHierarchyName", lastHierarchyName);
         mav.addObject("id", programDetails.getId());

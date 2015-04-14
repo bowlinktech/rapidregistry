@@ -8,6 +8,7 @@ package com.bowlink.rr.model;
 import com.bowlink.rr.validator.NoHtml;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -36,6 +37,9 @@ public class programUploadTypes {
 	
 	@Transient
 	private String delimChar;
+	
+	@Transient
+	private List<algorithmCategories> algorithmCategories;
 	
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -198,6 +202,14 @@ public class programUploadTypes {
 
 	public void setDelimChar(String delimChar) {
 		this.delimChar = delimChar;
+	}
+
+	public List<algorithmCategories> getAlgorithmCategories() {
+		return algorithmCategories;
+	}
+
+	public void setAlgorithmCategories(List<algorithmCategories> algorithmCategories) {
+		this.algorithmCategories = algorithmCategories;
 	}
 
 }

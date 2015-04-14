@@ -5,6 +5,8 @@
  */
 package com.bowlink.rr.service;
 
+import com.bowlink.rr.model.algorithmCategories;
+import com.bowlink.rr.model.algorithmMatchingActions;
 import com.bowlink.rr.model.programUploadTypeAlgorithm;
 import com.bowlink.rr.model.programUploadTypeAlgorithmFields;
 
@@ -37,4 +39,11 @@ public interface masterClientIndexManager {
     void reorderAlgorithm (Integer sectionId) throws Exception;
     
     programUploadTypeAlgorithm getMCIAlgorithmByProcessOrder(Integer processOrder, Integer programUploadTypeId) throws Exception;
+    
+    List <algorithmMatchingActions> getAlgorithmMatchingActions (Boolean status) throws Exception;
+    
+    List <algorithmCategories> getAlgorithmCategories (Boolean status) throws Exception;
+    
+    List <algorithmCategories> getAlgorithmsByCatForUploadType (Integer importTypeId) throws Exception;
+    
 }

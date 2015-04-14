@@ -63,8 +63,6 @@ public interface programManager {
     
     List<program> getAvailbleProgramsForUser(Integer userId) throws Exception;
     
-    List <algorithmMatchingActions> getAlgorithmMatchingActions () throws Exception;
-    
     List<programUploadTypes> getProgramUploadTypes(Integer programId) throws Exception;
     
 }

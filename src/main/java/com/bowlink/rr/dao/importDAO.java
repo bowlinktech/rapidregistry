@@ -7,6 +7,8 @@ package com.bowlink.rr.dao;
 
 import com.bowlink.rr.model.User;
 import com.bowlink.rr.model.MoveFilesLog;
+import com.bowlink.rr.model.algorithmCategories;
+import com.bowlink.rr.model.algorithmMatchingActions;
 import com.bowlink.rr.model.delimiters;
 import com.bowlink.rr.model.errorCodes;
 import com.bowlink.rr.model.fileTypes;
@@ -14,9 +16,7 @@ import com.bowlink.rr.model.programUploadTypes;
 import com.bowlink.rr.model.programUploadTypesFormFields;
 import com.bowlink.rr.model.programUpload_Errors;
 import com.bowlink.rr.model.programUploads;
-
 import java.util.List;
-
 import org.springframework.stereotype.Repository;
 
 /**
@@ -79,4 +79,6 @@ public interface importDAO {
     List <programUpload_Errors> getProgramUploadErrorList (Integer id, String type) throws Exception;
     
     List <errorCodes> getErrorCodes (Integer status) throws Exception;
+  
 }
+

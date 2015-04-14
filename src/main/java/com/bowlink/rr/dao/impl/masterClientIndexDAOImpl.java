@@ -6,13 +6,18 @@
 package com.bowlink.rr.dao.impl;
 
 import com.bowlink.rr.dao.masterClientIndexDAO;
+import com.bowlink.rr.model.algorithmCategories;
+import com.bowlink.rr.model.algorithmMatchingActions;
 import com.bowlink.rr.model.programUploadTypeAlgorithm;
 import com.bowlink.rr.model.programUploadTypeAlgorithmFields;
 
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
+import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -175,6 +180,73 @@ public class masterClientIndexDAOImpl implements masterClientIndexDAO {
         } else {
         	return null;
         }
+	}
+	
+	/**
+     * This method returns a list of available action that can be assigned to a patient match or visit match
+     */
+    
+	@Override
+	@Transactional
+	@SuppressWarnings("unchecked")
+	public List<algorithmMatchingActions> getAlgorithmMatchingActions(Boolean status) throws Exception {
+		
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(algorithmMatchingActions.class);
+
+        if (status != null) {
+            criteria.add(Restrictions.eq("status", status));
+        } 
+        
+		List<algorithmMatchingActions> actionList = criteria.list();      
+        
+		return actionList;
+	}
+
+	@Override
+	@Transactional
+	@SuppressWarnings("unchecked")
+	public List<algorithmCategories> getAlgorithmCategories(Boolean status)
+			throws Exception {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(algorithmCategories.class);
+        
+		if (status != null) {
+            criteria.add(Restrictions.eq("status", status));
+        } 
+        
+		List<algorithmCategories> categoryList = criteria.list();      
+        
+		return categoryList;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<algorithmCategories> getCategoriesForUploadType(
+			Integer importTypeId) throws Exception {
+		
+		Query query;
+        query = sessionFactory.getCurrentSession().createSQLQuery("SELECT distinct cat.id, displayText "
+        		+ " FROM put_algorithms put, lu_algorithmCategories cat where cat.id = put.categoryId "
+        		+ " and programuploadtypeId = :importTypeId")
+                .setParameter("importTypeId", importTypeId);
+            
+            query.setResultTransformer(Transformers.aliasToBean(algorithmCategories.class));
+            
+            return query.list();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<programUploadTypeAlgorithm> getPUTAlgorithmByCategory(
+			Integer catId, Integer importTypeId) throws Exception {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(programUploadTypeAlgorithm.class);
+        criteria.add(Restrictions.eq("categoryId", catId));
+        criteria.add(Restrictions.eq("programUploadTypeId", importTypeId)); 
+        
+		List<programUploadTypeAlgorithm> algorithmList = criteria.list();      
+        
+		return algorithmList;
 	}
 	
 }

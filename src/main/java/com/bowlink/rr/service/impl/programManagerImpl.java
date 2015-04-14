@@ -186,13 +186,7 @@ public class programManagerImpl implements programManager {
         return programDAO.getAvailbleProgramsForUser(userId);
     }
 
-	@Override
-	@Transactional
-	public List<algorithmMatchingActions> getAlgorithmMatchingActions() throws Exception {
-		return programDAO.getAlgorithmMatchingActions();
-	}
-
-	@Override
+    @Override
 	public List<programUploadTypes> getProgramUploadTypes(
 			Integer programId) throws Exception {
 		return programDAO.getProgramUploadTypes(programId);

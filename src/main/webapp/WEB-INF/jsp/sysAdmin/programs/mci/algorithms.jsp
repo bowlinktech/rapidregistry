@@ -40,12 +40,13 @@
                     <dt>
                     <dd><strong>Program Summary:</strong></dd>
                     <dd><strong>Program Name:</strong> ${programDetails.programName}</dd>
+                    <dd><strong>Import Name:</strong> ${importType.name}</dd>
                     </dt>
                 </div>
             </section>  
         </div>
     </div>
-    <c:if test="${not empty importType}">
+   <c:forEach var="category" items="${algorithmByCatList}">
     <div class="row-fluid">
         <div class="col-md-12">
             <section class="panel panel-default">
@@ -53,11 +54,11 @@
                     <div class="pull-right">
                         <a href="#algorithmDetailsModal" data-toggle="modal" class="btn btn-primary btn-xs btn-action" id="createNewAlgorithm" title="Create New Algorithm" rel="${importType.id}">Create New Algorithm</a>
                     </div>
-                    <h3 class="panel-title">Algorithms for ${importType.name}</h3>
+                    <h3 class="panel-title">Algorithms for ${category.displayText}</h3>
                 </div>
                 <div class="panel-body">
                     <div class="form-container scrollable"><br />
-                       <table class="table table-striped table-hover table-default" <c:if test="${not empty algorithmList}">id="NotInUseDataTable"</c:if>>
+                       <table class="table table-striped table-hover table-default" <c:if test="${not empty category.algorithms}">id="NotInUseDataTable"</c:if>>
                                 <thead>
                                     <tr>
                                         
@@ -72,8 +73,8 @@
                                 </thead>
                                 <tbody>
                                 <c:choose>
-                                    <c:when test="${not empty algorithmList}">
-                                        <c:forEach var="algorithm" items="${algorithmList}">
+                                    <c:when test="${not empty category.algorithms}">
+                                        <c:forEach var="algorithm" items="${category.algorithms}">
                                             <tr>
                                             	<td class="center-text">
 						                            <select rel="${algorithm.processOrder}" rel2="${importType.id}" name="processOrder" class="processOrder">
@@ -123,12 +124,12 @@
           
         </div>
 	</div>
-      </c:if>
-      <c:if test="${empty importType}">
+      </c:forEach>
+      <c:if test="${empty algorithmByCatList}">
       		<div class="col-md-12">
       		<section class="panel panel-default">
                 <div class="panel-body">
-               There upload type does not exist.  Please contract program administrator.
+               There are no algorithms found. Please contract program administrator if you believe that this is an error.
              </div>
              </section>
              </div>

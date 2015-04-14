@@ -8,6 +8,7 @@ package com.bowlink.rr.model;
 
 import java.util.Date;
 import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -40,13 +41,16 @@ public class programUploadTypeAlgorithm {
     private boolean status = false;
     
     @Column(name = "ACTION", nullable = false)
-    private Integer action = 3;
+    private Integer action = 5;
+    
+    @Column(name = "categoryId", nullable = false)
+    private Integer categoryId = 1;
     
     @Column(name = "programUploadTypeId", nullable = false)
-    private Integer importTypeId;
+    private Integer programUploadTypeId;
     
     @Column(name = "processOrder", nullable = false)
-    private Integer processOrder = 1;    
+    private Integer processOrder;    
     
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
     @Column(name = "DATECREATED", nullable = true)
@@ -104,13 +108,13 @@ public class programUploadTypeAlgorithm {
 
 	
 
-	public Integer getImportTypeId() {
-		return importTypeId;
+	public Integer getProgramUploadTypeId() {
+		return programUploadTypeId;
 	}
 
 
-	public void setImportTypeId(Integer importTypeId) {
-		this.importTypeId = importTypeId;
+	public void setProgramUploadTypeId(Integer programUploadTypeId) {
+		this.programUploadTypeId = programUploadTypeId;
 	}
 
 
@@ -131,6 +135,16 @@ public class programUploadTypeAlgorithm {
 
 	public void setDateCreated(Date dateCreated) {
 		this.dateCreated = dateCreated;
+	}
+
+
+	public Integer getCategoryId() {
+		return categoryId;
+	}
+
+
+	public void setCategoryId(Integer categoryId) {
+		this.categoryId = categoryId;
 	}
 
 }

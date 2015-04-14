@@ -306,6 +306,47 @@ RENAME TO  `rapidregistry`.`lu_algorithmMatchingActions` ;
 INSERT INTO `rapidregistry`.`lu_algorithmCategories` (`mapToTable`, `mapToColumn`, `displayName`) VALUES ('programPatients', 'id', 'Patient');
 INSERT INTO `rapidregistry`.`lu_algorithmCategories` (`mapToTable`, `mapToColumn`, `displayName`) VALUES ('storage_engagements', 'id', 'Engagement');
 
+/** grace 04.10.2015 10:28AM **/
+ALTER TABLE `rapidregistry`.`put_algorithms` 
+ADD COLUMN `categoryId` INT NULL AFTER `dateCreated`;
+
+UPDATE `rapidregistry`.`lu_algorithmMatchingActions` SET `displayText`='Review' WHERE `id`='5';
+
+/** grace 04.13.2015 **/
+ALTER TABLE `rapidregistry`.`programs` 
+DROP COLUMN `visitRecon`,
+DROP COLUMN `patientRecon`;
+
+ALTER TABLE `rapidregistry`.`put_algorithms` 
+CHANGE COLUMN `categoryId` `categoryId` INT(11) NOT NULL ;
+
+ALTER TABLE `rapidregistry`.`put_algorithms` 
+ADD INDEX `fk_categoryId_idx` (`categoryId` ASC);
+ALTER TABLE `rapidregistry`.`put_algorithms` 
+ADD CONSTRAINT `fk_categoryId`
+  FOREIGN KEY (`categoryId`)
+  REFERENCES `rapidregistry`.`lu_algorithmCategories` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+ALTER TABLE `rapidregistry`.`put_algorithms` 
+ADD INDEX `fk_putId_idx` (`programUploadTypeId` ASC);
+ALTER TABLE `rapidregistry`.`put_algorithms` 
+ADD CONSTRAINT `fk_putId`
+  FOREIGN KEY (`programUploadTypeId`)
+  REFERENCES `rapidregistry`.`programuploadtypes` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+ALTER TABLE `rapidregistry`.`lu_algorithmCategories` 
+CHANGE COLUMN `mapToColumn` `mapToColumn` VARCHAR(45) NOT NULL ,
+CHANGE COLUMN `displayName` `displayText` VARCHAR(100) NOT NULL ,
+ADD COLUMN `status` BIT(1) NOT NULL DEFAULT 1 AFTER `displayName`;
+
+
+
+
+
 
 
 

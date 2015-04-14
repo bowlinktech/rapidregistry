@@ -8,6 +8,8 @@ package com.bowlink.rr.service.impl;
 import com.bowlink.rr.dao.importDAO;
 import com.bowlink.rr.model.User;
 import com.bowlink.rr.model.MoveFilesLog;
+import com.bowlink.rr.model.algorithmCategories;
+import com.bowlink.rr.model.algorithmMatchingActions;
 import com.bowlink.rr.model.delimiters;
 import com.bowlink.rr.model.errorCodes;
 import com.bowlink.rr.model.fileTypes;

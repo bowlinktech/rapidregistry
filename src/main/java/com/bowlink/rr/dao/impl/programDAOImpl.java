@@ -407,17 +407,6 @@ public class programDAOImpl implements programDAO {
         
     }
 
-    /**
-     * This method returns a list of available action that can be assigned to a patient match or visit match
-     */
-    
-	@Override
-	@SuppressWarnings("unchecked")
-	public List<algorithmMatchingActions> getAlgorithmMatchingActions() throws Exception {
-		Query query = sessionFactory.getCurrentSession().createQuery("from algorithmMatchingActions order by id asc");
-		List<algorithmMatchingActions> actionList = query.list();
-        return actionList;
-	}
 
 	@Override
 	@SuppressWarnings("unchecked")

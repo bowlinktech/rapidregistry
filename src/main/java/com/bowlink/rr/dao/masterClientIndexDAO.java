@@ -5,6 +5,8 @@
  */
 package com.bowlink.rr.dao;
 
+import com.bowlink.rr.model.algorithmCategories;
+import com.bowlink.rr.model.algorithmMatchingActions;
 import com.bowlink.rr.model.programUploadTypeAlgorithm;
 import com.bowlink.rr.model.programUploadTypeAlgorithmFields;
 
@@ -36,6 +38,15 @@ public interface masterClientIndexDAO {
     Integer getMaxProcessOrder (Integer importTypeId) throws Exception;
     
     programUploadTypeAlgorithm getMCIAlgorithmByProcessOrder(Integer processOrder, Integer importTypeId) throws Exception;
-
+    
+    List <algorithmMatchingActions> getAlgorithmMatchingActions (Boolean status) throws Exception;
+    
+    List <algorithmCategories> getAlgorithmCategories (Boolean status) throws Exception;
+    
+    List <algorithmCategories> getCategoriesForUploadType (Integer importTypeId) throws Exception;
+    
+    List <programUploadTypeAlgorithm> getPUTAlgorithmByCategory (Integer catId, Integer importTypeId) throws Exception;
+    
+    
     
 }

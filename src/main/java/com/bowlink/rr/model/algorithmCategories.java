@@ -1,12 +1,17 @@
 package com.bowlink.rr.model;
 
+import java.util.List;
+
 import com.bowlink.rr.validator.NoHtml;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
 import org.hibernate.validator.constraints.NotEmpty;
 
 /**
@@ -14,8 +19,12 @@ import org.hibernate.validator.constraints.NotEmpty;
  * @author gchan
  */
 @Entity
-@Table(name = "lu_delimiters")
+@Table(name = "lu_algorithmCategories")
 public class algorithmCategories {
+	
+	@Transient
+	private List<programUploadTypeAlgorithm> algorithms;
+	
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -34,8 +43,11 @@ public class algorithmCategories {
 
     @NotEmpty
     @NoHtml
-    @Column(name = "displayName", nullable = false)
-    private String displayName;
+    @Column(name = "displayText", nullable = false)
+    private String displayText;
+    
+    @Column(name = "STATUS", nullable = false)
+    private Boolean status = true;
 
 	public int getId() {
 		return id;
@@ -61,12 +73,27 @@ public class algorithmCategories {
 		this.mapToColumn = mapToColumn;
 	}
 
-	public String getDisplayName() {
-		return displayName;
+	public String getDisplayText() {
+		return displayText;
 	}
 
-	public void setDisplayName(String displayName) {
-		this.displayName = displayName;
+	public void setDisplayText(String displayText) {
+		this.displayText = displayText;
 	}
-      
+
+	public Boolean getStatus() {
+		return status;
+	}
+
+	public void setStatus(Boolean status) {
+		this.status = status;
+	}
+
+	public List<programUploadTypeAlgorithm> getAlgorithms() {
+		return algorithms;
+	}
+
+	public void setAlgorithms(List<programUploadTypeAlgorithm> algorithms) {
+		this.algorithms = algorithms;
+	}
 }

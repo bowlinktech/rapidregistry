@@ -5,6 +5,8 @@
  */
 package com.bowlink.rr.controller;
 
+import com.bowlink.rr.model.algorithmCategories;
+import com.bowlink.rr.model.algorithmMatchingActions;
 import com.bowlink.rr.model.program;
 import com.bowlink.rr.model.programUploadTypeAlgorithm;
 import com.bowlink.rr.model.programUploadTypeAlgorithmFields;
@@ -63,21 +65,25 @@ public class masterClientIndex {
      *
     */ 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public ModelAndView put_algorithms(HttpSession session, 
+    public ModelAndView getAlgorithms(HttpSession session, 
     		@RequestParam(value = "s", required = true) Integer importTypeId) throws Exception {
 
-        
     	ModelAndView mav = new ModelAndView();
         mav.setViewName("/mcialgorithms");
         mav.addObject("id", session.getAttribute("programId"));
 
         program programDetails = programmanager.getProgramById((Integer) session.getAttribute("programId"));
         mav.addObject("programDetails", programDetails);
+        
         programUploadTypes importType = importmanager.getProgramUploadType(importTypeId);
         
-        //get program rules
-        List<programUploadTypeAlgorithm> algorithmList = mcimanager.getProgramUploadTypeAlgorithm(importTypeId);
-        mav.addObject("algorithmList", algorithmList);
+        //we loop rules by categories
+        List<algorithmCategories> algorithmByCatList =  mcimanager.getAlgorithmsByCatForUploadType(importTypeId);
+        mav.addObject("algorithmByCatList", algorithmByCatList);
+        
+        //List<programUploadTypeAlgorithm> algorithmList = mcimanager.getProgramUploadTypeAlgorithm(importTypeId);
+        //mav.addObject("algorithmList", algorithmList);
+        
         mav.addObject("importType", importType);
         
         return mav;
@@ -99,10 +105,19 @@ public class masterClientIndex {
 
         //Create a new blank provider.
         programUploadTypeAlgorithm mci = new programUploadTypeAlgorithm();
-        mci.setImportTypeId(importTypeId);
+        mci.setProgramUploadTypeId(importTypeId);
         /* Get a list of available fields for this upload type*/
         List<programUploadTypesFormFields> existingFormFields = importmanager.getImportTypeFields(importTypeId);
 
+        /**get a list of categories**/
+        List<algorithmCategories> categoryList = mcimanager.getAlgorithmCategories(true);
+        mav.addObject("categoryList", categoryList);
+        
+        /** get a list of actions **/
+        //drop down of possible actions for patient and visit reconciliation
+        List<algorithmMatchingActions> actionList = mcimanager.getAlgorithmMatchingActions(true);
+        mav.addObject("actionList", actionList);
+       
         String fieldName;
 
         for (programUploadTypesFormFields field : existingFormFields) {
@@ -141,8 +156,8 @@ public class masterClientIndex {
     		@RequestParam(value = "fieldAction", required = true) List<String> fieldAction, HttpSession session) 
     				throws Exception {
     	
-        List<programUploadTypesFormFields> existingFormFields = importmanager.getImportTypeFields(mcidetails.getImportTypeId());
-        programUploadTypes importType = importmanager.getProgramUploadType(mcidetails.getImportTypeId());
+        List<programUploadTypesFormFields> existingFormFields = importmanager.getImportTypeFields(mcidetails.getProgramUploadTypeId());
+        programUploadTypes importType = importmanager.getProgramUploadType(mcidetails.getProgramUploadTypeId());
         
         
         if (result.hasErrors()) {
@@ -163,20 +178,22 @@ public class masterClientIndex {
         }
         
         //look for max process order
-        mcidetails.setProcessOrder((mcimanager.getMaxProcessOrder(mcidetails.getImportTypeId()) +1));
+        mcidetails.setProcessOrder((mcimanager.getMaxProcessOrder(mcidetails.getProgramUploadTypeId()) +1));
         Integer algorithmId = mcimanager.createMCIAlgorithm(mcidetails);
         
         int i = 0;
         for(Integer fieldId : fieldIds) {
-            programUploadTypeAlgorithmFields newField = new programUploadTypeAlgorithmFields();
-            newField.setFieldId(fieldId);
-            newField.setAlgorithmId(algorithmId);
-            
-            String selFieldAction = fieldAction.get(i);
-            newField.setAction(selFieldAction);           
-            mcimanager.createMCIAlgorithmFields(newField);
-            
-            i+=1;
+        	if (fieldId != null) {
+	            programUploadTypeAlgorithmFields newField = new programUploadTypeAlgorithmFields();
+	            newField.setFieldId(fieldId);
+	            newField.setAlgorithmId(algorithmId);
+	            
+	            String selFieldAction = fieldAction.get(i);
+	            newField.setAction(selFieldAction);           
+	            mcimanager.createMCIAlgorithmFields(newField);
+	            
+	            i+=1;
+        	}
         }
 
         ModelAndView mav = new ModelAndView("/sysAdmin/programs/mci/details");
@@ -202,7 +219,7 @@ public class masterClientIndex {
     ModelAndView updateMCIAlgorithm(@Valid @ModelAttribute(value = "mcidetails") programUploadTypeAlgorithm mcidetails, BindingResult result,  
     		@RequestParam(value = "fieldIds", required = true) List<Integer> fieldIds, @RequestParam(value = "fieldAction", required = true) List<String> fieldAction, HttpSession session) throws Exception {
 
-    	List<programUploadTypesFormFields> existingFormFields = importmanager.getImportTypeFields(mcidetails.getImportTypeId());
+    	List<programUploadTypesFormFields> existingFormFields = importmanager.getImportTypeFields(mcidetails.getProgramUploadTypeId());
 
     	
         if (result.hasErrors()) {
@@ -227,20 +244,21 @@ public class masterClientIndex {
         
         int i = 0;
         for(Integer fieldId : fieldIds) {
-            programUploadTypeAlgorithmFields newField = new programUploadTypeAlgorithmFields();
-            newField.setFieldId(fieldId);
-            newField.setAlgorithmId(mcidetails.getId());
-            
-            String selFieldAction = fieldAction.get(i);
-            newField.setAction(selFieldAction);
-            
-            mcimanager.createMCIAlgorithmFields(newField);
-            
+        	if (fieldId != null)  {
+	            programUploadTypeAlgorithmFields newField = new programUploadTypeAlgorithmFields();
+	            newField.setFieldId(fieldId);
+	            newField.setAlgorithmId(mcidetails.getId());
+	            
+	            String selFieldAction = fieldAction.get(i);
+	            newField.setAction(selFieldAction);
+	            
+	            mcimanager.createMCIAlgorithmFields(newField);
+        	}
             i+=1;
         }
 
         ModelAndView mav = new ModelAndView("/sysAdmin/programs/mci/details");
-        mav.addObject("importTypeId", mcidetails.getImportTypeId());
+        mav.addObject("importTypeId", mcidetails.getProgramUploadTypeId());
         mav.addObject("success", "algorithmUpdated");
         return mav;
     }
@@ -260,10 +278,19 @@ public class masterClientIndex {
         //Create a new blank provider.
         programUploadTypeAlgorithm mci = mcimanager.getMCIAlgorithm(algorithmId);
         
+        /**get a list of categories**/
+        List<algorithmCategories> categoryList = mcimanager.getAlgorithmCategories(true);
+        mav.addObject("categoryList", categoryList);
+        
+        /** get a list of actions **/
+        //drop down of possible actions for patient and visit reconciliation
+        List<algorithmMatchingActions> actionList = mcimanager.getAlgorithmMatchingActions(true);
+        mav.addObject("actionList", actionList);
+       
         /* Get a list of available fields */
-        List<programUploadTypesFormFields> existingFormFields = importmanager.getImportTypeFields(mci.getId());
+        List<programUploadTypesFormFields> existingFormFields = importmanager.getImportTypeFields(mci.getProgramUploadTypeId());
         //get info
-        programUploadTypes importType = importmanager.getProgramUploadType(mci.getImportTypeId());
+        programUploadTypes importType = importmanager.getProgramUploadType(mci.getProgramUploadTypeId());
         
         String fieldName;
 
@@ -274,7 +301,7 @@ public class masterClientIndex {
         }
         mav.addObject("availableFields", existingFormFields);
         
-        List<programUploadTypeAlgorithmFields> fields = mcimanager.getMCIAlgorithmFields(mci.getImportTypeId());
+        List<programUploadTypeAlgorithmFields> fields = mcimanager.getMCIAlgorithmFields(mci.getId());
         
         for(programUploadTypeAlgorithmFields field : fields) {
             //Get the field name by id
@@ -316,11 +343,11 @@ public class masterClientIndex {
      * @return Will return a 1 when the field is successfully removed.
      */
     @RequestMapping(value = "/removeAlgorithm.do", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody Integer removeAlgorithm(@RequestParam Integer algorithmId, @RequestParam Integer sectionId, 
+    public @ResponseBody Integer removeAlgorithm(@RequestParam Integer algorithmId, @RequestParam Integer importTypeId, 
     		HttpSession session) throws Exception {
     	/** we need to reorder the rest of the algorithm **/
         mcimanager.removeAlgorithm(algorithmId);
-        mcimanager.reorderAlgorithm(sectionId);
+        mcimanager.reorderAlgorithm(importTypeId);
         
         return 1;
     }
@@ -338,12 +365,12 @@ public class masterClientIndex {
     		method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     Integer updateFormDisplayOrder(
-    @RequestParam(value = "sectionId", required = true) Integer sectionId, @RequestParam(value = "currOrder", required = true) 
-    Integer currOrder, @RequestParam(value = "newOrder", required = true) Integer newOrder) throws Exception {
+    @RequestParam(value = "importTypeId", required = true) Integer importTypeId, 
+    @RequestParam(value = "currOrder", required = true) Integer currOrder, @RequestParam(value = "newOrder", required = true) Integer newOrder) throws Exception {
 
     	//we get algorithm info for the algorithm with the new order and the current order
-    	programUploadTypeAlgorithm mciCurrent = mcimanager.getMCIAlgorithmByProcessOrder(currOrder,  sectionId);
-    	programUploadTypeAlgorithm mciNew =  mcimanager.getMCIAlgorithmByProcessOrder(newOrder,  sectionId);
+    	programUploadTypeAlgorithm mciCurrent = mcimanager.getMCIAlgorithmByProcessOrder(currOrder,  importTypeId);
+    	programUploadTypeAlgorithm mciNew =  mcimanager.getMCIAlgorithmByProcessOrder(newOrder,  importTypeId);
     	
     	//we switch and update
     	mciCurrent.setProcessOrder(newOrder);
