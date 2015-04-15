@@ -14,7 +14,7 @@
                     </c:forEach>
                 </div>
         </c:if>
-        <c:if test="${not empty savedStatus}" >
+        <c:if test="${not empty savedStatus && empty errorCodes}" >
                      <div class="alert alert-success">
                         <strong>Success!</strong> 
                         Your file is successfully uploaded.

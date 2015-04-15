@@ -428,4 +428,18 @@ public class importDAOImpl implements importDAO {
 		return errorList;
 	}
 
+	@Override
+	@Transactional
+	@SuppressWarnings("unchecked")
+	public List<programUploads> getProgramUploadsByImportType(
+			Integer importTypeId) throws Exception {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(programUploads.class);
+		
+		criteria.add(Restrictions.eq("programUploadTypeId", importTypeId));
+        
+		List<programUploads> puList = criteria.list();      
+        
+		return puList;
+	}
+
 }

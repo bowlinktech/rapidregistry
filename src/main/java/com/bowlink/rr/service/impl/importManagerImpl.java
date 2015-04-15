@@ -8,12 +8,11 @@ package com.bowlink.rr.service.impl;
 import com.bowlink.rr.dao.importDAO;
 import com.bowlink.rr.model.User;
 import com.bowlink.rr.model.MoveFilesLog;
-import com.bowlink.rr.model.algorithmCategories;
-import com.bowlink.rr.model.algorithmMatchingActions;
 import com.bowlink.rr.model.delimiters;
 import com.bowlink.rr.model.errorCodes;
 import com.bowlink.rr.model.fileTypes;
 import com.bowlink.rr.model.mailMessage;
+import com.bowlink.rr.model.programUploadTypeAlgorithm;
 import com.bowlink.rr.model.programUploadTypes;
 import com.bowlink.rr.model.programUploadTypesFormFields;
 import com.bowlink.rr.model.programUpload_Errors;
@@ -22,6 +21,7 @@ import com.bowlink.rr.reference.fileSystem;
 import com.bowlink.rr.service.emailMessageManager;
 import com.bowlink.rr.service.fileManager;
 import com.bowlink.rr.service.importManager;
+import com.bowlink.rr.service.masterClientIndexManager;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -64,6 +64,9 @@ public class importManagerImpl implements importManager {
     
     @Autowired
     private fileManager filemanager;
+    
+    @Autowired
+    private masterClientIndexManager mcimanager;
     
     private String archivePath = "/rapidRegistry/archivesIn/";
     
@@ -128,8 +131,36 @@ public class importManagerImpl implements importManager {
     
     @Override
     @Transactional
-    public void removeImportType(Integer importTypeId) throws Exception {
-        importDAO.removeImportType(importTypeId);
+    public String removeImportType(Integer importTypeId) throws Exception {
+    	//if import type is in programUploads table, we do not let them delete.
+    	//we set status to inactive
+    	//we need to remove import type and all rules associated
+        boolean deleted = false;
+        List<programUploads> puList = getProgramUploadsByImportType (importTypeId);
+        if (puList.size() == 0) {
+        	//we remove algorithms fields
+        	List<programUploadTypeAlgorithm> putAlgorithms = mcimanager.getProgramUploadTypeAlgorithm(importTypeId);
+
+        	for (programUploadTypeAlgorithm algorithm : putAlgorithms) {
+        		mcimanager.removeAlgorithm(algorithm.getId());
+        	}
+        	//we remove importType
+        	importDAO.removeImportType(importTypeId);
+        	deleted = true;
+        	
+        }  else {
+        	//we change the status
+        	programUploadTypes importType = getProgramUploadType(importTypeId);
+        	importType.setStatus(false);
+        	saveUploadType(importType);
+        }
+    	if (deleted) {
+    		return "success";
+    	} else {
+    		return "failed";
+    	}
+
+    	
     }
 
 	@Override
@@ -724,6 +755,12 @@ public class importManagerImpl implements importManager {
     	Files.delete(loadFile.toPath());
     	return programUploadId;
 		
+	}
+
+	@Override
+	public List<programUploads> getProgramUploadsByImportType(
+			Integer importTypeId) throws Exception {
+		return importDAO.getProgramUploadsByImportType(importTypeId);
 	}
 
 }

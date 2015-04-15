@@ -132,7 +132,7 @@ require(['./main'], function () {
             var importTypeId = $(this).attr('rel2');
             
             
-            if(confirm("Are you sure you want to remvoe this MCI algorithm?")) {
+            if(confirm("Are you sure you want to remove this MCI algorithm?")) {
                 $.ajax({
                     url: 'mci-algorithms/removeAlgorithm.do',
                     data: {'algorithmId': id, 'importTypeId': importTypeId},
@@ -150,6 +150,9 @@ require(['./main'], function () {
         //order selected. It will swap display position
         //values with the requested position.
         $(document).on('change', '.processOrder', function() {
+        	
+        	//need to hide old messages
+        	$('.alert').delay(0).fadeOut(0);
             //Store the current position
             var currPos = $(this).attr('rel');
             var importTypeId = $(this).attr('rel2');
@@ -172,13 +175,16 @@ require(['./main'], function () {
                         }
                     }); 
                                       
-                    $(this).val(currPos);
-                    $(this).attr('rel', currPos);
+                    //$(this).val(currPos);
+                    //$(this).attr('rel', currPos);
                 }
             });
 
-            $(this).val(newPos);
-            $(this).attr('rel', newPos);
+            if ($('.alert').length > 0) {
+                $('.alert').delay(2000).fadeOut(5000);
+            }
+            //$(this).val(newPos);
+            //$(this).attr('rel', newPos);
 
         });
              

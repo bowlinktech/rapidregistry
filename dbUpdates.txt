@@ -344,6 +344,10 @@ CHANGE COLUMN `displayName` `displayText` VARCHAR(100) NOT NULL ,
 ADD COLUMN `status` BIT(1) NOT NULL DEFAULT 1 AFTER `displayName`;
 
 
+/** grace 04.15.2015 6:59PM **/
+ALTER TABLE `rapidregistry`.`programUpload_errors` 
+CHANGE COLUMN `programUploadRecordId` `programUploadRecordId` INT(11) NULL DEFAULT NULL AFTER `programUploadId`,
+CHANGE COLUMN `program_engagementSectionId` `categoryId` INT(11) NULL DEFAULT NULL ;
 
 
 

@@ -12,11 +12,17 @@
                         <strong>Success!</strong> 
                         <c:choose>
                             <c:when test="${param.msg == 'importTypesaved'}">The import type has been successfully saved!</c:when>
-                            <c:when test="${param.msg == 'importTypedeleted'}">The import type has been successfully removed!</c:when>
                             <c:when test="${param.msg == 'fieldssaved'}">The import type fields have been successfully saved!</c:when>
                         </c:choose>
                     </div>
+                    
                 </c:when>
+                <c:when test="${not empty param.deleted}">
+	                            <c:if test="${param.deleted=='failed'}">
+	                            <div class="alert alert-danger">The import type is in use, it has been set to inactive.
+	                            </div></c:if>
+	                            <c:if test="${param.deleted=='success'}">The import type has been successfully removed!</c:if>
+                 </c:when>
             </c:choose>
             <section class="panel panel-default">
                 <div class="panel-body">

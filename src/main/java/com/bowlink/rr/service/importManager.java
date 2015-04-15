@@ -42,7 +42,7 @@ public interface importManager {
     
     void saveImportField(programUploadTypesFormFields fieldDetails) throws Exception;
     
-    void removeImportType(Integer importTypeId) throws Exception;
+    String removeImportType(Integer importTypeId) throws Exception;
     
     List <fileTypes> getFileTypes (Integer fileTypeId) throws Exception;
     
@@ -103,5 +103,6 @@ public interface importManager {
     List <errorCodes> getErrorCodes (Integer status) throws Exception;
     
     Integer submitUploadFile(Integer userId,Integer programUploadTypeId,MultipartFile uploadedFile) throws Exception;
-    
+ 
+    List <programUploads> getProgramUploadsByImportType (Integer importTypeId) throws Exception;
 }

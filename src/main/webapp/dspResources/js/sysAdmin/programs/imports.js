@@ -102,7 +102,7 @@ require(['./main'], function () {
                     type: "POST",
                     async: false,
                     success: function(data) {
-                      window.location.href = "/sysAdmin/programs/"+data+"/imports?msg=importTypedeleted";
+                      window.location.href = "/sysAdmin/programs/"+data;
                     }
                 });
             }

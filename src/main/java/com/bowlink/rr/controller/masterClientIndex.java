@@ -180,7 +180,7 @@ public class masterClientIndex {
         }
         
         //look for max process order
-        mcidetails.setProcessOrder(mcimanager.getMaxProcessOrder(mcidetails.getCategoryId(), (mcidetails.getProgramUploadTypeId() +1)));
+        mcidetails.setProcessOrder(mcimanager.getMaxProcessOrder(mcidetails.getCategoryId(), mcidetails.getProgramUploadTypeId()) + 1);
         Integer algorithmId = mcimanager.createMCIAlgorithm(mcidetails);
         
         int i = 0;

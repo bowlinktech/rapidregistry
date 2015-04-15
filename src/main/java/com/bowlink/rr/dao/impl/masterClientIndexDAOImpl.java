@@ -141,6 +141,7 @@ public class masterClientIndexDAOImpl implements masterClientIndexDAO {
      * @param algorithmId  The id of the selected MCI Algorithm field
      */
     @Override
+    @Transactional
     public void removeAlgorithm(Integer algorithmId) throws Exception {
         Query deleteAlgorithmField = sessionFactory.getCurrentSession().createQuery("delete from programUploadTypeAlgorithmFields where algorithmid = :algorithmId");
         deleteAlgorithmField.setParameter("algorithmId", algorithmId);

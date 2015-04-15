@@ -39,8 +39,8 @@ public class programUpload_Errors {
     @Column(name = "programUploadId", nullable = false)
     private Integer programUploadId = null;
     
-    @Column(name = "engagementId", nullable = false)
-    private Integer engagementId = null;
+    @Column(name = "categoryId", nullable = false)
+    private Integer categoryId = null;
     
     @Column(name = "errorId", nullable = false)
     private Integer errorId = null;
@@ -54,6 +54,22 @@ public class programUpload_Errors {
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
     @Column(name = "DATECREATED", nullable = true)
     private Date dateCreated = new Date();
+
+	public String getErrorDesc() {
+		return errorDesc;
+	}
+
+	public void setErrorDesc(String errorDesc) {
+		this.errorDesc = errorDesc;
+	}
+
+	public String getErrorDisplayText() {
+		return errorDisplayText;
+	}
+
+	public void setErrorDisplayText(String errorDisplayText) {
+		this.errorDisplayText = errorDisplayText;
+	}
 
 	public int getId() {
 		return id;
@@ -71,12 +87,12 @@ public class programUpload_Errors {
 		this.programUploadId = programUploadId;
 	}
 
-	public Integer getEngagementId() {
-		return engagementId;
+	public Integer getCategoryId() {
+		return categoryId;
 	}
 
-	public void setEngagementId(Integer engagementId) {
-		this.engagementId = engagementId;
+	public void setCategoryId(Integer categoryId) {
+		this.categoryId = categoryId;
 	}
 
 	public Integer getErrorId() {
@@ -109,22 +125,6 @@ public class programUpload_Errors {
 
 	public void setDateCreated(Date dateCreated) {
 		this.dateCreated = dateCreated;
-	}
-
-	public String getErrorDesc() {
-		return errorDesc;
-	}
-
-	public void setErrorDesc(String errorDesc) {
-		this.errorDesc = errorDesc;
-	}
-
-	public String getErrorDisplayText() {
-		return errorDisplayText;
-	}
-
-	public void setErrorDisplayText(String errorDisplayText) {
-		this.errorDisplayText = errorDisplayText;
 	}
 
 }

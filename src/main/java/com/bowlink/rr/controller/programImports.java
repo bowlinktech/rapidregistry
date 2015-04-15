@@ -177,6 +177,7 @@ public class programImports {
     
     /**
      * The 'removeImportType' POST request will remove the import type and the associated fields.
+     * we do not let them delete 
      * 
      * @param importTypeId The id of the selected import type.
      * @param session
@@ -186,9 +187,10 @@ public class programImports {
     @RequestMapping(value = "/removeImportType.do", method = RequestMethod.POST)
     public @ResponseBody String removeImportType(@RequestParam(value = "id", required = true) Integer importTypeId, HttpSession session) throws Exception {
         
-        importManager.removeImportType(importTypeId);
+        String deleted = importManager.removeImportType(importTypeId);
+       
         
-        return (String) session.getAttribute("programName");
+        return (String) (session.getAttribute("programName") + "/imports?deleted=" + deleted + "");
 
     }
 

@@ -16,7 +16,9 @@ import com.bowlink.rr.model.programUploadTypes;
 import com.bowlink.rr.model.programUploadTypesFormFields;
 import com.bowlink.rr.model.programUpload_Errors;
 import com.bowlink.rr.model.programUploads;
+
 import java.util.List;
+
 import org.springframework.stereotype.Repository;
 
 /**
@@ -79,6 +81,8 @@ public interface importDAO {
     List <programUpload_Errors> getProgramUploadErrorList (Integer id, String type) throws Exception;
     
     List <errorCodes> getErrorCodes (Integer status) throws Exception;
+    
+    List <programUploads> getProgramUploadsByImportType (Integer importTypeId) throws Exception;
   
 }
 
