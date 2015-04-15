@@ -34,16 +34,18 @@ public interface masterClientIndexManager {
     
     void removeAlgorithm(Integer algorithmId) throws Exception;
     
-    Integer getMaxProcessOrder (Integer sectionId) throws Exception;
+    Integer getMaxProcessOrder (Integer categyroId, Integer importTypeId) throws Exception;
     
-    void reorderAlgorithm (Integer sectionId) throws Exception;
+    void reorderAlgorithm (Integer categyroId, Integer importTypeId) throws Exception;
     
-    programUploadTypeAlgorithm getMCIAlgorithmByProcessOrder(Integer processOrder, Integer programUploadTypeId) throws Exception;
+    programUploadTypeAlgorithm getMCIAlgorithmByProcessOrder(Integer processOrder, Integer programUploadTypeId, Integer categoryId) throws Exception;
     
     List <algorithmMatchingActions> getAlgorithmMatchingActions (Boolean status) throws Exception;
     
     List <algorithmCategories> getAlgorithmCategories (Boolean status) throws Exception;
     
     List <algorithmCategories> getAlgorithmsByCatForUploadType (Integer importTypeId) throws Exception;
+    
+    algorithmMatchingActions getActionById (Integer actionId) throws Exception;
     
 }

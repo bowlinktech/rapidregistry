@@ -32,6 +32,9 @@ public class programUploadTypeAlgorithm {
     @Transient
     private Integer programId = null;
     
+    @Transient
+    private String actionName  = null;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID", nullable = false)
@@ -145,6 +148,16 @@ public class programUploadTypeAlgorithm {
 
 	public void setCategoryId(Integer categoryId) {
 		this.categoryId = categoryId;
+	}
+
+
+	public String getActionName() {
+		return actionName;
+	}
+
+
+	public void setActionName(String actionName) {
+		this.actionName = actionName;
 	}
 
 }

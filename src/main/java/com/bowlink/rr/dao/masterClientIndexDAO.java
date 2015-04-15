@@ -35,9 +35,9 @@ public interface masterClientIndexDAO {
     
     void removeAlgorithm(Integer algorithmId) throws Exception;
     
-    Integer getMaxProcessOrder (Integer importTypeId) throws Exception;
+    Integer getMaxProcessOrder (Integer categoryId, Integer importTypeId) throws Exception;
     
-    programUploadTypeAlgorithm getMCIAlgorithmByProcessOrder(Integer processOrder, Integer importTypeId) throws Exception;
+    programUploadTypeAlgorithm getMCIAlgorithmByProcessOrder(Integer processOrder, Integer importTypeId, Integer categoryId) throws Exception;
     
     List <algorithmMatchingActions> getAlgorithmMatchingActions (Boolean status) throws Exception;
     
@@ -46,6 +46,8 @@ public interface masterClientIndexDAO {
     List <algorithmCategories> getCategoriesForUploadType (Integer importTypeId) throws Exception;
     
     List <programUploadTypeAlgorithm> getPUTAlgorithmByCategory (Integer catId, Integer importTypeId) throws Exception;
+    
+    algorithmMatchingActions getActionById (Integer actionId) throws Exception;
     
     
     

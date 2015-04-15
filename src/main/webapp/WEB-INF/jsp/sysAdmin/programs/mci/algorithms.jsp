@@ -52,7 +52,7 @@
             <section class="panel panel-default">
                 <div class="panel-heading">
                     <div class="pull-right">
-                        <a href="#algorithmDetailsModal" data-toggle="modal" class="btn btn-primary btn-xs btn-action" id="createNewAlgorithm" title="Create New Algorithm" rel="${importType.id}">Create New Algorithm</a>
+                        <a href="#algorithmDetailsModal" data-toggle="modal" class="btn btn-primary btn-xs btn-action createNewAlgorithm" id="createNewAlgorithm${category.id}" title="Create New Algorithm" rel="${importType.id}" rel2="${category.id}">Create New Algorithm</a>
                     </div>
                     <h3 class="panel-title">Algorithms for ${category.displayText}</h3>
                 </div>
@@ -77,9 +77,9 @@
                                         <c:forEach var="algorithm" items="${category.algorithms}">
                                             <tr>
                                             	<td class="center-text">
-						                            <select rel="${algorithm.processOrder}" rel2="${importType.id}" name="processOrder" class="processOrder">
+						                            <select rel="${algorithm.processOrder}" rel2="${importType.id}" rel3="${category.id}" id="processOrder${categoryId}" name="processOrder" class="processOrder">
 						                                <option value="">- Select -</option>
-						                                <c:forEach begin="1" end="${algorithmList.size()}" var="i">
+						                                <c:forEach begin="1" end="${category.algorithms.size()}" var="i">
 						                                    <option value="${i}" <c:if test="${algorithm.processOrder  == i}">selected</c:if>>${i}</option>
 						                                </c:forEach>
 						                            </select>
@@ -90,11 +90,7 @@
                                                     </c:forEach>
                                                 </td>
                                                 <td class="center-text">
-                                                    <c:choose>
-                                                        <c:when test="${algorithm.action == 1}">Match</c:when>
-                                                        <c:when test="${algorithm.action == 2}">No Match</c:when>
-                                                        <c:when test="${algorithm.action == 3}">Review</c:when>
-                                                    </c:choose>
+                                                    ${algorithm.actionName}
                                                 </td>
                                                 <td class="center-text"><c:if test="${algorithm.status}">Active</c:if><c:if test="${!algorithm.status}">Inactive</c:if>
                                                 </td>

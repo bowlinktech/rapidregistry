@@ -19,11 +19,13 @@ require(['./main'], function () {
         //datatable.fnSort( [ [3,'desc'] ] );
         
         //This function will launch the new MCI Algorithm overlay with a blank screen
-        $(document).on('click', '#createNewAlgorithm', function() {
+        $(document).on('click', '.createNewAlgorithm', function() {
         	var importTypeId = $(this).attr('rel');
+        	var categoryId = $(this).attr('rel2');
+        	
             $.ajax({
                 url: 'mci-algorithms/algorithm.create',
-                data:{'importTypeId':importTypeId},
+                data:{'importTypeId':importTypeId, 'categoryId':categoryId},
                 type: "GET",
                 success: function(data) {
                     $("#algorithmDetailsModal").html(data);
@@ -151,19 +153,22 @@ require(['./main'], function () {
             //Store the current position
             var currPos = $(this).attr('rel');
             var importTypeId = $(this).attr('rel2');
+            var categoryId = $(this).attr('rel3');
+            
             var newPos = $(this).val();
             
             $('.processOrder').each(function() {
-                if ($(this).attr('rel') == newPos  && $(this).attr('rel2') == importTypeId) {
-                	//Need to update the saved process order
+                if ($(this).attr('rel') == newPos  && $(this).attr('rel2') == importTypeId && $(this).attr('rel3') == categoryId ) {
                 	$.ajax({
                         url: 'mci-algorithms/updateProcessOrder.do',
-                        data: {'importTypeId' : importTypeId, 'currOrder' : currPos,  'newOrder': newPos},
+                        data: {'importTypeId' : importTypeId, 'currOrder' : currPos, 
+                        	'newOrder': newPos, 'categoryId':categoryId},
                         type: "POST",
                         success: function(data) {
                             $('#processOrderMsgDiv').show();
                         }
-                    });                    
+                    }); 
+                                      
                     $(this).val(currPos);
                     $(this).attr('rel', currPos);
                 }

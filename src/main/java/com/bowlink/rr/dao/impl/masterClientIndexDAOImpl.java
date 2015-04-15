@@ -16,6 +16,7 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,7 @@ public class masterClientIndexDAOImpl implements masterClientIndexDAO {
     @Transactional
     @SuppressWarnings("unchecked")
     public List<programUploadTypeAlgorithm> getProgramUploadTypeAlgorithm(Integer programUploadTypeId) throws Exception {
-        Query query = sessionFactory.getCurrentSession().createQuery(" from programUploadTypeAlgorithm where programUploadTypeId = :programUploadTypeId order by processOrder asc");
+        Query query = sessionFactory.getCurrentSession().createQuery(" from programUploadTypeAlgorithm where programUploadTypeId = :programUploadTypeId order by categoryId, processOrder asc");
         query.setParameter("programUploadTypeId", programUploadTypeId);
 		List<programUploadTypeAlgorithm> MCIList = query.list();
         return MCIList;
@@ -152,10 +153,12 @@ public class masterClientIndexDAOImpl implements masterClientIndexDAO {
 	@Override
 	@Transactional
 	@SuppressWarnings("unchecked")
-	public Integer getMaxProcessOrder(Integer programUploadTypeId) throws Exception {
-		Query query = sessionFactory.getCurrentSession().createQuery("from programUploadTypeAlgorithm where programUploadTypeId = :programUploadTypeId order by processOrder desc");
-        query.setParameter("programUploadTypeId", programUploadTypeId);
-
+	public Integer getMaxProcessOrder(Integer categoryId, Integer importTypeId) throws Exception {
+		Query query = sessionFactory.getCurrentSession().createQuery("from programUploadTypeAlgorithm "
+				+ "where programUploadTypeId = :programUploadTypeId and categoryId = :categoryId order by processOrder desc");
+        query.setParameter("programUploadTypeId", importTypeId);
+        query.setParameter("categoryId", categoryId);
+        
         List<programUploadTypeAlgorithm> algorithmList = query.list();
         if (algorithmList.size() != 0) {
         	return algorithmList.get(0).getProcessOrder();
@@ -169,11 +172,12 @@ public class masterClientIndexDAOImpl implements masterClientIndexDAO {
 	@Transactional
 	@SuppressWarnings("unchecked")
 	public programUploadTypeAlgorithm getMCIAlgorithmByProcessOrder(
-			Integer processOrder, Integer programUploadTypeId) throws Exception {
+			Integer processOrder, Integer programUploadTypeId, Integer categoryId) throws Exception {
 		Query query = sessionFactory.getCurrentSession().createQuery("from programUploadTypeAlgorithm where processOrder = :processOrder and programUploadTypeId = :programUploadTypeId order by processOrder desc");
         query.setParameter("programUploadTypeId", programUploadTypeId);
         query.setParameter("processOrder", processOrder);
-
+        query.setParameter("categoryId", categoryId);
+        
         List<programUploadTypeAlgorithm> algorithmList = query.list();
         if (algorithmList.size() != 0) {
         	return algorithmList.get(0);
@@ -243,10 +247,28 @@ public class masterClientIndexDAOImpl implements masterClientIndexDAO {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(programUploadTypeAlgorithm.class);
         criteria.add(Restrictions.eq("categoryId", catId));
         criteria.add(Restrictions.eq("programUploadTypeId", importTypeId)); 
+        criteria.addOrder(Order.asc("processOrder"));
         
 		List<programUploadTypeAlgorithm> algorithmList = criteria.list();      
         
 		return algorithmList;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public algorithmMatchingActions getActionById(Integer actionId)
+			throws Exception {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(algorithmMatchingActions.class);
+        criteria.add(Restrictions.eq("id", actionId));
+        
+		List<algorithmMatchingActions> actionList = criteria.list();      
+        if (actionList.size() > 0) {
+        	return actionList.get(0);
+        } else {
+        	return null;
+        }
+		
 	}
 	
 }
