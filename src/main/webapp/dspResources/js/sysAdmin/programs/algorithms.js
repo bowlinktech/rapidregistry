@@ -9,7 +9,7 @@ require(['./main'], function () {
 
         //Fade out the updated/created message after being displayed.
         if ($('.alert').length > 0) {
-            $('.alert').delay(2000).fadeOut(10000);
+            $('.alert').delay(2000).fadeOut(5000);
         }
 
         $("input:text,form").attr("autocomplete", "off");
@@ -165,7 +165,10 @@ require(['./main'], function () {
                         	'newOrder': newPos, 'categoryId':categoryId},
                         type: "POST",
                         success: function(data) {
-                            $('#processOrderMsgDiv').show();
+                            //refresh div with proper order
+                        	$("#algorithm" + categoryId).html(data);
+                        	$('#processOrderMsgDiv' + categoryId).show();
+                            
                         }
                     }); 
                                       

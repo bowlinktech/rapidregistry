@@ -29,7 +29,7 @@ public class algorithmCategories {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID", nullable = false)
-    private int id;
+    private Integer id;
     
     @NotEmpty
     @NoHtml
@@ -49,11 +49,19 @@ public class algorithmCategories {
     @Column(name = "STATUS", nullable = false)
     private Boolean status = true;
 
-	public int getId() {
+	public List<programUploadTypeAlgorithm> getAlgorithms() {
+		return algorithms;
+	}
+
+	public void setAlgorithms(List<programUploadTypeAlgorithm> algorithms) {
+		this.algorithms = algorithms;
+	}
+
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
@@ -87,13 +95,5 @@ public class algorithmCategories {
 
 	public void setStatus(Boolean status) {
 		this.status = status;
-	}
-
-	public List<programUploadTypeAlgorithm> getAlgorithms() {
-		return algorithms;
-	}
-
-	public void setAlgorithms(List<programUploadTypeAlgorithm> algorithms) {
-		this.algorithms = algorithms;
 	}
 }

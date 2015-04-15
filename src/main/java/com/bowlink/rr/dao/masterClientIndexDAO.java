@@ -49,6 +49,7 @@ public interface masterClientIndexDAO {
     
     algorithmMatchingActions getActionById (Integer actionId) throws Exception;
     
+    algorithmCategories getCategoryById (Integer categoryId) throws Exception;
     
     
 }

@@ -48,4 +48,9 @@ public interface masterClientIndexManager {
     
     algorithmMatchingActions getActionById (Integer actionId) throws Exception;
     
+    algorithmCategories getCategoryById (Integer categoryId) throws Exception;
+    
+    algorithmCategories setAlgorithmsForOneImportCategory (Integer categoryId, Integer importTypeId) throws Exception;
+    
+    
 }

@@ -42,7 +42,8 @@ public class masterClientIndexDAOImpl implements masterClientIndexDAO {
     @Transactional
     @SuppressWarnings("unchecked")
     public List<programUploadTypeAlgorithm> getProgramUploadTypeAlgorithm(Integer programUploadTypeId) throws Exception {
-        Query query = sessionFactory.getCurrentSession().createQuery(" from programUploadTypeAlgorithm where programUploadTypeId = :programUploadTypeId order by categoryId, processOrder asc");
+        Query query = sessionFactory.getCurrentSession().createQuery(" from programUploadTypeAlgorithm where programUploadTypeId = :programUploadTypeId "
+        		+ " order by categoryId, processOrder asc");
         query.setParameter("programUploadTypeId", programUploadTypeId);
 		List<programUploadTypeAlgorithm> MCIList = query.list();
         return MCIList;
@@ -116,7 +117,7 @@ public class masterClientIndexDAOImpl implements masterClientIndexDAO {
     @Override
     @Transactional
     public programUploadTypeAlgorithm getMCIAlgorithm(Integer algorithmid) throws Exception {
-        Query query = sessionFactory.getCurrentSession().createQuery("from programUploadTypeAlgorithm where id = :algorithmid order by processOrder");
+        Query query = sessionFactory.getCurrentSession().createQuery(" from programUploadTypeAlgorithm where id = :algorithmid order by processOrder");
         query.setParameter("algorithmid", algorithmid);
 
         return (programUploadTypeAlgorithm) query.uniqueResult();
@@ -173,7 +174,10 @@ public class masterClientIndexDAOImpl implements masterClientIndexDAO {
 	@SuppressWarnings("unchecked")
 	public programUploadTypeAlgorithm getMCIAlgorithmByProcessOrder(
 			Integer processOrder, Integer programUploadTypeId, Integer categoryId) throws Exception {
-		Query query = sessionFactory.getCurrentSession().createQuery("from programUploadTypeAlgorithm where processOrder = :processOrder and programUploadTypeId = :programUploadTypeId order by processOrder desc");
+		Query query = sessionFactory.getCurrentSession().createQuery(" from programUploadTypeAlgorithm "
+				+ " where processOrder = :processOrder and programUploadTypeId = :programUploadTypeId "
+				+ " and categoryId = :categoryId "
+				+ " order by processOrder desc");
         query.setParameter("programUploadTypeId", programUploadTypeId);
         query.setParameter("processOrder", processOrder);
         query.setParameter("categoryId", categoryId);
@@ -269,6 +273,22 @@ public class masterClientIndexDAOImpl implements masterClientIndexDAO {
         	return null;
         }
 		
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public algorithmCategories getCategoryById(Integer categoryId)
+			throws Exception {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(algorithmCategories.class);
+        criteria.add(Restrictions.eq("id", categoryId));
+        
+		List<algorithmCategories> catList = criteria.list();      
+        if (catList.size() > 0) {
+        	return catList.get(0);
+        } else {
+        	return null;
+        }
 	}
 	
 }

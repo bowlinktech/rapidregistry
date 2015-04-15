@@ -13,6 +13,7 @@ import com.bowlink.rr.model.programUploadTypeAlgorithmFields;
 import com.bowlink.rr.service.dataElementManager;
 import com.bowlink.rr.service.masterClientIndexManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -138,19 +139,15 @@ public class masterClientIndexManagerImpl implements masterClientIndexManager {
 			Integer importTypeId) throws Exception {
 		//1. get the categories
 		List<algorithmCategories> algorithmCategories = masterClientIndexDAO.getCategoriesForUploadType(importTypeId);
+		List<algorithmCategories> algorithmCategoriesNewList = new ArrayList <algorithmCategories> ();
 		// loop categories and get algorithms
 		for (algorithmCategories category : algorithmCategories) {
-			category.setAlgorithms(masterClientIndexDAO.getPUTAlgorithmByCategory(category.getId(), importTypeId));
-			for (programUploadTypeAlgorithm algorithm : category.getAlgorithms()) {
-				//need to set action name
-				algorithm.setActionName(getActionById(algorithm.getAction()).getDisplayText());
-				//this set fields and names
-				algorithm.setFields(getMCIAlgorithmFields(algorithm.getId()));				
-			}
+			category = setAlgorithmsForOneImportCategory(category.getId(), importTypeId);
+			algorithmCategoriesNewList.add(category);
 		}
 		
 		
-		return algorithmCategories;
+		return algorithmCategoriesNewList;
 	}
 
 	@Override
@@ -158,5 +155,31 @@ public class masterClientIndexManagerImpl implements masterClientIndexManager {
 			throws Exception {
 		return masterClientIndexDAO.getActionById(actionId);
 	}
+
+	
+	@Override
+	public algorithmCategories getCategoryById(Integer categoryId)
+			throws Exception {
+		return masterClientIndexDAO.getCategoryById(categoryId);
+	}
+
+	@Override
+	public algorithmCategories setAlgorithmsForOneImportCategory(
+			Integer categoryId, Integer importTypeId) throws Exception {
+		
+		algorithmCategories category = getCategoryById(categoryId);
+		
+		category.setAlgorithms(masterClientIndexDAO.getPUTAlgorithmByCategory(category.getId(), importTypeId));
+		for (programUploadTypeAlgorithm algorithm : category.getAlgorithms()) {
+			//need to set action name
+			algorithm.setActionName(getActionById(algorithm.getAction()).getDisplayText());
+			//this set fields and names
+			algorithm.setFields(getMCIAlgorithmFields(algorithm.getId()));				
+		}
+		
+		return category;
+	}
+
+	
 	
 }

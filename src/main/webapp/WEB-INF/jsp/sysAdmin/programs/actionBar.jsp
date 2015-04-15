@@ -54,7 +54,7 @@
         </div>
         <ul class="nav navbar-nav navbar-right navbar-actions" role="menu">
             <c:choose>
-                <c:when test="${param['page'] == 'details' || param['page'] == 'sharing' || param['page'] == 'modules' || param['page'] == 'fields' || param['page'] == 'activitycodes' || param['page'] == 'importFields' || param['page'] == 'importRules' }">
+                <c:when test="${param['page'] == 'details' || param['page'] == 'sharing' || param['page'] == 'modules' || param['page'] == 'fields' || param['page'] == 'activitycodes' || param['page'] == 'importFields'}">
                     <li role="menuitem"><a href="javascript:void(0);" id="saveDetails" title="Save Form" role="button"><span class="glyphicon glyphicon-ok icon-stacked"></span> Save </a></li>
                     <li role="menuitem"><a href="javascript:void(0);" id="saveCloseDetails" title="Save &amp; Close" role="button"><span class="glyphicon glyphicon-floppy-disk icon-stacked"></span> Save &amp; Close</a></li>
                 </c:when>

@@ -336,7 +336,7 @@ public class masterClientIndex {
     }
     
     /**
-     * The '/remvoeAlgorithmField.do' POST request will remove the selected field for the passed in
+     * The '/removeAlgorithmField.do' POST request will remove the selected field for the passed in
      * MCI Algorithm.
      * 
      * @param algorithmFieldId  The id of the field to be removed.
@@ -353,7 +353,7 @@ public class masterClientIndex {
     }
     
     /**
-     * The '/remvoeAlgorithm.do' POST request will remove the selected field for the passed in
+     * The '/removeAlgorithm.do' POST request will remove the selected field for the passed in
      * MCI Algorithm.
      * 
      * @param algorithmId  The id of the algorithm to be removed.
@@ -378,28 +378,33 @@ public class masterClientIndex {
      * @param	currOrder will hold the order of the current algorithm
      * @param	newOrder This will hold the new process order for the algorithm
      *
-     * @Return	1	The function will simply return a 1 back to the ajax call
+     * @Return	it returns new div with ordered info
      */
-    @RequestMapping(value = "/updateProcessOrder.do", 
-    		method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody
-    Integer updateFormDisplayOrder(
-    @RequestParam(value = "importTypeId", required = true) Integer importTypeId,
-    @RequestParam(value = "categoryId", required = true) Integer categoryId,
-    @RequestParam(value = "currOrder", required = true) Integer currOrder, 
-    @RequestParam(value = "newOrder", required = true) Integer newOrder) throws Exception {
+    @RequestMapping(value = "/updateProcessOrder.do", method = RequestMethod.POST)
+    @ResponseBody public  ModelAndView updateFormDisplayOrder(
+    	@RequestParam(value = "importTypeId", required = true) Integer importTypeId,
+	    @RequestParam(value = "categoryId", required = true) Integer categoryId,
+	    @RequestParam(value = "currOrder", required = true) Integer currOrder, 
+	    @RequestParam(value = "newOrder", required = true) Integer newOrder) throws Exception {
 
     	//we get algorithm info for the algorithm with the new order and the current order
     	programUploadTypeAlgorithm mciCurrent = mcimanager.getMCIAlgorithmByProcessOrder(currOrder,  importTypeId, categoryId);
     	programUploadTypeAlgorithm mciNew =  mcimanager.getMCIAlgorithmByProcessOrder(newOrder,  importTypeId, categoryId);
     	
+    	 programUploadTypes importType = importmanager.getProgramUploadType(mciNew.getProgramUploadTypeId());
+         
     	//we switch and update
     	mciCurrent.setProcessOrder(newOrder);
     	mcimanager.updateMCIAlgorithm(mciCurrent);
     	mciNew.setProcessOrder(currOrder);
     	mcimanager.updateMCIAlgorithm(mciNew);
     	
-        return 1;
+    	ModelAndView mav = new ModelAndView("/sysAdmin/programs/mci/alByCat");
+    	mav.addObject("category", mcimanager.setAlgorithmsForOneImportCategory(mciNew.getCategoryId(), mciNew.getProgramUploadTypeId()));  
+    	mav.addObject("importType", importType);  
+    	
+        return mav;
+    	 
     }
     
 }
