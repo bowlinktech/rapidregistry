@@ -47,11 +47,14 @@ public class programUploadTypesFormFields {
     private int validationId = 1;
     
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
-    @Column(name = "DATECREATED", nullable = true)
+    @Column(name = "DATECREATED", nullable = false)
     private Date dateCreated = new Date();
     
-    @Column(name = "DSPPOS", nullable = true)
+    @Column(name = "DSPPOS", nullable = false)
     private int dspPos = 1;
+    
+    @Column(name = "useField", nullable = false)
+    private boolean useField = true;
 
     public int getId() {
         return id;
@@ -124,5 +127,13 @@ public class programUploadTypesFormFields {
     public void setDspPos(int dspPos) {
         this.dspPos = dspPos;
     }
-    
+
+	public boolean isUseField() {
+		return useField;
+	}
+
+	public void setUseField(boolean useField) {
+		this.useField = useField;
+	}
+ 
 }

@@ -350,6 +350,9 @@ CHANGE COLUMN `programUploadRecordId` `programUploadRecordId` INT(11) NULL DEFAU
 CHANGE COLUMN `program_engagementSectionId` `categoryId` INT(11) NULL DEFAULT NULL ;
 
 
+/** grace 04.17.2015 05:58PM **/
+ALTER TABLE `rapidregistry`.`put_formFields` 
+ADD COLUMN `useField` BIT(1) NOT NULL DEFAULT 1 AFTER `dspPos`;
 
 
 

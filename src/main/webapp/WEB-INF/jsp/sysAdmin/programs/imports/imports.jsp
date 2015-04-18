@@ -21,7 +21,8 @@
 	                            <c:if test="${param.deleted=='failed'}">
 	                            <div class="alert alert-danger">The import type is in use, it has been set to inactive.
 	                            </div></c:if>
-	                            <c:if test="${param.deleted=='success'}">The import type has been successfully removed!</c:if>
+	                            <c:if test="${param.deleted=='success'}">
+	                             <div class="alert alert-success"><strong>Success!</strong> The import type has been successfully removed!</div></c:if>
                  </c:when>
             </c:choose>
             <section class="panel panel-default">

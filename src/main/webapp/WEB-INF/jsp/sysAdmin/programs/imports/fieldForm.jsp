@@ -26,7 +26,7 @@
                 <form:hidden path="dspPos" />
                 <div class="form-container">
                     <div class="form-group">
-                        <label class="control-label" for=fieldValidation">Field Validation</label>
+                        <label class="control-label" for="fieldValidation">Field Validation</label>
                         <form:select path="validationId" id="fieldValidation" class="form-control half">
                             <c:forEach items="${validationTypes}"  var="fieldvalidationtypes" varStatus="vtype">
                                 <option value="${validationTypes[vtype.index][0]}" <c:if test="${fieldDetails.validationId == validationTypes[vtype.index][0]}">selected</c:if>>${validationTypes[vtype.index][1]}</option>
@@ -34,12 +34,19 @@
                         </form:select>
                     </div>
                     <div class="form-group">
-                        <label class="control-label" for=fieldValidation">Required Field *</label>
+                        <label class="control-label" for="requiredField">Required Field *</label>
                         <form:select path="requiredField" id="requiredField" class="form-control half">
                             <option value="false" <c:if test="${fieldDetails.requiredField == false}">selected</c:if>>False</option>
                             <option value="true" <c:if test="${fieldDetails.requiredField == true}">selected</c:if>>True</option>
                         </form:select>
                     </div> 
+                    <div class="form-group">
+                        <label class="control-label" for="useField">Use Field *</label>
+                        <form:select path="useField" id="useField" class="form-control half">
+                            <option value="false" <c:if test="${fieldDetails.useField == false}">selected</c:if>>False</option>
+                            <option value="true" <c:if test="${fieldDetails.useField == true}">selected</c:if>>True</option>
+                        </form:select>
+                    </div>                     
                     <div class="form-group">
                         <input type="button" id="submitFieldEditButton"  class="btn btn-primary" value="Update Field"/>
                     </div>

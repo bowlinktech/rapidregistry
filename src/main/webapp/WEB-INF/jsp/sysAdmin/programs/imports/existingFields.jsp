@@ -9,6 +9,7 @@
             <th scope="col">Field</th>
             <th scope="col">Field Validation</th>
             <th scope="col" class="center-text">Required</th>
+            <th scope="col" class="center-text">Use Field</th>      
             <th scope="col" class="center-text">Import Position</th>
             <th scope="col" class="center-text"></th>
         </tr>
@@ -26,6 +27,9 @@
                         </td>
                         <td class="center-text">
                             ${existingFields[fStatus.index].requiredField} 
+                        </td>
+                        <td class="center-text">
+                            ${existingFields[fStatus.index].useField} 
                         </td>
                         <td class="center-text">
                             <select rel="${existingFields[fStatus.index].dspPos}" name="displayOrder" class="displayOrder">
