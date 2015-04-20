@@ -8,17 +8,27 @@ package com.bowlink.rr.service.impl;
 import com.bowlink.rr.dao.importDAO;
 import com.bowlink.rr.model.User;
 import com.bowlink.rr.model.MoveFilesLog;
+import com.bowlink.rr.model.delimiters;
+import com.bowlink.rr.model.errorCodes;
 import com.bowlink.rr.model.fileTypes;
 import com.bowlink.rr.model.mailMessage;
+import com.bowlink.rr.model.programUploadTypeAlgorithm;
 import com.bowlink.rr.model.programUploadTypes;
 import com.bowlink.rr.model.programUploadTypesFormFields;
+import com.bowlink.rr.model.programUpload_Errors;
 import com.bowlink.rr.model.programUploads;
 import com.bowlink.rr.reference.fileSystem;
 import com.bowlink.rr.service.emailMessageManager;
+import com.bowlink.rr.service.fileManager;
 import com.bowlink.rr.service.importManager;
+import com.bowlink.rr.service.masterClientIndexManager;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.file.Files;
@@ -28,12 +38,16 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.HiddenFileFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
@@ -48,10 +62,19 @@ public class importManagerImpl implements importManager {
     @Autowired
     private emailMessageManager emailMessageManager;
     
+    @Autowired
+    private fileManager filemanager;
+    
+    @Autowired
+    private masterClientIndexManager mcimanager;
+    
     private String archivePath = "/rapidRegistry/archivesIn/";
     
     //files that are ready to be loaded in RR are kept here
     private String processPath = "/rapidRegistry/processFiles/";
+    
+  //files that are ready to be loaded in RR are kept here
+    private String loadPath = "/rapidRegistry/loadFiles/";
     
     private String importErrorToEmail ="gchan123@yahoo.com";
     
@@ -108,8 +131,36 @@ public class importManagerImpl implements importManager {
     
     @Override
     @Transactional
-    public void removeImportType(Integer importTypeId) throws Exception {
-        importDAO.removeImportType(importTypeId);
+    public String removeImportType(Integer importTypeId) throws Exception {
+    	//if import type is in programUploads table, we do not let them delete.
+    	//we set status to inactive
+    	//we need to remove import type and all rules associated
+        boolean deleted = false;
+        List<programUploads> puList = getProgramUploadsByImportType (importTypeId);
+        if (puList.size() == 0) {
+        	//we remove algorithms fields
+        	List<programUploadTypeAlgorithm> putAlgorithms = mcimanager.getProgramUploadTypeAlgorithm(importTypeId);
+
+        	for (programUploadTypeAlgorithm algorithm : putAlgorithms) {
+        		mcimanager.removeAlgorithm(algorithm.getId());
+        	}
+        	//we remove importType
+        	importDAO.removeImportType(importTypeId);
+        	deleted = true;
+        	
+        }  else {
+        	//we change the status
+        	programUploadTypes importType = getProgramUploadType(importTypeId);
+        	importType.setStatus(false);
+        	saveUploadType(importType);
+        }
+    	if (deleted) {
+    		return "success";
+    	} else {
+    		return "failed";
+    	}
+
+    	
     }
 
 	@Override
@@ -157,9 +208,9 @@ public class importManagerImpl implements importManager {
 					// set the time and status
 					pu.setStatusId(4);
 					pu.setStatusDateTime(new Date());
-					updateProgramUplaod(pu);
+					updateProgramUpload(pu);
 					//we see if it uses HEL
-					if (pu.getProgUploadType().isUseHEL()) {
+					if (pu.getProgramUploadType().isUseHEL()) {
 						//we move it to HEL
 						if (moveFileToHEL(pu) == 0){
 							pu.setStatusId(41);		
@@ -188,7 +239,7 @@ public class importManagerImpl implements importManager {
 			            }
 						
 				}
-					updateProgramUplaod(pu);
+					updateProgramUpload(pu);
 				} 
 	}
 	
@@ -199,7 +250,7 @@ public class importManagerImpl implements importManager {
 			// all files get uploaded to archivesIn, we move it to HEL folder
 			//HEL path should be from root
 			//we encoded user's file if it is not
-            File newFile = new File(pu.getProgUploadType().getHelDropPath() + pu.getAssignedFileName());
+            File newFile = new File(pu.getProgramUploadType().getHelDropPath() + pu.getAssignedFileName());
             //files are in archiveIn with assignedFileName  
             fileSystem programdir = new fileSystem();
             File archiveFile = new File(programdir.setPath(archivePath) + pu.getAssignedFileName());
@@ -224,14 +275,14 @@ public class importManagerImpl implements importManager {
 	}
 
 	@Override
-	public void updateProgramUplaod(programUploads programUpload)  throws Exception{
-		importDAO.updateProgramUplaod(programUpload);	
+	public void updateProgramUpload(programUploads programUpload)  throws Exception{
+		importDAO.updateProgramUpload(programUpload);	
 		
 	}
 
 	@Override
-	public Integer saveProgramUplaod(programUploads programUpload)  throws Exception{
-		return importDAO.saveProgramUplaod(programUpload);		
+	public Integer saveProgramUpload(programUploads programUpload)  throws Exception{
+		return importDAO.saveProgramUpload(programUpload);		
 	}
 
 	@Override
@@ -240,7 +291,23 @@ public class importManagerImpl implements importManager {
 		programUploads pu =  importDAO.getProgramUpload(programUploadId);
 		if (pu != null) {
 			//we get the details for the programUploadType
-			pu.setProgUploadType(getProgramUploadType(pu.getProgramUploadTypeId()));
+			pu.setProgramUploadType(getProgramUploadType(pu.getProgramUploadTypeId()));
+			//we get errors
+			pu.setErrors(getProgramUploadErrorList (programUploadId, "programUploadId"));
+			//we set error descriptions
+			if (pu.getErrors().size() != 0) {
+				List <errorCodes> errorList = getErrorCodes(0);
+				Map<Integer, String> errorDisplayMap = new HashMap<Integer, String>();
+				Map<Integer, String> errorDescMap = new HashMap<Integer, String>();
+                for (errorCodes error : errorList) {
+                	errorDisplayMap.put(error.getId(), error.getDisplayText());
+                	errorDescMap.put(error.getId(), error.getDescription());                	
+                }
+                for (programUpload_Errors error : pu.getErrors()) {
+                	error.setErrorDisplayText(errorDisplayMap.get(error.getErrorId()));
+                	error.setErrorDesc(errorDescMap.get(error.getErrorId()));                  	
+                }
+			}
 		}
 		return pu;
 	}
@@ -280,14 +347,32 @@ public class importManagerImpl implements importManager {
 				MoveFilesLog moveJob = new MoveFilesLog();
 		        moveJob.setStatusId(1);
 		        moveJob.setFolderPath(put.getHelPickUpPath());
-				boolean pathInUse = movePathInUse (moveJob);
-				if  (!pathInUse) {
-					Integer lastId = insertMoveFilesLog(moveJob);
+		        boolean pathInUse = movePathInUse (moveJob);
+		        if  (!pathInUse) {
+		        	Integer lastId = insertMoveFilesLog(moveJob);
 			        moveJob.setId(lastId);
-					//we move it to process folder, set the status and let it finish processing on RR
-					moveHELFiletoRR(put);
-					moveJob.setStatusId(2);
-					updateMoveFilesLogRun(moveJob);		 
+					if (put.getHelPickUpPath() == null) {
+						String subject = " Null path detected - moveHELFilestoRR";
+						try {
+							sendImportErrorEmail (subject, null); 
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+			        } else if (put.getHelPickUpPath().length() == 0) {
+			        	String subject = " Empty path detected - moveHELFilestoRR";
+						try {
+							sendImportErrorEmail (subject, null); 
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+			        } else {
+						
+						//we move it to process folder, set the status and let it finish processing on RR
+						moveHELFiletoRR(put);
+						moveJob.setStatusId(2);
+						updateMoveFilesLogRun(moveJob);		 
+			        }
+					
 				}
 			}
 		
@@ -308,24 +393,23 @@ public class importManagerImpl implements importManager {
 	 * 
 	 * **/
 	@Override
-	public void moveHELFiletoRR(programUploadTypes programUploadType)  throws Exception {
+	public void moveHELFiletoRR(programUploadTypes programUploadType) throws Exception{
 		// check if directory exists, if not create
         fileSystem fileSystem = new fileSystem();
         //paths are from root instead of /home
-        String inPath = fileSystem.setPathFromRoot(programUploadType.getHelPickUpPath());
-        File f = new File(inPath);
-        if (!f.exists()) {
-        	String subject = " Error path does not exist - moveHELFiletoRR";
-			try {
-				sendImportErrorEmail (subject, null); 
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-        } else  {
-        	//we move the file and update the programUpload status
-        	moveFilesByPath(programUploadType.getHelPickUpPath());
-        }
-
+        		String inPath = fileSystem.setPathFromRoot(programUploadType.getHelPickUpPath());
+        		File f = new File(inPath);
+			        if (!f.exists()) {
+			        	String subject = " Error path does not exist - moveHELFiletoRR";
+						try {
+							sendImportErrorEmail (subject, null); 
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+			        } else  {
+			        	//we move the file and update the programUpload status
+			        	moveFilesByPath(programUploadType.getHelPickUpPath());
+			        }
 	}
 
 	@Override
@@ -350,9 +434,12 @@ public class importManagerImpl implements importManager {
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
+	 
         StringBuilder sb = new StringBuilder();
         sb.append(new Date().toString() + "<br/>");
-        sb.append("Stack Trace: " + Arrays.toString(ex.getStackTrace()));
+        if (ex != null) {
+        	sb.append("Stack Trace: " + Arrays.toString(ex.getStackTrace()));
+        }
         messageDetails.setmessageBody(sb.toString());
         try {
 				emailMessageManager.sendEmail(messageDetails);
@@ -422,13 +509,13 @@ public class importManagerImpl implements importManager {
                     // now we move file
                     Path source = file.toPath();
                     Path target = newFile.toPath();
-                    Files.move(source, target);
-            		pu.setStatusDateTime(date);
-            		pu.setStatusId(40);
-            		updateProgramUplaod(puNew);
+                    Files.move(source, target,StandardCopyOption.REPLACE_EXISTING);
+                    puNew.setStatusDateTime(date);
+                    puNew.setStatusId(40);
+            		updateProgramUpload(puNew);
             	} else {
             		//no match, we rename the file and notify admin
-            		String subject = "Cannot find programUplaod with fileName " + fileName;
+            		String subject = "Cannot find programUpload with fileName " + fileName;
         			try {
         				sendImportErrorEmail (subject, null); 
         			} catch (Exception e) {
@@ -457,5 +544,224 @@ public class importManagerImpl implements importManager {
 	public List<User> getUsersForProgramUploadTypes(Integer statusId) {
 		return importDAO.getUsersForProgramUploadTypes(statusId);
 	}
+
+	@Override
+	public delimiters getDelimiter(Integer delimId) throws Exception {
+		return importDAO.getDelimiter(delimId);
+	}
+
+	@Override
+	public String saveUploadedFile(programUploads pu, MultipartFile fileUpload) throws Exception {
+		
+	        //save the file to archive folder
+	        MultipartFile file = fileUpload;
+	        String fileName = pu.getAssignedFileName();
+
+	        InputStream inputStream;
+	        OutputStream outputStream;
+
+	        try {
+	            inputStream = file.getInputStream();
+	            File newFile = null;
+
+	           
+	            fileSystem dir = new fileSystem();
+	            String archivePathHere = archivePath.replace("/rapidRegistry/", "");
+	            dir.setDirByName(archivePathHere);
+
+	            newFile = new File(dir.getDir() + fileName);
+
+	            if (newFile.exists()) {
+	                int i = 1;
+	                while (newFile.exists()) {
+	                    int iDot = fileName.lastIndexOf(".");
+	                    newFile = new File(dir.getDir() + fileName.substring(0, iDot) + "_(" + ++i + ")" + fileName.substring(iDot));
+	                }
+	                fileName = newFile.getName();
+	                newFile.createNewFile();
+	            } else {
+	                newFile.createNewFile();
+	            }
+
+	            //Save the attachment
+	            outputStream = new FileOutputStream(newFile);
+	            int read = 0;
+	            byte[] bytes = new byte[1024];
+
+	            while ((read = inputStream.read(bytes)) != -1) {
+	                outputStream.write(bytes, 0, read);
+	            }
+	            outputStream.close();
+
+	            return fileName;
+	        } catch (IOException e) {
+	            System.err.println("saveUploadedFile " + e.getCause());
+	            e.printStackTrace();
+	            return null;
+	        }
+	}
 	
+	@Override
+    public Integer chkUploadedFile(programUploads pu, File loadFile) throws Exception {
+		Integer errors = 0;
+        try {
+            long fileSize = loadFile.length();
+            long fileSizeMB = (fileSize / (1024L * 1024L));
+            
+            programUpload_Errors error = new programUpload_Errors();
+            error.setProgramUploadId(pu.getId());
+            /* 
+             26 = File is empty
+             12 = Too large
+             13 = Wrong file type
+             15 = Wrong delimiter
+             */
+            /* Make sure the file is not empty : ERROR CODE 26 */
+            if (fileSize == 0) {
+                error.setErrorId(27);
+                insertError(error); 
+                errors++;
+            }
+
+            /* Make sure file is the correct size : ERROR CODE 12 */
+            double maxFileSize = (double) pu.getProgramUploadType().getMaxFileSize();
+
+            if (fileSizeMB > maxFileSize) {
+            	error.setErrorId(12);
+                insertError(error); 
+                errors++;
+            }
+
+            /* Make sure file is the correct file type : ERROR CODE 3 */
+            String ext = FilenameUtils.getExtension(loadFile.getAbsolutePath());
+
+            String fileType = pu.getProgramUploadType().getFileExt();
+            
+            if (ext == null ? fileType != null : !ext.equals(fileType)) {
+            	error.setErrorId(13);
+                insertError(error); 
+                errors++;
+            }
+
+            fileSystem dir = new fileSystem();
+
+            /* Make sure the file has the correct delimiter : ERROR CODE 15 */
+            /**Check to make sure the file contains the selected delimiter, this should only be for 
+            txt or csv only
+            **/
+            int delimCount = 3;
+            if (fileType.equalsIgnoreCase("txt") || fileType.equalsIgnoreCase("csv")) {
+            	delimCount = (Integer) dir.checkFileDelimiter(loadFile, pu.getProgramUploadType().getDelimChar());
+            }
+            if (delimCount < 3 && !"xml".equals(pu.getProgramUploadType().getFileExt())) {
+            	error.setErrorId(15);
+                insertError(error); 
+                errors++;
+            }
+            return errors;
+            //Save the attachment
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        
+    }
+
+	@Override
+	public void insertError(programUpload_Errors uploadError) throws Exception {
+		importDAO.insertError(uploadError);	
+	}
+
+	@Override
+	public List<programUpload_Errors> getProgramUploadErrorList(Integer id, String type)
+			throws Exception {
+		return importDAO.getProgramUploadErrorList(id, type);	
+	}
+
+	@Override
+	public List<errorCodes> getErrorCodes(Integer status) throws Exception {
+		return importDAO.getErrorCodes(status);
+	}
+
+	@Override
+	public Integer submitUploadFile(Integer userId,
+			Integer programUploadTypeId, MultipartFile uploadedFile)
+			throws Exception {
+		//we get our programUploadType
+    	programUploadTypes put = getProgramUploadType(programUploadTypeId);
+    	put.setDelimChar(getDelimiter(put.getFileDelimId()).getDelimChar());
+    	put.setFileExt(getFileTypes(put.getFileTypeId()).get(0).getFileType());
+    	
+    	//we assign a batch id
+    	DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmssS");
+        Date date = new Date();
+        //adding transport method id to UT batch name - rr_transport method_putypeId_dateTime_uId_1.txt
+        String assignedId = new StringBuilder().append("rr_t1_p").append(put.getId()).append("_")
+        		.append(dateFormat.format(date)).append("_u").append(userId).toString();
+        
+        String fileName = uploadedFile.getOriginalFilename();
+        
+        String fileExt = "";
+        if (uploadedFile.getOriginalFilename().lastIndexOf(".") != -1) {
+        	fileExt = fileName.substring(uploadedFile.getOriginalFilename().lastIndexOf("."), (uploadedFile.getOriginalFilename().length()));
+        }
+        
+        programUploads pu = new programUploads();
+        pu.setAssignedFileName(assignedId + fileExt);
+        pu.setAssignedId(assignedId);
+        pu.setUploadedFileName(uploadedFile.getOriginalFilename());
+        pu.setProgramId(put.getProgramId());
+        pu.setProgramUploadTypeId(put.getId());
+        pu.setStatusDateTime(date);
+        pu.setStatusId(1); // SFV
+        pu.setSystemUserId(userId);
+        pu.setTransportId(1);
+        pu.setDateUploaded(date);
+        pu.setTotalInError(0);
+        pu.setTotalRows(0);
+        pu.setProgramUploadType(put);
+        Integer programUploadId = saveProgramUpload(pu);
+        
+        // we save the file to archivesIn
+        fileName = saveUploadedFile(pu, uploadedFile);
+        
+        fileSystem dir = new fileSystem();
+        File archiveFile = new File(dir.setPath(archivePath) + pu.getAssignedFileName());
+        File loadFile = new File(dir.setPath(loadPath) + pu.getAssignedFileName());
+        
+        //now we start our checks
+        String decodedString = "";
+        if (put.getEncodingId() == 2) {
+    		decodedString = filemanager.decodeFileToBase64Binary(archiveFile);
+    		if (decodedString == null) {
+    			programUpload_Errors error = new programUpload_Errors();
+                error.setProgramUploadId(pu.getId());
+                error.setErrorId(17);
+                
+    		} else  {
+	    		//write it to load folder
+	    		filemanager.writeFile(loadFile.getAbsolutePath(), decodedString);
+    		}
+        } else {
+        	Files.copy(archiveFile.toPath(), loadFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        }
+    	
+    	//we check encoding, delmiter, file size etc
+    	if (decodedString != null) {
+    		chkUploadedFile(pu, loadFile);
+    	}
+    	
+    	//remove load file
+    	Files.delete(loadFile.toPath());
+    	return programUploadId;
+		
+	}
+
+	@Override
+	public List<programUploads> getProgramUploadsByImportType(
+			Integer importTypeId) throws Exception {
+		return importDAO.getProgramUploadsByImportType(importTypeId);
+	}
+
 }
+

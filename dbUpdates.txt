@@ -130,4 +130,230 @@ CREATE TABLE `rapidregistry`.`survey_dateRows` (
   `questionId` INT NOT NULL,
   `label` VARCHAR(45) NULL,
   PRIMARY KEY (`id`));
+  
+  
+  /** grace 04.01.2015 05:09PM **/
+ALTER TABLE `rapidregistry`.`lu_transportmethods` 
+CHANGE COLUMN `active` `status` BIT(1) NOT NULL DEFAULT b'0' ;
+INSERT INTO `rapidregistry`.`lu_transportmethods` (`transportMethod`, `status`) VALUES ('File Upload', 1);
+
+  
+  /** grace 04.03.2015 06:59PM **/
+  drop table if exists  `rapidregistry`.`lu_errorcodes` ;
+CREATE TABLE `rapidregistry`.`lu_errorcodes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `displayText` varchar(45) NOT NULL,
+  `description` varchar(200) DEFAULT NULL,
+  `isCustom` bit(1) NOT NULL DEFAULT b'0',
+  `status` bit(1) NOT NULL DEFAULT b'1',
+  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `dateModified` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+  
+  
+INSERT INTO `rapidregistry`.`lu_errorcodes` VALUES (1,'Required Field Check Failed','Value not provided for required field','\0','','2014-01-27 11:22:47','2014-01-27 11:22:47'),(2,'Failed Validation','Failed Validation','\0','','2014-01-27 11:22:47','2014-01-27 11:22:47'),(3,'Failed Crosswalk','Failed Crosswalk','\0','','2014-01-27 11:22:47','2014-01-27 11:22:47'),(4,'Failed Macros','Failed Macros','\0','','2014-02-11 20:02:08','2014-02-11 20:02:08'),(5,'System Error','System Error, could be from crosswalks or macros','\0','','2014-03-05 23:41:09','2014-03-05 23:41:09'),(6,'Invalid Configuration','Transaction does not match a valid configuration','\0','','2014-03-10 12:08:40','2014-03-10 12:08:40'),(7,'No Valid Transactions Found for Batch','No Valid Transactions Found for Batch','\0','','2014-03-10 12:14:50','2014-03-10 12:14:50'),(8,'Batch Handling Error','Batch Handling Error','\0','','2014-03-13 19:41:02','2014-03-13 19:41:02'),(9,'Invalid Target Organization for Configuration','Invalid Target Organization for Configuration','\0','','2014-03-14 15:07:18','2014-03-14 15:07:18'),(10,'No Connections','Source Configuration does not have valid connections set up','\0','','2014-03-18 03:06:57','2014-03-18 03:06:57'),(11,'Submitter is not a valid sender','User is not a valid sender','\0','','2014-04-17 01:17:17','2014-04-17 01:17:17'),(12,'Invalid File Size','File size is invalid','\0','','2014-05-13 06:08:14','2014-05-13 06:08:14'),(13,'Invalid File Extension','Invalid File Extension','\0','','2014-05-13 06:08:14','2014-05-13 06:08:14'),(14,'Invalid Set Up','File with same extension, delimiter should be set up either contain headers or do not contain headers.','\0','','2014-05-16 17:17:51','2014-05-16 17:17:51'),(15,'Invalid Delimiter','Delimiter is invalid for this type of file','\0','','2014-05-16 17:17:51','2014-05-16 17:17:51'),(16,'Cannot Determine Encoding Type for File','Multiple encodings found for file','\0','','2014-05-28 00:43:28','2014-05-28 00:43:28'),(17,'File Did Not Decode Correctly','System was not able to decode file','\0','','2014-05-28 00:43:29','2014-05-28 00:43:29'),(18,'Can not process file','Transport method contains both hr/ccd and another file type','\0','','2014-07-01 21:21:57','2014-07-01 21:21:57'),(19,'Web Service Header Block Invalid','Inbound soap message contains an invalid header block','\0','','2014-08-14 21:28:13','2014-08-14 21:28:13'),(20,'Web Service Invalid Sender','Sender from web service is invalid','\0','','2014-08-14 21:28:13','2014-08-14 21:28:13'),(21,'Web Services Send Message Error','Web Services Send Message Error','\0','','2014-08-28 22:18:02','2014-08-28 22:18:02'),(22,'Invalid File Content','File content is not valid for expected file type.','\0','','2014-09-05 13:35:06','2014-09-05 13:35:06'),(23,'Invalid target site','Target Site is not a valid site for target organization','\0','','2014-09-12 12:17:14','2014-09-12 12:17:14'),(24,'Attachment not found','No valid attachment is found for Web Service message','\0','','2015-03-09 16:44:52','2015-03-09 16:44:52'),(25,'Valid Tag was not found','No valid tag was found in Web Service Attachment','\0','','2015-03-09 16:44:52','2015-03-09 16:44:52'),(26,'Multiple organizations were found for WS doma','Cannot determine sending org','\0','','2015-03-23 13:40:54','2015-03-23 13:40:54');
+  
+ALTER TABLE `rapidregistry`.`programUpload_errors` 
+CHANGE COLUMN `fieldNo` `fieldNo` INT(11) NULL ,
+ADD COLUMN `errorId` INT NULL AFTER `programUploadId`;
+
+  /** grace 04.04.2015 11:25PM **/
+ALTER TABLE `rapidregistry`.`programUpload_errors` 
+ADD COLUMN `engagementId` INT NULL AFTER `programUploadId`;
+
+ALTER TABLE `rapidregistry`.`programUpload_errors` 
+DROP COLUMN `errorDesc`,
+DROP COLUMN `fieldDesc`;
+
+INSERT INTO `rapidregistry`.`lu_errorcodes` (`id`, `displayText`, `description`, `isCustom`, `status`) VALUES ('27', 'Empty File', 'File is empty', 0, 1);
+
+DELETE FROM `rapidregistry`.`lu_processstatus` WHERE `id`='44';
+
+/** grace 04/05/2015 03:40 AM **/
+
+INSERT INTO `rapidregistry`.`lu_filetypes` (`id`, `fileType`) VALUES ('11', 'xlsx');
+
+ALTER TABLE `rapidregistry`.`programUpload_MCIalgorithms` 
+RENAME TO  `rapidregistry`.`program_MCIAlgorithms` ;
+
+ALTER TABLE `rapidregistry`.`program_MCIAlgorithms` 
+CHANGE COLUMN `programUploadTypeId` `programId` INT(11) NOT NULL;
+
+ALTER TABLE `rapidregistry`.`program_MCIAlgorithms` 
+ADD COLUMN `categoryId` INT NULL COMMENT '1. patient\n2. engagement' AFTER `mci_CategoryId`,
+ADD COLUMN `processOrder` INT NULL DEFAULT 1 AFTER `categoryId`;
+
+ALTER TABLE `rapidregistry`.`program_MCIAlgorithms` 
+DROP COLUMN `categoryId`;
+
+UPDATE `rapidregistry`.`lu_MCI_Categories` SET `displayText`='Engagement' WHERE `id`='2';
+
+
+/** grace 04/05/15 03:52PM **/
+ALTER TABLE `rapidregistry`.`program_MCIAlgorithms` 
+DROP FOREIGN KEY `mciCategoryId`;
+ALTER TABLE `rapidregistry`.`program_MCIAlgorithms` 
+CHANGE COLUMN `mci_CategoryId` `program_engagementSectionId` INT(11) NOT NULL ;
+ALTER TABLE `rapidregistry`.`program_MCIAlgorithms` 
+ADD CONSTRAINT `mciCategoryId`
+  FOREIGN KEY (`program_engagementSectionId`)
+  REFERENCES `rapidregistry`.`lu_MCI_Categories` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+  
+ALTER TABLE `rapidregistry`.`programUpload_errors` 
+CHANGE COLUMN `engagementId` `program_engagementSectionId` INT(11) NULL DEFAULT NULL ,
+ADD COLUMN `programUploadRecordId` INT NULL AFTER `program_engagementSectionId`;
+  
+  
+ALTER TABLE `rapidregistry`.`programUpload_errors` 
+ADD CONSTRAINT `programUploadIdFK`
+  FOREIGN KEY (`programUploadId`)
+  REFERENCES `rapidregistry`.`programuploads` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+  
+ALTER TABLE `rapidregistry`.`program_MCIAlgorithms` 
+DROP FOREIGN KEY `mciCategoryId`;
+ALTER TABLE `rapidregistry`.`program_MCIAlgorithms` 
+DROP INDEX `mciCategoryId_idx` ;
+
+DROP TABLE `rapidregistry`.`lu_MCI_Categories`;
+
+
+ALTER TABLE `rapidregistry`.`program_MCIAlgorithms` 
+ADD INDEX `engagementIdFK_idx` (`program_engagementSectionId` ASC);
+ALTER TABLE `rapidregistry`.`program_MCIAlgorithms` 
+ADD CONSTRAINT `engagementIdFK`
+  FOREIGN KEY (`program_engagementSectionId`)
+  REFERENCES `rapidregistry`.`program_engagementSections` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+ALTER TABLE `rapidregistry`.`program_MCIAlgorithms` 
+DROP COLUMN `programId`,
+DROP INDEX `fk_programUploadId_idx` ;
+
+ALTER TABLE `rapidregistry`.`program_MCIAlgorithms` 
+RENAME TO  `rapidregistry`.`put_algorithms` ;
+
+ALTER TABLE `rapidregistry`.`program_MCIFields` 
+RENAME TO  `rapidregistry`.`programEngagementSection_mciFields` ;
+
+ALTER TABLE `rapidregistry`.`put_algorithms` 
+DROP FOREIGN KEY `engagementIdFK`;
+ALTER TABLE `rapidregistry`.`put_algorithms` 
+CHANGE COLUMN `program_engagementSectionId` `programEngagementSectionId` INT(11) NOT NULL ;
+ALTER TABLE `rapidregistry`.`put_algorithms` 
+ADD CONSTRAINT `engagementIdFK`
+  FOREIGN KEY (`programEngagementSectionId`)
+  REFERENCES `rapidregistry`.`program_engagementSections` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+
+
+/** 04.09.2015 10:48AM Grace **/
+ALTER TABLE `rapidregistry`.`put_algorithms` 
+RENAME TO  `rapidregistry`.`put_algorithms` ;
+
+ALTER TABLE `rapidregistry`.`put_algorithms` 
+DROP FOREIGN KEY `engagementIdFK`;
+ALTER TABLE `rapidregistry`.`put_algorithms` 
+DROP INDEX `engagementIdFK_idx` ;
+
+ALTER TABLE `rapidregistry`.`put_algorithms` 
+CHANGE COLUMN `programEngagementSectionId` `programUploadTypeId` INT(11) NOT NULL ;
+
+ALTER TABLE `rapidregistry`.`programEngagementSection_mciFields` 
+DROP FOREIGN KEY `fk_programMPIFields__mciId`;
+
+ALTER TABLE `rapidregistry`.`programEngagementSection_mciFields` 
+RENAME TO  `rapidregistry`.`put_algorithmFields` ;
+
+ALTER TABLE `rapidregistry`.`put_algorithmFields` 
+ADD CONSTRAINT `algorithmFK`
+  FOREIGN KEY (`mciId`)
+  REFERENCES `rapidregistry`.`put_algorithms` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+  
+ALTER TABLE `rapidregistry`.`put_algorithmFields` 
+DROP FOREIGN KEY `algorithmFK`;
+ALTER TABLE `rapidregistry`.`put_algorithmFields` 
+CHANGE COLUMN `mciId` `algorithmId` INT(11) NOT NULL ;
+ALTER TABLE `rapidregistry`.`put_algorithmFields` 
+ADD CONSTRAINT `ruleIdFK`
+  FOREIGN KEY (`algorithmId`)
+  REFERENCES `rapidregistry`.`put_algorithms` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+  
+ALTER TABLE `rapidregistry`.`programUploadType_formFields` 
+RENAME TO  `rapidregistry`.`put_formFields` ;
+
+CREATE TABLE `rapidregistry`.`lu_algorithmCategories` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `mapToTable` VARCHAR(45) NOT NULL,
+  `mapToColumn` VARCHAR(45) NULL,
+  `displayName` VARCHAR(100) NULL,
+  PRIMARY KEY (`id`));
+
+ALTER TABLE `rapidregistry`.`lu_engagementMatchingActions` 
+RENAME TO  `rapidregistry`.`lu_algorithmMatchingActions` ;
+
+INSERT INTO `rapidregistry`.`lu_algorithmCategories` (`mapToTable`, `mapToColumn`, `displayName`) VALUES ('programPatients', 'id', 'Patient');
+INSERT INTO `rapidregistry`.`lu_algorithmCategories` (`mapToTable`, `mapToColumn`, `displayName`) VALUES ('storage_engagements', 'id', 'Engagement');
+
+/** grace 04.10.2015 10:28AM **/
+ALTER TABLE `rapidregistry`.`put_algorithms` 
+ADD COLUMN `categoryId` INT NULL AFTER `dateCreated`;
+
+UPDATE `rapidregistry`.`lu_algorithmMatchingActions` SET `displayText`='Review' WHERE `id`='5';
+
+/** grace 04.13.2015 **/
+ALTER TABLE `rapidregistry`.`programs` 
+DROP COLUMN `visitRecon`,
+DROP COLUMN `patientRecon`;
+
+ALTER TABLE `rapidregistry`.`put_algorithms` 
+CHANGE COLUMN `categoryId` `categoryId` INT(11) NOT NULL ;
+
+ALTER TABLE `rapidregistry`.`put_algorithms` 
+ADD INDEX `fk_categoryId_idx` (`categoryId` ASC);
+ALTER TABLE `rapidregistry`.`put_algorithms` 
+ADD CONSTRAINT `fk_categoryId`
+  FOREIGN KEY (`categoryId`)
+  REFERENCES `rapidregistry`.`lu_algorithmCategories` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+ALTER TABLE `rapidregistry`.`put_algorithms` 
+ADD INDEX `fk_putId_idx` (`programUploadTypeId` ASC);
+ALTER TABLE `rapidregistry`.`put_algorithms` 
+ADD CONSTRAINT `fk_putId`
+  FOREIGN KEY (`programUploadTypeId`)
+  REFERENCES `rapidregistry`.`programuploadtypes` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+ALTER TABLE `rapidregistry`.`lu_algorithmCategories` 
+CHANGE COLUMN `mapToColumn` `mapToColumn` VARCHAR(45) NOT NULL ,
+CHANGE COLUMN `displayName` `displayText` VARCHAR(100) NOT NULL ,
+ADD COLUMN `status` BIT(1) NOT NULL DEFAULT 1 AFTER `displayName`;
+
+
+/** grace 04.15.2015 6:59PM **/
+ALTER TABLE `rapidregistry`.`programUpload_errors` 
+CHANGE COLUMN `programUploadRecordId` `programUploadRecordId` INT(11) NULL DEFAULT NULL AFTER `programUploadId`,
+CHANGE COLUMN `program_engagementSectionId` `categoryId` INT(11) NULL DEFAULT NULL ;
+
+
+/** grace 04.17.2015 05:58PM **/
+ALTER TABLE `rapidregistry`.`put_formFields` 
+ADD COLUMN `useField` BIT(1) NOT NULL DEFAULT 1 AFTER `dspPos`;
+
+
+
 

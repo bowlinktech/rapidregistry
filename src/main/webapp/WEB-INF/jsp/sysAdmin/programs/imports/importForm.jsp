@@ -44,10 +44,10 @@
                             <label class="control-label" for="useHEL">Use Health-e-link *</label>
                             <div>
                                 <label class="radio-inline">
-                                    <form:radiobutton id="useHEL" path="useHEL" value="true" onClick="helPaths(true);"/> Yes
+                                    <form:radiobutton id="useHEL1" path="useHEL" value="true" onClick="helPaths(true);"/> Yes
                                 </label>
                                 <label class="radio-inline">
-                                    <form:radiobutton id="useHEL" path="useHEL" value="false" onClick="helPaths(false);" /> No
+                                    <form:radiobutton id="useHEL2" path="useHEL" value="false" onClick="helPaths(false);" /> No
                                 </label>
                             </div>
                             </div>
@@ -55,22 +55,22 @@
                           
                         <div id="helPaths" <c:if test="${not importTypeDetails.useHEL}">style="display:none"</c:if>>
                         <spring:bind path="helDropPath">
-                        	<div class="form-group ${status.error ? 'has-error' : '' }">
+                        	<div class="form-group ${status.error ? 'has-error' : '' }" id="helDropPathDiv">
 	                            <label class="control-label" for="name">Health-e-link Input Path *</label>
 	                            <form:input path="helDropPath" id="helDropPath" class="form-control" type="text" maxLength="100" />
-	                            <form:errors path="helDropPath" cssClass="control-label" element="label" />
+	                            <span id="helDropPathMsg" class="form-group control-label"></span>
                         	</div>
                    		</spring:bind>
 	                    <spring:bind path="helPickUpPath">
-	                        <div class="form-group ${status.error ? 'has-error' : '' }">
+	                        <div class="form-group ${status.error ? 'has-error' : '' }" id="helPickUpPathDiv">
 	                            <label class="control-label" for="name">Health-e-link Output Path *</label>
 	                            <form:input path="helPickUpPath" id="helPickUpPath" class="form-control" type="text" maxLength="100" />
-	                            <form:errors path="helPickUpPath" cssClass="control-label" element="label" />
+	                             <span id="helPickUpPathMsg" class="form-group control-label"></span>
 	                        </div>
 	                    </spring:bind>
 	                     </div>
 	                    <spring:bind path="fileTypeId">
-		                            <div class="form-group ${status.error ? 'has-error' : '' }">
+		                            <div class="form-group ${status.error ? 'has-error' : '' }" >
 		                                <label class="control-label" for="fileTypeId">File Type*</label>
 		                                <form:select path="fileTypeId" id="fileTypeId" class="form-control half fileTypeId">
                                 <c:forEach items="${fileTypesList}" var="fileType">

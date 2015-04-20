@@ -12,11 +12,18 @@
                         <strong>Success!</strong> 
                         <c:choose>
                             <c:when test="${param.msg == 'importTypesaved'}">The import type has been successfully saved!</c:when>
-                            <c:when test="${param.msg == 'importTypedeleted'}">The import type has been successfully removed!</c:when>
                             <c:when test="${param.msg == 'fieldssaved'}">The import type fields have been successfully saved!</c:when>
                         </c:choose>
                     </div>
+                    
                 </c:when>
+                <c:when test="${not empty param.deleted}">
+	                            <c:if test="${param.deleted=='failed'}">
+	                            <div class="alert alert-danger">The import type is in use, it has been set to inactive.
+	                            </div></c:if>
+	                            <c:if test="${param.deleted=='success'}">
+	                             <div class="alert alert-success"><strong>Success!</strong> The import type has been successfully removed!</div></c:if>
+                 </c:when>
             </c:choose>
             <section class="panel panel-default">
                 <div class="panel-body">
@@ -73,7 +80,7 @@
                                                     <span class="glyphicon glyphicon-align-justify"></span>
                                                     Fields
                                                 </a>
-                                                <a href="/sysAdmin/programs/${programName}/mci-algorithms"  class="btn btn-link" title="View rules on how to process this import type." rel="${importType.id}">
+                                                <a href="/sysAdmin/programs/${programName}/mci-algorithms?s=${importType.id}"  class="btn btn-link" title="View rules on how to process this import type." rel="${importType.id}">
                                                     <span class="glyphicon glyphicon-saved"></span>
                                                     Rules
                                                 </a>

@@ -6,10 +6,16 @@
 package com.bowlink.rr.service.impl;
 
 import com.bowlink.rr.dao.masterClientIndexDAO;
-import com.bowlink.rr.model.programUpload_MCIalgorithms;
-import com.bowlink.rr.model.programUpload_MCIFields;
+import com.bowlink.rr.model.algorithmCategories;
+import com.bowlink.rr.model.algorithmMatchingActions;
+import com.bowlink.rr.model.programUploadTypeAlgorithm;
+import com.bowlink.rr.model.programUploadTypeAlgorithmFields;
+import com.bowlink.rr.service.dataElementManager;
 import com.bowlink.rr.service.masterClientIndexManager;
+
+import java.util.ArrayList;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,40 +30,58 @@ public class masterClientIndexManagerImpl implements masterClientIndexManager {
     @Autowired
     masterClientIndexDAO masterClientIndexDAO;
     
+    @Autowired
+    dataElementManager dataelementmanager;
+    
     @Override
     @Transactional
-    public List<programUpload_MCIalgorithms> getProgramUploadMCIalgorithms(Integer programId) throws Exception {
-        return masterClientIndexDAO.getProgramUploadMCIalgorithms(programId);
+    public List<programUploadTypeAlgorithm> getProgramUploadTypeAlgorithm(Integer programUploadTypeId) throws Exception {
+    	List<programUploadTypeAlgorithm> algorithmList = masterClientIndexDAO.getProgramUploadTypeAlgorithm(programUploadTypeId);
+    	if (algorithmList.size() > 0) {
+    		for (programUploadTypeAlgorithm algorithm : algorithmList) {
+    			//we set the fields
+    			algorithm.setFields(getMCIAlgorithmFields(algorithm.getId()));
+    		}
+    	}
+    	return algorithmList;
     }
     
     @Override
     @Transactional
-    public List<programUpload_MCIFields> getProgramUploadMCIFields(Integer mciId) throws Exception {
-        return masterClientIndexDAO.getProgramUploadMCIFields(mciId);
+    public List<programUploadTypeAlgorithmFields> getMCIAlgorithmFields(Integer algorithmId) throws Exception {
+    	//need to set field names
+    	List<programUploadTypeAlgorithmFields> fieldList = masterClientIndexDAO.getMCIAlgorithmFields(algorithmId);
+    	//set fieldName
+    	for (programUploadTypeAlgorithmFields field : fieldList) {
+    		String fieldName = dataelementmanager.getfieldName(field.getFieldId());
+    		field.setFieldName(fieldName);
+    	}
+    	
+        return fieldList;
     }
     
     @Override
     @Transactional
-    public Integer createMCIAlgorithm(programUpload_MCIalgorithms newMCIAlgorithm) throws Exception {
+    public Integer createMCIAlgorithm(programUploadTypeAlgorithm newMCIAlgorithm) throws Exception {
         return masterClientIndexDAO.createMCIAlgorithm(newMCIAlgorithm);
     }
     
     @Override
     @Transactional
-    public void updateMCIAlgorithm(programUpload_MCIalgorithms MCIAlgorithm) throws Exception {
+    public void updateMCIAlgorithm(programUploadTypeAlgorithm MCIAlgorithm) throws Exception {
         masterClientIndexDAO.updateMCIAlgorithm(MCIAlgorithm);
     }
     
     @Override
     @Transactional
-    public void createMCIAlgorithmFields(programUpload_MCIFields newField) throws Exception {
+    public void createMCIAlgorithmFields(programUploadTypeAlgorithmFields newField) throws Exception {
         masterClientIndexDAO.createMCIAlgorithmFields(newField);
     }
     
     @Override
     @Transactional
-    public programUpload_MCIalgorithms getMCIAlgorithm(Integer mciId) throws Exception {
-        return masterClientIndexDAO.getMCIAlgorithm(mciId);
+    public programUploadTypeAlgorithm getMCIAlgorithm(Integer algorithmId) throws Exception {
+        return masterClientIndexDAO.getMCIAlgorithm(algorithmId);
     }
     
     @Override
@@ -71,5 +95,91 @@ public class masterClientIndexManagerImpl implements masterClientIndexManager {
     public void removeAlgorithm(Integer algorithmId) throws Exception {
         masterClientIndexDAO.removeAlgorithm(algorithmId);
     }
-    
+
+	@Override
+	public Integer getMaxProcessOrder(Integer categoryId, Integer importTypeId) throws Exception {
+		return masterClientIndexDAO.getMaxProcessOrder(categoryId, importTypeId);
+	}
+
+	@Override
+	@Transactional
+	public void reorderAlgorithm(Integer categoryId, Integer importTypeId) throws Exception {
+		//first we get all algorithm for section 
+		List<programUploadTypeAlgorithm> algorithms = masterClientIndexDAO.getPUTAlgorithmByCategory(categoryId, importTypeId);
+		//we loop through and reorder
+		int order = 1;
+		for (programUploadTypeAlgorithm algorithm : algorithms) {
+			algorithm.setProcessOrder(order);
+			updateMCIAlgorithm(algorithm);
+			order ++;
+		}
+		
+	}
+
+	@Override
+	public programUploadTypeAlgorithm getMCIAlgorithmByProcessOrder(
+			Integer processOrder, Integer programUploadTypeId, Integer categoryId) throws Exception {
+		return masterClientIndexDAO.getMCIAlgorithmByProcessOrder(processOrder, programUploadTypeId, categoryId);
+	}
+
+	@Override
+	@Transactional
+	public List<algorithmMatchingActions> getAlgorithmMatchingActions(Boolean status) throws Exception {
+		return masterClientIndexDAO.getAlgorithmMatchingActions(status);
+	}
+
+	@Override
+	public List<algorithmCategories> getAlgorithmCategories(Boolean status)
+			throws Exception {
+		return masterClientIndexDAO.getAlgorithmCategories(status);
+	}
+
+	@Override
+	public List<algorithmCategories> getAlgorithmsByCatForUploadType(
+			Integer importTypeId) throws Exception {
+		//1. get the categories
+		List<algorithmCategories> algorithmCategories = masterClientIndexDAO.getCategoriesForUploadType(importTypeId);
+		List<algorithmCategories> algorithmCategoriesNewList = new ArrayList <algorithmCategories> ();
+		// loop categories and get algorithms
+		for (algorithmCategories category : algorithmCategories) {
+			category = setAlgorithmsForOneImportCategory(category.getId(), importTypeId);
+			algorithmCategoriesNewList.add(category);
+		}
+		
+		
+		return algorithmCategoriesNewList;
+	}
+
+	@Override
+	public algorithmMatchingActions getActionById(Integer actionId)
+			throws Exception {
+		return masterClientIndexDAO.getActionById(actionId);
+	}
+
+	
+	@Override
+	public algorithmCategories getCategoryById(Integer categoryId)
+			throws Exception {
+		return masterClientIndexDAO.getCategoryById(categoryId);
+	}
+
+	@Override
+	public algorithmCategories setAlgorithmsForOneImportCategory(
+			Integer categoryId, Integer importTypeId) throws Exception {
+		
+		algorithmCategories category = getCategoryById(categoryId);
+		
+		category.setAlgorithms(masterClientIndexDAO.getPUTAlgorithmByCategory(category.getId(), importTypeId));
+		for (programUploadTypeAlgorithm algorithm : category.getAlgorithms()) {
+			//need to set action name
+			algorithm.setActionName(getActionById(algorithm.getAction()).getDisplayText());
+			//this set fields and names
+			algorithm.setFields(getMCIAlgorithmFields(algorithm.getId()));				
+		}
+		
+		return category;
+	}
+
+	
+	
 }

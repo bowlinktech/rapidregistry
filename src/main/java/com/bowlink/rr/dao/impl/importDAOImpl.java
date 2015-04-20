@@ -8,9 +8,14 @@ package com.bowlink.rr.dao.impl;
 import com.bowlink.rr.dao.importDAO;
 import com.bowlink.rr.model.User;
 import com.bowlink.rr.model.MoveFilesLog;
+import com.bowlink.rr.model.algorithmCategories;
+import com.bowlink.rr.model.algorithmMatchingActions;
+import com.bowlink.rr.model.delimiters;
+import com.bowlink.rr.model.errorCodes;
 import com.bowlink.rr.model.fileTypes;
 import com.bowlink.rr.model.programUploadTypes;
 import com.bowlink.rr.model.programUploadTypesFormFields;
+import com.bowlink.rr.model.programUpload_Errors;
 import com.bowlink.rr.model.programUploads;
 
 import java.util.List;
@@ -166,13 +171,16 @@ public class importDAOImpl implements importDAO {
      * @throws Exception
      */
     @Override
+    @Transactional
+    @SuppressWarnings("unchecked")
     public List<fileTypes> getFileTypes(Integer fileTypeId) throws Exception {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(fileTypes.class);
 
         if (fileTypeId != 0) {
             criteria.add(Restrictions.eq("id", fileTypeId));
         }
-        List<fileTypes> fileTypeList = criteria.list();
+        
+		List<fileTypes> fileTypeList = criteria.list();
 
         return fileTypeList;
     }
@@ -194,13 +202,13 @@ public class importDAOImpl implements importDAO {
 
     @Override
     @Transactional
-    public void updateProgramUplaod(programUploads programUpload) throws Exception {
+    public void updateProgramUpload(programUploads programUpload) throws Exception {
         sessionFactory.getCurrentSession().update(programUpload);
     }
 
     @Override
     @Transactional
-    public Integer saveProgramUplaod(programUploads programUpload) throws Exception {
+    public Integer saveProgramUpload(programUploads programUpload) throws Exception {
         Integer lastId = null;
         lastId = (Integer) sessionFactory.getCurrentSession().save(programUpload);
         return lastId;
@@ -294,13 +302,16 @@ public class importDAOImpl implements importDAO {
 
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(MoveFilesLog.class);
         criteria.add(Restrictions.eq("statusId", moveJob.getStatusId()));
-        criteria.add(Restrictions.eq("folderPath", moveJob.getFolderPath()));
-
-        List<MoveFilesLog> moveLogList = criteria.list();
-        if (moveLogList == null) {
-            return true;
+        if (moveJob.getFolderPath() != null) {
+        	criteria.add(Restrictions.eq("folderPath", moveJob.getFolderPath()));
         } else {
+        	criteria.add(Restrictions.isNull("folderPath"));
+        }
+        List<MoveFilesLog> moveLogList = criteria.list();
+        if (moveLogList.size() == 0) {
             return false;
+        } else {
+            return true;
         }
     }
 
@@ -365,5 +376,70 @@ public class importDAOImpl implements importDAO {
         }
         return query.list();
     }
+
+	@Override
+	@Transactional
+	public delimiters getDelimiter(Integer delimId) throws Exception {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(delimiters.class);
+
+        if (delimId != 0) {
+            criteria.add(Restrictions.eq("id", delimId));
+        }
+        List<delimiters> delimeterList = criteria.list();
+        
+        return delimeterList.get(0);
+	}
+
+	@Override
+	@Transactional
+	public void insertError(programUpload_Errors uploadError) throws Exception {
+		sessionFactory.getCurrentSession().save(uploadError);
+	}
+
+	@Override
+	@Transactional
+	@SuppressWarnings("unchecked")
+	public List<programUpload_Errors> getProgramUploadErrorList(Integer id, String type)
+			throws Exception {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(programUpload_Errors.class);
+
+        if (type.equalsIgnoreCase("programUploadId")) {
+            criteria.add(Restrictions.eq("programUploadId", id));
+        } else {
+        	criteria.add(Restrictions.eq("engagementId", id));
+        }
+        
+		List<programUpload_Errors> errorList = criteria.list();      
+        return errorList;
+	}
+
+	@Override
+	@Transactional
+	@SuppressWarnings("unchecked")
+	public List<errorCodes> getErrorCodes(Integer status) throws Exception {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(errorCodes.class);
+
+        if (status != 0) {
+            criteria.add(Restrictions.eq("status", status));
+        } 
+        
+		List<errorCodes> errorList = criteria.list();      
+        
+		return errorList;
+	}
+
+	@Override
+	@Transactional
+	@SuppressWarnings("unchecked")
+	public List<programUploads> getProgramUploadsByImportType(
+			Integer importTypeId) throws Exception {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(programUploads.class);
+		
+		criteria.add(Restrictions.eq("programUploadTypeId", importTypeId));
+        
+		List<programUploads> puList = criteria.list();      
+        
+		return puList;
+	}
 
 }

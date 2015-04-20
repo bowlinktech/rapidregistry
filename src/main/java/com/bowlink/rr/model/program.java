@@ -68,12 +68,7 @@ public class program {
     
     @Column(name = "visitsPerDay", nullable = false)
     private int visitsPerDay = 1;
-    
-    @Column(name = "patientRecon", nullable = false)
-    private int patientRecon = 1;
-    
-    @Column(name = "visitRecon", nullable = false)
-    private int visitRecon = 1;   
+     
 
     public int getId() {
         return id;
@@ -161,22 +156,6 @@ public class program {
 
 	public void setVisitsPerDay(int visitsPerDay) {
 		this.visitsPerDay = visitsPerDay;
-	}
-
-	public int getPatientRecon() {
-		return patientRecon;
-	}
-
-	public void setPatientRecon(int patientRecon) {
-		this.patientRecon = patientRecon;
-	}
-
-	public int getVisitRecon() {
-		return visitRecon;
-	}
-
-	public void setVisitRecon(int visitRecon) {
-		this.visitRecon = visitRecon;
 	}
 
 }

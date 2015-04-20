@@ -9,7 +9,7 @@ require(['./main'], function () {
 
         //Fade out the updated/created message after being displayed.
         if ($('.alert').length > 0) {
-            $('.alert').delay(2000).fadeOut(1000);
+            $('.alert').delay(2000).fadeOut(10000);
         }
 
         $("input:text,form").attr("autocomplete", "off");
@@ -35,17 +35,10 @@ require(['./main'], function () {
             var errorFound = 0;
 
             //Remove any error message classes
-            $('#userIdDiv').removeClass("has-error");
-            $('#userIdMsg').removeClass("has-error");
-            $('#userIdMsg').html('');
             
-            $('#programUploadTypeIdDiv').removeClass("has-error");
-            $('#programUploadTypeIdMsg').removeClass("has-error");
-            $('#programUploadTypeIdMsg').html('');
-            
-            $('#uploadedFileDiv').removeClass("has-error");
-            $('#uploadedFileMsg').removeClass("has-error");
-            $('#uploadedFileMsg').html('');
+            $('div.form-group').removeClass("has-error");
+            $('span.control-label').removeClass("has-error");
+            $('span.control-label').html("");
 
             //Make sure at least one user is selected
             if ($('#userId').val() == '' || $('#userId').val() == null) {

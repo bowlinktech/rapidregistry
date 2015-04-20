@@ -51,7 +51,7 @@
                             <span id="fieldMsg" class="control-label"></span>
                         </div>
                         <div class="form-group">
-                            <label class="control-label" for=fieldValidation">Field Validation</label>
+                            <label class="control-label" for="fieldValidation">Field Validation</label>
                             <select id="fieldValidation" class="form-control half">
                                 <c:forEach items="${validationTypes}"  var="fieldvalidationtypes" varStatus="vtype">
                                     <option value="${validationTypes[vtype.index][0]}">${validationTypes[vtype.index][1]}</option>
@@ -59,10 +59,17 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label class="control-label" for=fieldValidation">Required Field *</label>
+                            <label class="control-label" for="requiredField">Required Field *</label>
                             <select id="requiredField" class="form-control half">
                                 <option value="false">False</option>
                                 <option value="true">True</option>
+                            </select>
+                        </div> 
+                         <div class="form-group">
+                            <label class="control-label" for="useField">Use Field *</label>
+                            <select id="useField" class="form-control half">
+                                <option value="true">True</option>
+                                <option value="false">False</option>                                
                             </select>
                         </div> 
                         <div class="form-group">

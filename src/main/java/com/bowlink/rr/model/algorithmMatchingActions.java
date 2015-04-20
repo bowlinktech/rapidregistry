@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package com.bowlink.rr.model;
 
 import com.bowlink.rr.validator.NoHtml;
-
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,7 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
+import javax.persistence.Transient;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -23,32 +23,25 @@ import org.springframework.format.annotation.DateTimeFormat;
  * @author chadmccue
  */
 @Entity
-@Table(name = "PROGRAM_ENGAGEMENTSECTIONS")
-public class programEngagementSections {
+@Table(name = "lu_algorithmMatchingActions")
+public class algorithmMatchingActions {
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID", nullable = false)
     private int id;
     
-    @Column(name = "PROGRAMID", nullable = false)
-    private int programId;
+    @NotEmpty
+    @NoHtml
+    @Column(name = "displayText", nullable = false)
+    private String displayText;
     
     @Column(name = "STATUS", nullable = false)
     private boolean status = true;
     
-    @NotEmpty
-    @NoHtml
-    @Column(name = "SECTIONNAME", nullable = true)
-    private String sectionName = "";
-    
-    @Column(name = "DSPPOS", nullable = true)
-    private int dspPos = 1;
-    
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
     @Column(name = "DATECREATED", nullable = true)
     private Date dateCreated = new Date();
-
 
 	public int getId() {
 		return id;
@@ -58,12 +51,12 @@ public class programEngagementSections {
 		this.id = id;
 	}
 
-	public int getProgramId() {
-		return programId;
+	public String getDisplayText() {
+		return displayText;
 	}
 
-	public void setProgramId(int programId) {
-		this.programId = programId;
+	public void setDisplayText(String displayText) {
+		this.displayText = displayText;
 	}
 
 	public boolean isStatus() {
@@ -72,22 +65,6 @@ public class programEngagementSections {
 
 	public void setStatus(boolean status) {
 		this.status = status;
-	}
-
-	public String getSectionName() {
-		return sectionName;
-	}
-
-	public void setSectionName(String sectionName) {
-		this.sectionName = sectionName;
-	}
-
-	public int getDspPos() {
-		return dspPos;
-	}
-
-	public void setDspPos(int dspPos) {
-		this.dspPos = dspPos;
 	}
 
 	public Date getDateCreated() {

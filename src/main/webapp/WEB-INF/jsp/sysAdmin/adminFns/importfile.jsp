@@ -4,7 +4,22 @@
 
 <div class="main clearfix" role="main">
     <div class="col-md-12">
-
+	<c:if test="${not empty errorCodes}" >
+                <div class="alert alert-danger">
+                    <strong>The last file uploaded failed our validation!</strong> 
+                    <br />
+                    <c:forEach items="${errorCodes}" var="code">
+                        ${code.errorDisplayText}
+                        <br />
+                    </c:forEach>
+                </div>
+        </c:if>
+        <c:if test="${not empty savedStatus && empty errorCodes}" >
+                     <div class="alert alert-success">
+                        <strong>Success!</strong> 
+                        Your file is successfully uploaded.
+                       </div>             
+         </c:if>
         <section class="panel panel-default">
             <div class="panel-heading">
                 <div class="pull-right">
@@ -20,17 +35,18 @@
                     <select id="userId" name="userId" class="form-control half userId">
                         <option  value="">- Users - </option>
                         <c:forEach items="${users}" var="user">
-                            <option value="${user.id}">${user.firstName} ${user.lastName} - ${user.email}</option>
+                            <option value="${user.id}" <c:if test="${puUserId == user.id}">selected</c:if>>${user.firstName} ${user.lastName} - ${user.email}</option>
                         </c:forEach>                        
                     </select>
                     <span id="userIdMsg" class="control-label"></span>
                 </div>
-                <div id="programUploadTypeIdDiv" class="form-group ${status.error ? 'has-error' : '' }" style="display:none">
+                
+                <div id="programUploadTypeIdDiv" class="form-group ${status.error ? 'has-error' : '' }" <c:if test="${empty programUploadTypeId}">style="display:none"</c:if>>
                     <label for="programUploadTypeId">Select the program you are uploading for *</label>
-                    <select id="programUploadTypeId" name="programUplaodTypeId" class="form-control half">
+                    <select id="programUploadTypeId" name="programUploadTypeId" class="form-control half">
                         <option  value="">- Program Upload Types - </option>
                         <c:forEach items="${programUploadTypes}" var="programUploadType">
-                            <option value="${programUploadType.id}">${programUploadType.name}</option>
+                            <option value="${programUploadType.id}" <c:if test="${programUploadTypeId == programUploadType.id}">selected</c:if>>${programUploadType.name}</option>
                         </c:forEach>                        
                     </select>
                     <span id="programUploadTypeIdMsg" class="control-label"></span>

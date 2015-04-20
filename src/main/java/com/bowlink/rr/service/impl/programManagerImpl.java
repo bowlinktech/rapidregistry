@@ -7,14 +7,17 @@
 package com.bowlink.rr.service.impl;
 
 import com.bowlink.rr.dao.programDAO;
-import com.bowlink.rr.model.engagementMatchingActions;
+import com.bowlink.rr.model.algorithmMatchingActions;
 import com.bowlink.rr.model.program;
 import com.bowlink.rr.model.programAdmin;
 import com.bowlink.rr.model.programAvailableTables;
 import com.bowlink.rr.model.programPatientEntryMethods;
+import com.bowlink.rr.model.programUploadTypes;
 import com.bowlink.rr.reference.fileSystem;
 import com.bowlink.rr.service.programManager;
+
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -183,10 +186,10 @@ public class programManagerImpl implements programManager {
         return programDAO.getAvailbleProgramsForUser(userId);
     }
 
-	@Override
-	@Transactional
-	public List<engagementMatchingActions> getEngagementMatchingActions() throws Exception {
-		return programDAO.getEngagementMatchingActions();
+    @Override
+	public List<programUploadTypes> getProgramUploadTypes(
+			Integer programId) throws Exception {
+		return programDAO.getProgramUploadTypes(programId);
 	}
     
 }

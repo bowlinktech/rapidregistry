@@ -6,7 +6,10 @@
 package com.bowlink.rr.model;
 
 import com.bowlink.rr.validator.NoHtml;
+
 import java.util.Date;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,6 +17,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -28,6 +32,15 @@ public class programUploadTypes {
     @Transient
     private int totalFields = 0;
     
+    @Transient
+    private String fileExt;
+	
+	@Transient
+	private String delimChar;
+	
+	@Transient
+	private List<algorithmCategories> algorithmCategories;
+	
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID", nullable = false)
@@ -52,11 +65,11 @@ public class programUploadTypes {
     private boolean useHEL = false;
     
     @NoHtml
-    @Column(name = "HELPickUpPath", nullable = false)
+    @Column(name = "HELPickUpPath", nullable = true)
     private String helPickUpPath;
     
     @NoHtml
-    @Column(name = "HELDropPath", nullable = false)
+    @Column(name = "HELDropPath", nullable = true)
     private String helDropPath;
     
     @Column(name = "fileTypeId", nullable = false)
@@ -174,4 +187,29 @@ public class programUploadTypes {
 	public void setEncodingId(int encodingId) {
 		this.encodingId = encodingId;
 	}
+
+	public String getFileExt() {
+		return fileExt;
+	}
+
+	public void setFileExt(String fileExt) {
+		this.fileExt = fileExt;
+	}
+
+	public String getDelimChar() {
+		return delimChar;
+	}
+
+	public void setDelimChar(String delimChar) {
+		this.delimChar = delimChar;
+	}
+
+	public List<algorithmCategories> getAlgorithmCategories() {
+		return algorithmCategories;
+	}
+
+	public void setAlgorithmCategories(List<algorithmCategories> algorithmCategories) {
+		this.algorithmCategories = algorithmCategories;
+	}
+
 }

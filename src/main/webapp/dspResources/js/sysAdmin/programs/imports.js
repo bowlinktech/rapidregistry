@@ -39,7 +39,37 @@ require(['./main'], function () {
         //submit the new user fields from the modal window.
         $(document).on('click', '#submitImportType', function(event) {
             
+        	$('div.form-group').removeClass("has-error");
+            $('span.control-label').removeClass("has-error");
+            $('span.control-label').html("");
+            
+            var errorCount  = 0;
             var formData = $("#importTypeForm").serialize();
+            
+            var helDropPath = $("#helDropPath").val();
+            var helPickUpPath = $("#helDropPath").val();
+            
+            
+            /**check to make sure paths are not blank**/
+            if($('#useHEL1').is(':checked')) {
+            	//make sure paths are filled in
+            	if ($.trim(helDropPath).length < 1) {
+            		 $("#helDropPathDiv").addClass("has-error");
+            		 $('#helDropPathMsg').addClass("has-error");
+                     $('#helDropPathMsg').html('Health-e-link Input Path cannot be empty'); 
+                     errorCount++;
+            	}
+            	if ($.trim(helPickUpPath).length < 1) {
+           		 $("#helPickUpPathDiv").addClass("has-error");
+           		 $('#helPickUpPathMsg').addClass("has-error");
+                 $('#helPickUpPathMsg').html('Health-e-link Output Path cannot be empty'); 
+                    errorCount++;
+            	}
+            }
+            
+            if (errorCount > 0) {
+            	return false;
+            }
             
             $.ajax({
                 url: 'saveImportType',
@@ -72,7 +102,7 @@ require(['./main'], function () {
                     type: "POST",
                     async: false,
                     success: function(data) {
-                      window.location.href = "/sysAdmin/programs/"+data+"/imports?msg=importTypedeleted";
+                      window.location.href = "/sysAdmin/programs/"+data;
                     }
                 });
             }

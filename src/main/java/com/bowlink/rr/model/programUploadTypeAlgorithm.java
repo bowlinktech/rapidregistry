@@ -8,6 +8,7 @@ package com.bowlink.rr.model;
 
 import java.util.Date;
 import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -22,87 +23,141 @@ import org.springframework.format.annotation.DateTimeFormat;
  * @author chadmccue
  */
 @Entity
-@Table(name = "programUpload_mcialgorithms")
-public class programUpload_MCIalgorithms {
+@Table(name = "put_algorithms")
+public class programUploadTypeAlgorithm {
     
     @Transient
-    private List<programUpload_MCIFields> fields = null;
+    private List<programUploadTypeAlgorithmFields> fields = null;
+    
+    @Transient
+    private Integer programId = null;
+    
+    @Transient
+    private String actionName  = null;
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID", nullable = false)
     private int id;
     
-    @Column(name = "programUploadTypeId", nullable = false)
-    private Integer programUploadTypeId = null;
-    
     @Column(name = "STATUS", nullable = false)
     private boolean status = false;
     
     @Column(name = "ACTION", nullable = false)
-    private Integer action = 3;
+    private Integer action = 5;
     
-    @Column(name = "mci_CategoryId", nullable = false)
-    private Integer mci_CategoryId = 1;
+    @Column(name = "categoryId", nullable = false)
+    private Integer categoryId = 1;
+    
+    @Column(name = "programUploadTypeId", nullable = false)
+    private Integer programUploadTypeId;
+    
+    @Column(name = "processOrder", nullable = false)
+    private Integer processOrder;    
     
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
     @Column(name = "DATECREATED", nullable = true)
     private Date dateCreated = new Date();
 
-	public List<programUpload_MCIFields> getFields() {
+
+	public List<programUploadTypeAlgorithmFields> getFields() {
 		return fields;
 	}
 
-	public void setFields(List<programUpload_MCIFields> fields) {
+
+	public void setFields(List<programUploadTypeAlgorithmFields> fields) {
 		this.fields = fields;
 	}
+
 
 	public int getId() {
 		return id;
 	}
 
+
 	public void setId(int id) {
 		this.id = id;
 	}
 
-	public Integer getProgramUploadTypeId() {
-		return programUploadTypeId;
+
+	public Integer getProgramId() {
+		return programId;
 	}
 
-	public void setProgramUploadTypeId(Integer programUploadTypeId) {
-		this.programUploadTypeId = programUploadTypeId;
+
+	public void setProgramId(Integer programId) {
+		this.programId = programId;
 	}
+
 
 	public boolean isStatus() {
 		return status;
 	}
 
+
 	public void setStatus(boolean status) {
 		this.status = status;
 	}
+
 
 	public Integer getAction() {
 		return action;
 	}
 
+
 	public void setAction(Integer action) {
 		this.action = action;
 	}
 
-	public Integer getMci_CategoryId() {
-		return mci_CategoryId;
+	
+
+	public Integer getProgramUploadTypeId() {
+		return programUploadTypeId;
 	}
 
-	public void setMci_CategoryId(Integer mci_CategoryId) {
-		this.mci_CategoryId = mci_CategoryId;
+
+	public void setProgramUploadTypeId(Integer programUploadTypeId) {
+		this.programUploadTypeId = programUploadTypeId;
 	}
+
+
+	public Integer getProcessOrder() {
+		return processOrder;
+	}
+
+
+	public void setProcessOrder(Integer processOrder) {
+		this.processOrder = processOrder;
+	}
+
 
 	public Date getDateCreated() {
 		return dateCreated;
 	}
 
+
 	public void setDateCreated(Date dateCreated) {
 		this.dateCreated = dateCreated;
+	}
+
+
+	public Integer getCategoryId() {
+		return categoryId;
+	}
+
+
+	public void setCategoryId(Integer categoryId) {
+		this.categoryId = categoryId;
+	}
+
+
+	public String getActionName() {
+		return actionName;
+	}
+
+
+	public void setActionName(String actionName) {
+		this.actionName = actionName;
 	}
 
 }

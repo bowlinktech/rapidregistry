@@ -5,8 +5,11 @@
  */
 package com.bowlink.rr.dao;
 
-import com.bowlink.rr.model.programUpload_MCIalgorithms;
-import com.bowlink.rr.model.programUpload_MCIFields;
+import com.bowlink.rr.model.algorithmCategories;
+import com.bowlink.rr.model.algorithmMatchingActions;
+import com.bowlink.rr.model.programUploadTypeAlgorithm;
+import com.bowlink.rr.model.programUploadTypeAlgorithmFields;
+
 import java.util.List;
 
 
@@ -16,19 +19,37 @@ import java.util.List;
  */
 public interface masterClientIndexDAO {
     
-    List<programUpload_MCIalgorithms> getProgramUploadMCIalgorithms(Integer programId) throws Exception;
+    List<programUploadTypeAlgorithm> getProgramUploadTypeAlgorithm(Integer importTypeId) throws Exception;
     
-    List<programUpload_MCIFields> getProgramUploadMCIFields(Integer mciId) throws Exception;
+    List<programUploadTypeAlgorithmFields> getMCIAlgorithmFields(Integer algorithmId) throws Exception;
     
-    Integer createMCIAlgorithm(programUpload_MCIalgorithms newMCIAlgorithm) throws Exception;
+    Integer createMCIAlgorithm(programUploadTypeAlgorithm newMCIAlgorithm) throws Exception;
     
-    void updateMCIAlgorithm(programUpload_MCIalgorithms MCIAlgorithm) throws Exception;
+    void updateMCIAlgorithm(programUploadTypeAlgorithm MCIAlgorithm) throws Exception;
     
-    void createMCIAlgorithmFields(programUpload_MCIFields newField) throws Exception;
+    void createMCIAlgorithmFields(programUploadTypeAlgorithmFields newField) throws Exception;
     
-    programUpload_MCIalgorithms getMCIAlgorithm(Integer mpiId) throws Exception;
+    programUploadTypeAlgorithm getMCIAlgorithm(Integer algorithmId) throws Exception;
     
     void removeAlgorithmField(Integer algorithmFieldId) throws Exception;
     
     void removeAlgorithm(Integer algorithmId) throws Exception;
+    
+    Integer getMaxProcessOrder (Integer categoryId, Integer importTypeId) throws Exception;
+    
+    programUploadTypeAlgorithm getMCIAlgorithmByProcessOrder(Integer processOrder, Integer importTypeId, Integer categoryId) throws Exception;
+    
+    List <algorithmMatchingActions> getAlgorithmMatchingActions (Boolean status) throws Exception;
+    
+    List <algorithmCategories> getAlgorithmCategories (Boolean status) throws Exception;
+    
+    List <algorithmCategories> getCategoriesForUploadType (Integer importTypeId) throws Exception;
+    
+    List <programUploadTypeAlgorithm> getPUTAlgorithmByCategory (Integer catId, Integer importTypeId) throws Exception;
+    
+    algorithmMatchingActions getActionById (Integer actionId) throws Exception;
+    
+    algorithmCategories getCategoryById (Integer categoryId) throws Exception;
+    
+    
 }

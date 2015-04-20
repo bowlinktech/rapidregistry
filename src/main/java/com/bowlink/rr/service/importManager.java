@@ -5,14 +5,20 @@
  */
 package com.bowlink.rr.service;
 
+import com.bowlink.rr.model.algorithmCategories;
 import com.bowlink.rr.model.User;
 import com.bowlink.rr.model.MoveFilesLog;
+import com.bowlink.rr.model.algorithmMatchingActions;
+import com.bowlink.rr.model.delimiters;
+import com.bowlink.rr.model.errorCodes;
 import com.bowlink.rr.model.fileTypes;
 import com.bowlink.rr.model.programUploadTypes;
 import com.bowlink.rr.model.programUploadTypesFormFields;
+import com.bowlink.rr.model.programUpload_Errors;
 import com.bowlink.rr.model.programUploads;
-
+import java.io.File;
 import java.util.List;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
@@ -36,7 +42,7 @@ public interface importManager {
     
     void saveImportField(programUploadTypesFormFields fieldDetails) throws Exception;
     
-    void removeImportType(Integer importTypeId) throws Exception;
+    String removeImportType(Integer importTypeId) throws Exception;
     
     List <fileTypes> getFileTypes (Integer fileTypeId) throws Exception;
     
@@ -48,9 +54,9 @@ public interface importManager {
     
     List <programUploads> getProgramUploads(Integer statusId) throws Exception;
     
-    void updateProgramUplaod (programUploads programUpload) throws Exception;
+    void updateProgramUpload (programUploads programUpload) throws Exception;
     
-    Integer saveProgramUplaod (programUploads programUpload) throws Exception;
+    Integer saveProgramUpload (programUploads programUpload) throws Exception;
     
     programUploads getProgramUpload(Integer programUpload) throws Exception;
     
@@ -84,4 +90,19 @@ public interface importManager {
     
     List<User> getUsersForProgramUploadTypes(Integer statusId);
     
+    delimiters getDelimiter (Integer delimId) throws Exception;
+    
+    String saveUploadedFile(programUploads pu, MultipartFile fileUpload) throws Exception;
+    
+    Integer chkUploadedFile(programUploads pu, File processFile) throws Exception;
+
+    void insertError(programUpload_Errors uploadError) throws Exception;
+    
+    List <programUpload_Errors> getProgramUploadErrorList (Integer id, String type) throws Exception;
+    
+    List <errorCodes> getErrorCodes (Integer status) throws Exception;
+    
+    Integer submitUploadFile(Integer userId,Integer programUploadTypeId,MultipartFile uploadedFile) throws Exception;
+ 
+    List <programUploads> getProgramUploadsByImportType (Integer importTypeId) throws Exception;
 }

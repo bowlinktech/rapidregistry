@@ -131,8 +131,8 @@
         <put-attribute name="page-id" value="dashboard-details" />
         <put-attribute name="page-section" value="section-dashboard" />
         <put-attribute name="header" value="/WEB-INF/jsp/common/sysAdminHeader.jsp?sect=programs" />
-        <put-attribute name="actions" value="/WEB-INF/jsp/sysAdmin/programs/actionBar.jsp?page=imports" />
-        <put-attribute name="menu" value="/WEB-INF/jsp/sysAdmin/programs/menu.jsp?page=imports" />
+        <put-attribute name="actions" value="/WEB-INF/jsp/sysAdmin/programs/actionBar.jsp?page=importFields" />
+        <put-attribute name="menu" value="/WEB-INF/jsp/sysAdmin/programs/menu.jsp?page=importFields" />
         <put-attribute name="body" value="/WEB-INF/jsp/sysAdmin/programs/imports/importFields.jsp" />
         <put-attribute name="jscript" value="/dspResources/js/sysAdmin/programs/importFields.js" />
     </definition>
@@ -141,8 +141,8 @@
         <put-attribute name="page-id" value="dashboard-details" />
         <put-attribute name="page-section" value="section-dashboard" />
         <put-attribute name="header" value="/WEB-INF/jsp/common/sysAdminHeader.jsp?sect=programs" />
-        <put-attribute name="actions" value="/WEB-INF/jsp/sysAdmin/programs/actionBar.jsp?page=mci" />
-        <put-attribute name="menu" value="/WEB-INF/jsp/sysAdmin/programs/menu.jsp?page=mci" />
+        <put-attribute name="actions" value="/WEB-INF/jsp/sysAdmin/programs/actionBar.jsp?page=importRules" />
+        <put-attribute name="menu" value="/WEB-INF/jsp/sysAdmin/programs/menu.jsp?page=importRules" />
         <put-attribute name="body" value="/WEB-INF/jsp/sysAdmin/programs/mci/algorithms.jsp" />
         <put-attribute name="jscript" value="/dspResources/js/sysAdmin/programs/algorithms.js" />
     </definition>
