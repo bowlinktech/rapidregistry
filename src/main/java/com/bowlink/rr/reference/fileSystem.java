@@ -57,6 +57,9 @@ public class fileSystem {
                     new File(winDirectoryPath + dirName + "\\crosswalks").mkdirs();
                     new File(winDirectoryPath + dirName + "\\importFiles").mkdirs();
                     new File(winDirectoryPath + dirName + "\\exportFiles").mkdirs();
+                    new File(winDirectoryPath + dirName + "\\calendarUploadedFiles").mkdirs();
+                    new File(winDirectoryPath + dirName + "\\forumUploadedFiles").mkdirs();
+                    new File(winDirectoryPath + dirName + "\\faqUploadedFiles").mkdirs();
                 }
             } //Mac
             else if (os.indexOf("mac") >= 0) {
@@ -67,6 +70,9 @@ public class fileSystem {
                     new File(macDirectoryPath + dirName + "/crosswalks").mkdirs();
                     new File(macDirectoryPath + dirName + "/importFiles").mkdirs();
                     new File(macDirectoryPath + dirName + "/exportFiles").mkdirs();
+                    new File(macDirectoryPath + dirName + "/calendarUploadedFiles").mkdirs();
+                    new File(macDirectoryPath + dirName + "/forumUploadedFiles").mkdirs();
+                    new File(macDirectoryPath + dirName + "/faqUploadedFiles").mkdirs();
                 }
             } //Unix or Linux or Solarix
             else if (os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0 || os.indexOf("aix") >= 0 || os.indexOf("sunos") >= 0) {
@@ -77,6 +83,9 @@ public class fileSystem {
                     new File(unixDirectoryPath + dirName + "/crosswalks").mkdirs();
                     new File(unixDirectoryPath + dirName + "/importFiles").mkdirs();
                     new File(unixDirectoryPath + dirName + "/exportFiles").mkdirs();
+                    new File(unixDirectoryPath + dirName + "/calendarUploadedFiles").mkdirs();
+                    new File(unixDirectoryPath + dirName + "/forumUploadedFiles").mkdirs();
+                    new File(unixDirectoryPath + dirName + "/faqUploadedFiles").mkdirs();
                 }
             } else {
                 System.out.println("Your OS is not support!!");
