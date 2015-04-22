@@ -18,10 +18,10 @@
                         </div>
                     </c:when>
                     <c:when test="${param['page'] == 'staff'}">
-                        <a href="javascript:void(0);" title="Staff Members" class="unstyled-link">Staff Members</a>
+                        <a href="javascript:void(0);" title="Users" class="unstyled-link">Users</a>
                     </c:when>    
                     <c:when test="${param['page'] == 'staffdetails'}">
-                        <a href="javascript:void(0);" title="Staff Member Details" class="unstyled-link">Staff Member Details</a>
+                        <a href="javascript:void(0);" title="User Details" class="unstyled-link">User Details</a>
                     </c:when>
                     <c:when test="${param['page'] == 'categories'}">
                         <a href="javascript:void(0);" title="Service Categories" class="unstyled-link">Service Categories</a>

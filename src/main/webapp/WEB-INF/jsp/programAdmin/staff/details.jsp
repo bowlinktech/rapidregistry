@@ -50,19 +50,6 @@
                                 </label>
                             </div>
                         </div>
-                        <spring:bind path="typeId">
-                            <div id="typeIdDiv" class="form-group ${status.error ? 'has-error' : '' }">
-                                <label class="control-label" for="typeId">Staff Type *</label>
-                                <form:select path="typeId" id="typeId" class="form-control half">
-                                    <option value="" label=" - Select - " >- Select -</option>
-                                    <c:forEach items="${userTypes}"  varStatus="uname">
-                                        <option value="${userTypes[uname.index][0]}" <c:if test="${staffdetails.typeId == userTypes[uname.index][0]}">selected</c:if>>${userTypes[uname.index][1]}</option>
-                                    </c:forEach>
-                                </form:select>
-                               <form:errors path="typeId" cssClass="control-label" element="label" />  
-                               <span id="typeIdMsg" class="control-label"></span>    
-                            </div>
-                        </spring:bind>
                         <spring:bind path="firstName">
                             <div class="form-group ${status.error ? 'has-error' : '' }">
                                 <label class="control-label" for="firstName">First Name *</label>

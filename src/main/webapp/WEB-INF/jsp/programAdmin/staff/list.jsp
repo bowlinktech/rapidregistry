@@ -19,7 +19,7 @@
         
         <section class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">Search Staff Members</h3>
+                <h3 class="panel-title">Search Users</h3>
             </div>
             <div class="panel-body">
                 <form id="searchForm" action="" method="get">
@@ -54,17 +54,6 @@
                                     <input type="text" name="lastName" value="${lastNameSF}" class="form-control" type="text" maxLength="55" />
                                 </div>
                             </div>
-                            <div class="form-group col-md-6">
-                                <div>
-                                    <label class="control-label" for="typeId">Staff Type</label>
-                                    <select name="typeId" class="form-control half">
-                                        <option value="0" label=" - Select - " >- Select -</option>
-                                        <c:forEach items="${userTypes}"  varStatus="uname">
-                                            <option value="${userTypes[uname.index][0]}" <c:if test="${typeIdSF == userTypes[uname.index][0]}">selected</c:if>>${userTypes[uname.index][1]}</option>
-                                        </c:forEach>
-                                    </select>     
-                                </div>
-                            </div>
                         </div>
                         <div class="form-group">
                           <input type="submit" id="submitButton"  role="button" class="btn btn-primary" value="Search"/>
@@ -78,9 +67,9 @@
         <section class="panel panel-default">
             <div class="panel-heading">
                 <div class="pull-right">
-                    <a href="#staffMemberModal" data-toggle="modal" class="btn btn-primary btn-xs btn-action" id="createNewStaffMember" title="Create New Staff Member">Create New Staff Member</a>
+                    <a href="#staffMemberModal" data-toggle="modal" class="btn btn-primary btn-xs btn-action" id="createNewStaffMember" title="Create New Staff Member">Create New User</a>
                 </div>
-                <h3 class="panel-title">Staff Members</h3>
+                <h3 class="panel-title">Users</h3>
             </div>
             <div class="panel-body">
 
