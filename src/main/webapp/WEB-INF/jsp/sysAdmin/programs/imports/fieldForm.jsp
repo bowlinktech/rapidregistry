@@ -46,6 +46,13 @@
                             <option value="false" <c:if test="${fieldDetails.useField == false}">selected</c:if>>False</option>
                             <option value="true" <c:if test="${fieldDetails.useField == true}">selected</c:if>>True</option>
                         </form:select>
+                    </div> 
+                    <div class="form-group">
+                        <label class="control-label" for="multiValue">Contain Multiple Values*</label>
+                        <form:select path="multiValue" id="multiValue" class="form-control half">
+                            <option value="false" <c:if test="${fieldDetails.multiValue == false}">selected</c:if>>False</option>
+                            <option value="true" <c:if test="${fieldDetails.multiValue == true}">selected</c:if>>True</option>
+                        </form:select>
                     </div>                     
                     <div class="form-group">
                         <input type="button" id="submitFieldEditButton"  class="btn btn-primary" value="Update Field"/>

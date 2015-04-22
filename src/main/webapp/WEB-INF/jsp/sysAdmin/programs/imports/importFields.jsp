@@ -72,6 +72,13 @@
                                 <option value="false">False</option>                                
                             </select>
                         </div> 
+                         <div class="form-group">
+                            <label class="control-label" for="multiValue">Contains Multiple Values *</label>
+                            <select id="multiValue" class="form-control half">
+                               <option value="false">False</option>
+                               <option value="true">True</option>                                
+                            </select>
+                        </div> 
                         <div class="form-group">
                             <input type="button" id="submitFieldButton"  class="btn btn-primary" value="Add Field"/>
                         </div>
