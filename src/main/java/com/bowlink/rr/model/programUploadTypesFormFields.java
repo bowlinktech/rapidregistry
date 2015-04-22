@@ -55,6 +55,9 @@ public class programUploadTypesFormFields {
     
     @Column(name = "useField", nullable = false)
     private boolean useField = true;
+    
+    @Column(name = "multiValue", nullable = false)
+    private boolean multiValue = false;
 
     public int getId() {
         return id;
@@ -135,5 +138,13 @@ public class programUploadTypesFormFields {
 	public void setUseField(boolean useField) {
 		this.useField = useField;
 	}
- 
+
+	public boolean isMultiValue() {
+		return multiValue;
+	}
+
+	public void setMultiValue(boolean multiValue) {
+		this.multiValue = multiValue;
+	}
+
 }

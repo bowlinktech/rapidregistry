@@ -98,3 +98,47 @@ CREATE TABLE `rapidregistry`.`faqQuestionDocuments` (
   `documentTitle` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC));
+  
+  
+  /** grace 04.17.2015 05:58PM **/
+ALTER TABLE `rapidregistry`.`put_formFields` 
+ADD COLUMN `useField` BIT(1) NOT NULL DEFAULT 1 AFTER `dspPos`;
+
+ALTER TABLE `rapidregistry`.`put_formFields` 
+ADD COLUMN `multiValue` BIT(1) NULL DEFAULT 0 AFTER `useField`;
+
+/** grace 04.21.2015 03:33PM **/
+ALTER TABLE `rapidregistry`.`storage_engagements` 
+ADD COLUMN `visitDate` DATETIME NULL AFTER `programorghierarchy_detailsId`,
+ADD COLUMN `contraceptiveInitialId` INT NULL AFTER `contraceptiveMethodAfterId`,
+ADD COLUMN `noContraceptiveReasonId` INT NULL AFTER `contraceptiveInitialId`;
+
+ALTER TABLE `rapidregistry`.`storage_engagements` 
+CHANGE COLUMN `referralDate` `referralDate` DATETIME NULL ;
+
+ALTER TABLE `rapidregistry`.`storage_engagements` 
+ADD COLUMN `BMI` DECIMAL(2) NULL AFTER `noContraceptiveReasonId`;
+
+ALTER TABLE `rapidregistry`.`storage_engagements` 
+CHANGE COLUMN `BMI` `BMI` FLOAT NULL DEFAULT NULL ,
+ADD COLUMN `height` FLOAT NULL AFTER `BMI`,
+ADD COLUMN `weight` FLOAT NULL AFTER `height`,
+ADD COLUMN `bpDia` FLOAT NULL AFTER `weight`,
+ADD COLUMN `bpSys` FLOAT NULL AFTER `bp_diastolic`;
+
+delete from  `rapidregistry`.`storage_engagements`;
+
+ALTER TABLE `rapidregistry`.`storage_engagements` 
+CHANGE COLUMN `engagementId` `storage_patientsId` INT(11) NOT NULL ;
+
+ALTER TABLE `rapidregistry`.`storage_engagements` 
+DROP INDEX `engagementId_idx` ;
+
+ALTER TABLE `rapidregistry`.`storage_engagements` 
+ADD CONSTRAINT `fk_storage_patient`
+  FOREIGN KEY (`storage_patientsId`)
+  REFERENCES `rapidregistry`.`storage_patients` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+  
+  
