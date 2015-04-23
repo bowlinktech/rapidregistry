@@ -13,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -23,6 +24,15 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Entity
 @Table(name = "PROGRAMORGHIERARCHY_DETAILS")
 public class programOrgHierarchyDetails {
+    
+    @Transient
+    private Boolean isAssociated = false;
+    
+    @Transient
+    private String encryptedId = null;
+
+    @Transient
+    private String encryptedSecret = null;
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -148,6 +158,30 @@ public class programOrgHierarchyDetails {
 
     public void setStatus(boolean status) {
         this.status = status;
+    }
+
+    public String getEncryptedId() {
+        return encryptedId;
+    }
+
+    public void setEncryptedId(String encryptedId) {
+        this.encryptedId = encryptedId;
+    }
+
+    public String getEncryptedSecret() {
+        return encryptedSecret;
+    }
+
+    public void setEncryptedSecret(String encryptedSecret) {
+        this.encryptedSecret = encryptedSecret;
+    }
+
+    public Boolean getIsAssociated() {
+        return isAssociated;
+    }
+
+    public void setIsAssociated(Boolean isAssociated) {
+        this.isAssociated = isAssociated;
     }
     
 }

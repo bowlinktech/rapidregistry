@@ -6,14 +6,18 @@
 package com.bowlink.rr.model;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
  *
  * @author chadmccue
  */
+@Entity
+@Table(name = "PROGRAMORGHIERARCHY_ASSOC")
 public class programOrgHierarchyAssoc {
     
      @Id
@@ -21,7 +25,7 @@ public class programOrgHierarchyAssoc {
     @Column(name = "ID", nullable = false)
     private int id;
     
-    @Column(name = "PROGRAMORGHIERARCHYID", nullable = false)
+    @Column(name = "PROGRAMHIERARCHYID", nullable = false)
     private int programHierarchyId;
    
     @Column(name = "ASSOCIATEDWITH", nullable = false)

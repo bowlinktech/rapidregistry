@@ -34,7 +34,10 @@
                     </c:when>  
                     <c:when test="${param['page'] == 'entity'}">
                         <a href="javascript:void(0);" title="Entity Management" class="unstyled-link">Entity Management</a>
-                    </c:when>      
+                    </c:when>     
+                    <c:when test="${param['page'] == 'entitydetails'}">
+                        <a href="javascript:void(0);" title="Entity Management" class="unstyled-link">Entity Management</a>
+                    </c:when>     
                 </c:choose>
             </h1>
         </div>
@@ -56,6 +59,11 @@
                 <c:when test="${param['page'] == 'surveyDetails'}">
                     <li role="menuitem"><a href="/programAdmin/surveys" title="Cancel" role="button"><span class="glyphicon glyphicon-ban-circle icon-stacked"></span> Cancel</a></li>
                 </c:when>
+                <c:when test="${param['page'] == 'entitydetails'}">
+                    <li role="menuitem"><a href="javascript:void(0);" id="saveDetails" title="Save Form" role="button"><span class="glyphicon glyphicon-ok icon-stacked"></span> Save </a></li>
+                    <li role="menuitem"><a href="javascript:void(0);" id="saveCloseDetails" title="Save &amp; Close" role="button"><span class="glyphicon glyphicon-floppy-disk icon-stacked"></span> Save &amp; Close</a></li>
+                    <li role="menuitem"><a href="/programAdmin/staff" title="Save &amp; Close" role="button"><span class="glyphicon glyphicon-ban-circle icon-stacked"></span> Cancel</a></li>
+                </c:when>    
           </c:choose>
         </ul>
     </div>

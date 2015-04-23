@@ -7,6 +7,7 @@ package com.bowlink.rr.service.impl;
 
 import com.bowlink.rr.dao.orgHierarchyDAO;
 import com.bowlink.rr.model.programOrgHierarchy;
+import com.bowlink.rr.model.programOrgHierarchyAssoc;
 import com.bowlink.rr.model.programOrgHierarchyDetails;
 import com.bowlink.rr.model.userProgramHierarchy;
 import com.bowlink.rr.service.orgHierarchyManager;
@@ -77,5 +78,36 @@ public class orgHierarchyManagerImpl implements orgHierarchyManager {
     @Transactional
     public  List<programOrgHierarchyDetails> getProgramHierarchyItems(Integer hierarchyId) throws Exception {
         return orgHierarchyDAO.getProgramHierarchyItems(hierarchyId);
+    }
+    
+    @Override
+    @Transactional
+    public  programOrgHierarchyDetails getProgramHierarchyItemDetails(Integer itemId) throws Exception {
+        return orgHierarchyDAO.getProgramHierarchyItemDetails(itemId);
+    }
+    
+    @Override
+    @Transactional
+    public void saveOrgHierarchyItem(programOrgHierarchyDetails entityItemDetails) throws Exception {
+        orgHierarchyDAO.saveOrgHierarchyItem(entityItemDetails);
+    }
+    
+    
+    @Override
+    @Transactional
+    public void saveOrgHierarchyAssociation(programOrgHierarchyAssoc newAssoc) throws Exception {
+        orgHierarchyDAO.saveOrgHierarchyAssociation(newAssoc);
+    }
+    
+    @Override
+    @Transactional
+    public void removeOrgHierarchyAssociation(Integer itemId, Integer entityId) throws Exception {
+        orgHierarchyDAO.removeOrgHierarchyAssociation(itemId, entityId);
+    }
+    
+    @Override
+    @Transactional
+    public List<programOrgHierarchyAssoc> getAssociatedItems(Integer itemId) throws Exception {
+        return orgHierarchyDAO.getAssociatedItems(itemId);
     }
 }

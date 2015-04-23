@@ -11,7 +11,7 @@
 
 <div class="panel-heading">
     <div class="pull-right">
-        <a href="#serviceModal" data-toggle="modal" class="btn btn-primary btn-xs btn-action" rel="${entityId}" dspPos="${entityDsp}" id="createNewEntityItem" title="Create New ${entityName}">Create New ${entityName}</a>
+        <a href="#entityModal" data-toggle="modal" class="btn btn-primary btn-xs btn-action entityItemDetails" rel="${entityId}" dspPos="${entityDsp}" itemId="0" title="Create New ${entityName}">Create New ${entityName}</a>
     </div>
     <h3 class="panel-title">${entityName}</h3>
 </div>
@@ -41,13 +41,13 @@
                             <td class="actions-col">
                                 <c:choose>
                                     <c:when test="${entityDsp == 1}">
-                                        <a href="" class="btn btn-link" title="Edit this ${entityName}" role="button">
+                                        <a href="#entityModal" data-toggle="modal"rel="${entityId}" dspPos="${entityDsp}" itemId="${entityItem.id}" class="btn btn-link entityItemDetails" title="Edit this ${entityName}" role="button">
                                             Edit
                                             <span class="glyphicon glyphicon-edit"></span>
                                         </a>
                                     </c:when>
                                     <c:otherwise>
-                                        <a href="" class="btn btn-link" title="Edit this ${entityName}" role="button">
+                                        <a href="entity/details?i=${entityItem.encryptedId}&v=${entityItem.encryptedSecret}" class="btn btn-link" title="Edit this ${entityName}" role="button">
                                             Edit
                                             <span class="glyphicon glyphicon-edit"></span>
                                         </a>

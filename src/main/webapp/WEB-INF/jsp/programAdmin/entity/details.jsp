@@ -1,29 +1,126 @@
-
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %> 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<form>
-    <input type="hidden" id="s" value="${encryptedId}" />
-    <input type="hidden" id="v" value="${encryptedSecret}" />
-</form>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <div class="main clearfix" role="main">
+
     <div class="col-md-12">
-        <c:choose>
-            <c:when test="${not empty msg}" >
-                <div class="alert alert-success">
-                    <strong>Success!</strong> 
-                    <c:choose>
-                        <c:when test="${msg == 'surveyUpdated'}">The survey has been successfully updated!</c:when>
-                        <c:when test="${msg == 'surveyCreated'}">The survey has been successfully added!</c:when>
-                        <c:when test="${msg == 'pageUpdated'}">The page has been successfully updated!</c:when>
-                        <c:when test="${msg == 'pageCreated'}">The page has been successfully added!</c:when>
-                    </c:choose>
-                </div>
-            </c:when>
-        </c:choose>
+        <c:if test="${not empty savedStatus}" >
+            <div class="alert alert-success" role="alert">
+                <strong>Success!</strong> 
+                The entity item has been successfully updated!
+            </div>
+        </c:if>
+        <div class="alert alert-success assocSuccess" style="display:none"></div>
     </div>
-    <div class="col-md-10" style="padding-left:40px;">
-        <div class="row" id="surveyPages"></div>
+
+    <div class="col-md-6">
+        <section class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Entity Item Details</h3>
+            </div>
+            <div class="panel-body">
+                <form:form id="hierarchyItemdetailsform" commandName="hierarchyDetails" modelAttribute="hierarchyDetails"  method="post" role="form">
+                    <input type="hidden" name="action" id="action"  />
+                    <input type="hidden" name="entityId" id="entityId" value="${entityId}" />
+                    <form:hidden path="programHierarchyId" />
+                    <form:hidden path="dateCreated" />
+                    <div class="form-container">
+                        <div class="form-group">
+                            <label for="status">Status *</label>
+                            <div>
+                                <label class="radio-inline">
+                                    <form:radiobutton id="status" path="status" value="true" /> Active
+                                </label>
+                                <label class="radio-inline">
+                                    <form:radiobutton id="status" path="status" value="false" /> Inactive
+                                </label>
+                            </div>
+                        </div>
+                        <spring:bind path="name">
+                            <div class="form-group ${status.error ? 'has-error' : '' }">
+                                <label class="control-label" for="name">Name *</label>
+                                <form:input path="name" id="name" class="form-control" type="text" maxLength="255" />
+                                <form:errors path="name" cssClass="control-label" element="label" />
+                            </div>
+                        </spring:bind>
+                        <spring:bind path="address">
+                            <div class="form-group ${status.error ? 'has-error' : '' }">
+                                <label class="control-label" for="address">Address</label>
+                                <form:input path="address" id="address" class="form-control" type="text" maxLength="255" />
+                                <form:errors path="address" cssClass="control-label" element="label" />
+                            </div>
+                        </spring:bind>
+                        <spring:bind path="address2">
+                            <div class="form-group ${status.error ? 'has-error' : '' }">
+                                <label class="control-label" for="address2">Address 2</label>
+                                <form:input path="address2" id="address2" class="form-control" type="text"  maxLength="255" />
+                                <form:errors path="address2" cssClass="control-label" element="label" />
+                            </div>
+                        </spring:bind>
+                        <spring:bind path="city">
+                            <div class="form-group ${status.error ? 'has-error' : '' }">
+                                <label class="control-label" for="city">City</label>
+                                <form:input path="city" id="city" class="form-control" type="text"  maxLength="255" />
+                                <form:errors path="city" cssClass="control-label" element="label" />
+                            </div>
+                        </spring:bind>
+                        <spring:bind path="state">
+                            <div class="form-group ${status.error ? 'has-error' : '' }">
+                                <label class="control-label" for="state">State</label>
+                                <form:select id="state" path="state" cssClass="form-control half">
+                                    <option value="" label=" - Select - " ></option>
+                                    <form:options items="${stateList}"/>
+                                </form:select>
+                                <form:errors path="state" cssClass="control-label" element="label" />
+                            </div>
+                        </spring:bind>
+                        <spring:bind path="zipCode">
+                            <div class="form-group ${status.error ? 'has-error' : '' }">
+                                <label class="control-label" for="zipcode">Zip Code</label>
+                                <form:input path="zipCode" id="zipcode" class="form-control" type="text"  maxLength="15" />
+                                <form:errors path="zipCode" cssClass="control-label" element="label" />
+                            </div>
+                        </spring:bind>      
+                        <spring:bind path="phoneNumber">
+                            <div class="form-group ${status.error ? 'has-error' : '' }">
+                                <label class="control-label" for="phoneNumber">Phone Number</label>
+                                <form:input path="phoneNumber" id="phoneNumber" class="form-control" type="text"  maxLength="255" />
+                                <form:errors path="phoneNumber" cssClass="control-label" element="label" />
+                            </div>
+                        </spring:bind>
+                    </div>
+                </form:form>
+            </div>
+        </section>
+    </div>
+    <div class="col-md-6">
+        <section class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Associated To</h3>
+            </div>
+            <div class="panel-body">
+                <div style="height:250px; overflow: auto">
+                    <ul class="list-group">
+                        <c:if test="${not empty entityItems}">
+                            <c:forEach var="entityItem" items="${entityItems}">
+                                <li class="list-group-item">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            <input type="checkbox" class="entitySelect" entityId="${entityItem.id}" <c:if test="${entityItem.isAssociated == true}">checked="checked"</c:if> />
+                                        </span>
+                                        <input type="text" class="form-control" value="${entityItem.name}" readonly="true" style="font-weight:bold">
+                                   </div>
+                                </li>
+                            </c:forEach> 
+                        </c:if>
+                    </ul>
+                </div>
+            </div>
+        </section>    
     </div>
 </div>
-<!-- Edit Survey modal -->
-<div class="modal fade" id="surveyModal" role="dialog" tabindex="-1" aria-labeledby="Modify Survey" aria-hidden="true" aria-describedby="Modify Survey"></div>
+
+<!-- Program Entry Method modal -->
+<div class="modal fade" id="newAssocModal" role="dialog" tabindex="-1" aria-labeledby="Modified By" aria-hidden="true" aria-describedby="Modified By"></div>

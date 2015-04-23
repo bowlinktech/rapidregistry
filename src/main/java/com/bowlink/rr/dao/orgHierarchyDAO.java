@@ -6,6 +6,7 @@
 package com.bowlink.rr.dao;
 
 import com.bowlink.rr.model.programOrgHierarchy;
+import com.bowlink.rr.model.programOrgHierarchyAssoc;
 import com.bowlink.rr.model.programOrgHierarchyDetails;
 import com.bowlink.rr.model.userProgramHierarchy;
 import java.util.List;
@@ -33,5 +34,15 @@ public interface orgHierarchyDAO {
     void removeUserProgramHierarchy(Integer Id) throws Exception;
     
     List<programOrgHierarchyDetails> getProgramHierarchyItems(Integer hierarchyId) throws Exception;
+    
+    programOrgHierarchyDetails getProgramHierarchyItemDetails(Integer itemId) throws Exception;
+    
+    void saveOrgHierarchyItem(programOrgHierarchyDetails entityItemDetails) throws Exception;
+    
+    void saveOrgHierarchyAssociation(programOrgHierarchyAssoc newAssoc) throws Exception;
+    
+    void removeOrgHierarchyAssociation(Integer itemId, Integer entityId) throws Exception;
+    
+    List<programOrgHierarchyAssoc> getAssociatedItems(Integer itemId) throws Exception;
     
 }

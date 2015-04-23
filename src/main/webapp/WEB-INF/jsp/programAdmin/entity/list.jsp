@@ -10,7 +10,7 @@
                 <div class="alert alert-success">
                     <strong>Success!</strong> 
                     <c:choose>
-                        <c:when test="${param.msg == 'updated'}">The system administrator successfully updated!</c:when>
+                        <c:when test="${param.msg == 'updated'}">The entity item has been successfully updated!</c:when>
                         <c:when test="${param.msg == 'created'}">The system administrator has been successfully added!</c:when>
                     </c:choose>
                 </div>

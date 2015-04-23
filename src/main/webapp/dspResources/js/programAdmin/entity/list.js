@@ -11,9 +11,26 @@ require(['./main'], function () {
         if ($('.alert').length > 0) {
             $('.alert').delay(2000).fadeOut(1000);
         }
-       
-        loadEntities($('a.entityactive.entity').attr('rel'));
         
+        var sPageURL = window.location.search.substring(1);
+        var sURLVariables = sPageURL.split('&');
+        var entityId = 0;
+        for (var i = 0; i < sURLVariables.length; i++) 
+        {
+            var sParameterName = sURLVariables[i].split('=');
+            if (sParameterName[0] == "i") 
+            {
+                entityId = sParameterName[1];
+            }
+        }
+        
+        if(entityId == 0) {
+           loadEntities($('a.entityactive.entity').attr('rel')); 
+        }
+        else {
+            loadEntities(entityId);
+        }
+       
         $("input:text,form").attr("autocomplete", "off");
         
         $(document).on('click', '.loadEntities', function() {
@@ -22,32 +39,60 @@ require(['./main'], function () {
             loadEntities($(this).attr('rel'));
         });
         
-        $(document).on('click', '#createNewEntityItem', function() {
-           
+        $(document).on('click', '.entityItemDetails', function() {
            $.ajax({
-                url: 'entity/newEntity',
-                data: {'entityId':$(this).attr('rel'), 'dspPos': $(this).attr('dspPos')},
+                url: 'entity/entityItemDetails',
+                data: {'entityId':$(this).attr('rel'), 'itemId': $(this).attr('itemId'), 'dspPos': $(this).attr('dspPos')},
                 type: "GET",
                 success: function(data) {
-                    $("#serviceModal").html(data);
+                    $("#entityModal").html(data);
                 }
             });
-           
-           
+        });
+        
+        //Button to submit the entity item changes
+        $(document).on('click','#submitButton', function(event) {
+            var formData = $("#hierarchyItemdetailsform").serialize();
+            
+            var entityId = $('#entityId').val();
+
+            $.ajax({
+                url: 'entity/saveEntityItem',
+                data: formData,
+                type: "POST",
+                async: false,
+                success: function(data) {
+                    
+                    loadEntities(entityId);
+                    $("#entityModal").modal('hide');
+
+                    if (data.indexOf('itemUpdated') != -1) {
+                        $('.itemSuccess').html('<strong>Success!</strong> The entity item has been successfully updated!');
+                    }
+                    else if (data.indexOf('itemCreated') != -1) {
+                        $('.itemSuccess').html('<strong>Success!</strong> The entity item has been successfully created!');
+                    }
+                    
+                    $('.itemSuccess').show();
+                    $('.alert').delay(2000).fadeOut(1000);
+                }
+            });
+            event.preventDefault();
+            return false;
         });
         
     });
 });
 
 function loadEntities(entityId) {
-    $.ajax({
+   $.ajax({
         url: 'entity/getEntityList',
         data: {'entityId':entityId},
         type: "GET",
         success: function(data) {
             $('#entityList').html(data);
         }
-   }); 
+   });
 }
 
 
