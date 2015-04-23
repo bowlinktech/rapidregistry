@@ -29,8 +29,11 @@ public class programOrgHierarchyDetails {
     @Column(name = "ID", nullable = false)
     private int id;
     
-    @Column(name = "PROGRAMORGHIERARCHYID", nullable = false)
+    @Column(name = "PROGRAMHIERARCHYID", nullable = false)
     private int programHierarchyId;
+    
+    @Column(name = "STATUS", nullable = true)
+    private boolean status = true;
     
     @NotEmpty
     @NoHtml
@@ -137,6 +140,14 @@ public class programOrgHierarchyDetails {
 
     public void setDateCreated(Date dateCreated) {
         this.dateCreated = dateCreated;
+    }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
     }
     
 }

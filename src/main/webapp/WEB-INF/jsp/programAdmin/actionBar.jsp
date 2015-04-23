@@ -32,6 +32,9 @@
                     <c:when test="${param['page'] == 'serviceDetails'}">
                         <a href="javascript:void(0);" title="Service Details" class="unstyled-link">Service Details</a>
                     </c:when>  
+                    <c:when test="${param['page'] == 'entity'}">
+                        <a href="javascript:void(0);" title="Entity Management" class="unstyled-link">Entity Management</a>
+                    </c:when>      
                 </c:choose>
             </h1>
         </div>

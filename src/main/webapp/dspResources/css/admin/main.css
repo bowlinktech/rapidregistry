@@ -4269,6 +4269,16 @@ a.badge:focus {
     position: relative;
     top: -1px;
 }
+.list-group-item.entityactive,
+.list-group-item.entityactive:hover,
+.list-group-item.entityactive:focus {
+    z-index: 2;
+    color: #ffffff;
+    background-color: #0078cc;
+    border-color: #0078cc;
+    font-weight: bold;
+}
+
 a.list-group-item.active > .badge,
 .nav-pills > .active > a > .badge {
     color: #0096ff;

@@ -7,6 +7,7 @@ package com.bowlink.rr.service.impl;
 
 import com.bowlink.rr.dao.orgHierarchyDAO;
 import com.bowlink.rr.model.programOrgHierarchy;
+import com.bowlink.rr.model.programOrgHierarchyDetails;
 import com.bowlink.rr.model.userProgramHierarchy;
 import com.bowlink.rr.service.orgHierarchyManager;
 import java.util.List;
@@ -70,5 +71,11 @@ public class orgHierarchyManagerImpl implements orgHierarchyManager {
     @Transactional
     public void removeUserProgramHierarchy(Integer Id) throws Exception {
         orgHierarchyDAO.removeUserProgramHierarchy(Id);
+    }
+    
+    @Override
+    @Transactional
+    public  List<programOrgHierarchyDetails> getProgramHierarchyItems(Integer hierarchyId) throws Exception {
+        return orgHierarchyDAO.getProgramHierarchyItems(hierarchyId);
     }
 }

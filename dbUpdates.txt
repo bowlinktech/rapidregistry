@@ -141,4 +141,20 @@ ADD CONSTRAINT `fk_storage_patient`
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
   
+
+/** Chad 4-23-2015 @ 10:15 AM **/
+
+ALTER TABLE `rapidregistry`.`lu_programModules` 
+ADD COLUMN `linkIcon` VARCHAR(45) NULL AFTER `displayName`;
+
+UPDATE `rapidregistry`.`lu_programModules` SET `linkIcon`='fa-calendar' WHERE `id`='7';
+UPDATE `rapidregistry`.`lu_programModules` SET `linkIcon`='fa-question' WHERE `id`='8';
+INSERT INTO `rapidregistry`.`lu_programModules` (`moduleName`, `displayName`, `linkIcon`) VALUES ('document', 'Documents', 'fa-upload');
+UPDATE `rapidregistry`.`lu_programModules` SET `linkIcon`='fa-archive' WHERE `id`='9';
+UPDATE `rapidregistry`.`lu_programModules` SET `linkIcon`='fa-clock-o' WHERE `id`='6';
+UPDATE `rapidregistry`.`lu_programModules` SET `linkIcon`='fa-download' WHERE `id`='4';
+UPDATE `rapidregistry`.`lu_programModules` SET `linkIcon`='fa-user' WHERE `id`='1';
+UPDATE `rapidregistry`.`lu_programModules` SET `linkIcon`='fa-bars' WHERE `id`='3';
+
+
   

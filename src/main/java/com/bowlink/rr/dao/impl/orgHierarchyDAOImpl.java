@@ -7,6 +7,7 @@ package com.bowlink.rr.dao.impl;
 
 import com.bowlink.rr.dao.orgHierarchyDAO;
 import com.bowlink.rr.model.programOrgHierarchy;
+import com.bowlink.rr.model.programOrgHierarchyDetails;
 import com.bowlink.rr.model.userProgramHierarchy;
 import java.util.List;
 import org.hibernate.Query;
@@ -156,5 +157,20 @@ public class orgHierarchyDAOImpl implements orgHierarchyDAO {
         removeProgram.setParameter("Id", Id);
         removeProgram.executeUpdate();
         
+    }
+    
+    /**
+     * The 'getProgramHierarchyItems' function will return a list of items associated to the selected hierarchy.
+     * 
+     * @param hierarchyId The id of the selected program hierarchy.
+     * @return This function will return a list of hierarchy items.
+     * @throws Exception 
+     */
+    public List<programOrgHierarchyDetails> getProgramHierarchyItems(Integer hierarchyId) throws Exception {
+        Query query = sessionFactory.getCurrentSession().createQuery("from programOrgHierarchyDetails where programHierarchyId = :hierarchyId order by id asc");
+        query.setParameter("hierarchyId", hierarchyId);
+
+        List<programOrgHierarchyDetails> itemList = query.list();
+        return itemList;
     }
 }
