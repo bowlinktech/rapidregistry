@@ -155,6 +155,3 @@ UPDATE `rapidregistry`.`lu_programModules` SET `linkIcon`='fa-clock-o' WHERE `id
 UPDATE `rapidregistry`.`lu_programModules` SET `linkIcon`='fa-download' WHERE `id`='4';
 UPDATE `rapidregistry`.`lu_programModules` SET `linkIcon`='fa-user' WHERE `id`='1';
 UPDATE `rapidregistry`.`lu_programModules` SET `linkIcon`='fa-bars' WHERE `id`='3';
-
-
-  
