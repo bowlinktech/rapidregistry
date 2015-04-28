@@ -155,3 +155,73 @@ UPDATE `rapidregistry`.`lu_programModules` SET `linkIcon`='fa-clock-o' WHERE `id
 UPDATE `rapidregistry`.`lu_programModules` SET `linkIcon`='fa-download' WHERE `id`='4';
 UPDATE `rapidregistry`.`lu_programModules` SET `linkIcon`='fa-user' WHERE `id`='1';
 UPDATE `rapidregistry`.`lu_programModules` SET `linkIcon`='fa-bars' WHERE `id`='3';
+
+
+/** grace 04-27-2015 1:25PM **/
+ALTER TABLE `rapidregistry`.`storage_engagementMedicalServices` 
+CHANGE COLUMN `engagementId` `storage_engagementId` INT(11) NOT NULL ;
+
+delete from `rapidregistry`.`storage_engagementMedicalServices`;
+
+ALTER TABLE `rapidregistry`.`storage_engagements` 
+ADD COLUMN `engagementId` INT NULL AFTER `storage_patientsId`;
+
+ALTER TABLE `rapidregistry`.`storage_engagementsMisc` 
+CHANGE COLUMN `engagementId` `storage_engagementId` INT(11) NOT NULL ;
+
+ALTER TABLE `rapidregistry`.`storage_engagementMedicalServices` 
+ADD INDEX `mainStorageKey_idx` (`storage_engagementId` ASC);
+ALTER TABLE `rapidregistry`.`storage_engagementMedicalServices` 
+ADD CONSTRAINT `mainStorageKey`
+  FOREIGN KEY (`storage_engagementId`)
+  REFERENCES `rapidregistry`.`storage_engagements` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+
+ALTER TABLE `rapidregistry`.`storage_engagementsMisc` 
+ADD INDEX `FKStorageKey_idx` (`storage_engagementId` ASC);
+ALTER TABLE `rapidregistry`.`storage_engagementsMisc` 
+ADD CONSTRAINT `FKStorageKey`
+  FOREIGN KEY (`storage_engagementId`)
+  REFERENCES `rapidregistry`.`storage_engagements` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+
+/** FP patients have multiple check boxes, need to be able to display back each one they checked on forms **/
+CREATE TABLE `rapidregistry`.`storage_races` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `storage_engagementId` INT NOT NULL,
+  `raceId` INT NOT NULL,
+  PRIMARY KEY (`id`));
+
+
+ALTER TABLE `rapidregistry`.`storage_races` 
+ADD INDEX `FKStorageEngagementId_idx` (`storage_engagementId` ASC);
+ALTER TABLE `rapidregistry`.`storage_races` 
+ADD CONSTRAINT `FKStorageEngagementId`
+  FOREIGN KEY (`storage_engagementId`)
+  REFERENCES `rapidregistry`.`storage_engagements` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+  
+  CREATE TABLE `rapidregistry`.`storage_localCodes` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `storage_engagementId` INT NOT NULL,
+  `localCode` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id`));
+  
+  
+  ALTER TABLE `rapidregistry`.`storage_localCodes` 
+ADD INDEX `storage_engagementId_idx` (`storage_engagementId` ASC);
+ALTER TABLE `rapidregistry`.`storage_localCodes` 
+ADD CONSTRAINT `storage_engagementId`
+  FOREIGN KEY (`storage_engagementId`)
+  REFERENCES `rapidregistry`.`storage_engagements` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+  
+
+
+
