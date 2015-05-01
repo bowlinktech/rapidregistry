@@ -228,3 +228,9 @@ ADD CONSTRAINT `storage_engagementId`
 
 ALTER TABLE `rapidregistry`.`calendarEventTypes` 
 CHANGE COLUMN `programId` `programId` INT(11) NOT NULL ;
+
+/** 5-01-15 @ 10:43 AM Jim **/
+
+ALTER TABLE `rapidregistry`.`calendarEvents` 
+CHANGE COLUMN `eventDate` `eventStartDate` DATETIME NOT NULL ,
+ADD COLUMN `eventEndDate` DATETIME NOT NULL AFTER `eventStartDate`;
