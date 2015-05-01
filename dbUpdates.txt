@@ -234,3 +234,19 @@ CHANGE COLUMN `programId` `programId` INT(11) NOT NULL ;
 ALTER TABLE `rapidregistry`.`calendarEvents` 
 CHANGE COLUMN `eventDate` `eventStartDate` DATETIME NOT NULL ,
 ADD COLUMN `eventEndDate` DATETIME NOT NULL AFTER `eventStartDate`;
+
+
+/** 05.01.15 11:13AM Grace **/
+INSERT INTO `rapidregistry`.`lu_processstatus` (`id`, `category`, `displayCode`, `displayText`, `description`, `status`, `isCustom`, `endUserDisplayCode`, `endUserDisplayText`, `endUserDescription`) VALUES ('43', 'batch', 'RBL', 'RR Submission Being Loaded', 'RR file being loaded for processing', 1, 0, 'RBL', 'RR Submission Being Loaded', 'RR file being loaded for processing');
+
+ALTER TABLE `rapidregistry`.`programUploadRecords` 
+ADD COLUMN `statusId` INT NULL AFTER `programUploadId`;
+
+CREATE TABLE `rapidregistry`.`programUploadRecords_storageInfo` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `storage_engagementsId` INT NOT NULL,
+  `programUploadRecordsId` INT NOT NULL,
+  PRIMARY KEY (`id`));
+  
+ALTER TABLE `rapidregistry`.`storage_engagements` 
+ADD COLUMN `programId` INT NULL AFTER `engagementId`;
