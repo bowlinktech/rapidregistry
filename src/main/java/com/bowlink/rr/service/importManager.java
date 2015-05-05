@@ -5,10 +5,8 @@
  */
 package com.bowlink.rr.service;
 
-import com.bowlink.rr.model.algorithmCategories;
 import com.bowlink.rr.model.User;
 import com.bowlink.rr.model.MoveFilesLog;
-import com.bowlink.rr.model.algorithmMatchingActions;
 import com.bowlink.rr.model.delimiters;
 import com.bowlink.rr.model.errorCodes;
 import com.bowlink.rr.model.fileTypes;
@@ -66,7 +64,7 @@ public interface importManager {
     
     void moveHELFilestoRR ();
     
-    void processRRFile(programUploads programUpload) throws Exception;
+    Integer processRRFile(programUploads programUpload) throws Exception;
     
     void moveHELFiletoRR (programUploadTypes programUploadType) throws Exception;
     
@@ -105,4 +103,8 @@ public interface importManager {
     Integer submitUploadFile(Integer userId,Integer programUploadTypeId,MultipartFile uploadedFile) throws Exception;
  
     List <programUploads> getProgramUploadsByImportType (Integer importTypeId) throws Exception;
+    
+    Integer loadFile (programUploads pu);
+    
+    programUploads getProgramUploadOnly(Integer programUpload) throws Exception;
 }

@@ -12,6 +12,7 @@ import com.bowlink.rr.model.delimiters;
 import com.bowlink.rr.model.errorCodes;
 import com.bowlink.rr.model.fileTypes;
 import com.bowlink.rr.model.mailMessage;
+import com.bowlink.rr.model.program;
 import com.bowlink.rr.model.programUploadTypeAlgorithm;
 import com.bowlink.rr.model.programUploadTypes;
 import com.bowlink.rr.model.programUploadTypesFormFields;
@@ -22,6 +23,7 @@ import com.bowlink.rr.service.emailMessageManager;
 import com.bowlink.rr.service.fileManager;
 import com.bowlink.rr.service.importManager;
 import com.bowlink.rr.service.masterClientIndexManager;
+import com.bowlink.rr.service.programManager;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -68,13 +70,19 @@ public class importManagerImpl implements importManager {
     @Autowired
     private masterClientIndexManager mcimanager;
     
-    private String archivePath = "/rapidRegistry/archivesIn/";
+    @Autowired
+    private programManager programmanager;
+    
+    
+    private String rootPath = "/rapidRegistry/";
+    
+    private String archivePath = rootPath + "archivesIn/";
     
     //files that are ready to be loaded in RR are kept here
-    private String processPath = "/rapidRegistry/processFiles/";
+    private String processPath = rootPath + "processFiles/";
     
   //files that are ready to be loaded in RR are kept here
-    private String loadPath = "/rapidRegistry/loadFiles/";
+    private String loadPath = rootPath + "loadFiles/";
     
     private String importErrorToEmail ="gchan123@yahoo.com";
     
@@ -325,9 +333,58 @@ public class importManagerImpl implements importManager {
 	 */
 	@Override
 	public void processRRFiles() {
-		// TODO Auto-generated method stub
+		//1. finds all files that is ready for RR process - 40
+		//1.5 we recheck the status
+		//2. we update the status
+		//3. we processRRFile(programUploads programUpload) and process the file
+		
+		
+		//we do try /catch block instead of throwing exception so the process can continue to process the other files
+		try {
+			//we check the status, we update the status
+			List <programUploads> puList = getProgramUploads(40);
+		    for (programUploads pu : puList) {
+		    	//time could have lapsed, we make sure status is 40
+		    	programUploads programUploadToProcess  = getProgramUpload(pu.getId());
+				if (programUploadToProcess.getStatusId() == 40) {
+					//first set new status
+			    	pu.setStatusId(43);
+			    	pu.setStatusDateTime(new Date());
+			    	updateProgramUpload(pu);
+			    	// now we process the file, RR files are ready to load, we still check R/O and validate
+			    	processRRFile(pu);
+			    	
+			    	// if all is well we update status to done
+			    	pu.setStatusId(0);
+				}
+		    	
+		    	
+		    }
+		} catch (Exception ex) {
+			
+		}
+		
 		
 	}
+	
+	/** this method takes in a programUpload and process the RR file **/
+	@Override
+	public Integer processRRFile(programUploads programUpload)  throws Exception {
+		Integer errorCount = 0;
+		
+		//load file
+		errorCount = loadFile(programUpload);
+
+		// check for R/O
+		
+		//validate
+		
+		//RUN MCI - this will set look for patient id and then visit info according to rule to find match patients
+		
+		//insert records
+		
+		return errorCount;
+}
 
 	/** 
 	 * this job takes the output file and get it ready for RR processing
@@ -369,7 +426,7 @@ public class importManagerImpl implements importManager {
 						
 						//we move it to process folder, set the status and let it finish processing on RR
 						moveHELFiletoRR(put);
-						moveJob.setStatusId(2);
+						moveJob.setStatusId(40);
 						updateMoveFilesLogRun(moveJob);		 
 			        }
 					
@@ -412,11 +469,6 @@ public class importManagerImpl implements importManager {
 			        }
 	}
 
-	@Override
-	public void processRRFile(programUploads programUpload)  throws Exception {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	public List<programUploadTypes> getProgramUploadTypes (boolean usesHEL, boolean checkHEL, Integer status) throws Exception {
@@ -592,7 +644,6 @@ public class importManagerImpl implements importManager {
 	                outputStream.write(bytes, 0, read);
 	            }
 	            outputStream.close();
-
 	            return fileName;
 	        } catch (IOException e) {
 	            System.err.println("saveUploadedFile " + e.getCause());
@@ -736,8 +787,7 @@ public class importManagerImpl implements importManager {
     		if (decodedString == null) {
     			programUpload_Errors error = new programUpload_Errors();
                 error.setProgramUploadId(pu.getId());
-                error.setErrorId(17);
-                
+                error.setErrorId(17);                
     		} else  {
 	    		//write it to load folder
 	    		filemanager.writeFile(loadFile.getAbsolutePath(), decodedString);
@@ -745,6 +795,12 @@ public class importManagerImpl implements importManager {
         } else {
         	Files.copy(archiveFile.toPath(), loadFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
         }
+        
+        //save to input type file
+        program programInfo = programmanager.getProgramById(pu.getProgramId()); 
+        File programFolder = new File(dir.setPath(rootPath) + programInfo.getProgramName().replace(" ", "-").toLowerCase() + "/importFiles/" + pu.getAssignedFileName());
+        Files.copy(archiveFile.toPath(), programFolder.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        
     	
     	//we check encoding, delmiter, file size etc
     	if (decodedString != null) {
@@ -761,6 +817,26 @@ public class importManagerImpl implements importManager {
 	public List<programUploads> getProgramUploadsByImportType(
 			Integer importTypeId) throws Exception {
 		return importDAO.getProgramUploadsByImportType(importTypeId);
+	}
+
+	@Override
+	public Integer loadFile(programUploads pu){
+		try {
+			//loads the file from process file folder
+			
+			
+		} catch (Exception ex) {
+			System.err.println("loadFile error for id - " +  pu.getId());
+			ex.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public programUploads getProgramUploadOnly(Integer programUpload)
+			throws Exception {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

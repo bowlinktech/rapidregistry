@@ -250,3 +250,86 @@ CREATE TABLE `rapidregistry`.`programUploadRecords_storageInfo` (
   
 ALTER TABLE `rapidregistry`.`storage_engagements` 
 ADD COLUMN `programId` INT NULL AFTER `engagementId`;
+
+/** grace 05.04.2015 12:02PM **/
+DELETE FROM `rapidregistry`.`lu_processstatus` WHERE `id`='9';
+DELETE FROM `rapidregistry`.`lu_processstatus` WHERE `id`='10';
+DELETE FROM `rapidregistry`.`lu_processstatus` WHERE `id`='11';
+DELETE FROM `rapidregistry`.`lu_processstatus` WHERE `id`='12';
+DELETE FROM `rapidregistry`.`lu_processstatus` WHERE `id`='13';
+DELETE FROM `rapidregistry`.`lu_processstatus` WHERE `id`='14';
+DELETE FROM `rapidregistry`.`lu_processstatus` WHERE `id`='15';
+DELETE FROM `rapidregistry`.`lu_processstatus` WHERE `id`='16';
+DELETE FROM `rapidregistry`.`lu_processstatus` WHERE `id`='17';
+DELETE FROM `rapidregistry`.`lu_processstatus` WHERE `id`='18';
+DELETE FROM `rapidregistry`.`lu_processstatus` WHERE `id`='19';
+DELETE FROM `rapidregistry`.`lu_processstatus` WHERE `id`='20';
+DELETE FROM `rapidregistry`.`lu_processstatus` WHERE `id`='31';
+DELETE FROM `rapidregistry`.`lu_processstatus` WHERE `id`='33';
+DELETE FROM `rapidregistry`.`lu_processstatus` WHERE `id`='37';
+DELETE FROM `rapidregistry`.`lu_processstatus` WHERE `id`='25';
+DELETE FROM `rapidregistry`.`lu_processstatus` WHERE `id`='30';
+DELETE FROM `rapidregistry`.`lu_processstatus` WHERE `id`='8';
+DELETE FROM `rapidregistry`.`lu_processstatus` WHERE `id`='5';
+DELETE FROM `rapidregistry`.`lu_processstatus` WHERE `id`='6';
+DELETE FROM `rapidregistry`.`lu_processstatus` WHERE `id`='3';
+DELETE FROM `rapidregistry`.`lu_processstatus` WHERE `id`='22';
+DELETE FROM `rapidregistry`.`lu_processstatus` WHERE `id`='23';
+DELETE FROM `rapidregistry`.`lu_processstatus` WHERE `id`='24';
+DELETE FROM `rapidregistry`.`lu_processstatus` WHERE `id`='28';
+DELETE FROM `rapidregistry`.`lu_processstatus` WHERE `id`='29';
+DELETE FROM `rapidregistry`.`lu_processstatus` WHERE `id`='32';
+DELETE FROM `rapidregistry`.`lu_processstatus` WHERE `id`='35';
+DELETE FROM `rapidregistry`.`lu_processstatus` WHERE `id`='36';
+DELETE FROM `rapidregistry`.`lu_processstatus` WHERE `id`='38';
+
+
+
+CREATE TABLE `rapidregistry`.`log_programUpload` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `programUploadId` INT NOT NULL,
+  `statusId` INT NULL,
+  `statusTime` DATETIME NULL DEFAULT current_timestamp,
+  PRIMARY KEY (`id`));
+
+ALTER TABLE `rapidregistry`.`log_programUpload` 
+ADD INDEX `fk_pu_idx` (`programUploadId` ASC);
+ALTER TABLE `rapidregistry`.`log_programUpload` 
+ADD CONSTRAINT `fk_pu`
+  FOREIGN KEY (`programUploadId`)
+  REFERENCES `rapidregistry`.`programuploads` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+  
+ALTER TABLE `rapidregistry`.`log_programUpload` 
+ADD COLUMN `activity` VARCHAR(1) NULL COMMENT 'u for update, i for insert' AFTER `statusTime`;
+  
+ALTER TABLE `rapidregistry`.`log_programUpload` 
+CHANGE COLUMN `statusId` `statusId` INT(11) NOT NULL ,
+CHANGE COLUMN `statusTime` `statusTime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ,
+CHANGE COLUMN `activity` `activity` VARCHAR(1) NOT NULL COMMENT 'u for update, i for insert' ;
+
+  use rapidregistry;
+  drop trigger if exists programUploadLog_ins;
+   drop trigger if exists programUploadLog;
+  
+  
+  
+  DELIMITER ;;
+CREATE trigger programUploadLog_ins after insert on programUploads
+for each row
+begin
+  insert into log_programUpload (statusId, programUploadId, activity) 
+values (new.statusId, new.id, 'i');
+end ;;
+DELIMITER ;
+  
+  
+  DELIMITER ;;
+CREATE trigger programUploadLog after update on programUploads
+for each row
+begin
+  insert into log_programUpload (statusId, programUploadId,activity ) 
+values (new.statusId, new.id, 'u');
+end ;;
+DELIMITER ;
