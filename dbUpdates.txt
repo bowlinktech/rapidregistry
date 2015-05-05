@@ -333,3 +333,18 @@ begin
 values (new.statusId, new.id, 'u');
 end ;;
 DELIMITER ;
+
+/** 05.05.15 @ 11:21 AM Chad **/
+DROP TABLE `rapidregistry`.`user_permissions`;
+
+ALTER TABLE `rapidregistry`.`user_programModules` 
+ADD COLUMN `allowCreate` BIT(1) NOT NULL DEFAULT b'0' AFTER `moduleId`,
+ADD COLUMN `allowEdit` BIT(1) NOT NULL DEFAULT b'1=0' AFTER `create`,
+ADD COLUMN `allowDelete` BIT(1) NOT NULL DEFAULT b'0' AFTER `edit`,
+ADD COLUMN `allowLevel1` BIT(1) NOT NULL DEFAULT b'0' AFTER `delete`,
+ADD COLUMN `allowLevel2` BIT(1) NOT NULL DEFAULT b'0' AFTER `level1`,
+ADD COLUMN `allowLevel3` BIT(1) NOT NULL DEFAULT b'0' AFTER `level2`,
+ADD COLUMN `allowReconcile` BIT(1) NOT NULL DEFAULT b'0' AFTER `level3`,
+ADD COLUMN `allowImport` BIT(1) NOT NULL DEFAULT b'0' AFTER `reconcile`,
+ADD COLUMN `allowExport` BIT(1) NOT NULL DEFAULT b'0' AFTER `import`;
+

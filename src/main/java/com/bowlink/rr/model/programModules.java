@@ -25,6 +25,9 @@ public class programModules {
     private boolean useModule = false;
     
     @Transient
+    private boolean allowEdit, allowCreate, allowDelete, allowLevel1, allowLevel2, allowLevel3, allowReconcile, allowImport, allowExport = false;
+    
+    @Transient
     private String displayName;
     
     @Id
@@ -88,5 +91,79 @@ public class programModules {
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
     }
+
+    public boolean isAllowEdit() {
+        return allowEdit;
+    }
+
+    public void setAllowEdit(boolean allowEdit) {
+        this.allowEdit = allowEdit;
+    }
+
+    public boolean isAllowCreate() {
+        return allowCreate;
+    }
+
+    public void setAllowCreate(boolean allowCreate) {
+        this.allowCreate = allowCreate;
+    }
+
+    public boolean isAllowDelete() {
+        return allowDelete;
+    }
+
+    public void setAllowDelete(boolean allowDelete) {
+        this.allowDelete = allowDelete;
+    }
+
+    public boolean isAllowLevel1() {
+        return allowLevel1;
+    }
+
+    public void setAllowLevel1(boolean allowLevel1) {
+        this.allowLevel1 = allowLevel1;
+    }
+
+    public boolean isAllowLevel2() {
+        return allowLevel2;
+    }
+
+    public void setAllowLevel2(boolean allowLevel2) {
+        this.allowLevel2 = allowLevel2;
+    }
+
+    public boolean isAllowLevel3() {
+        return allowLevel3;
+    }
+
+    public void setAllowLevel3(boolean allowLevel3) {
+        this.allowLevel3 = allowLevel3;
+    }
+
+    public boolean isAllowReconcile() {
+        return allowReconcile;
+    }
+
+    public void setAllowReconcile(boolean allowReconcile) {
+        this.allowReconcile = allowReconcile;
+    }
+
+    public boolean isAllowImport() {
+        return allowImport;
+    }
+
+    public void setAllowImport(boolean allowImport) {
+        this.allowImport = allowImport;
+    }
+
+    public boolean isAllowExport() {
+        return allowExport;
+    }
+
+    public void setAllowExport(boolean allowExport) {
+        this.allowExport = allowExport;
+    }
+    
+    
     
 }

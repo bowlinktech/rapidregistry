@@ -289,8 +289,12 @@ public class entityController {
      * @throws Exception
      */
     @RequestMapping(value = "/details", method = RequestMethod.POST)
-    public ModelAndView saveItemDetails(@Valid @ModelAttribute(value = "hierarchyDetails") programOrgHierarchyDetails entityItemDetails, @RequestParam String action, 
-            @RequestParam String i, @RequestParam String v, BindingResult result, RedirectAttributes redirectAttr) throws Exception {
+    public ModelAndView saveItemDetails(@Valid @ModelAttribute(value = "hierarchyDetails") programOrgHierarchyDetails entityItemDetails, BindingResult result, 
+            RedirectAttributes redirectAttr, 
+            @RequestParam String action, 
+            @RequestParam String i, 
+            @RequestParam String v, HttpSession session,
+            HttpServletResponse response) throws Exception {
         
         /* Decrypt the url */
         decryptObject decrypt = new decryptObject();
@@ -302,6 +306,7 @@ public class entityController {
         int itemId = Integer.parseInt(resultObj[0].substring(4));
         
         entityItemDetails.setId(itemId);
+        
 
         if (result.hasErrors()) {
             ModelAndView mav = new ModelAndView();

@@ -32,10 +32,13 @@ import com.bowlink.rr.service.orgHierarchyManager;
 import com.bowlink.rr.service.programManager;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -495,6 +498,15 @@ public class staffController {
                 for(programModules module : modules) {
                     if(Objects.equals(module.getModuleId(), usermodule.getModuleId())) {
                         module.setUseModule(true);
+                        module.setAllowCreate(usermodule.getAllowCreate());
+                        module.setAllowDelete(usermodule.getAllowDelete());
+                        module.setAllowEdit(usermodule.getAllowEdit());
+                        module.setAllowExport(usermodule.getAllowExport());
+                        module.setAllowImport(usermodule.getAllowImport());
+                        module.setAllowLevel1(usermodule.getAllowLevel1());
+                        module.setAllowLevel2(usermodule.getAllowLevel2());
+                        module.setAllowLevel3(usermodule.getAllowLevel3());
+                        module.setAllowReconcile(usermodule.getAllowReconcile());
                     }
                 }
             }
@@ -520,21 +532,51 @@ public class staffController {
      * @throws Exception 
      */
     @RequestMapping(value = "/saveProgramUserModules.do", method = RequestMethod.POST)
-    public @ResponseBody ModelAndView saveProgramUserModules(@RequestParam String i, @RequestParam String v, @RequestParam(value = "programModules", required = false) List<Integer> programModules, HttpSession session) throws Exception {
+    public @ResponseBody ModelAndView saveProgramUserModules(@RequestParam String i, @RequestParam String v, HttpSession session, HttpServletRequest request) throws Exception {
         
         /* Decrypt the url */
         int userId = decryptURLParam(i,v);
-        
+                 
         /* Clear out current user modules */
         modulemanager.removeUsedModulesByUser((Integer) session.getAttribute("selprogramId"), userId);
         
-        if(programModules != null && !programModules.isEmpty()) {
-            for(Integer module : programModules) {
+        ArrayList programModuleList = new ArrayList(Arrays.asList(request.getParameter("selProgramModules").split(",")));
+        
+        if(!programModuleList.isEmpty()) {
+             
+            for (Object programModuleList1 : programModuleList) {
+                Integer module = Integer.parseInt(programModuleList1.toString());
                 userProgramModules userModule = new userProgramModules();
                 userModule.setSystemUserId(userId);
                 userModule.setProgramId((Integer) session.getAttribute("selprogramId"));
                 userModule.setModuleId(module);
-                
+                if(request.getParameter("create_"+module) != null) {
+                    userModule.setAllowCreate(true);
+                }
+                if(request.getParameter("edit_"+module) != null) {
+                    userModule.setAllowEdit(true);
+                }
+                if(request.getParameter("delete_"+module) != null) {
+                    userModule.setAllowDelete(true);
+                }
+                if(request.getParameter("level1_"+module) != null) {
+                    userModule.setAllowLevel1(true);
+                }
+                if(request.getParameter("level2_"+module) != null) {
+                    userModule.setAllowLevel2(true);
+                }
+                if(request.getParameter("level3_"+module) != null) {
+                    userModule.setAllowLevel3(true);
+                }
+                if(request.getParameter("reconcile_"+module) != null) {
+                    userModule.setAllowReconcile(true);
+                }
+                if(request.getParameter("import_"+module) != null) {
+                    userModule.setAllowImport(true);
+                }
+                if(request.getParameter("export_"+module) != null) {
+                    userModule.setAllowExport(true);
+                }
                 modulemanager.saveUsedModulesByUser(userModule);
             }
         }

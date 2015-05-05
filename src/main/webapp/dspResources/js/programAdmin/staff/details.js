@@ -139,8 +139,19 @@ require(['./main'], function() {
         //Function to submit the changes to an existing user program modules
         $(document).on('click', '#submitModuleButton', function(event) {
             
+            var ProgramModules = [];
+            
+            $('.programModules').each(function() {
+                if($(this).is(":checked")) {
+                     ProgramModules.push($(this).val());
+                }
+            });
+            var s = ProgramModules.join(',');
+            
+            $('#selProgramModules').val(s);
+            
             var formData = $("#moduleForm").serialize();
-
+            
             $.ajax({
                 url: 'saveProgramUserModules.do',
                 data: formData,

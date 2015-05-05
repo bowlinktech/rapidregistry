@@ -97,7 +97,7 @@ public class moduleDAOImpl implements moduleDAO {
     @Override
     public List<programModules> getUsedModulesByProgram(Integer programId) throws Exception {
         
-        String sqlQuery = "select a.id, a.programId, a.moduleId, a.dspPos, b.moduleName as displayName from program_modules a inner join lu_programModules b on b.id = a.moduleId where a.programId = " + programId;
+        String sqlQuery = "select a.id, a.programId, a.moduleId, a.dspPos, b.displayName from program_modules a inner join lu_programModules b on b.id = a.moduleId where a.programId = " + programId;
         
         Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery) 
         .setResultTransformer(Transformers.aliasToBean(programModules.class)

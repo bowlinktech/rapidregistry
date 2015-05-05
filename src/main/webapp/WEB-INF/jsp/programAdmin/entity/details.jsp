@@ -21,7 +21,7 @@
                 <h3 class="panel-title">Entity Item Details</h3>
             </div>
             <div class="panel-body">
-                <form:form id="hierarchyItemdetailsform" commandName="hierarchyDetails" modelAttribute="hierarchyDetails"  method="post" role="form">
+                <form:form id="hierarchyItemdetailsform" commandName="hierarchyDetails" method="post" role="form">
                     <input type="hidden" name="action" id="action"  />
                     <input type="hidden" name="entityId" id="entityId" value="${entityId}" />
                     <form:hidden path="programHierarchyId" />

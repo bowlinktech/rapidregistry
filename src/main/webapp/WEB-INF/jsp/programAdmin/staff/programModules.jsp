@@ -10,25 +10,52 @@
 --%>
 
 <div class="modal-dialog">
-    <div class="modal-content">
+    <div class="modal-content"   style="min-width:800px;">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h3 class="panel-title">Selected Modules</h3>
+            <h3 class="panel-title">Available Program Modules</h3>
          </div>
          <div class="modal-body">
              <form id="moduleForm" method="post" role="form">
                  <input type="hidden" name="i" value="${userId}" />
                  <input type="hidden" name="v" value="${v}" />
                  <input type="hidden" id="encryptedURL" value="${encryptedURL}" />
+                 <input type="hidden" name="selProgramModules" id="selProgramModules" value="" />
                  <div class="form-group">
-                    <div id="tableNameDiv" class="form-group ${status.error ? 'has-error' : '' }">
-                        <label class="control-label" for="tableName">Available Program Modules</label>
-                        <select name="programModules" class="form-control" multiple="true">
+                    <table class="table table-striped table-hover responsive">
+                        <thead>
+                            <tr>
+                                <th scope="col"></th>
+                                <th scope="col" class="center-text">Allow Access</th>
+                                <th scope="col" class="center-text">Create</th>
+                                <th scope="col" class="center-text">Edit</th>
+                                <th scope="col" class="center-text">Delete</th>
+                                <th scope="col" class="center-text">Level 1</th>
+                                <th scope="col" class="center-text">Level 2</th>
+                                <th scope="col" class="center-text">Level 3</th>
+                                <th scope="col" class="center-text">Reconcile</th>
+                                <th scope="col" class="center-text">Import</th>
+                                <th scope="col" class="center-text">Export</th>
+                            </tr>
+                        </thead>
+                        <tbody>
                             <c:forEach var="module" items="${programModules}">
-                                <option value="${module.moduleId}" <c:if test="${module.useModule == true}">selected</c:if>>${module.displayName}</option>
+                                <tr>
+                                    <td>${module.displayName}</td>
+                                    <td class="center-text"><input class="programModules" name="programModules" type="checkbox" value="${module.moduleId}" <c:if test="${module.useModule == true}">checked="checked"</c:if> /></td>
+                                    <td class="center-text"><input name="create_${module.moduleId}" type="checkbox" value="1" <c:if test="${module.allowCreate == true}">checked="checked"</c:if> ${module.moduleId == 3 || module.moduleId == 2 || module.moduleId == 4 ? 'disabled="disabled"' : ''} /></td>
+                                    <td class="center-text"><input name="edit_${module.moduleId}" type="checkbox" value="1" <c:if test="${module.allowEdit == true}">checked="checked"</c:if> ${module.moduleId == 3 || module.moduleId == 2 || module.moduleId == 4 ? 'disabled="disabled"' : ''} /></td>
+                                    <td class="center-text"><input name="delete_${module.moduleId}" type="checkbox" value="1" <c:if test="${module.allowDelete == true}">checked="checked"</c:if> ${module.moduleId == 3 || module.moduleId == 2 || module.moduleId == 4 ? 'disabled="disabled"' : ''} /></td>
+                                    <td class="center-text"><input name="level1_${module.moduleId}" type="checkbox" value="1" <c:if test="${module.allowLevel1 == true}">checked="checked"</c:if> ${module.moduleId == 3 ? '' : 'disabled="disabled"'} /></td>
+                                    <td class="center-text"><input name="level2_${module.moduleId}" type="checkbox" value="1" <c:if test="${module.allowLevel2 == true}">checked="checked"</c:if> ${module.moduleId == 3 ? '' : 'disabled="disabled"'} /></td>
+                                    <td class="center-text"><input name="level3_${module.moduleId}" type="checkbox" value="1" <c:if test="${module.allowLevel3 == true}">checked="checked"</c:if> ${module.moduleId == 3 ? '' : 'disabled="disabled"'} /></td>
+                                    <td class="center-text"><input name="reconcile_${module.moduleId}" type="checkbox" value="1" <c:if test="${module.allowReconcile == true}">checked="checked"</c:if> ${module.moduleId == 2 ? '' : 'disabled="disabled"'} /></td>
+                                    <td class="center-text"><input name="import_${module.moduleId}" type="checkbox" value="1" <c:if test="${module.allowImport == true}">checked="checked"</c:if> ${module.moduleId == 4 ? '' : 'disabled="disabled"'} /></td>
+                                    <td class="center-text"><input name="export_${module.moduleId}" type="checkbox" value="1" <c:if test="${module.allowExport == true}">checked="checked"</c:if> ${module.moduleId == 4 ? '' : 'disabled="disabled"'} /></td>
+                                </tr>
                             </c:forEach>
-                        </select>     
-                    </div>
+                        </tbody>
+                    </table>
                 </div>
                 <div class="form-group">
                     <input type="button" id="submitModuleButton" role="button" class="btn btn-primary" value="Save"/>
