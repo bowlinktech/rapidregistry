@@ -378,4 +378,7 @@ ADD CONSTRAINT `FK_PUR_PU`
   DELETE FROM `rapidregistry`.`lu_errorcodes` WHERE `id`='3';
 DELETE FROM `rapidregistry`.`lu_errorcodes` WHERE `id`='4';
   
+/** chad 05062015 @ 12:32 PM **/
+INSERT INTO `rapidregistry`.`lu_programModules` (`moduleName`, `displayName`,  `linkIcon`) VALUES ('surveys', 'Surveys', 'fa-server');
+
  
