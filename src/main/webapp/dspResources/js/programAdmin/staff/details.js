@@ -168,19 +168,18 @@ require(['./main'], function() {
         });
         
         //Function to display the selected hierarchy for the selected program and user
-        $(document).on('click', '.viewDepartments', function() {
+        $(document).on('click', '.viewEntities', function() {
             var programId = $(this).attr('rel');
            
             var i = getUrlParameter('i');
             var v = getUrlParameter('v');
             
-
             $.ajax({
-                 url: 'getProgramDepartments.do',
+                 url: 'getProgramEntities.do',
                  data: {'i':i, 'v': v, 'programId':programId},
                  type: "GET",
                  success: function(data) {
-                     $('#programDepartmentsModal').html(data);
+                     $('#programEntityModal').html(data);
                      showSelHierarchy(programId);
                  }
             });
@@ -198,22 +197,22 @@ require(['./main'], function() {
         });
         
         //Function to submit the selected program to the user
-        $(document).on('click', '#submitDepartmentButton', function(event) {
+        $(document).on('click', '#submitEntityButton', function(event) {
             
             $('.hierarchyDropBox').each(function() {
                 $('#hierarchyValues').val($('#hierarchyValues').val() + "," + $(this).attr('rel') + "-" + $(this).val());
             });
             
-            var formData = $("#newProgramDepartmentForm").serialize();
+            var formData = $("#newProgramEntityForm").serialize();
             
             $.ajax({
-                url: 'saveProgramUserDepartment.do',
+                url: 'saveProgramUserEntity.do',
                 data: formData,
                 type: "POST",
                 async: false,
                 success: function(data) {
                     var url = $(data).find('#encryptedURL').val();
-                    window.location.href = "details"+url+"&msg=departmentAdded";
+                    window.location.href = "details"+url+"&msg=entityAdded";
                 }
             });
             
@@ -223,19 +222,19 @@ require(['./main'], function() {
 
         });
         
-        //Function to remove the department association of a program and user
-        $(document).on('click', '.removeDepartment', function(event) {
+        //Function to remove the entity association of a program and user
+        $(document).on('click', '.removeEntity', function(event) {
             var i = getUrlParameter('i');
             var v = getUrlParameter('v');
             
-            if(confirm("Are you sure you want to remove this department?")) {
+            if(confirm("Are you sure you want to remove this entity?")) {
             
                 $.ajax({
-                    url: 'removeUserDepartment.do',
+                    url: 'removeUserEntity.do',
                     data: {'idList': $(this).attr('rel')},
                     type: "POST",
                     success: function(data) {
-                       window.location.href = "details?i="+i+"&v="+v+"&msg=deparmentRemoved";
+                       window.location.href = "details?i="+i+"&v="+v+"&msg=entityRemoved";
                     }
                }); 
            }
@@ -248,7 +247,7 @@ require(['./main'], function() {
 function showSelHierarchy(programId) {
     
     $.ajax({
-        url: '/programAdmin/programs/getProgramAvailableHierarchy.do',
+        url: '/programAdmin/organization-hierarchy/getProgramAvailableHierarchy.do',
         data: {'programId':programId},
         type: "GET",
         success: function(data) {
@@ -259,7 +258,7 @@ function showSelHierarchy(programId) {
 }
 
 function populateHierarchy(programId, level, assocId, boxId) {
-   $.getJSON('/programAdmin/programs/getOrgHierarchyListOptions.do', {
+   $.getJSON('/programAdmin/organization-hierarchy/getOrgHierarchyListOptions.do', {
         programId: programId, level: level, assocId: assocId, ajax: true
     }, function(data) {
         var html = '<option value="0">- All -</option>';

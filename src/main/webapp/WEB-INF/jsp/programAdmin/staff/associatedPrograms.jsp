@@ -11,7 +11,7 @@
         <tr>
             <th scope="col">Program</th>
             <th scope="col" class="center-text">Modules</th>
-            <th scope="col" class="center-text">Departments</th>
+            <th scope="col" class="center-text">Entities</th>
             <th scope="col" class="center-text">Date Created</th>
             <th scope="col"></th>
         </tr>
@@ -30,7 +30,7 @@
                             </a>
                         </td>
                         <td class="center-text">
-                            <a href="#programDepartmentsModal" data-toggle="modal" class="btn-link viewDepartments" rel="${program.programId}" title="View Program Modules" role="button">
+                            <a href="#programEntityModal" data-toggle="modal" class="btn-link viewEntities" rel="${program.programId}" title="View Program Modules" role="button">
                                 View
                             </a>
                         </td>

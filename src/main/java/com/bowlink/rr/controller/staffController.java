@@ -238,7 +238,7 @@ public class staffController {
      * @throws Exception 
      */
     @RequestMapping(value = "/details", method = RequestMethod.GET)
-    public ModelAndView getStaffDetails(@RequestParam String i, @RequestParam String v) throws Exception {
+    public ModelAndView getStaffDetails(@RequestParam String i, @RequestParam String v, HttpSession session) throws Exception {
         
         /* Decrypt the url */
         decryptObject decrypt = new decryptObject();
@@ -260,6 +260,7 @@ public class staffController {
         mav.addObject("v", v);
         mav.addObject("userId", i);
         mav.addObject("userTypes", userTypes);
+       
         
         return mav;
     }
@@ -347,7 +348,7 @@ public class staffController {
      * @throws Exception 
      */
     @RequestMapping(value = "/getAssociatedPrograms.do", method = RequestMethod.GET)
-    public @ResponseBody ModelAndView getAssociatedPrograms(@RequestParam String i, @RequestParam String v) throws Exception {
+    public @ResponseBody ModelAndView getAssociatedPrograms(@RequestParam String i, @RequestParam String v, HttpSession session) throws Exception {
         
         /* Decrypt the url */
         int userId = decryptURLParam(i,v);
@@ -358,6 +359,10 @@ public class staffController {
         ModelAndView mav = new ModelAndView();
         mav.setViewName("/programAdmin/staff/associatedPrograms");
         mav.addObject("programs", programs);
+        
+        /* Get the top level entity */
+        programOrgHierarchy topLevelEntity = orghierarchymanager.getProgramOrgHierarchyBydspPos(1, (Integer) session.getAttribute("selprogramId"));
+        mav.addObject("topEntity", topLevelEntity.getName());
         
         return mav;
         
@@ -372,7 +377,7 @@ public class staffController {
      * @throws Exception 
      */
     @RequestMapping(value = "/associateNewProgram.do", method = RequestMethod.GET)
-    public @ResponseBody ModelAndView associateNewProgram(@RequestParam String i, @RequestParam String v) throws Exception {
+    public @ResponseBody ModelAndView associateNewProgram(@RequestParam String i, @RequestParam String v, HttpSession session) throws Exception {
         
         /* Decrypt the url */
         int userId = decryptURLParam(i,v);
@@ -590,7 +595,7 @@ public class staffController {
     
     
     /**
-     * The 'getProgramDepartments.do' GET request will return a list of departments associated to the program and the user.
+     * The 'getProgramEntities.do' GET request will return a list of departments associated to the program and the user.
      * 
      * @param i The encrypted userId
      * @param v The encrypted secret
@@ -598,8 +603,8 @@ public class staffController {
      * @return  This function will return the program department model
      * @throws Exception 
      */
-    @RequestMapping(value = "/getProgramDepartments.do", method = RequestMethod.GET)
-    public @ResponseBody ModelAndView getProgramDepartments(@RequestParam String i, @RequestParam String v, @RequestParam Integer programId, HttpSession session) throws Exception {
+    @RequestMapping(value = "/getProgramEntities.do", method = RequestMethod.GET)
+    public @ResponseBody ModelAndView getProgramEntities(@RequestParam String i, @RequestParam String v, @RequestParam Integer programId, HttpSession session) throws Exception {
         
         /* Decrypt the url */
         int userId = decryptURLParam(i,v);
@@ -607,22 +612,22 @@ public class staffController {
         List<programOrgHierarchy> getProgramOrgHierarchy = orghierarchymanager.getProgramOrgHierarchy(programId);
         
         /* Get a list of departments for the user */
-        List<userProgramHierarchy> userDepartments = orghierarchymanager.getUserProgramHierarchy(programId, userId);
+        List<userProgramHierarchy> userEntities = orghierarchymanager.getUserProgramHierarchy(programId, userId);
         
         ModelAndView mav = new ModelAndView();
-        mav.setViewName("/programAdmin/staff/programDepartments");
+        mav.setViewName("/programAdmin/staff/programEntities");
         mav.addObject("userId", i);
         mav.addObject("v", v);
         mav.addObject("programId", programId);
         mav.addObject("hierarchyHeadings", getProgramOrgHierarchy);
-        mav.addObject("userDepartments", userDepartments);
+        mav.addObject("userEntities", userEntities);
         
         return mav;
         
     }
     
     /**
-     * The 'saveProgramUserDepartment.do' POST request will submit the selected program for the user.
+     * The 'saveProgramUserEntity.do' POST request will submit the selected program for the user.
      * 
      * @param i The encrypted userId
      * @param v The encrypted secret
@@ -630,8 +635,8 @@ public class staffController {
      * @return
      * @throws Exception 
      */
-    @RequestMapping(value = "/saveProgramUserDepartment.do", method = RequestMethod.POST)
-    public @ResponseBody ModelAndView saveProgramUserDepartment(@RequestParam String i, @RequestParam String v, @RequestParam Integer program, @RequestParam List<String> hierarchyValues, HttpSession session) throws Exception {
+    @RequestMapping(value = "/saveProgramUserEntity.do", method = RequestMethod.POST)
+    public @ResponseBody ModelAndView saveProgramUserEntity(@RequestParam String i, @RequestParam String v, @RequestParam Integer program, @RequestParam List<String> hierarchyValues, HttpSession session) throws Exception {
         
         /* Decrypt the url */
         int userId = decryptURLParam(i,v);
@@ -657,14 +662,14 @@ public class staffController {
         }
         
         ModelAndView mav = new ModelAndView();
-        mav.setViewName("/programAdmin/staff/programDepartments");
+        mav.setViewName("/programAdmin/staff/programEntities");
         mav.addObject("encryptedURL", "?i="+i+"&v="+v);
         
         return mav;
     }
     
     /**
-     * The 'removeUserDepartment.do' POST request will submit the selected program for the user.
+     * The 'removeUserEntity.do' POST request will submit the selected program for the user.
      * 
      * @param i The encrypted userId
      * @param v The encrypted secret
@@ -672,8 +677,8 @@ public class staffController {
      * @return
      * @throws Exception 
      */
-    @RequestMapping(value = "/removeUserDepartment.do", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody Integer removeUserDepartment(@RequestParam List<String> idList, HttpSession session) throws Exception {
+    @RequestMapping(value = "/removeUserEntity.do", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody Integer removeUserEntity(@RequestParam List<String> idList, HttpSession session) throws Exception {
        
         if(!idList.isEmpty()) {
             for(String id : idList) {
