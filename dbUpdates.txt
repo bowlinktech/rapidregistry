@@ -381,4 +381,10 @@ DELETE FROM `rapidregistry`.`lu_errorcodes` WHERE `id`='4';
 /** chad 05062015 @ 12:32 PM **/
 INSERT INTO `rapidregistry`.`lu_programModules` (`moduleName`, `displayName`,  `linkIcon`) VALUES ('surveys', 'Surveys', 'fa-server');
 
+
+/** chad 05062015 @ 2:23 PM **/
+ALTER TABLE `rapidregistry`.`programOrgHierarchy_details` 
+CHANGE COLUMN `zipcode` `zipCode` VARCHAR(255) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL DEFAULT NULL ;
+
+
  
