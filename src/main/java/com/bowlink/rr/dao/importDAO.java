@@ -7,8 +7,6 @@ package com.bowlink.rr.dao;
 
 import com.bowlink.rr.model.User;
 import com.bowlink.rr.model.MoveFilesLog;
-import com.bowlink.rr.model.algorithmCategories;
-import com.bowlink.rr.model.algorithmMatchingActions;
 import com.bowlink.rr.model.delimiters;
 import com.bowlink.rr.model.errorCodes;
 import com.bowlink.rr.model.fileTypes;
@@ -83,6 +81,12 @@ public interface importDAO {
     List <errorCodes> getErrorCodes (Integer status) throws Exception;
     
     List <programUploads> getProgramUploadsByImportType (Integer importTypeId) throws Exception;
+    
+    void dropLoadTable(String loadTableName) throws Exception;
+    
+    void createLoadTable (String loadTableName) throws Exception;
+    
+    void indexLoadTable (String loadTableName) throws Exception;
   
 }
 

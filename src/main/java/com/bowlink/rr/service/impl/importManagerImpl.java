@@ -373,7 +373,7 @@ public class importManagerImpl implements importManager {
 		Integer errorCount = 0;
 		
 		//load file
-		errorCount = loadFile(programUpload);
+		loadFile(programUpload);
 
 		// check for R/O
 		
@@ -611,6 +611,8 @@ public class importManagerImpl implements importManager {
 
 	        InputStream inputStream;
 	        OutputStream outputStream;
+	        
+	        String fileExt = fileName.substring(fileName.lastIndexOf("."), (fileName.length()));
 
 	        try {
 	            inputStream = file.getInputStream();
@@ -644,6 +646,17 @@ public class importManagerImpl implements importManager {
 	                outputStream.write(bytes, 0, read);
 	            }
 	            outputStream.close();
+	            if (pu.getProgramUploadType().getEncodingId() != 2) {
+	            	//we can't re-decode excel files 
+	            	//TODO need to figure out how to encode non-text files
+	            	if (!fileExt.equalsIgnoreCase(".xlsx") && !fileExt.equalsIgnoreCase(".mdb")) {
+		            	//we encode file if it is not base64
+		            	String encoded = filemanager.encodeFileToBase64Binary(newFile);
+		            	//delete existing un-encrypted file
+		            	Files.delete(newFile.toPath());
+		            	filemanager.writeFile(newFile.getAbsolutePath(), encoded);	            	
+	            	}
+	            }
 	            return fileName;
 	        } catch (IOException e) {
 	            System.err.println("saveUploadedFile " + e.getCause());
@@ -782,8 +795,7 @@ public class importManagerImpl implements importManager {
         
         //now we start our checks
         String decodedString = "";
-        if (put.getEncodingId() == 2) {
-    		decodedString = filemanager.decodeFileToBase64Binary(archiveFile);
+        decodedString = filemanager.decodeFileToBase64Binary(archiveFile);
     		if (decodedString == null) {
     			programUpload_Errors error = new programUpload_Errors();
                 error.setProgramUploadId(pu.getId());
@@ -792,10 +804,8 @@ public class importManagerImpl implements importManager {
 	    		//write it to load folder
 	    		filemanager.writeFile(loadFile.getAbsolutePath(), decodedString);
     		}
-        } else {
-        	Files.copy(archiveFile.toPath(), loadFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        }
         
+        //need to encode all files sitting idle in system
         //save to input type file
         program programInfo = programmanager.getProgramById(pu.getProgramId()); 
         File programFolder = new File(dir.setPath(rootPath) + programInfo.getProgramName().replace(" ", "-").toLowerCase() + "/importFiles/" + pu.getAssignedFileName());
@@ -819,25 +829,80 @@ public class importManagerImpl implements importManager {
 		return importDAO.getProgramUploadsByImportType(importTypeId);
 	}
 
+	/**
+	 * We return void because admin will get email with system error so we know where it went wrong
+	 * we don't need to track each step of the way, it should just stop and move onto the next file
+	 */
 	@Override
-	public Integer loadFile(programUploads pu){
-		try {
-			//loads the file from process file folder
-			
-			
-		} catch (Exception ex) {
-			System.err.println("loadFile error for id - " +  pu.getId());
-			ex.printStackTrace();
-		}
-		return null;
+	public void loadFile(programUploads pu) throws Exception {
+		
+		
+			// let's clear all tables first as we are starting over
+			clearUpload(pu.getId());
+            
+			String loadTableName = "uploadTable_" + pu.getId();
+            //make sure old table is dropped if exists
+            dropLoadTable(loadTableName);
+            
+            createLoadTable(loadTableName);
+
+            //we need to index loadTable
+           indexLoadTable(loadTableName);
+
+            fileSystem dir = new fileSystem();
+            dir.setDirByName("/");
+
+            //2. we load data with my sql
+            String actualFileName = null;
+            String newfilename = null;
+
+            /**
+             * RR file is in processFolder, file if in text format should be encrypted
+             * if pu uses HEL, we want to look for a text file, if not, we process file with its own extension
+             */
+            String encodedFilePath = dir.setPath(processPath);
+            String encodedFileName = pu.getAssignedFileName();
+            File encodedFile = new File(encodedFilePath + encodedFileName);
+            String decodedFilePath = dir.setPath(loadPath);
+            String decodedFileName = pu.getAssignedFileName();
+            String decodedFileExt = encodedFileName.substring(encodedFileName.lastIndexOf("."));
+            String strDecode = filemanager.decodeFileToBase64Binary(encodedFile);
+            
+            filemanager.writeFile((decodedFilePath + decodedFileName + decodedFileExt), strDecode);
+            actualFileName = (decodedFilePath + decodedFileName + decodedFileExt);
+
+            //everything should be txt at this point as all non text file will have to go through HEL
+	        
 	}
 
 	@Override
-	public programUploads getProgramUploadOnly(Integer programUpload)
-			throws Exception {
+	public programUploads getProgramUploadOnly(Integer programUploadId) throws Exception {
+		return importDAO.getProgramUpload(programUploadId);
+	}
+
+	@Override
+	public void clearUpload(Integer programUploadId) throws Exception {
 		// TODO Auto-generated method stub
-		return null;
+		
 	}
 
+	@Override
+	public void dropLoadTable(String loadTableName) throws Exception {
+		importDAO.dropLoadTable(loadTableName);
+	}
+
+	@Override
+	public void createLoadTable(String loadTableName) throws Exception {
+		importDAO.createLoadTable(loadTableName);
+		
+	}
+
+	@Override
+	public void indexLoadTable(String loadTableName) throws Exception {
+		importDAO.indexLoadTable(loadTableName);
+		
+	}
+	
+	
 }
 
