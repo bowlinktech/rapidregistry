@@ -348,3 +348,34 @@ ADD COLUMN `allowReconcile` BIT(1) NOT NULL DEFAULT b'0' AFTER `level3`,
 ADD COLUMN `allowImport` BIT(1) NOT NULL DEFAULT b'0' AFTER `reconcile`,
 ADD COLUMN `allowExport` BIT(1) NOT NULL DEFAULT b'0' AFTER `import`;
 
+
+/** grace 05052015 1:05PM **/
+ALTER TABLE `rapidregistry`.`programUploadRecords` 
+DROP COLUMN `statusId`,
+CHANGE COLUMN `programUploadId` `programUploadRecordId` INT(11) NOT NULL , RENAME TO  `rapidregistry`.`programUploadRecordDetails` ;
+
+ALTER TABLE `rapidregistry`.`programUploadRecordDetails` 
+ADD COLUMN `processTableId` INT NULL AFTER `programUploadRecordId`,
+ADD COLUMN `dateCreated` DATETIME NULL DEFAULT current_timestamp AFTER `processTableId`;
+
+CREATE TABLE `rapidregistry`.`programUploadRecords` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `programUploadId` INT NOT NULL,
+  `statusId` INT NOT NULL,
+  `loadTableId` VARCHAR(45) NULL,
+  `dateCreated` DATETIME NOT NULL DEFAULT current_timestamp,
+  PRIMARY KEY (`id`));
+
+  ALTER TABLE `rapidregistry`.`programUploadRecords` 
+ADD INDEX `FK_PUR_PU_idx` (`programUploadId` ASC);
+ALTER TABLE `rapidregistry`.`programUploadRecords` 
+ADD CONSTRAINT `FK_PUR_PU`
+  FOREIGN KEY (`programUploadId`)
+  REFERENCES `rapidregistry`.`programuploads` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+  
+  DELETE FROM `rapidregistry`.`lu_errorcodes` WHERE `id`='3';
+DELETE FROM `rapidregistry`.`lu_errorcodes` WHERE `id`='4';
+  
+ 

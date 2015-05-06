@@ -14,8 +14,10 @@ import com.bowlink.rr.model.programUploadTypes;
 import com.bowlink.rr.model.programUploadTypesFormFields;
 import com.bowlink.rr.model.programUpload_Errors;
 import com.bowlink.rr.model.programUploads;
+
 import java.io.File;
 import java.util.List;
+
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -104,7 +106,16 @@ public interface importManager {
  
     List <programUploads> getProgramUploadsByImportType (Integer importTypeId) throws Exception;
     
-    Integer loadFile (programUploads pu);
+    void loadFile (programUploads pu) throws Exception;
     
-    programUploads getProgramUploadOnly(Integer programUpload) throws Exception;
+    programUploads getProgramUploadOnly(Integer programUploadId) throws Exception;
+    
+    void clearUpload (Integer programUploadId) throws Exception;
+    
+    void dropLoadTable(String loadTableName) throws Exception;
+    
+    void createLoadTable (String loadTableName) throws Exception;
+    
+    void indexLoadTable (String loadTableName) throws Exception;
+    
 }
