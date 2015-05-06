@@ -215,5 +215,112 @@ public class surveyManagerImpl implements surveyManager {
     public void saveDateRows(SurveyDateQuestionRows row) throws Exception {
         surveyDAO.saveDateRows(row);
     }
+    
+    @Override
+    @Transactional
+    public Integer copySurvey(Integer surveyId) throws Exception {
+        
+        /* Get the details of the passed in survey */
+        surveys surveyDetails = surveyDAO.getSurveyById(surveyId);
+        
+        surveys newSurvey = new surveys();
+        newSurvey.setProgramId(surveyDetails.getProgramId());
+        newSurvey.setStatus(surveyDetails.getStatus());
+        newSurvey.setRequireEngagement(surveyDetails.getRequireEngagement());
+        newSurvey.setAllowEngagement(surveyDetails.getAllowEngagement());
+        newSurvey.setDuplicatesAllowed(surveyDetails.getDuplicatesAllowed());
+        newSurvey.setTitle(surveyDetails.getTitle()+" Copy");
+        newSurvey.setDoneButtonText(surveyDetails.getDoneButtonText());
+        newSurvey.setdoneBtnActivityCodeId(surveyDetails.getDoneBtnActivityCodeId());
+        newSurvey.setNextButtonText(surveyDetails.getNextButtonText());
+        newSurvey.setNextBtnActivityCodeId(surveyDetails.getNextBtnActivityCodeId());
+        newSurvey.setPrevButtonText(surveyDetails.getPrevButtonText());
+        newSurvey.setPrevBtnActivityCodeId(surveyDetails.getPrevBtnActivityCodeId());
+        newSurvey.setReminderStatus(surveyDetails.getReminderStatus());
+        newSurvey.setReminderText(surveyDetails.getReminderText());
+        
+        Integer newSurveyId = surveyDAO.saveSurvey(newSurvey);
+        
+        /* Get survey pages */
+        List<SurveyPages> surveyPages = surveyDAO.getSurveyPages(surveyId, false);
+        
+        if(surveyPages != null && !surveyPages.isEmpty()) {
+            
+            for(SurveyPages page : surveyPages) {
+                Integer currPageId = page.getId();
+                
+                SurveyPages newSurveyPage = new SurveyPages();
+                newSurveyPage.setSurveyId(newSurveyId);
+                newSurveyPage.setPageTitle(page.getPageTitle());
+                newSurveyPage.setPageDesc(page.getPageDesc());
+                newSurveyPage.setPageNum(page.getPageNum());
+                
+                Integer newSurveyPageId = surveyDAO.createSurveyPage(newSurveyPage);
+                
+                /* Get the page questions */
+                List<SurveyQuestions> surveyQuestions = surveyDAO.getAllSurveyQuestions(surveyId);
+                
+                if(surveyQuestions != null && !surveyQuestions.isEmpty()) {
+                    
+                    for(SurveyQuestions question : surveyQuestions) {
+                        
+                        Integer currQuestionId = question.getId();
+                        
+                        SurveyQuestions newQuestion = new SurveyQuestions();
+                        newQuestion.setSurveyId(newSurveyId);
+                        newQuestion.setSurveyPageId(newSurveyPageId);
+                        newQuestion.setHide(question.isHide());
+                        newQuestion.setRequired(question.isRequired());
+                        newQuestion.setRequiredResponse(question.getRequiredResponse());
+                        newQuestion.setDspQuestionId(question.getDspQuestionId());
+                        newQuestion.setQuestion(question.getQuestion());
+                        newQuestion.setAnswerTypeId(question.getAnswerTypeId());
+                        newQuestion.setColumnsDisplayed(question.getColumnsDisplayed());
+                        newQuestion.setAllowMultipleAns(question.isAllowMultipleAns());
+                        newQuestion.setSaveToFieldId(question.getSaveToFieldId());
+                        newQuestion.setAutoPopulateFromField(question.isAutoPopulateFromField());
+                        newQuestion.setQuestionNum(question.getQuestionNum());
+                        newQuestion.setValidationId(question.getValidationId());
+                        newQuestion.setAlphabeticallySort(question.isAlphabeticallySort());
+                        newQuestion.setChoiceLayout(question.getChoiceLayout());
+                        newQuestion.setPopulateFromTable(question.getPopulateFromTable());
+                        newQuestion.setDeleted(question.isDeleted());
+                        newQuestion.setOtherOption(question.isOtherOption());
+                        newQuestion.setOtherLabel(question.getOtherLabel());
+                        newQuestion.setOtherDspChoice(question.getOtherDspChoice());
+                        newQuestion.setDateFormatType(question.getDateFormatType());
+                        newQuestion.setCollectDateInfo(question.isCollectDateInfo());
+                        newQuestion.setCollectTimeInfo(question.isCollectTimeInfo());
+                        newQuestion.setDateDspType(question.getDateDspType());
+                        
+                        Integer newQuestionId = surveyDAO.saveNewSurveyQuestion(newQuestion);
+                        
+                        List<SurveyQuestionChoices> surveyQuestionChoices = surveyDAO.getQuestionChoices(currQuestionId);
+                        
+                        if(surveyQuestionChoices != null && !surveyQuestionChoices.isEmpty()) {
+                            
+                            for(SurveyQuestionChoices questionChoice : surveyQuestionChoices) {
+                                
+                                SurveyQuestionChoices newQuestionChoice = new SurveyQuestionChoices();
+                                newQuestionChoice.setQuestionId(newQuestionId);
+                                newQuestionChoice.setSkipToPageId(questionChoice.getSkipToPageId());
+                                newQuestionChoice.setSkipToQuestionId(questionChoice.getSkipToQuestionId());
+                                newQuestionChoice.setChoiceText(questionChoice.getChoiceText());
+                                newQuestionChoice.setActivityCodeId(questionChoice.getActivityCodeId());
+                                newQuestionChoice.setDefAnswer(questionChoice.isDefAnswer());
+                                newQuestionChoice.setChoiceValue(questionChoice.getChoiceValue());
+                                newQuestionChoice.setSkipToEnd(questionChoice.isSkipToEnd());
+                                
+                                surveyDAO.saveQuestionChoice(newQuestionChoice);
+                            }
+                            
+                        }
+                    }
+                }
+            }
+        }
+        
+        return newSurveyId;
+    }
 }
 

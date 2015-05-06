@@ -120,19 +120,13 @@
                                         </c:when>
                                         <c:when test="${question.answerTypeId == 5}">
                                             <div class="form-group">
-                                                <textarea class="form-control" type="text"  rows="10"  disabled style="background-color:#ffffff; width:500px;"></textarea>
+                                                <textarea class="form-control" type="text"  rows="8" disabled style="background-color:#ffffff; width: 750px;"></textarea>
                                             </div>
                                         </c:when>
                                         <c:when test="${question.answerTypeId == 2}">
                                             <div class="form-group">
                                                 <select class="form-control" type="text" maxLength="255" disabled style="background-color:#ffffff; width:500px;"></select>
                                             </div>
-                                            <c:if test="${question.otherOption == true && question.otherDspChoice == 2}">
-                                                <div class="form-group">
-                                                    <p>${question.otherLabel}</p>
-                                                    <input type="text"class="form-control" type="text" disabled style="background-color:#ffffff; width:500px;" />
-                                                </div>
-                                            </c:if>
                                         </c:when>
                                         <c:when test="${question.answerTypeId == 6}">
                                             <c:choose>
@@ -278,7 +272,7 @@
                                                         <c:when test="${question.choiceLayout == '2 Columns'}">
                                                             <div class="row">
                                                                 <c:forEach items="${question.questionChoices}" var="choiceDetails">
-                                                                    <div class="col-md-6">
+                                                                    <div class="col-md-3">
                                                                         <label class="radio">
                                                                             <input type="${question.allowMultipleAns == true ? 'checkbox' : 'radio'}" disabled="disabled" /> ${choiceDetails.choiceText}
                                                                         </label>
@@ -324,6 +318,12 @@
                                             
                                         </c:when>
                                     </c:choose>
+                                    <c:if test="${question.otherOption == true && question.otherDspChoice == 2}">
+                                        <div class="form-group" ${question.answerTypeId == 1 ? 'style="margin-left:22px; padding-top:10px;"' : ''}>
+                                            <p>${question.otherLabel}</p>
+                                            <input type="text"class="form-control" type="text" disabled style="background-color:#ffffff; width:500px;" />
+                                        </div>
+                                    </c:if>                
                                 </div>
                             </div>
                             <div id="editQuestionDiv_${question.id}" class="row" style="display:none;"></div>            

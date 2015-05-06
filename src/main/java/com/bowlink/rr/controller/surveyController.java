@@ -1899,8 +1899,54 @@ public class surveyController {
     }
     
     
+    /**
+     * The 'getAvailableSurveys.do' GET request will return a list of available surveys for the selected 
+     * program.
+     * 
+     * @param session
+     * @return
+     * @throws Exception 
+     */
+    @RequestMapping(value = "getAvailableSurveys.do", method = RequestMethod.GET)
+    public @ResponseBody ModelAndView getAvailableSurveys(HttpSession session) throws Exception {
+        
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/programAdmin/surveys/copySurvey");
+        
+        /* Get the list of programs in the system */
+        List<surveys> surveys = surveymanager.getProgramSurveys((Integer) session.getAttribute("selprogramId"));
+        mav.addObject("surveys", surveys);
+        
+        return mav;
+    }
 
-    
+    /**
+     * The 'copySurveySubmit.do' POST request will create a new survey based on the selected survey.
+     * @param session
+     * @param surveyId
+     * @return
+     * @throws Exception 
+     */
+    @RequestMapping(value = "copySurveySubmit.do", method = RequestMethod.POST)
+    public @ResponseBody ModelAndView copySurveySubmit(HttpSession session , @RequestParam(value = "surveyId", required = true) Integer surveyId) throws Exception {
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/programAdmin/surveys/copySurvey");
+        
+        Integer newSurveyId = surveymanager.copySurvey(surveyId);
+        
+        
+        Map<String,String> map = new HashMap<String,String>();
+        map.put("id",Integer.toString(newSurveyId));
+        map.put("topSecret",topSecret);
+        
+        encryptObject encrypt = new encryptObject();
+
+        String[] encrypted = encrypt.encryptObject(map);
+        
+        mav.addObject("encryptedURL", "?s="+encrypted[0]+"&v="+encrypted[1]);
+        
+        return mav;
+    }
 
     /**
      * shared methods *

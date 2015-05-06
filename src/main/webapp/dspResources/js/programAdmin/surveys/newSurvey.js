@@ -100,6 +100,36 @@ require(['./main'], function () {
             event.preventDefault();
             return false;
         });
+        
+        
+        /** Button to open the overlay to select an existing survey to copy **/
+        $(document).on('click', '#copySurvey', function() {
+           
+           $.ajax({
+                url: 'getAvailableSurveys.do',
+                type: "GET",
+                success: function(data) {
+                    $('#surveyCopyModal').html(data);
+                }
+           }); 
+            
+        });
+        
+        $(document).on('click', '#copySurveySubmit', function() {
+           var selSurveyId = $('#availSurveys').val();
+           
+           if(selSurveyId > 0) {
+               $.ajax({
+                url: 'copySurveySubmit.do',
+                data: {'surveyId':selSurveyId},
+                type: "POST",
+                success: function(data) {
+                   var url = $(data).find('#encryptedURL').val();
+                   window.location.href = "details"+url;
+                }
+           }); 
+           }
+        });
 
 
     });

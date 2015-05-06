@@ -7,8 +7,8 @@
     <div class="col-md-12">
         <c:if test="${not empty create}">   
             <section class="panel panel-default">
-                <div class="panel-body">           
-                    <a href="javascript:alert('code this');" title="Surveys" class="btn-link">Edit or Copy an Existing Survey</a>
+                <div class="panel-body">   
+                    <a href="#surveyCopyModal" data-toggle="modal" class="btn btn-primary btn-xs btn-action" id="copySurvey" title="Copy from an Existing Survey">Copy from an Existing Survey</a>
                 </div>
             </section>
         </c:if>

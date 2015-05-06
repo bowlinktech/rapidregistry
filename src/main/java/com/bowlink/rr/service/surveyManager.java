@@ -75,4 +75,6 @@ public interface surveyManager {
     
     void saveDateRows(SurveyDateQuestionRows row) throws Exception;
     
+    Integer copySurvey(Integer surveyId) throws Exception;
+    
 }

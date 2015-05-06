@@ -124,8 +124,29 @@
                         </div>
                     </div>
                 </c:if>
+                <div class="well well-xsm" style="background-color:#ffffff; margin-bottom: 2px">
+                    <form:checkbox path="allowMultipleAns" id="allowMultipleAns" />&nbsp;<label class="control-label" for="allowMultipleAns">Allow more than one answer to this question (use checkboxes)</label>
+                </div>
                 <div class="well well-xsm" style="background-color:#ffffff;">
-                <form:checkbox path="allowMultipleAns" id="allowMultipleAns" />&nbsp;<label class="control-label" for="allowMultipleAns">Allow more than one answer to this question (use checkboxes)</label>
+                    <form:checkbox path="otherOption" id="otherOption" />&nbsp;<label class="control-label" for="otherOption">Add an "Other" Answer option or Comment Field</label>
+                </div>
+                <div class="panel" id="otherOptionDiv" style="${surveyQuestion.otherOption == true ? 'display:block;' : 'display:none;'}">
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label class="control-label" for="otherLabel">Label</label>
+                            <form:input path="otherLabel" id="otherLabel" class="form-control" type="text"  maxLength="45" />
+                        </div>
+                        <div class="form-group">
+                            <label class="radio-inline control-label">
+                                <form:radiobutton path="otherDspChoice" class="radio" value="1" /> <strong>Display as answer choice</strong>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label class="radio-inline control-label">
+                                <form:radiobutton path="otherDspChoice" class="radio" value="2" /> <strong>Display as comment field</strong>
+                            </label>
+                        </div>
+                    </div>
                 </div>
             </div>
             <%-- Question Options Div --%>
