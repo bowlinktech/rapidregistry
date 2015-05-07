@@ -33,7 +33,10 @@ public class programUploadTypes {
     private int totalFields = 0;
     
     @Transient
-    private String fileExt;
+    private String inFileExt;
+    
+    @Transient
+    private String outFileExt;
 	
 	@Transient
 	private String delimChar;
@@ -72,8 +75,12 @@ public class programUploadTypes {
     @Column(name = "HELDropPath", nullable = true)
     private String helDropPath;
     
-    @Column(name = "fileTypeId", nullable = false)
-    private Integer fileTypeId = 1;
+    @Column(name = "inFileTypeId", nullable = false)
+    private Integer inFileTypeId = 1;
+    
+    @Column(name = "outFileTypeId", nullable = false)
+    private Integer outFileTypeId = 2;
+    
     
     @Column(name = "MAXFILESIZE", nullable = false)
     private int maxFileSize = 0;
@@ -83,6 +90,10 @@ public class programUploadTypes {
     
     @Column(name = "encodingId", nullable = false)
     private int encodingId = 1;
+    
+    @Column(name = "containsHeaderRow", nullable = false)
+    private boolean containsHeaderRow = false;
+    
 
 	public int getTotalFields() {
 		return totalFields;
@@ -90,6 +101,38 @@ public class programUploadTypes {
 
 	public void setTotalFields(int totalFields) {
 		this.totalFields = totalFields;
+	}
+
+	public String getInFileExt() {
+		return inFileExt;
+	}
+
+	public void setInFileExt(String inFileExt) {
+		this.inFileExt = inFileExt;
+	}
+
+	public String getOutFileExt() {
+		return outFileExt;
+	}
+
+	public void setOutFileExt(String outFileExt) {
+		this.outFileExt = outFileExt;
+	}
+
+	public String getDelimChar() {
+		return delimChar;
+	}
+
+	public void setDelimChar(String delimChar) {
+		this.delimChar = delimChar;
+	}
+
+	public List<algorithmCategories> getAlgorithmCategories() {
+		return algorithmCategories;
+	}
+
+	public void setAlgorithmCategories(List<algorithmCategories> algorithmCategories) {
+		this.algorithmCategories = algorithmCategories;
 	}
 
 	public int getId() {
@@ -156,12 +199,12 @@ public class programUploadTypes {
 		this.helDropPath = helDropPath;
 	}
 
-	public Integer getFileTypeId() {
-		return fileTypeId;
+	public Integer getInFileTypeId() {
+		return inFileTypeId;
 	}
 
-	public void setFileTypeId(Integer fileTypeId) {
-		this.fileTypeId = fileTypeId;
+	public void setInFileTypeId(Integer inFileTypeId) {
+		this.inFileTypeId = inFileTypeId;
 	}
 
 	public int getMaxFileSize() {
@@ -188,28 +231,20 @@ public class programUploadTypes {
 		this.encodingId = encodingId;
 	}
 
-	public String getFileExt() {
-		return fileExt;
+	public Integer getOutFileTypeId() {
+		return outFileTypeId;
 	}
 
-	public void setFileExt(String fileExt) {
-		this.fileExt = fileExt;
+	public void setOutFileTypeId(Integer outFileTypeId) {
+		this.outFileTypeId = outFileTypeId;
 	}
 
-	public String getDelimChar() {
-		return delimChar;
+	public boolean isContainsHeaderRow() {
+		return containsHeaderRow;
 	}
 
-	public void setDelimChar(String delimChar) {
-		this.delimChar = delimChar;
-	}
-
-	public List<algorithmCategories> getAlgorithmCategories() {
-		return algorithmCategories;
-	}
-
-	public void setAlgorithmCategories(List<algorithmCategories> algorithmCategories) {
-		this.algorithmCategories = algorithmCategories;
+	public void setContainsHeaderRow(boolean containsHeaderRow) {
+		this.containsHeaderRow = containsHeaderRow;
 	}
 
 }

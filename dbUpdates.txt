@@ -386,5 +386,29 @@ INSERT INTO `rapidregistry`.`lu_programModules` (`moduleName`, `displayName`,  `
 ALTER TABLE `rapidregistry`.`programOrgHierarchy_details` 
 CHANGE COLUMN `zipcode` `zipCode` VARCHAR(255) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL DEFAULT NULL ;
 
+/** grace 05.06.15 12:17PM **/
+ALTER TABLE `rapidregistry`.`programuploadtypes` 
+DROP FOREIGN KEY `fk_fileTypeId`;
+ALTER TABLE `rapidregistry`.`programuploadtypes` 
+CHANGE COLUMN `fileTypeId` `inFileTypeId` INT(11) NOT NULL ,
+ADD COLUMN `outFileTypeId` INT NULL AFTER `inFileTypeId`,
+ADD INDEX `fk_outFileTypeId_idx` (`outFileTypeId` ASC);
+ALTER TABLE `rapidregistry`.`programuploadtypes` 
+ADD CONSTRAINT `fk_fileTypeId`
+  FOREIGN KEY (`inFileTypeId`)
+  REFERENCES `rapidregistry`.`lu_filetypes` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION,
+ADD CONSTRAINT `fk_outFileTypeId`
+  FOREIGN KEY (`outFileTypeId`)
+  REFERENCES `rapidregistry`.`lu_filetypes` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+  
+INSERT INTO `rapidregistry`.`lu_processstatus` (`id`, `category`, `displayCode`, `displayText`, `description`, `status`, `isCustom`, `endUserDisplayCode`, `endUserDisplayText`, `endUserDescription`) VALUES ('44', 'batch', 'OFE', 'HEL Output File Error', 'HEL\'s output file extension  for RR not as expected', 1, 0, 'OFE', 'HEL Output File Error', 'HEL\'s output file extension  for RR not as expected');
+  
+ALTER TABLE `rapidregistry`.`programuploadtypes` 
+ADD COLUMN `containsHeaderRow` BIT NOT NULL DEFAULT 0 AFTER `dateCreated`;
 
+  
  

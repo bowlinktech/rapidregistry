@@ -66,7 +66,7 @@ public interface importDAO {
     
     boolean movePathInUse (MoveFilesLog moveJob) throws Exception;
     
-    programUploads getProgramUploadByAssignedFileName(programUploads pu);
+    programUploads getProgramUploadByAssignedId(programUploads pu);
     
     List <programUploadTypes> getProgramUploadTypesByUserId (Integer systemUserId, Integer statusId) throws Exception;
     
@@ -87,6 +87,10 @@ public interface importDAO {
     void createLoadTable (String loadTableName) throws Exception;
     
     void indexLoadTable (String loadTableName) throws Exception;
+    
+    void insertLoadData(programUploadTypes put, String loadTableName, String fileWithPath) throws Exception;
+    
+    void updateLoadTable(String loadTableName, Integer programUploadId) throws Exception;
   
 }
 

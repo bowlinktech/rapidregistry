@@ -69,6 +69,11 @@
       <c:if test="${empty algorithmByCatList}">
       		<div class="col-md-12">
       		<section class="panel panel-default">
+      		   <div class="panel-heading" style="height:38px;">
+                    <div class="pull-right">
+                        <a href="#algorithmDetailsModal" data-toggle="modal" class="btn btn-primary btn-xs btn-action createNewAlgorithm" id="createNewAlgorithm${category.id}" title="Create New Algorithm" rel="${importType.id}" rel2="${category.id}">Create New Algorithm</a>
+                    </div>
+               </div>
                 <div class="panel-body">
                There are no algorithms found. Please contract program administrator if you believe that this is an error.
              </div>

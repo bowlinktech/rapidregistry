@@ -62,11 +62,11 @@ public interface importManager {
     
     programUploadTypes getProgramUploadType (Integer programUploadTypeId) throws Exception;
     
-    void processRRFiles();
+    void processRRFiles() throws Exception;
     
     void moveHELFilestoRR ();
     
-    Integer processRRFile(programUploads programUpload) throws Exception;
+    void processRRFile(programUploads programUpload) throws Exception;
     
     void moveHELFiletoRR (programUploadTypes programUploadType) throws Exception;
     
@@ -84,7 +84,7 @@ public interface importManager {
 
     public void moveFilesByPath(String inPath) throws Exception;
     
-    programUploads getProgramUploadByAssignedFileName(programUploads pu);
+    programUploads getProgramUploadByAssignedId(programUploads pu);
     
     List <programUploadTypes> getProgramUploadTypesByUserId (Integer systemUserId, Integer statusId) throws Exception;
     
@@ -117,5 +117,9 @@ public interface importManager {
     void createLoadTable (String loadTableName) throws Exception;
     
     void indexLoadTable (String loadTableName) throws Exception;
+    
+    void insertLoadData(programUploadTypes put, String loadTableName, String fileWithPath) throws Exception;
+    
+    void updateLoadTable(String loadTableName, Integer programUploadId) throws Exception;
     
 }

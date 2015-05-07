@@ -44,5 +44,24 @@
                 <cron-expression>0 1/1 * * * ?</cron-expression>
             </cron>
         </trigger>
+    </schedule> 
+    
+    
+    <schedule>
+        <job>
+            <name>processRRJob</name>
+            <group>processGroup</group>
+            <description>This will process RR files and import them into storage tables</description>
+            <job-class>com.bowlink.rr.jobs.ProcessRRFilesJob</job-class>
+        </job>
+ 
+        <trigger>
+            <cron>
+                <name>processRRJobTrigger</name>
+                <job-name>processRRJob</job-name>
+                <job-group>processGroup</job-group>
+                <cron-expression>0 1/1 * * * ?</cron-expression>
+            </cron>
+        </trigger>
     </schedule>  
 </job-scheduling-data>

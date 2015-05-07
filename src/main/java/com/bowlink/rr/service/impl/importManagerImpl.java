@@ -323,7 +323,11 @@ public class importManagerImpl implements importManager {
 	@Override
 	public programUploadTypes getProgramUploadType(Integer programUploadTypeId)
 			throws Exception {
-		return importDAO.getProgramUploadType(programUploadTypeId);
+		programUploadTypes put = importDAO.getProgramUploadType(programUploadTypeId);
+		put.setInFileExt(getFileTypes(put.getInFileTypeId()).get(0).getFileType());
+		put.setOutFileExt(getFileTypes(put.getOutFileTypeId()).get(0).getFileType());
+		put.setDelimChar(getDelimiter(put.getFileDelimId()).getDelimChar());
+		return put;
 	}
 
 	/** this job imports the RR file
@@ -332,15 +336,14 @@ public class importManagerImpl implements importManager {
 	 * sends the engagement records to proper location
 	 */
 	@Override
-	public void processRRFiles() {
+	public void processRRFiles() throws Exception{
 		//1. finds all files that is ready for RR process - 40
 		//1.5 we recheck the status
 		//2. we update the status
 		//3. we processRRFile(programUploads programUpload) and process the file
 		
 		
-		//we do try /catch block instead of throwing exception so the process can continue to process the other files
-		try {
+		
 			//we check the status, we update the status
 			List <programUploads> puList = getProgramUploads(40);
 		    for (programUploads pu : puList) {
@@ -359,18 +362,12 @@ public class importManagerImpl implements importManager {
 				}
 		    	
 		    	
-		    }
-		} catch (Exception ex) {
-			
-		}
-		
-		
+		    }		
 	}
 	
 	/** this method takes in a programUpload and process the RR file **/
 	@Override
-	public Integer processRRFile(programUploads programUpload)  throws Exception {
-		Integer errorCount = 0;
+	public void processRRFile(programUploads programUpload)  throws Exception {
 		
 		//load file
 		loadFile(programUpload);
@@ -383,7 +380,7 @@ public class importManagerImpl implements importManager {
 		
 		//insert records
 		
-		return errorCount;
+		
 }
 
 	/** 
@@ -426,7 +423,7 @@ public class importManagerImpl implements importManager {
 						
 						//we move it to process folder, set the status and let it finish processing on RR
 						moveHELFiletoRR(put);
-						moveJob.setStatusId(40);
+						moveJob.setStatusId(2);
 						updateMoveFilesLogRun(moveJob);		 
 			        }
 					
@@ -552,19 +549,28 @@ public class importManagerImpl implements importManager {
             if (!fileName.endsWith("_error")) {
             	//we look for a match
             	programUploads pu = new programUploads ();
-            	pu.setAssignedFileName(fileName);
-            	programUploads puNew = getProgramUploadByAssignedFileName(pu);
+            	//we remove file extension
+            	String assignedId = fileName.substring(0, fileName.lastIndexOf("."));
+            	pu.setAssignedId(assignedId);
+            	programUploads puNew = getProgramUploadByAssignedId(pu);
+            	
+            	String fileExt = fileName.substring((fileName.lastIndexOf(".") + 1), fileName.length());
             	if (puNew != null) {
+            		//we check output file's expected extension
+            		puNew.setProgramUploadType(getProgramUploadType(puNew.getProgramUploadTypeId()));
+            		
+            		if (!fileExt.equalsIgnoreCase(puNew.getProgramUploadType().getOutFileExt())) {
+            			puNew.setStatusId(44);   
+            		} else {
+            			puNew.setStatusId(40);
+            		}
             		//we move the file and update the status
-            		 //we encoded user's file if it is not
-                    File newFile = new File(outPath + fileName);
+            		//we encoded user's file if it is not
+            		File newFile = new File(outPath + fileName);
                     // now we move file
-                    Path source = file.toPath();
-                    Path target = newFile.toPath();
-                    Files.move(source, target,StandardCopyOption.REPLACE_EXISTING);
+                    Files.move(file.toPath(), newFile.toPath(),StandardCopyOption.REPLACE_EXISTING);
                     puNew.setStatusDateTime(date);
-                    puNew.setStatusId(40);
-            		updateProgramUpload(puNew);
+                    updateProgramUpload(puNew);
             	} else {
             		//no match, we rename the file and notify admin
             		String subject = "Cannot find programUpload with fileName " + fileName;
@@ -573,7 +579,9 @@ public class importManagerImpl implements importManager {
         			} catch (Exception e) {
         				e.printStackTrace();
         			}
-            		file.renameTo((new File(file.getAbsolutePath() + fileName + "_error")));            		
+        			File newFile = new File(outPath + fileName + "_error");
+                    // now we move file
+                    Files.move(file.toPath(), newFile.toPath(),StandardCopyOption.REPLACE_EXISTING);
             	}
             }
        }
@@ -582,8 +590,8 @@ public class importManagerImpl implements importManager {
 
 	@Override
 	@Transactional
-	public programUploads getProgramUploadByAssignedFileName(programUploads pu) {
-		return importDAO.getProgramUploadByAssignedFileName(pu);
+	public programUploads getProgramUploadByAssignedId(programUploads pu) {
+		return importDAO.getProgramUploadByAssignedId(pu);
 	}
 
 	@Override
@@ -699,7 +707,7 @@ public class importManagerImpl implements importManager {
             /* Make sure file is the correct file type : ERROR CODE 3 */
             String ext = FilenameUtils.getExtension(loadFile.getAbsolutePath());
 
-            String fileType = pu.getProgramUploadType().getFileExt();
+            String fileType = pu.getProgramUploadType().getInFileExt();
             
             if (ext == null ? fileType != null : !ext.equals(fileType)) {
             	error.setErrorId(13);
@@ -717,7 +725,7 @@ public class importManagerImpl implements importManager {
             if (fileType.equalsIgnoreCase("txt") || fileType.equalsIgnoreCase("csv")) {
             	delimCount = (Integer) dir.checkFileDelimiter(loadFile, pu.getProgramUploadType().getDelimChar());
             }
-            if (delimCount < 3 && !"xml".equals(pu.getProgramUploadType().getFileExt())) {
+            if (delimCount < 3 && !"xml".equals(pu.getProgramUploadType().getInFileExt())) {
             	error.setErrorId(15);
                 insertError(error); 
                 errors++;
@@ -754,7 +762,7 @@ public class importManagerImpl implements importManager {
 		//we get our programUploadType
     	programUploadTypes put = getProgramUploadType(programUploadTypeId);
     	put.setDelimChar(getDelimiter(put.getFileDelimId()).getDelimChar());
-    	put.setFileExt(getFileTypes(put.getFileTypeId()).get(0).getFileType());
+    	put.setInFileExt(getFileTypes(put.getInFileTypeId()).get(0).getFileType());
     	
     	//we assign a batch id
     	DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmssS");
@@ -846,33 +854,48 @@ public class importManagerImpl implements importManager {
             
             createLoadTable(loadTableName);
 
-            //we need to index loadTable
-           indexLoadTable(loadTableName);
+             //we need to index loadTable
+            indexLoadTable(loadTableName);
 
             fileSystem dir = new fileSystem();
             dir.setDirByName("/");
 
-            //2. we load data with my sql
-            String actualFileName = null;
-            String newfilename = null;
-
+            //2. we load data with my sql to loadTable
             /**
              * RR file is in processFolder, file if in text format should be encrypted
-             * if pu uses HEL, we want to look for a text file, if not, we process file with its own extension
+             * if programUpload uses HEL, we want to look for a text file, 
+             * if not, we process file with its own extension
              */
+            pu.setProgramUploadType(getProgramUploadType(pu.getProgramUploadTypeId()));
+            String actualFileName = null;
+            
             String encodedFilePath = dir.setPath(processPath);
-            String encodedFileName = pu.getAssignedFileName();
+            String encodedFileName = pu.getAssignedId() + "." + pu.getProgramUploadType().getOutFileExt();
             File encodedFile = new File(encodedFilePath + encodedFileName);
+            
             String decodedFilePath = dir.setPath(loadPath);
-            String decodedFileName = pu.getAssignedFileName();
-            String decodedFileExt = encodedFileName.substring(encodedFileName.lastIndexOf("."));
+            String decodedFileName = encodedFileName;
             String strDecode = filemanager.decodeFileToBase64Binary(encodedFile);
             
-            filemanager.writeFile((decodedFilePath + decodedFileName + decodedFileExt), strDecode);
-            actualFileName = (decodedFilePath + decodedFileName + decodedFileExt);
+            filemanager.writeFile((decodedFilePath + decodedFileName), strDecode);
+            actualFileName = (decodedFilePath + decodedFileName);
 
-            //everything should be txt at this point as all non text file will have to go through HEL
-	        
+            /**
+             * we load actualFileName into mysql, we can only load csv and txt, all other types of file must
+             * be loaded through HEL to change into text file
+            **/
+            insertLoadData(pu.getProgramUploadType(), loadTableName,actualFileName);
+            
+            //we update puId, loadRecordId
+           updateLoadTable(loadTableName, pu.getId());
+
+           /**
+            * insert into putRecords
+            */
+           
+           
+           //clean up
+           //dropLoadTable(loadTableName);
 	}
 
 	@Override
@@ -901,6 +924,19 @@ public class importManagerImpl implements importManager {
 	public void indexLoadTable(String loadTableName) throws Exception {
 		importDAO.indexLoadTable(loadTableName);
 		
+	}
+
+	@Override
+	public void insertLoadData(programUploadTypes put, String loadTableName,
+			String fileWithPath) throws Exception {
+		importDAO.insertLoadData(put, loadTableName, fileWithPath);
+		
+	}
+
+	@Override
+	public void updateLoadTable(String loadTableName, Integer programUploadId)
+			throws Exception {
+		importDAO.updateLoadTable(loadTableName, programUploadId);	
 	}
 	
 	

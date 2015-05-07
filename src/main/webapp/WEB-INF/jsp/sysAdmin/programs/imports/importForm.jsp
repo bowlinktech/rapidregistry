@@ -68,13 +68,37 @@
 	                             <span id="helPickUpPathMsg" class="form-group control-label"></span>
 	                        </div>
 	                    </spring:bind>
-	                     </div>
-	                    <spring:bind path="fileTypeId">
-		                            <div class="form-group ${status.error ? 'has-error' : '' }" >
-		                                <label class="control-label" for="fileTypeId">File Type*</label>
-		                                <form:select path="fileTypeId" id="fileTypeId" class="form-control half fileTypeId">
+	                    <spring:bind path="outFileTypeId">
+		                            <div class="form-group ${status.error ? 'has-error' : '' }" id="outFileTypeIdDiv">
+		                                <label class="control-label" for="outFileTypeId">Output File Type</label>
+		                                <form:select path="outFileTypeId" id="outFileTypeId" class="form-control half outFileTypeId">
                                 <c:forEach items="${fileTypesList}" var="fileType">
-                                    <option value="${fileType.id}" <c:if test="${fileType.id == importTypeDetails.fileTypeId}">selected</c:if>>${fileType.fileType}</option>
+                                    <option value="${fileType.id}" <c:if test="${fileType.id == importTypeDetails.outFileTypeId}">selected</c:if>>${fileType.fileType}</option>
+                                </c:forEach>
+                            </form:select>
+                            <span id="outFileTypeIdMsg" class="form-group control-label"></span>
+		                    </div>
+		                </spring:bind> 
+	                     </div>
+	                      <spring:bind path="containsHeaderRow">
+                        <div class="form-group ${status.error ? 'has-error' : '' }">
+                            <label class="control-label" for="containsHeaderRow">Contain Header Row *</label>
+                            <div>
+                                <label class="radio-inline">
+                                    <form:radiobutton id="containsHeaderRow1" path="containsHeaderRow" value="true" /> Yes
+                                </label>
+                                <label class="radio-inline">
+                                    <form:radiobutton id="containsHeaderRow2" path="containsHeaderRow" value="false"/> No
+                                </label>
+                            </div>
+                            </div>
+                      </spring:bind>
+	                    <spring:bind path="inFileTypeId">
+		                            <div class="form-group ${status.error ? 'has-error' : '' }" >
+		                                <label class="control-label" for="inFileTypeId">File Type*</label>
+		                                <form:select path="inFileTypeId" id="inFileTypeId" class="form-control half inFileTypeId">
+                                <c:forEach items="${fileTypesList}" var="fileType">
+                                    <option value="${fileType.id}" <c:if test="${fileType.id == importTypeDetails.inFileTypeId}">selected</c:if>>${fileType.fileType}</option>
                                 </c:forEach>
                             </form:select>
 		                    </div>
@@ -97,12 +121,9 @@
                                         <span id="maxFileSizeMsg" class="control-label"></span>                                    
                                     </div>
                         </spring:bind>
-                    
-                    
+                        
+                       
                     </div>
-                            
-                    
-                    
                
                 <div class="form-group">
                     <input type="button" id="submitImportType" role="button" class="btn btn-primary" value="Save"/>

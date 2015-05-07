@@ -47,7 +47,8 @@ require(['./main'], function () {
             var formData = $("#importTypeForm").serialize();
             
             var helDropPath = $("#helDropPath").val();
-            var helPickUpPath = $("#helDropPath").val();
+            var helPickUpPath = $("#helPickUpPath").val();
+            var outFileTypeId = $("#outFileTypeId").val();
             
             
             /**check to make sure paths are not blank**/
@@ -65,6 +66,14 @@ require(['./main'], function () {
                  $('#helPickUpPathMsg').html('Health-e-link Output Path cannot be empty'); 
                     errorCount++;
             	}
+            	if (outFileTypeId == 1) {
+              		 $("#outFileTypeIdDiv").addClass("has-error");
+              		 $('#outFileTypeIdMsg').addClass("has-error");
+                    $('#outFileTypeIdMsg').html('Please select a Health-e-link output file type'); 
+                       errorCount++;
+               	}
+            	
+            	
             }
             
             if (errorCount > 0) {
