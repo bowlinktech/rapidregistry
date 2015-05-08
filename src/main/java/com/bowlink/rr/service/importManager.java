@@ -122,4 +122,10 @@ public interface importManager {
     
     void updateLoadTable(String loadTableName, Integer programUploadId) throws Exception;
     
+    void insertUploadRecords (String loadTableName, Integer programUploadId) throws Exception;
+    
+    void insertUploadRecordDetails (Integer programUploadId) throws Exception;
+    
+    void insertUploadRecordDetailsData (String loadTableName);
+    
 }

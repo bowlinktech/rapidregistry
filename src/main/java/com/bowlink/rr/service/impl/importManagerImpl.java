@@ -374,6 +374,7 @@ public class importManagerImpl implements importManager {
 
 		// check for R/O
 		
+		
 		//validate
 		
 		//RUN MCI - this will set look for patient id and then visit info according to rule to find match patients
@@ -890,12 +891,18 @@ public class importManagerImpl implements importManager {
            updateLoadTable(loadTableName, pu.getId());
 
            /**
-            * insert into putRecords
+            * insert into putRecords with status of loaded
             */
+           insertUploadRecords (loadTableName, pu.getId());
+           /**
+            * insert into programUploadRecords
+            * **/
+           insertUploadRecordDetails(pu.getId());
            
-           
+           /** sync data **/
+           insertUploadRecordDetailsData(loadTableName);
            //clean up
-           //dropLoadTable(loadTableName);
+           dropLoadTable(loadTableName);          
 	}
 
 	@Override
@@ -937,6 +944,23 @@ public class importManagerImpl implements importManager {
 	public void updateLoadTable(String loadTableName, Integer programUploadId)
 			throws Exception {
 		importDAO.updateLoadTable(loadTableName, programUploadId);	
+	}
+
+	@Override
+	public void insertUploadRecords(String loadTableName,
+			Integer programUploadId) throws Exception {
+		importDAO.insertUploadRecords(loadTableName, programUploadId);
+	}
+
+	@Override
+	public void insertUploadRecordDetails(Integer programUploadId)
+			throws Exception {
+		importDAO.insertUploadRecordDetails(programUploadId);	
+	}
+
+	@Override
+	public void insertUploadRecordDetailsData(String loadTableName) {
+		importDAO.insertUploadRecordDetailsData(loadTableName);			
 	}
 	
 	

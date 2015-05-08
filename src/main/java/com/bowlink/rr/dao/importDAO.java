@@ -91,6 +91,12 @@ public interface importDAO {
     void insertLoadData(programUploadTypes put, String loadTableName, String fileWithPath) throws Exception;
     
     void updateLoadTable(String loadTableName, Integer programUploadId) throws Exception;
+    
+    void insertUploadRecords (String loadTableName, Integer programUploadId) throws Exception;
+    
+    void insertUploadRecordDetails (Integer programUploadId) throws Exception;
+    
+    void insertUploadRecordDetailsData(String loadTableName);
   
 }
 

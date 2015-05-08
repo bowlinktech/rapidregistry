@@ -410,5 +410,11 @@ INSERT INTO `rapidregistry`.`lu_processstatus` (`id`, `category`, `displayCode`,
 ALTER TABLE `rapidregistry`.`programuploadtypes` 
 ADD COLUMN `containsHeaderRow` BIT NOT NULL DEFAULT 0 AFTER `dateCreated`;
 
-  
+
+/** grace 05.07.2015 11:01AM **/
+INSERT INTO `rapidregistry`.`lu_processstatus` (`id`, `category`, `displayCode`, `displayText`, `description`, `endUserDisplayCode`, `endUserDisplayText`, `endUserDescription`) VALUES ('9', 'record', 'LOA', 'Record Loaded', 'Normal condition: The record has been successfully loaded for processing.', 'LOA', 'Record Loaded', 'Normal condition: The record has been successfully loaded for processing.');
+
+ALTER TABLE `rapidregistry`.`programUploadRecordDetails` 
+CHANGE COLUMN `processTableId` `loadTableId` VARCHAR(45) NULL DEFAULT NULL ,
+CHANGE COLUMN `dateCreated` `dateCreated` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ;
  
