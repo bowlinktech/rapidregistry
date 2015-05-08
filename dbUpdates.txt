@@ -418,3 +418,8 @@ ALTER TABLE `rapidregistry`.`programUploadRecordDetails`
 CHANGE COLUMN `processTableId` `loadTableId` VARCHAR(45) NULL DEFAULT NULL ,
 CHANGE COLUMN `dateCreated` `dateCreated` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ;
  
+ 
+ /** grace 05.08.2015 1:37AM **/
+ ALTER TABLE `rapidregistry`.`programUpload_errors` 
+ADD COLUMN `dspPos` INT NULL AFTER `fieldNo`;
+ 
