@@ -14,10 +14,8 @@ import com.bowlink.rr.model.programUploadTypes;
 import com.bowlink.rr.model.programUploadTypesFormFields;
 import com.bowlink.rr.model.programUpload_Errors;
 import com.bowlink.rr.model.programUploads;
-
 import java.io.File;
 import java.util.List;
-
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -128,4 +126,15 @@ public interface importManager {
     
     void insertUploadRecordDetailsData (String loadTableName);
     
+    void insertFailedRequiredFields(programUploadTypesFormFields putField, Integer programUploadId, Integer programUploadRecordId) throws Exception;
+    
+    void updateStatusForErrorRecord(Integer programUploadId, Integer statusId, Integer programUploadRecordId) throws Exception;
+    
+    void runValidations(Integer programUploadId, programUploadTypesFormFields putField, Integer programUploadRecordId) throws Exception;
+   
+    void genericValidation(programUploadTypesFormFields putField, Integer validationTypeId, Integer programUploadId, String regEx, Integer programUploadRecordId) throws Exception;
+    
+    void dateValidation(programUploadTypesFormFields putField, Integer validationTypeId, Integer programUploadId, Integer programUploadRecordId) throws Exception;
+    
+    void urlValidation(programUploadTypesFormFields putField, Integer validationTypeId, Integer programUploadId, Integer programUploadRecordId) throws Exception;
 }

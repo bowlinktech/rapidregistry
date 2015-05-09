@@ -422,4 +422,8 @@ CHANGE COLUMN `dateCreated` `dateCreated` DATETIME NOT NULL DEFAULT CURRENT_TIME
  /** grace 05.08.2015 1:37AM **/
  ALTER TABLE `rapidregistry`.`programUpload_errors` 
 ADD COLUMN `dspPos` INT NULL AFTER `fieldNo`;
+
+ /** grace 05.08.2015 12:50PM **/
+ALTER TABLE `rapidregistry`.`programUploadRecordDetails` 
+ADD COLUMN `programUploadId` INT NOT NULL AFTER `id`;
  

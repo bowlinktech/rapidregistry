@@ -16,6 +16,7 @@ import com.bowlink.rr.model.programUploadTypesFormFields;
 import com.bowlink.rr.model.programUpload_Errors;
 import com.bowlink.rr.model.programUploads;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -36,6 +37,9 @@ public class importDAOImpl implements importDAO {
 
     @Autowired
     private SessionFactory sessionFactory;
+    
+  //list of final status - these records we skip
+    private List<Integer> finalStatuses = Arrays.asList(11, 12, 13, 16);
 
     /**
      * The 'getUploadTypes' function will return a list of upload types set up for the program.
@@ -86,6 +90,7 @@ public class importDAOImpl implements importDAO {
      */
     @SuppressWarnings("unchecked")
 	@Override
+	@Transactional
     public List<programUploadTypesFormFields> getImportTypeFields(Integer importTypeId) throws Exception {
         Query query = sessionFactory.getCurrentSession().createQuery("from programUploadTypesFormFields where programUploadTypeId = :importTypeId order by dspPos asc");
         query.setParameter("importTypeId", importTypeId);
@@ -512,7 +517,7 @@ public class importDAOImpl implements importDAO {
 	@Transactional
 	public void insertUploadRecordDetails(Integer programUploadId)
 			throws Exception {
-		String sql = ("insert into programUploadRecordDetails (programUploadRecordId, loadTableId) select id, loadTableId from programuploadrecords where programUploadId = :programUploadId");
+		String sql = ("insert into programUploadRecordDetails (programUploadId, programUploadRecordId, loadTableId) select :programUploadId, id, loadTableId from programuploadrecords where programUploadId = :programUploadId");
         Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
         query.setParameter("programUploadId", programUploadId);
         query.executeUpdate();
@@ -1028,4 +1033,53 @@ public class importDAOImpl implements importDAO {
 	            Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
 	            query.executeUpdate();
 	   }
+
+	@Override
+	@Transactional
+	public void insertFailedRequiredFields(
+			programUploadTypesFormFields putField, Integer programUploadId,
+			Integer programUploadRecordId) throws Exception {
+		
+		String sql = "insert into programUpload_errors (programUploadId, programUploadRecordId, fieldNo, dspPos, errorid)"
+                + "select " + programUploadId + ", programUploadRecordId, " + putField.getFieldId() +", " + putField.getDspPos()
+                + ", 1 from programUploadRecordDetails where programUploadId = :programUploadId "
+                + " and (F" + putField.getDspPos()
+                + " is  null  or length(trim(F" +  putField.getDspPos() + ")) = 0"
+                + " or length(REPLACE(REPLACE(F" +  putField.getDspPos() + ", '\n', ''), '\r', '')) = 0)";
+        if (programUploadRecordId != 0) {
+            sql = sql + "and programUploadRecordId = :programUploadRecordId";
+        }
+
+        Query insertData = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		insertData.setParameter("programUploadId",programUploadId);
+		if (programUploadRecordId != 0) {
+			insertData.setParameter("programUploadRecordId", programUploadRecordId);
+		}
+		insertData.executeUpdate();
+		
+	}
+
+	@Override
+	@Transactional
+	public void updateStatusForErrorRecord(Integer programUploadId,
+			Integer statusId, Integer programUploadRecordId)  throws Exception{
+		String sql;
+		Integer id = programUploadId;
+			
+		sql = "update programUploadRecords set statusId = :statusId where"
+                    + " id in (select distinct programUploadRecordId from programupload_errors where ";
+            if (programUploadRecordId == 0) {
+                sql = sql + " programUploadId = :id) and statusId not in (:finalStatuses); ";
+            } else {
+                sql = sql + " programUploadRecordId = :id);";
+                id = programUploadRecordId;
+            }
+        Query updateData = sessionFactory.getCurrentSession().createSQLQuery(sql)
+                .setParameter("id", id)
+                .setParameter("statusId", statusId);
+        if (programUploadRecordId == 0) {
+            updateData.setParameterList("finalStatuses", finalStatuses);
+        }
+        updateData.executeUpdate();		
+	}
 }

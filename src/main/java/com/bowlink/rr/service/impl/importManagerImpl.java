@@ -372,10 +372,22 @@ public class importManagerImpl implements importManager {
 		//load file
 		loadFile(programUpload);
 
-		// check for R/O
+		// check for R/O & validation
+		//get field list
+		List <programUploadTypesFormFields> putFields = getImportTypeFields(programUpload.getProgramUploadTypeId());
+		for (programUploadTypesFormFields putField : putFields) {
+			if (putField.isRequiredField() && putField.isUseField()) {
+				insertFailedRequiredFields(putField, programUpload.getId(), 0);
+			}
+			//now we check validation
+			runValidations(programUpload.getId(), putField, 0);
+			
+		}
+		updateStatusForErrorRecord(programUpload.getId(), 14, 0);
 		
+		//TODO
+		//check for permission
 		
-		//validate
 		
 		//RUN MCI - this will set look for patient id and then visit info according to rule to find match patients
 		
@@ -961,6 +973,105 @@ public class importManagerImpl implements importManager {
 	@Override
 	public void insertUploadRecordDetailsData(String loadTableName) {
 		importDAO.insertUploadRecordDetailsData(loadTableName);			
+	}
+
+	@Override
+	public void insertFailedRequiredFields(
+			programUploadTypesFormFields putField, Integer programUploadId,
+			Integer programUploadRecordId)  throws Exception{
+		importDAO.insertFailedRequiredFields(putField, programUploadId, programUploadRecordId);		
+	}
+
+	@Override
+	public void updateStatusForErrorRecord(Integer programUploadId,
+			Integer statusId, Integer programUploadRecordId) throws Exception{
+		importDAO.updateStatusForErrorRecord(programUploadId,statusId, programUploadRecordId);	
+	}
+
+	@Override
+    public void runValidations(Integer programUploadId, programUploadTypesFormFields putField, Integer programUploadRecordId) throws Exception {
+         /**
+         * MySql RegEXP validate numeric - ^-?[0-9]+[.]?[0-9]*$|^-?[.][0-9]+$ validate email - ^[a-z0-9\._%+!$&*=^|~#%\'`?{}/\-]+@[a-z0-9\.-]+\.[a-z]{2,6}$ or ^[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$ validate url - ^(https?://)?([\da-z.-]+).([a-z0-9])([0-9a-z]*)*[/]?$ - need to fix not correct - might have to run in java as mysql is not catching all. validate phone - should be no longer than 11 digits ^[0-9]{7,11}$ validate date - doing this in java
+         *
+         */
+          String regEx = "";
+            switch (putField.getValidationId()) {
+                case 1:
+                    break; // no validation
+                //email calling SQL to validation and insert - one statement
+                case 2:
+                    genericValidation(putField, putField.getValidationId(), programUploadId, regEx, programUploadRecordId);
+                    break;
+                //phone  calling SP to validation and insert - one statement 
+                case 3:
+                    genericValidation(putField, putField.getValidationId(), programUploadId, regEx, programUploadRecordId);
+                    break;
+                // need to loop through each record / each field
+                case 4:
+                    dateValidation(putField, putField.getValidationId(), programUploadId, programUploadRecordId);
+                    break;
+                //numeric   calling SQL to validation and insert - one statement      
+                case 5:
+                    genericValidation(putField, putField.getValidationId(), programUploadId, regEx, programUploadRecordId);
+                    break;
+                //url - need to rethink as regExp is not validating correctly
+                case 6:
+                    urlValidation(putField, putField.getValidationId(), programUploadId, programUploadRecordId);
+                    break;
+                //anything new we hope to only have to modify sp
+                default:
+                    genericValidation(putField, putField.getValidationId(), programUploadId, regEx, programUploadRecordId);
+                    break;
+            }
+
+        }
+
+	@Override
+	public void genericValidation(programUploadTypesFormFields putField,
+			Integer validationTypeId, Integer programUploadId, String regEx,
+			Integer programUploadRecordId) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+    public void urlValidation(programUploadTypesFormFields putField,
+            Integer validationTypeId, Integer programUploadId, Integer programUploadRecordId) throws Exception{
+        /**
+		//1. we grab all transactionInIds for messages that are not length of 0 and not null 
+            List<transactionRecords> trs = null;
+            //1. we grab all transactionInIds for messages that are not length of 0 and not null 
+            if (transactionId == 0) {
+                trs = getFieldColAndValues(programUploadId, putField);
+            } else {
+                trs = getFieldColAndValueByProgramUploadRecordId(putField, programUploadRecordId);
+            }
+            //2. we look at each column and check each value to make sure it is a valid url
+            for (transactionRecords tr : trs) {
+                //System.out.println(tr.getfieldValue());
+                if (tr.getfieldValue() != null) {
+                	 if (tr.getfieldValue().length() != 0) {
+                    //we append http:// if url doesn't start with it
+                    String urlToValidate = tr.getfieldValue();
+                    if (!urlToValidate.startsWith("http")) {
+                        urlToValidate = "http://" + urlToValidate;
+                    }
+                    if (!isValidURL(urlToValidate)) {
+                        insertValidationError(tr, putField, programUploadId);
+                    }
+                }
+                }
+            }
+           
+         **/
+    }
+
+	@Override
+	public void dateValidation(programUploadTypesFormFields putField,
+			Integer validationTypeId, Integer programUploadId,
+			Integer programUploadRecordId) throws Exception {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	
