@@ -39,6 +39,9 @@ public class programUpload_Errors {
     @Column(name = "programUploadId", nullable = false)
     private Integer programUploadId = null;
     
+    @Column(name = "programUploadRecordId", nullable = false)
+    private Integer programUploadRecordId = null;
+    
     @Column(name = "categoryId", nullable = false)
     private Integer categoryId = null;
     
@@ -138,4 +141,13 @@ public class programUpload_Errors {
 	public void setDspPos(Integer dspPos) {
 		this.dspPos = dspPos;
 	}
+
+	public Integer getProgramUploadRecordId() {
+		return programUploadRecordId;
+	}
+
+	public void setProgramUploadRecordId(Integer programUploadRecordId) {
+		this.programUploadRecordId = programUploadRecordId;
+	}
+	
 }

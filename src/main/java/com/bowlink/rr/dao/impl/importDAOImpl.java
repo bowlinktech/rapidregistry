@@ -1042,7 +1042,7 @@ public class importDAOImpl implements importDAO {
 			programUploadTypesFormFields putField, Integer programUploadId,
 			Integer programUploadRecordId) throws Exception {
 		
-		String sql = "insert into programUpload_errors (programUploadId, programUploadRecordId, fieldNo, dspPos, errorid)"
+		String sql = "insert into programUpload_errors (programUploadId, programUploadRecordId, fieldId, dspPos, errorid)"
                 + "select " + programUploadId + ", programUploadRecordId, " + putField.getFieldId() +", " + putField.getDspPos()
                 + ", 1 from programUploadRecordDetails where programUploadId = :programUploadId "
                 + " and (F" + putField.getDspPos()
@@ -1090,8 +1090,7 @@ public class importDAOImpl implements importDAO {
 	public void genericValidation(programUploadTypesFormFields putField,
 			Integer validationTypeId, Integer programUploadId, Integer programUploadRecordId) throws Exception {
 		String sql = "call insertValidationErrors(:vtType, :dspPos, :fieldId , :programUploadId, :programUploadRecordId)";
-
-        Query insertError = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		Query insertError = sessionFactory.getCurrentSession().createSQLQuery(sql);
         insertError.setParameter("vtType", putField.getValidationId());
         insertError.setParameter("dspPos", putField.getDspPos());
         insertError.setParameter("fieldId", putField.getFieldId());       
@@ -1118,6 +1117,7 @@ public class importDAOImpl implements importDAO {
                 .addScalar("programUploadRecordId", StandardBasicTypes.INTEGER)
                 .addScalar("fieldValue", StandardBasicTypes.STRING)
                 .addScalar("fieldId", StandardBasicTypes.INTEGER)
+                .addScalar("dspPos", StandardBasicTypes.INTEGER)
                 .setResultTransformer(Transformers.aliasToBean(programUploadRecordValues.class))
                 .setParameter("programUploadId", programUploadId)
                 .setParameterList("finalStatuses", finalStatuses);
@@ -1144,7 +1144,7 @@ public class importDAOImpl implements importDAO {
 		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql)
         .addScalar("programUploadRecordId", StandardBasicTypes.INTEGER)
         .addScalar("fieldValue", StandardBasicTypes.STRING)
-        .addScalar("fieldNo", StandardBasicTypes.INTEGER)
+        .addScalar("fieldId", StandardBasicTypes.INTEGER)
         .setResultTransformer(Transformers.aliasToBean(programUploadRecordValues.class))
         .setParameter("id", programUploadRecordId);
 

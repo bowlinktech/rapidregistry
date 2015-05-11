@@ -574,5 +574,61 @@ END$$
 DELIMITER ;
 
 
+/** grace 05.11.2015 03:16PM **/
+use rapidregistry;
+
+drop procedure if exists  `stripPhoneChars`;
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `stripPhoneChars`(in vtType int, in dspPos int,
+in programUploadId int, in programUploadRecordId int)
+BEGIN
+	DECLARE varToReplace varchar(100) DEFAULT '.';
+	DECLARE part1 varchar(255) DEFAULT '.';
+	DECLARE part2 varchar(25) DEFAULT '.';
+	
+	if (programUploadRecordId = 0) then
+	BEGIN
+		set part1 = concat("update programUploadRecordDetails JOIN (SELECT id from programUploadRecords WHERE programUploadId = ", programUploadId, 
+        " and statusId not in (11,12,13,16)) as ti ON programUploadRecordDetails.programUploadRecordId = ti.id SET programUploadRecordDetails.F"
+	  , dspPos, " = replace(F", dspPos, ", '");
+	END;
+	END if;
+
+	if (programUploadRecordId != 0) then
+	BEGIN
+	  set part1 = concat("update programUploadRecordDetails JOIN (SELECT id from programUploadRecords WHERE id = ",
+	  programUploadRecordId, ") as ti ON programUploadRecordDetails.programUploadRecordId = ti.id SET programUploadRecordDetails.F"
+	  , dspPos, " = replace(F", dspPos, ", '");
+	END;
+	END if;
+
+	
+	set part2 = "', '');";
+	set @stmt = concat(part1, varToReplace, part2);
+  	PREPARE stmt from @stmt;
+	EXECUTE stmt;
+
+	set varToReplace = '-';
+	set @stmt = concat(part1, varToReplace, part2);
+	PREPARE stmt from @stmt;
+	EXECUTE stmt;
+
+	set varToReplace = ')';
+	set @stmt = concat(part1, varToReplace, part2);
+	PREPARE stmt from @stmt;
+	EXECUTE stmt;
+
+	set varToReplace = '(';
+	set @stmt = concat(part1, varToReplace, part2);
+	PREPARE stmt from @stmt;
+	EXECUTE stmt;
+
+	set varToReplace = ' ';
+	set @stmt = concat(part1, varToReplace, part2);
+	PREPARE stmt from @stmt;
+	EXECUTE stmt;
+
+ END
+
 
  

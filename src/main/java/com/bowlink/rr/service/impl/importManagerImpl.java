@@ -379,12 +379,15 @@ public class importManagerImpl implements importManager {
 		//get field list
 		List <programUploadTypesFormFields> putFields = getImportTypeFields(programUpload.getProgramUploadTypeId());
 		for (programUploadTypesFormFields putField : putFields) {
-			if (putField.isRequiredField() && putField.isUseField()) {
+			 if (putField.isUseField()) {
+			if (putField.isRequiredField()) {
 				insertFailedRequiredFields(putField, programUpload.getId(), 0);
 			}
+			
 			//now we check validation
 			runValidations(programUpload.getId(), putField, 0);
 			
+			}
 		}
 		updateStatusForErrorRecord(programUpload.getId(), 14, 0);
 		
@@ -1058,6 +1061,8 @@ public class importManagerImpl implements importManager {
                     if (!isValidURL(urlToValidate)) {
                     	programUpload_Errors uploadError = new programUpload_Errors();
                     	uploadError.setErrorData(pur.getFieldValue());
+                    	uploadError.setProgramUploadId(programUploadId);
+                    	uploadError.setProgramUploadRecordId(programUploadRecordId);
                     	uploadError.setErrorId(31);
                     	uploadError.setFieldId(putField.getFieldId());
                     	uploadError.setDspPos(putField.getDspPos());
@@ -1104,6 +1109,14 @@ public class importManagerImpl implements importManager {
                 }
 
                 if (formattedDate == null && (mySQLDate.equalsIgnoreCase("") || mySQLDate.equalsIgnoreCase("ERROR"))) {
+                	programUpload_Errors uploadError = new programUpload_Errors();
+                	uploadError.setErrorData(pur.getFieldValue());
+                	uploadError.setProgramUploadId(programUploadId);
+                	uploadError.setProgramUploadRecordId(pur.getProgramUploadRecordId());
+                	uploadError.setErrorId(29);
+                	uploadError.setFieldId(putField.getFieldId());
+                	uploadError.setDspPos(putField.getDspPos());
+                	insertError(uploadError);
                    
                 }
              }
