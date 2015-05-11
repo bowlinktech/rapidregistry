@@ -426,4 +426,153 @@ ADD COLUMN `dspPos` INT NULL AFTER `fieldNo`;
  /** grace 05.08.2015 12:50PM **/
 ALTER TABLE `rapidregistry`.`programUploadRecordDetails` 
 ADD COLUMN `programUploadId` INT NOT NULL AFTER `id`;
+
+/** grace 05.11.2015 12:15AM **/
+
+use rapidregistry;
+
+drop procedure if exists  `stripPhoneChars`;
+
+DELIMITER $$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `stripPhoneChars`(in vtType int, in dspPos int,
+in programUploadId int, in programUploadRecordId int)
+BEGIN
+	DECLARE varToReplace varchar(100) DEFAULT '.';
+	DECLARE part1 varchar(255) DEFAULT '.';
+	DECLARE part2 varchar(25) DEFAULT '.';
+	
+	if (programUploadRecordId = 0) then
+	BEGIN
+		set part1 = concat("update programUploadRecordDetails JOIN (SELECT id from programUploadRecord WHERE programUploadId = ", programUploadId, 
+        " and statusId not in (11,12,13,16)) as ti ON programUploadRecordDetails.programUploadRecordId = ti.id SET programUploadRecordDetails.F"
+	  , fieldNo, " = replace(F", fieldNo, ", '");
+	END;
+	END if;
+
+	if (programUploadRecordId != 0) then
+	BEGIN
+	  set part1 = concat("update programUploadRecordDetails JOIN (SELECT id from programUploadRecord WHERE id = ",
+	  programUploadRecordId, ") as ti ON programUploadRecordDetails.programUploadRecordId = ti.id SET programUploadRecordDetails.F"
+	  , fieldNo, " = replace(F", fieldNo, ", '");
+	END;
+	END if;
+
+	
+	set part2 = "', '');";
+	set @stmt = concat(part1, varToReplace, part2);
+  	PREPARE stmt from @stmt;
+	EXECUTE stmt;
+
+	set varToReplace = '-';
+	set @stmt = concat(part1, varToReplace, part2);
+	PREPARE stmt from @stmt;
+	EXECUTE stmt;
+
+	set varToReplace = ')';
+	set @stmt = concat(part1, varToReplace, part2);
+	PREPARE stmt from @stmt;
+	EXECUTE stmt;
+
+	set varToReplace = '(';
+	set @stmt = concat(part1, varToReplace, part2);
+	PREPARE stmt from @stmt;
+	EXECUTE stmt;
+
+	set varToReplace = ' ';
+	set @stmt = concat(part1, varToReplace, part2);
+	PREPARE stmt from @stmt;
+	EXECUTE stmt;
+
+ END$$
+ 
+DELIMITER ;
+
+DELETE FROM `rapidregistry`.`lu_errorcodes` WHERE `id`='6';
+UPDATE `rapidregistry`.`lu_errorcodes` SET `displayText`='Failed Email Validation', `description`='Failed Email Validation' WHERE `id`='2';
+INSERT INTO `rapidregistry`.`lu_errorcodes` (`id`, `displayText`, `description`) VALUES ('28', 'Failed Phone Validation', 'Failed Phone Validation');
+INSERT INTO `rapidregistry`.`lu_errorcodes` (`id`, `displayText`, `description`) VALUES ('29', 'Failed Date Validation', 'Failed Date Validation');
+INSERT INTO `rapidregistry`.`lu_errorcodes` (`id`, `displayText`, `description`) VALUES ('30', 'Failed Numeric Validation', 'Failed Numeric Validation');
+INSERT INTO `rapidregistry`.`lu_errorcodes` (`id`, `displayText`, `description`) VALUES ('31', 'Failed URL Validation', 'Failed URL Validation');
+
+ALTER TABLE `rapidregistry`.`programUpload_errors` 
+CHANGE COLUMN `fieldNo` `fieldId` INT(11) NULL DEFAULT NULL ;
+
+
+use rapidregistry;
+
+drop procedure if exists insertValidationErrors;
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insertValidationErrors`(in vtType int, in dspPos int, in fieldId int,
+in programUploadId int, in programUploadRecordId int)
+
+BEGIN
+
+DECLARE regEx varchar(100) DEFAULT '';
+DECLARE errorId int DEFAULT 0;
+
+
+CASE vtType
+	WHEN 2 THEN 
+		BEGIN set regEx = '^[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$';
+        set errorId = 2;
+        END;
+    WHEN 3 THEN 
+		BEGIN 
+			CALL `rapidregistry`.`stripPhoneChars`(vtType, dspPos, programUploadId,  programUploadRecordId);
+			set regEx ='^[0-9]{7,11}$';
+            set errorId = 28;
+		END;
+	WHEN 5 THEN BEGIN
+		set regEx = '^-?[0-9]+[.]?[0-9]*$|^-?[.][0-9]+$';
+        set errorId = 30;
+        END;
+    ELSE
+        BEGIN
+        END;
+	END 
+	CASE;
+
+IF (programUploadRecordId = 0) THEN
+set @stmt = concat(
+'insert into programUpload_Errors (programUploadId, programUploadRecordId, dspPos, fieldId, errorid, errorData) 
+SELECT ', programUploadId, ', programUploadRecordId, ',dspPos,',' , fieldId, ', ' , errorId, ', F',  dspPos, 
+' FROM programUploadRecordDetails WHERE trim(F' ,dspPos, ') not REGEXP  "', regEx, '" and F',dspPos, ' is not null 
+and length(F', dspPos, ') != 0
+and length(trim(F', dspPos, ')) != 0
+and length(REPLACE(REPLACE(F', dspPos,' , "\n", ""), "\r", "") != 0)  and programUploadRecordId 
+in (select id from programUploadRecords where programUploadId = ', programUploadId,' and statusId not in (11,12,13,16));'
+);
+
+BEGIN -- true
+		PREPARE stmt from @stmt;
+		EXECUTE stmt;
+END; 
+END IF;
+
+IF (programUploadRecordId != 0) THEN
+
+set @stmt= concat(
+'insert into programUpload_Errors (programUploadId, programUploadRecordId, dspPos,  fieldId, errorid, errorData) 
+SELECT ', programUploadId, ', programUploadRecordId, ',dspPos, ',', fieldId,',', errorId, ', F',dspPos, 
+' FROM programUploadRecordDetails WHERE trim(F' ,dspPos, ') not REGEXP  "', regEx, '" and F',dspPos, ' is not null 
+and length(F', dspPos, ') != 0
+and length(trim(F', dspPos, ')) != 0
+and length(REPLACE(REPLACE(F', dspPos,', "\n", ""), "\r", "") != 0) and programUploadRecordId = ', 
+programUploadRecordId);
+
+BEGIN -- true
+		PREPARE stmt from @stmt;
+		EXECUTE stmt;
+
+
+END; 
+END IF;
+
+
+END$$
+DELIMITER ;
+
+
+
  

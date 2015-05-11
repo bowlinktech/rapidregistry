@@ -10,11 +10,14 @@ import com.bowlink.rr.model.MoveFilesLog;
 import com.bowlink.rr.model.delimiters;
 import com.bowlink.rr.model.errorCodes;
 import com.bowlink.rr.model.fileTypes;
+import com.bowlink.rr.model.programUploadRecordValues;
 import com.bowlink.rr.model.programUploadTypes;
 import com.bowlink.rr.model.programUploadTypesFormFields;
 import com.bowlink.rr.model.programUpload_Errors;
 import com.bowlink.rr.model.programUploads;
+
 import java.util.List;
+
 import org.springframework.stereotype.Repository;
 
 /**
@@ -99,5 +102,15 @@ public interface importDAO {
     void insertFailedRequiredFields(programUploadTypesFormFields putField, Integer programUploadId, Integer programUploadRecordId) throws Exception;
   
     void updateStatusForErrorRecord(Integer programUploadId, Integer statusId, Integer programUploadRecordId) throws Exception;
+    
+    void genericValidation(programUploadTypesFormFields putField, Integer validationTypeId, Integer programUploadId, Integer programUploadRecordId)  throws Exception;
+
+    List<programUploadRecordValues> getFieldColAndValues (Integer programUploadId, programUploadTypesFormFields putField) throws Exception;
+    
+    List <programUploadRecordValues> getFieldColAndValueByProgramUploadRecordId (programUploadTypesFormFields putField, Integer programUploadRecordId) throws Exception;
+    
+    void updateFieldValue(programUploadRecordValues prv, String newValue) throws Exception;
 }
+
+
 

@@ -13,6 +13,7 @@ import com.bowlink.rr.model.errorCodes;
 import com.bowlink.rr.model.fileTypes;
 import com.bowlink.rr.model.mailMessage;
 import com.bowlink.rr.model.program;
+import com.bowlink.rr.model.programUploadRecordValues;
 import com.bowlink.rr.model.programUploadTypeAlgorithm;
 import com.bowlink.rr.model.programUploadTypes;
 import com.bowlink.rr.model.programUploadTypesFormFields;
@@ -43,9 +44,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.HiddenFileFilter;
+import org.apache.commons.validator.routines.UrlValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -994,33 +997,32 @@ public class importManagerImpl implements importManager {
          * MySql RegEXP validate numeric - ^-?[0-9]+[.]?[0-9]*$|^-?[.][0-9]+$ validate email - ^[a-z0-9\._%+!$&*=^|~#%\'`?{}/\-]+@[a-z0-9\.-]+\.[a-z]{2,6}$ or ^[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$ validate url - ^(https?://)?([\da-z.-]+).([a-z0-9])([0-9a-z]*)*[/]?$ - need to fix not correct - might have to run in java as mysql is not catching all. validate phone - should be no longer than 11 digits ^[0-9]{7,11}$ validate date - doing this in java
          *
          */
-          String regEx = "";
-            switch (putField.getValidationId()) {
+          switch (putField.getValidationId()) {
                 case 1:
                     break; // no validation
                 //email calling SQL to validation and insert - one statement
                 case 2:
-                    genericValidation(putField, putField.getValidationId(), programUploadId, regEx, programUploadRecordId);
+                    genericValidation(putField, putField.getValidationId(), programUploadId, programUploadRecordId);
                     break;
                 //phone  calling SP to validation and insert - one statement 
                 case 3:
-                    genericValidation(putField, putField.getValidationId(), programUploadId, regEx, programUploadRecordId);
+                    genericValidation(putField, putField.getValidationId(), programUploadId, programUploadRecordId);
                     break;
                 // need to loop through each record / each field
                 case 4:
-                    dateValidation(putField, putField.getValidationId(), programUploadId, programUploadRecordId);
+                    dateValidation(putField, programUploadId, programUploadRecordId);
                     break;
                 //numeric   calling SQL to validation and insert - one statement      
                 case 5:
-                    genericValidation(putField, putField.getValidationId(), programUploadId, regEx, programUploadRecordId);
+                    genericValidation(putField, putField.getValidationId(), programUploadId, programUploadRecordId);
                     break;
                 //url - need to rethink as regExp is not validating correctly
                 case 6:
-                    urlValidation(putField, putField.getValidationId(), programUploadId, programUploadRecordId);
+                    urlValidation(putField, programUploadId, programUploadRecordId);
                     break;
                 //anything new we hope to only have to modify sp
                 default:
-                    genericValidation(putField, putField.getValidationId(), programUploadId, regEx, programUploadRecordId);
+                    genericValidation(putField, putField.getValidationId(), programUploadId, programUploadRecordId);
                     break;
             }
 
@@ -1028,52 +1030,269 @@ public class importManagerImpl implements importManager {
 
 	@Override
 	public void genericValidation(programUploadTypesFormFields putField,
-			Integer validationTypeId, Integer programUploadId, String regEx,
-			Integer programUploadRecordId) throws Exception {
-		// TODO Auto-generated method stub
-		
+			Integer validationTypeId, Integer programUploadId, Integer programUploadRecordId) throws Exception {
+		importDAO.genericValidation(putField, validationTypeId, programUploadId, programUploadRecordId);	
 	}
 	
 	@Override
     public void urlValidation(programUploadTypesFormFields putField,
-            Integer validationTypeId, Integer programUploadId, Integer programUploadRecordId) throws Exception{
-        /**
-		//1. we grab all transactionInIds for messages that are not length of 0 and not null 
-            List<transactionRecords> trs = null;
-            //1. we grab all transactionInIds for messages that are not length of 0 and not null 
-            if (transactionId == 0) {
-                trs = getFieldColAndValues(programUploadId, putField);
+           Integer programUploadId, Integer programUploadRecordId) throws Exception{
+        
+		//1. we grab all recordIds for programUploadRecord that are not length of 0 and not null 
+            List<programUploadRecordValues> prv = null;
+            if (programUploadRecordId == 0) {
+                prv = getFieldColAndValues(programUploadId, putField);
             } else {
-                trs = getFieldColAndValueByProgramUploadRecordId(putField, programUploadRecordId);
+            	prv = getFieldColAndValueByProgramUploadRecordId(putField, programUploadRecordId);
             }
             //2. we look at each column and check each value to make sure it is a valid url
-            for (transactionRecords tr : trs) {
+            for (programUploadRecordValues pur : prv) {
                 //System.out.println(tr.getfieldValue());
-                if (tr.getfieldValue() != null) {
-                	 if (tr.getfieldValue().length() != 0) {
+                if (pur.getFieldValue() != null) {
+                	 if (pur.getFieldValue().length() != 0) {
                     //we append http:// if url doesn't start with it
-                    String urlToValidate = tr.getfieldValue();
+                    String urlToValidate = pur.getFieldValue();
                     if (!urlToValidate.startsWith("http")) {
                         urlToValidate = "http://" + urlToValidate;
                     }
                     if (!isValidURL(urlToValidate)) {
-                        insertValidationError(tr, putField, programUploadId);
+                    	programUpload_Errors uploadError = new programUpload_Errors();
+                    	uploadError.setErrorData(pur.getFieldValue());
+                    	uploadError.setErrorId(31);
+                    	uploadError.setFieldId(putField.getFieldId());
+                    	uploadError.setDspPos(putField.getDspPos());
+                    	insertError(uploadError);                        
                     }
                 }
                 }
             }
-           
-         **/
+
     }
 
 	@Override
 	public void dateValidation(programUploadTypesFormFields putField,
-			Integer validationTypeId, Integer programUploadId,
-			Integer programUploadRecordId) throws Exception {
-		// TODO Auto-generated method stub
+			Integer programUploadId, Integer programUploadRecordId) throws Exception {
+		List<programUploadRecordValues> prv = null;
+        //1. we grab all transactionInIds for messages that are not length of 0 and not null 
+        if (programUploadRecordId == 0) {
+        	prv = getFieldColAndValues(programUploadId, putField);
+        } else {
+        	prv = getFieldColAndValueByProgramUploadRecordId(putField, programUploadRecordId);
+        }
+        //2. we look at each column and check each value by trying to convert it to a date
+        for (programUploadRecordValues pur : prv) {
+            if (pur.getFieldValue() != null) {
+            	 if (pur.getFieldValue().length() != 0) {
+                //sql is picking up dates in mysql format and it is not massive inserting, running this check to avoid unnecessary sql call
+                //System.out.println(tr.getFieldValue());
+                //we check long dates
+                Date dateValue = null;
+                String mySQLDate = chkMySQLDate(pur.getFieldValue());
+
+                if (dateValue == null && mySQLDate.equalsIgnoreCase("")) {
+                    dateValue = convertLongDate(pur.getFieldValue());
+                }
+                if (dateValue == null && mySQLDate.equalsIgnoreCase("")) {
+                    dateValue = convertDate(pur.getFieldValue());
+                }
+
+                String formattedDate = null;
+                if (dateValue != null && mySQLDate.equalsIgnoreCase("")) {
+                    formattedDate = formatDateForDB(dateValue);
+                    //3. if it converts, we update the column value
+                    updateFieldValue(pur, formattedDate);
+                }
+
+                if (formattedDate == null && (mySQLDate.equalsIgnoreCase("") || mySQLDate.equalsIgnoreCase("ERROR"))) {
+                   
+                }
+             }
+            }
+        }
 		
 	}
+
+	@Override
+	public List<programUploadRecordValues> getFieldColAndValues(
+			Integer programUploadId, programUploadTypesFormFields putField)
+			throws Exception {
+		return importDAO.getFieldColAndValues(programUploadId, putField);
+	}
+
+	@Override
+	public List<programUploadRecordValues> getFieldColAndValueByProgramUploadRecordId(
+			programUploadTypesFormFields putField, Integer programUploadRecordId)
+			throws Exception {
+		return importDAO.getFieldColAndValueByProgramUploadRecordId(putField, programUploadRecordId);
+	}
 	
+	@Override
+    public boolean isValidURL(String url) {
+        UrlValidator urlValidator = new UrlValidator();
+        if (urlValidator.isValid(url)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 	
+	@Override
+    public String formatDateForDB(Date date) {
+        try {
+            SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
+            return dateformat.format(date);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @Override
+    public Date convertLongDate(String dateValue) {
+
+        Date date = null;
+        //this checks convert long date such February 2, 2014
+        try {
+            date = java.text.DateFormat.getDateInstance().parse(dateValue);
+            /**
+             * this method converts February 29 to March 1, we need to run through check two to make sure it is valid 
+             *  *
+             */
+            if (!recheckLongDate(dateValue, date.toString())) {
+                return null;
+            }
+        } catch (Exception e) {
+        }
+        return date;
+    }
+
+    public String chkMySQLDate(String dateValue) {
+
+        // some regular expression
+        String time = "(\\s(([01]?\\d)|(2[0123]))[:](([012345]\\d)|(60))"
+                + "[:](([012345]\\d)|(60)))?"; // with a space before, zero or one time
+
+        // no check for leap years (Schaltjahr)
+        // and 31.02.2006 will also be correct
+        String day = "(([12]\\d)|(3[01])|(0?[1-9]))"; // 01 up to 31
+        String month = "((1[012])|(0\\d))"; // 01 up to 12
+        String year = "\\d{4}";
+
+        // define here all date format
+        String date = dateValue.replaceAll("/", "-");
+        date = date.replaceAll("\\.", "-");
+        Pattern pattern = Pattern.compile(year + "-" + month + "-" + day + time);
+
+        // check dates
+        if (pattern.matcher(date).matches()) {
+            try {
+                SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
+                dateformat.setLenient(false);
+                dateformat.parse(date);
+                return "Valid";
+            } catch (Exception e) {
+                e.printStackTrace();
+                return "Error";
+            }
+        } else {
+            return "";
+        }
+    }
+
+    public Date convertDate(String input) {
+
+        // some regular expression
+        String time = "(\\s(([01]?\\d)|(2[0123]))[:](([012345]\\d)|(60))"
+                + "[:](([012345]\\d)|(60)))?"; // with a space before, zero or one time
+
+        // no check for leap years (Schaltjahr)
+        // and 31.02.2006 will also be correct
+        String day = "(([12]\\d)|(3[01])|(0?[1-9]))"; // 01 up to 31
+        String month = "((1[012])|(0\\d))"; // 01 up to 12
+        String year = "\\d{4}";
+
+        // define here all date format
+        String date = input.replaceAll("/", "-");
+        date = date.replaceAll("\\.", "-");
+        //ArrayList<Pattern> patterns = new ArrayList<Pattern>();
+        //Pattern pattern1 = Pattern.compile(day + "-" + month + "-" + year + time); //not matching, doesn't work for 01-02-2014 is it jan or feb, will only accept us dates
+        Pattern pattern2 = Pattern.compile(year + "-" + month + "-" + day + time);
+        Pattern pattern3 = Pattern.compile(month + "-" + day + "-" + year + time);
+        // check dates
+        //month needs to have leading 0
+        if (date.indexOf("-") == 1) {
+            date = "0" + date;
+        }
+
+        if (pattern2.matcher(date).matches()) {
+            //we have y-m-d format, we transform and return date
+            try {
+                SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-mm-dd");
+                dateformat.setLenient(false);
+                Date dateValue = dateformat.parse(date);
+                return dateValue;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+
+        } else if (pattern3.matcher(date).matches()) {
+            //we have m-d-y format, we transform and return date
+            try {
+                SimpleDateFormat dateformat = new SimpleDateFormat("MM-dd-yyyy");
+                dateformat.setLenient(false);
+                Date dateValue = dateformat.parse(date);
+                return dateValue;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+
+        } else {
+            return null;
+        }
+
+    }
+
+	@Override
+	public void updateFieldValue(programUploadRecordValues prv, String newValue) throws Exception {
+		importDAO.updateFieldValue(prv, newValue);
+	}
+
+	@Override
+	public boolean recheckLongDate(String longDateVal, String convertedDate) {
+		try {
+            longDateVal = longDateVal.toLowerCase();
+            convertedDate = convertedDate.toLowerCase();
+            if (longDateVal.contains("jan") && convertedDate.contains("jan")) {
+                return true;
+            } else if (longDateVal.contains("feb") && convertedDate.contains("feb")) {
+                return true;
+            } else if (longDateVal.contains("mar") && convertedDate.contains("mar")) {
+                return true;
+            } else if (longDateVal.contains("apr") && convertedDate.contains("apr")) {
+                return true;
+            } else if (longDateVal.contains("may") && convertedDate.contains("may")) {
+                return true;
+            } else if (longDateVal.contains("jun") && convertedDate.contains("jun")) {
+                return true;
+            } else if (longDateVal.contains("jul") && convertedDate.contains("jul")) {
+                return true;
+            } else if (longDateVal.contains("aug") && convertedDate.contains("aug")) {
+                return true;
+            } else if (longDateVal.contains("sep") && convertedDate.contains("sep")) {
+                return true;
+            } else if (longDateVal.contains("oct") && convertedDate.contains("oct")) {
+                return true;
+            } else if (longDateVal.contains("nov") && convertedDate.contains("nov")) {
+                return true;
+            } else if (longDateVal.contains("dec") && convertedDate.contains("dec")) {
+                return true;
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+        return false;
+	}
 }
 

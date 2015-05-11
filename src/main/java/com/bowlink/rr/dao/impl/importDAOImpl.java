@@ -11,6 +11,7 @@ import com.bowlink.rr.model.MoveFilesLog;
 import com.bowlink.rr.model.delimiters;
 import com.bowlink.rr.model.errorCodes;
 import com.bowlink.rr.model.fileTypes;
+import com.bowlink.rr.model.programUploadRecordValues;
 import com.bowlink.rr.model.programUploadTypes;
 import com.bowlink.rr.model.programUploadTypesFormFields;
 import com.bowlink.rr.model.programUpload_Errors;
@@ -24,6 +25,7 @@ import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
+import org.hibernate.type.StandardBasicTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -1081,5 +1083,85 @@ public class importDAOImpl implements importDAO {
             updateData.setParameterList("finalStatuses", finalStatuses);
         }
         updateData.executeUpdate();		
+	}
+
+	@Override
+	@Transactional
+	public void genericValidation(programUploadTypesFormFields putField,
+			Integer validationTypeId, Integer programUploadId, Integer programUploadRecordId) throws Exception {
+		String sql = "call insertValidationErrors(:vtType, :dspPos, :fieldId , :programUploadId, :programUploadRecordId)";
+
+        Query insertError = sessionFactory.getCurrentSession().createSQLQuery(sql);
+        insertError.setParameter("vtType", putField.getValidationId());
+        insertError.setParameter("dspPos", putField.getDspPos());
+        insertError.setParameter("fieldId", putField.getFieldId());       
+        insertError.setParameter("programUploadId", programUploadId);
+        insertError.setParameter("programUploadRecordId", programUploadRecordId);
+        insertError.executeUpdate();
+   }
+
+	@Override
+	@Transactional
+	@SuppressWarnings("unchecked")
+	public List<programUploadRecordValues> getFieldColAndValues(
+			Integer programUploadId, programUploadTypesFormFields putField)
+			throws Exception {
+		String sql = ("select programUploadRecordId as programUploadRecordId, F" + putField.getDspPos()
+                + "  as fieldValue, " + putField.getFieldId() + " as fieldId,"
+                + putField.getDspPos() + " as dspPos from programUploadRecordDetails "
+                + " where F" + putField.getDspPos() + " is not null "
+                + " and programUploadRecordId in (select id from programUploadRecords where"
+                + " programUploadId = :programUploadId"
+                + " and statusId not in ( :finalStatuses ) order by programUploadRecordId); ");
+
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sql)
+                .addScalar("programUploadRecordId", StandardBasicTypes.INTEGER)
+                .addScalar("fieldValue", StandardBasicTypes.STRING)
+                .addScalar("fieldId", StandardBasicTypes.INTEGER)
+                .setResultTransformer(Transformers.aliasToBean(programUploadRecordValues.class))
+                .setParameter("programUploadId", programUploadId)
+                .setParameterList("finalStatuses", finalStatuses);
+
+        
+		List<programUploadRecordValues> programUploadRecordValues = query.list();
+
+        return programUploadRecordValues;
+	}
+
+	@Override
+	@Transactional
+	@SuppressWarnings("unchecked")
+	public List<programUploadRecordValues> getFieldColAndValueByProgramUploadRecordId(
+			programUploadTypesFormFields putField, Integer programUploadRecordId)
+			throws Exception {
+		
+		String sql = ("select programUploadRecordId as transactionId, F" + putField.getDspPos()
+        + "  as fieldValue, " + putField.getFieldId() + " as fieldId, "+ putField.getDspPos() +" as dspPos"
+        + " from programUploadRecordDetails "
+        + " where F" + putField.getDspPos()+ " is not null "
+        + " and programUploadRecordId = :id");
+
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql)
+        .addScalar("programUploadRecordId", StandardBasicTypes.INTEGER)
+        .addScalar("fieldValue", StandardBasicTypes.STRING)
+        .addScalar("fieldNo", StandardBasicTypes.INTEGER)
+        .setResultTransformer(Transformers.aliasToBean(programUploadRecordValues.class))
+        .setParameter("id", programUploadRecordId);
+
+		List<programUploadRecordValues> programUploadRecordValues = query.list();
+
+		return programUploadRecordValues;
+	}
+
+	@Override
+	@Transactional
+	public void updateFieldValue(programUploadRecordValues prv, String newValue)
+			throws Exception {
+		String sql = "update programUploadRecordDetails set F" + prv.getDspPos() + " = :newValue where"
+                + " programUploadRecordId = :programUploadRecordId";
+        Query updateData = sessionFactory.getCurrentSession().createSQLQuery(sql);
+        updateData.setParameter("programUploadRecordId", prv.getProgramUploadRecordId());
+        updateData.setParameter("newValue", newValue);
+        updateData.executeUpdate();
 	}
 }

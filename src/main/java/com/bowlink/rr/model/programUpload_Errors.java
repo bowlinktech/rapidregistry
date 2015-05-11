@@ -45,8 +45,12 @@ public class programUpload_Errors {
     @Column(name = "errorId", nullable = false)
     private Integer errorId = null;
     
-    @Column(name = "fieldNo", nullable = false)
-    private Integer fieldNo = null;
+    @Column(name = "fieldId", nullable = false)
+    private Integer fieldId = null;
+    
+    @Column(name = "dspPos", nullable = false)
+    private Integer dspPos = null;
+    
     
     @Column(name = "errorData", nullable = true)
     private String errorData;
@@ -103,12 +107,12 @@ public class programUpload_Errors {
 		this.errorId = errorId;
 	}
 
-	public Integer getFieldNo() {
-		return fieldNo;
+	public Integer getFieldId() {
+		return fieldId;
 	}
 
-	public void setFieldNo(Integer fieldNo) {
-		this.fieldNo = fieldNo;
+	public void setFieldId(Integer fieldId) {
+		this.fieldId = fieldId;
 	}
 
 	public String getErrorData() {
@@ -127,4 +131,11 @@ public class programUpload_Errors {
 		this.dateCreated = dateCreated;
 	}
 
+	public Integer getDspPos() {
+		return dspPos;
+	}
+
+	public void setDspPos(Integer dspPos) {
+		this.dspPos = dspPos;
+	}
 }

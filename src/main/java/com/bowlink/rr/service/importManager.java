@@ -10,12 +10,15 @@ import com.bowlink.rr.model.MoveFilesLog;
 import com.bowlink.rr.model.delimiters;
 import com.bowlink.rr.model.errorCodes;
 import com.bowlink.rr.model.fileTypes;
+import com.bowlink.rr.model.programUploadRecordValues;
 import com.bowlink.rr.model.programUploadTypes;
 import com.bowlink.rr.model.programUploadTypesFormFields;
 import com.bowlink.rr.model.programUpload_Errors;
 import com.bowlink.rr.model.programUploads;
 import java.io.File;
+import java.util.Date;
 import java.util.List;
+
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -132,9 +135,27 @@ public interface importManager {
     
     void runValidations(Integer programUploadId, programUploadTypesFormFields putField, Integer programUploadRecordId) throws Exception;
    
-    void genericValidation(programUploadTypesFormFields putField, Integer validationTypeId, Integer programUploadId, String regEx, Integer programUploadRecordId) throws Exception;
+    void genericValidation(programUploadTypesFormFields putField, Integer validationTypeId, Integer programUploadId, Integer programUploadRecordId) throws Exception;
     
-    void dateValidation(programUploadTypesFormFields putField, Integer validationTypeId, Integer programUploadId, Integer programUploadRecordId) throws Exception;
+    void dateValidation(programUploadTypesFormFields putField, Integer programUploadId, Integer programUploadRecordId) throws Exception;
     
-    void urlValidation(programUploadTypesFormFields putField, Integer validationTypeId, Integer programUploadId, Integer programUploadRecordId) throws Exception;
+    void urlValidation(programUploadTypesFormFields putField, Integer programUploadId, Integer programUploadRecordId) throws Exception;
+    
+    List<programUploadRecordValues> getFieldColAndValues (Integer programUploadId, programUploadTypesFormFields putField) throws Exception;
+    
+    List <programUploadRecordValues> getFieldColAndValueByProgramUploadRecordId (programUploadTypesFormFields putField, Integer programUploadRecordId) throws Exception;
+
+    boolean isValidURL(String url);
+    
+    String formatDateForDB(Date date);
+
+    Date convertDate(String date);
+
+    String chkMySQLDate(String date);
+    
+    void updateFieldValue(programUploadRecordValues prv, String newValue) throws Exception;
+    
+    boolean recheckLongDate(String longDateVal, String convertedDate);
+    
+    Date convertLongDate(String dateValue);
 }
