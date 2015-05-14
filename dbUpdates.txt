@@ -630,5 +630,8 @@ BEGIN
 
  END
 
+/** grace 05.13.2015 04:52 PM **/
+UPDATE `rapidregistry`.`lu_errorcodes` SET `displayText`='Invalid Organization Hierarchy Definition', `description`='Zero or more than one field defined as organization hierarchy Id', `dateCreated`= current_timestamp, `dateModified`=current_timestamp WHERE `id`='8';
+
 
  
