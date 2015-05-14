@@ -67,7 +67,7 @@ public interface importManager {
     
     void moveHELFilestoRR ();
     
-    void processRRFile(programUploads programUpload) throws Exception;
+    Integer processRRFile(programUploads programUpload) throws Exception;
     
     void moveHELFiletoRR (programUploadTypes programUploadType) throws Exception;
     
@@ -158,4 +158,7 @@ public interface importManager {
     boolean recheckLongDate(String longDateVal, String convertedDate);
     
     Date convertLongDate(String dateValue);
+    
+    List <programUploadTypesFormFields> getFieldDetailByTableAndColumn (String tableName, String columnName, Integer programUploadTypeId, Integer useField) throws Exception;
+    
 }

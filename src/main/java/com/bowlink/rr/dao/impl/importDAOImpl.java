@@ -1164,4 +1164,33 @@ public class importDAOImpl implements importDAO {
         updateData.setParameter("newValue", newValue);
         updateData.executeUpdate();
 	}
+
+	@Override
+	@Transactional
+	@SuppressWarnings("unchecked")
+	public List<programUploadTypesFormFields> getFieldDetailByTableAndColumn(
+			String tableName, String columnName, Integer programUploadTypeId, Integer useField)
+			throws Exception {
+		
+		String sql = ("select * from put_formfields where "
+  				+ " programuploadtypeid = :programUploadTypeId and fieldid in ( "
+  				+ " select id from dataElements where savetotablename = :tableName "
+  				+ " and saveToTableCol = :columnName)");
+		if (useField != null) {
+			sql = sql  + (" and useField = :useField");
+		}
+
+				Query query = sessionFactory.getCurrentSession().createSQLQuery(sql)
+		        .setResultTransformer(Transformers.aliasToBean(programUploadTypesFormFields.class))
+		        .setParameter("programUploadTypeId", programUploadTypeId)
+		        .setParameter("tableName", tableName)
+		        .setParameter("columnName", columnName);
+				if (useField != null) {
+					query.setParameter("useField", useField);
+				}
+
+				List<programUploadTypesFormFields> putFields = query.list();
+
+				return putFields;
+	}
 }

@@ -110,6 +110,8 @@ public interface importDAO {
     List <programUploadRecordValues> getFieldColAndValueByProgramUploadRecordId (programUploadTypesFormFields putField, Integer programUploadRecordId) throws Exception;
     
     void updateFieldValue(programUploadRecordValues prv, String newValue) throws Exception;
+    
+    List <programUploadTypesFormFields> getFieldDetailByTableAndColumn (String tableName, String columnName, Integer programUploadTypeId, Integer useField) throws Exception;
 }
 
 

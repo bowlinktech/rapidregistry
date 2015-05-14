@@ -633,5 +633,8 @@ BEGIN
 /** grace 05.13.2015 04:52 PM **/
 UPDATE `rapidregistry`.`lu_errorcodes` SET `displayText`='Invalid Organization Hierarchy Definition', `description`='Zero or more than one field defined as organization hierarchy Id', `dateCreated`= current_timestamp, `dateModified`=current_timestamp WHERE `id`='8';
 
+/** grace 05.14.2015 12:09 AM **/
+ALTER TABLE `rapidregistry`.`put_formFields` 
+CHANGE COLUMN `requiredFIeld` `requiredField` BIT(1) NOT NULL DEFAULT b'0' ;
 
  

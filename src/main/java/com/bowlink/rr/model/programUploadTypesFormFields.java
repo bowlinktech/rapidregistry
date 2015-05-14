@@ -6,6 +6,7 @@
 package com.bowlink.rr.model;
 
 import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,7 +14,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
 import org.springframework.format.annotation.DateTimeFormat;
+
+import com.bowlink.rr.validator.NoHtml;
 
 /**
  *
@@ -58,7 +62,7 @@ public class programUploadTypesFormFields {
     
     @Column(name = "multiValue", nullable = false)
     private boolean multiValue = false;
-
+    
     public int getId() {
         return id;
     }

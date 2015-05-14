@@ -370,7 +370,7 @@ public class importManagerImpl implements importManager {
 	
 	/** this method takes in a programUpload and process the RR file **/
 	@Override
-	public void processRRFile(programUploads programUpload)  throws Exception {
+	public Integer processRRFile(programUploads programUpload)  throws Exception {
 		
 		//load file
 		loadFile(programUpload);
@@ -391,15 +391,36 @@ public class importManagerImpl implements importManager {
 		}
 		updateStatusForErrorRecord(programUpload.getId(), 14, 0);
 		
+		
+		//check for permission - we need to make sure user uploading the file has permission systemUserId
+		//get fieldId for where to store the programorghierarchy_detailsId, should only be one
+		
+		List <programUploadTypesFormFields> permissionField = getFieldDetailByTableAndColumn("storage_engagements","programorghierarchy_detailsId", programUpload.getProgramUploadTypeId(), 1);
+		
+		if (permissionField.size() != 1) {
+			//error, there should only be one 
+			programUpload_Errors uploadError = new programUpload_Errors();
+			if (permissionField.size() == 0) {
+				uploadError.setErrorData("No fields are defined for programorghierarchy_detailsId");
+			} else {
+				uploadError.setErrorData(permissionField.size() + " fields are defined for programorghierarchy_detailsId");
+			}
+			uploadError.setProgramUploadId(programUpload.getId());
+        	uploadError.setErrorId(8);
+        	insertError(uploadError);
+			return 1;
+			
+		}
 		//TODO
-		//check for permission
+		//now we check for permission
+		Integer hierarchyColumn = permissionField.get(0).getDspPos();
 		
 		
 		//RUN MCI - this will set look for patient id and then visit info according to rule to find match patients
 		
 		//insert records
 		
-		
+		return 0;
 }
 
 	/** 
@@ -1306,6 +1327,13 @@ public class importManagerImpl implements importManager {
             return false;
         }
         return false;
+	}
+
+	@Override
+	public List<programUploadTypesFormFields> getFieldDetailByTableAndColumn(
+			String tableName, String columnName, Integer programUploadTypeId, Integer useField)
+			throws Exception {
+		return importDAO.getFieldDetailByTableAndColumn(tableName, columnName, programUploadTypeId, useField);
 	}
 }
 
