@@ -1,0 +1,6 @@
+/** grace 05.14.2015 11:07PM **/
+ALTER TABLE `rapidregistry`.`storage_engagements` 
+ADD COLUMN `height` DECIMAL(2,0) NULL AFTER `BMI`,
+ADD COLUMN `weight` DECIMAL(2,0) NULL AFTER `height`,
+ADD COLUMN `bpDia` DECIMAL(2,0) NULL AFTER `weight`,
+ADD COLUMN `bpSys` DECIMAL(2,0) NULL AFTER `bpDia`;
