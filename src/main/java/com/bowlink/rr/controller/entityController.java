@@ -294,7 +294,6 @@ public class entityController {
             @RequestParam String action, 
             @RequestParam String i, 
             @RequestParam String v, 
-            @RequestParam List<Integer> entityItems,
             HttpSession session,
             HttpServletResponse response) throws Exception {
         
