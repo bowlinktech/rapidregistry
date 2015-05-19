@@ -13,6 +13,7 @@ import com.bowlink.rr.model.errorCodes;
 import com.bowlink.rr.model.fileTypes;
 import com.bowlink.rr.model.mailMessage;
 import com.bowlink.rr.model.program;
+import com.bowlink.rr.model.programOrgHierarchy;
 import com.bowlink.rr.model.programUploadRecordValues;
 import com.bowlink.rr.model.programUploadTypeAlgorithm;
 import com.bowlink.rr.model.programUploadTypes;
@@ -24,6 +25,7 @@ import com.bowlink.rr.service.emailMessageManager;
 import com.bowlink.rr.service.fileManager;
 import com.bowlink.rr.service.importManager;
 import com.bowlink.rr.service.masterClientIndexManager;
+import com.bowlink.rr.service.orgHierarchyManager;
 import com.bowlink.rr.service.programManager;
 
 import java.io.File;
@@ -76,6 +78,8 @@ public class importManagerImpl implements importManager {
     @Autowired
     private programManager programmanager;
     
+    @Autowired
+    private orgHierarchyManager orghierarchymanager;
     
     private String rootPath = "/rapidRegistry/";
     
@@ -414,9 +418,34 @@ public class importManagerImpl implements importManager {
 		//TODO
 		//now we check for permission
 		Integer hierarchyColumn = permissionField.get(0).getDspPos();
+		Integer hierarchyFieldId = permissionField.get(0).getFieldId();
+		
+		//get the id for program with max(dspPos) from programOrgHierarchy table
+		
+		List<programOrgHierarchy> orgHierarchyList = orghierarchymanager.getProgramOrgHierarchy(programUpload.getProgramId());
 		
 		
-		//RUN MCI - this will set look for patient id and then visit info according to rule to find match patients
+		Integer maxDspPosprogHierarchyId = orgHierarchyList.get(orgHierarchyList.size()-1).getId();
+		
+		/**reject
+		**/
+		insertInvalidPermission (hierarchyColumn, hierarchyFieldId, programUpload, maxDspPosprogHierarchyId);
+		
+		updateStatusForErrorRecord(programUpload.getId(), 14, 0);
+		
+		
+		
+		
+		
+		/** at this point, we will have all the records that passed validation at status of 9**/
+		/** 
+		 * RUN MCI - this will set look for patient id and then visit info according to rule to find match patients
+		 * We always run rules for patients first
+		 */
+		
+		//get rules
+		
+		
 		
 		//insert records
 		
@@ -1334,6 +1363,13 @@ public class importManagerImpl implements importManager {
 			String tableName, String columnName, Integer programUploadTypeId, Integer useField)
 			throws Exception {
 		return importDAO.getFieldDetailByTableAndColumn(tableName, columnName, programUploadTypeId, useField);
+	}
+
+	@Override
+	public void insertInvalidPermission (Integer permissionField,Integer hierarchyFieldId, programUploads programUpload, Integer programHierarchyId)
+			throws Exception {
+		importDAO.insertInvalidPermission(permissionField, hierarchyFieldId, programUpload, programHierarchyId);
+		
 	}
 }
 

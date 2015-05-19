@@ -1193,4 +1193,22 @@ public class importDAOImpl implements importDAO {
 
 				return putFields;
 	}
+
+	@Override
+	@Transactional
+	public void insertInvalidPermission (Integer permissionField, Integer hierarchyFieldId,  programUploads programUpload, Integer programHierarchyId) 
+	throws Exception {
+		String sql = "insert into programupload_errors (programuploadId, programuploadrecordId, errorId, fieldId, dspPos, errorData) "
+				+ " select programUploadId, programUploadRecordId, 9, :hierarchyFieldId, :permissionField, F"+ permissionField 
+				+ " from programUploadRecordDetails "
+				+ " where F"+ permissionField + " not in (select orgHierarchyDetailId from user_authorizedOrgHierarchy  "
+				+ " where programId = :programId and programHierarchyId = :programHierarchyId and systemuserid = :systemUserId)";
+        Query insertData = sessionFactory.getCurrentSession().createSQLQuery(sql);
+        insertData.setParameter("permissionField", permissionField);
+        insertData.setParameter("hierarchyFieldId", hierarchyFieldId);
+        insertData.setParameter("programId", programUpload.getProgramId());
+        insertData.setParameter("programHierarchyId", programHierarchyId);
+        insertData.setParameter("systemUserId", programUpload.getSystemUserId());
+        insertData.executeUpdate();		
+	}
 }

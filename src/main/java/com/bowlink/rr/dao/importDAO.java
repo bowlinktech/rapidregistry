@@ -112,6 +112,8 @@ public interface importDAO {
     void updateFieldValue(programUploadRecordValues prv, String newValue) throws Exception;
     
     List <programUploadTypesFormFields> getFieldDetailByTableAndColumn (String tableName, String columnName, Integer programUploadTypeId, Integer useField) throws Exception;
+    
+    void insertInvalidPermission (Integer permissionField,Integer hierarchyFieldId, programUploads programUpload, Integer programHierarchyId) throws Exception;
 }
 
 
