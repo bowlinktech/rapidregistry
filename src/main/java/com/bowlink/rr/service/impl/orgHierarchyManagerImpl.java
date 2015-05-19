@@ -70,14 +70,26 @@ public class orgHierarchyManagerImpl implements orgHierarchyManager {
     
     @Override
     @Transactional
-    public void removeUserProgramHierarchy(Integer Id) throws Exception {
-        orgHierarchyDAO.removeUserProgramHierarchy(Id);
+    public List<userProgramHierarchy> getUserAssociatedEntities(Integer programId, Integer userId, Integer entityId) throws Exception {
+        return orgHierarchyDAO.getUserAssociatedEntities(programId, userId, entityId);
+    }
+    
+    @Override
+    @Transactional
+    public void removeUserProgramHierarchy(Integer entityId) throws Exception {
+        orgHierarchyDAO.removeUserProgramHierarchy(entityId);
     }
     
     @Override
     @Transactional
     public  List<programOrgHierarchyDetails> getProgramHierarchyItems(Integer hierarchyId) throws Exception {
         return orgHierarchyDAO.getProgramHierarchyItems(hierarchyId);
+    }
+    
+    @Override
+    @Transactional
+    public  List<programOrgHierarchyDetails> getProgramHierarchyItemsByAssoc(Integer hierarchyId, Integer assocId) throws Exception {
+        return orgHierarchyDAO.getProgramHierarchyItemsByAssoc(hierarchyId, assocId);
     }
     
     @Override

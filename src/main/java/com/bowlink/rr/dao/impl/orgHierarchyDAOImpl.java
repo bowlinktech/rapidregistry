@@ -111,6 +111,7 @@ public class orgHierarchyDAOImpl implements orgHierarchyDAO {
         return query.list();
     }
     
+    
     /**
      * The 'saveUserProgramHierarchy' function will save the authorized program organizational 
      * hierarchies for the user.
@@ -146,16 +147,38 @@ public class orgHierarchyDAOImpl implements orgHierarchyDAO {
     }
     
     /**
+     * The 'getUserAssociatedEntities' function will return a list of authorized hierarchy for the selected user and 
+     * program.
+     * 
+     * @param programId The id of the selected program
+     * @param userId    The id of the selected user
+     * @return  This function will return a list of userProgramHierarchy objects
+     * @throws Exception 
+     */
+    @Override
+    public List<userProgramHierarchy> getUserAssociatedEntities(Integer programId, Integer userId, Integer entityId) throws Exception {
+        
+        Query query = sessionFactory.getCurrentSession().createQuery("from userProgramHierarchy where programId = :programId and systemUserId = :userId and programHierarchyId = :entityId");
+        query.setParameter("programId", programId);
+        query.setParameter("userId", userId);
+        query.setParameter("entityId", entityId);
+
+        List<userProgramHierarchy> itemList = query.list();
+        return itemList;
+        
+    }
+    
+    /**
      * The 'removeUserProgramHierarchy' function will remove the selected hierarchy for the user and program.
      * 
      * @param Id
      * @throws Exception 
      */
     @Override
-    public void removeUserProgramHierarchy(Integer Id) throws Exception {
+    public void removeUserProgramHierarchy(Integer entityId) throws Exception {
        
-        Query removeProgram = sessionFactory.getCurrentSession().createQuery("delete from userProgramHierarchy where id = :Id");
-        removeProgram.setParameter("Id", Id);
+        Query removeProgram = sessionFactory.getCurrentSession().createQuery("delete from userProgramHierarchy where programHierarchyId = :entityId");
+        removeProgram.setParameter("entityId", entityId);
         removeProgram.executeUpdate();
         
     }
@@ -171,6 +194,19 @@ public class orgHierarchyDAOImpl implements orgHierarchyDAO {
         Query query = sessionFactory.getCurrentSession().createQuery("from programOrgHierarchyDetails where programHierarchyId = :hierarchyId order by id asc");
         query.setParameter("hierarchyId", hierarchyId);
 
+        List<programOrgHierarchyDetails> itemList = query.list();
+        return itemList;
+    }
+    
+    @Override
+    public List<programOrgHierarchyDetails> getProgramHierarchyItemsByAssoc(Integer hierarchyId, Integer assocId) throws Exception {
+        
+        String sqlQuery = "select * from programOrgHierarchy_Details where programHierarchyId = " + hierarchyId + " and id in (select programHierarchyId from programOrgHierarchy_assoc where associatedWith = "+assocId+") order by id asc";
+        
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery) 
+        .setResultTransformer(Transformers.aliasToBean(programOrgHierarchyDetails.class)
+        );
+        
         List<programOrgHierarchyDetails> itemList = query.list();
         return itemList;
     }

@@ -31,9 +31,13 @@ public interface orgHierarchyDAO {
     
     List<userProgramHierarchy> getUserProgramHierarchy(Integer programId, Integer userId) throws Exception;
     
-    void removeUserProgramHierarchy(Integer Id) throws Exception;
+    List<userProgramHierarchy> getUserAssociatedEntities(Integer programId, Integer userId, Integer entityId) throws Exception;
+    
+    void removeUserProgramHierarchy(Integer entityId) throws Exception;
     
     List<programOrgHierarchyDetails> getProgramHierarchyItems(Integer hierarchyId) throws Exception;
+    
+    List<programOrgHierarchyDetails> getProgramHierarchyItemsByAssoc(Integer hierarchyId, Integer assocId) throws Exception;
     
     programOrgHierarchyDetails getProgramHierarchyItemDetails(Integer itemId) throws Exception;
     

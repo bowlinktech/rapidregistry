@@ -11,6 +11,7 @@ import com.bowlink.rr.model.programAdmin;
 import com.bowlink.rr.model.userPrograms;
 import com.bowlink.rr.model.programModules;
 import com.bowlink.rr.model.programOrgHierarchy;
+import com.bowlink.rr.model.programOrgHierarchyDetails;
 import com.bowlink.rr.model.userProgramHierarchy;
 import com.bowlink.rr.model.userProgramModules;
 import com.bowlink.rr.service.userManager;
@@ -606,21 +607,45 @@ public class staffController {
     @RequestMapping(value = "/getProgramEntities.do", method = RequestMethod.GET)
     public @ResponseBody ModelAndView getProgramEntities(@RequestParam String i, @RequestParam String v, @RequestParam Integer programId, HttpSession session) throws Exception {
         
-        /* Decrypt the url */
-        int userId = decryptURLParam(i,v);
-        
-        List<programOrgHierarchy> getProgramOrgHierarchy = orghierarchymanager.getProgramOrgHierarchy(programId);
-        
-        /* Get a list of departments for the user */
-        List<userProgramHierarchy> userEntities = orghierarchymanager.getUserProgramHierarchy(programId, userId);
-        
         ModelAndView mav = new ModelAndView();
         mav.setViewName("/programAdmin/staff/programEntities");
         mav.addObject("userId", i);
         mav.addObject("v", v);
-        mav.addObject("programId", programId);
-        mav.addObject("hierarchyHeadings", getProgramOrgHierarchy);
-        mav.addObject("userEntities", userEntities);
+         mav.addObject("programId", programId);
+        
+        /* Decrypt the url */
+        int userId = decryptURLParam(i,v);
+        
+        List<programOrgHierarchy> programEntities = orghierarchymanager.getProgramOrgHierarchy(programId);
+        Integer entityId = programEntities.get(0).getId();
+        
+        programOrgHierarchy entityDetails = orghierarchymanager.getOrgHierarchyById(entityId);
+        mav.addObject("heading", entityDetails.getName());
+        mav.addObject("entityId", entityId);
+        
+        if(entityDetails.getDspPos() < programEntities.size()) {
+            Integer nextDspPos = entityDetails.getDspPos()+1;
+            programOrgHierarchy nextEntity = orghierarchymanager.getProgramOrgHierarchyBydspPos(nextDspPos, programId);
+            mav.addObject("nextEntityId", nextEntity.getId());
+            mav.addObject("nextEntityName", nextEntity.getName());
+        }
+        
+        /* Get a list of selected entites for the user */
+        List<userProgramHierarchy> userSelectedEntities = orghierarchymanager.getUserAssociatedEntities(programId, userId, entityId);
+        List<Integer> userEntityItems = new ArrayList<Integer>();
+        
+        if(userSelectedEntities != null && userSelectedEntities.size() > 0) {
+            for(userProgramHierarchy entity : userSelectedEntities) {
+                Integer itemId = entity.getOrgHierarchyDetailId();
+                userEntityItems.add(itemId);
+            }
+        }
+        
+        mav.addObject("userEntityItems", userEntityItems);
+        
+        /* Get a list of entity items for the selected entity */
+        List<programOrgHierarchyDetails> entityItems = orghierarchymanager.getProgramHierarchyItems(entityId);
+        mav.addObject("entityItems", entityItems);
         
         return mav;
         
@@ -636,61 +661,87 @@ public class staffController {
      * @throws Exception 
      */
     @RequestMapping(value = "/saveProgramUserEntity.do", method = RequestMethod.POST)
-    public @ResponseBody ModelAndView saveProgramUserEntity(@RequestParam String i, @RequestParam String v, @RequestParam Integer program, @RequestParam List<String> hierarchyValues, HttpSession session) throws Exception {
+    public @ResponseBody ModelAndView saveProgramUserEntity(@RequestParam String i, @RequestParam String v, @RequestParam Integer program, @RequestParam Integer nextEntityId, @RequestParam Integer entityId,
+            @RequestParam List<Integer> selectedEntityItems, HttpSession session) throws Exception {
+        
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/programAdmin/staff/programEntities");
+        mav.addObject("encryptedURL", "?i="+i+"&v="+v);
+        mav.addObject("userId", i);
+        mav.addObject("v", v);
+        mav.addObject("programId", program);
         
         /* Decrypt the url */
         int userId = decryptURLParam(i,v);
         
         User userDetails = (User) session.getAttribute("userDetails");
         
-        if(!hierarchyValues.isEmpty()) {
-            for(String hierarchyValue : hierarchyValues) {
-                
-                if(hierarchyValue.contains("-")) {
-                    String[] ids = hierarchyValue.split("-");
-                
-                    userProgramHierarchy hierarchy = new userProgramHierarchy();
-                    hierarchy.setProgramId(program);
-                    hierarchy.setSystemUserId(userId);
-                    hierarchy.setProgramHierarchyId(Integer.parseInt(ids[0]));
-                    hierarchy.setOrgHierarchyDetailId(Integer.parseInt(ids[1]));
+        if(!selectedEntityItems.isEmpty()) {
+            
+            orghierarchymanager.removeUserProgramHierarchy(entityId);
+            
+            for(Integer hierarchyValue : selectedEntityItems) {
+                userProgramHierarchy hierarchy = new userProgramHierarchy();
+                hierarchy.setProgramId(program);
+                hierarchy.setSystemUserId(userId);
+                hierarchy.setProgramHierarchyId(entityId);
+                hierarchy.setOrgHierarchyDetailId(hierarchyValue);
 
-                    orghierarchymanager.saveUserProgramHierarchy(hierarchy);
-                }
+                orghierarchymanager.saveUserProgramHierarchy(hierarchy);
                 
             }
         }
         
-        ModelAndView mav = new ModelAndView();
-        mav.setViewName("/programAdmin/staff/programEntities");
-        mav.addObject("encryptedURL", "?i="+i+"&v="+v);
+        if(nextEntityId != null && nextEntityId > 0) {
+            List<programOrgHierarchy> programEntities = orghierarchymanager.getProgramOrgHierarchy(program);
+            
+            programOrgHierarchy entityDetails = orghierarchymanager.getOrgHierarchyById(nextEntityId);
+            mav.addObject("heading", entityDetails.getName());
+            mav.addObject("entityId", nextEntityId);
+            
+            if(entityDetails.getDspPos() < programEntities.size()) {
+                Integer nextDspPos = entityDetails.getDspPos()+1;
+                programOrgHierarchy nextEntity = orghierarchymanager.getProgramOrgHierarchyBydspPos(nextDspPos, program);
+                mav.addObject("nextEntityId", nextEntity.getId());
+                mav.addObject("nextEntityName", nextEntity.getName());
+            }
+            
+            /* Get a list of selected entites for the user */
+            List<userProgramHierarchy> userSelectedEntities = orghierarchymanager.getUserAssociatedEntities(program, userId, nextEntityId);
+            List<Integer> userEntityItems = new ArrayList<Integer>();
+
+            if(userSelectedEntities != null && userSelectedEntities.size() > 0) {
+                for(userProgramHierarchy entity : userSelectedEntities) {
+                    Integer itemId = entity.getOrgHierarchyDetailId();
+                    userEntityItems.add(itemId);
+                }
+            }
+
+            mav.addObject("userEntityItems", userEntityItems);
+
+            /* Get a list of entity items for the selected entity */
+            List<programOrgHierarchyDetails> entityItems = new ArrayList<programOrgHierarchyDetails>();
+            
+            if(!selectedEntityItems.isEmpty()) {
+                for(Integer hierarchyValue : selectedEntityItems) {
+                     List<programOrgHierarchyDetails> selEntityItems = orghierarchymanager.getProgramHierarchyItemsByAssoc(nextEntityId, hierarchyValue);
+                    
+                     if(selEntityItems != null && selEntityItems.size() > 0) {
+                         for(programOrgHierarchyDetails entity : selEntityItems) {
+                             entityItems.add(entity);
+                         }
+                     }
+                }
+            }
+            
+            mav.addObject("entityItems", entityItems);
+        }
+        else {
+            mav.addObject("completed", 1);
+        }
         
         return mav;
     }
-    
-    /**
-     * The 'removeUserEntity.do' POST request will submit the selected program for the user.
-     * 
-     * @param i The encrypted userId
-     * @param v The encrypted secret
-     * @param modules   The selected program modules.
-     * @return
-     * @throws Exception 
-     */
-    @RequestMapping(value = "/removeUserEntity.do", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody Integer removeUserEntity(@RequestParam List<String> idList, HttpSession session) throws Exception {
-       
-        if(!idList.isEmpty()) {
-            for(String id : idList) {
-                if(!"".equals(id) && Integer.parseInt(id) > 0) {
-                    orghierarchymanager.removeUserProgramHierarchy(Integer.parseInt(id));
-                }
-            }
-        }
-        
-        return 1;
-    }
-    
     
     
     

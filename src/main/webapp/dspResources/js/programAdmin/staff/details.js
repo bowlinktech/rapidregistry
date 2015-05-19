@@ -180,28 +180,14 @@ require(['./main'], function() {
                  type: "GET",
                  success: function(data) {
                      $('#programEntityModal').html(data);
-                     showSelHierarchy(programId);
                  }
             });
             
             
         });
-        
-        //Function that will control the hierarchy drop boxes
-        $(document).on('change', '.hierarchyDropBox', function(event) {
-            
-            var boxId = $('.orgHierarchyDiv').find(".hierarchyDropBox").eq($(this).attr('rel3')).attr('rel');
-            var level = eval(($(this).attr('rel3')*1)+1);
-            
-            populateHierarchy($(this).attr('rel2'), level, $(this).val(), boxId);
-        });
-        
+       
         //Function to submit the selected program to the user
         $(document).on('click', '#submitEntityButton', function(event) {
-            
-            $('.hierarchyDropBox').each(function() {
-                $('#hierarchyValues').val($('#hierarchyValues').val() + "," + $(this).attr('rel') + "-" + $(this).val());
-            });
             
             var formData = $("#newProgramEntityForm").serialize();
             
@@ -211,8 +197,15 @@ require(['./main'], function() {
                 type: "POST",
                 async: false,
                 success: function(data) {
+                   
                     var url = $(data).find('#encryptedURL').val();
-                    window.location.href = "details"+url+"&msg=entityAdded";
+                    var completed = $(data).find('#completed').val();
+                    if(completed === "1") {
+                        window.location.href = "details"+url+"&msg=entityAdded";
+                    }
+                    else {
+                         $('#programEntityModal').html(data);
+                    }
                 }
             });
             

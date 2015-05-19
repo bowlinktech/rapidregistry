@@ -23,7 +23,7 @@
             <div class="panel-body">
                 <form:form id="hierarchyItemdetailsform" commandName="hierarchyDetails" method="post" role="form">
                     <input type="hidden" name="action" id="action"  />
-                    <input type="hidden" name="entityId" id="entityId" value="${entityId}" />
+                    <form:hidden path="id" id="id" />
                     <form:hidden path="programHierarchyId" />
                     <form:hidden path="dateCreated" />
                     <div class="form-container">

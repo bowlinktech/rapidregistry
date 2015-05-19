@@ -293,7 +293,9 @@ public class entityController {
             RedirectAttributes redirectAttr, 
             @RequestParam String action, 
             @RequestParam String i, 
-            @RequestParam String v, HttpSession session,
+            @RequestParam String v, 
+            @RequestParam List<Integer> entityItems,
+            HttpSession session,
             HttpServletResponse response) throws Exception {
         
         /* Decrypt the url */
