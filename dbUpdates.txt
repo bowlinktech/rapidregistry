@@ -1,3 +1,13 @@
+/** grace 05.14.2015 11:07PM **/
+ALTER TABLE `rapidregistry`.`storage_engagements` 
+ADD COLUMN `height` DECIMAL(2,0) NULL AFTER `BMI`,
+ADD COLUMN `weight` DECIMAL(2,0) NULL AFTER `height`,
+ADD COLUMN `bpDia` DECIMAL(2,0) NULL AFTER `weight`,
+ADD COLUMN `bpSys` DECIMAL(2,0) NULL AFTER `bpDia`;
 
-/** Chad 5.15.2015 @ 12:03 PM **/
+/** grace 05.18.2015 11:54PM **/
+UPDATE `rapidregistry`.`lu_errorcodes` SET 
+`displayText`='Invalid Hierarchy Permission', 
+`description`='User does not have permission to upload for hierarchy', 
+`dateCreated`=current_timestamp, `dateModified`=current_timestamp WHERE `id`='9';
 UPDATE `rapidregistry`.`lu_programModules` SET `linkIcon`='fa-list-alt' WHERE `id`='11';
