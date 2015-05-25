@@ -162,4 +162,7 @@ public interface importManager {
     List <programUploadTypesFormFields> getFieldDetailByTableAndColumn (String tableName, String columnName, Integer programUploadTypeId, Integer useField) throws Exception;
     
     void insertInvalidPermission (Integer permissionField, Integer hierarchyFieldId, programUploads programUpload, Integer programHierarchyId) throws Exception;
+    
+    void runMultiValueValidations(Integer programUploadId, programUploadTypesFormFields putField, Integer programUploadRecordId) throws Exception;
+    
 }

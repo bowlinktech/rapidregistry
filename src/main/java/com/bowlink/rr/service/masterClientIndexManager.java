@@ -52,5 +52,7 @@ public interface masterClientIndexManager {
     
     algorithmCategories setAlgorithmsForOneImportCategory (Integer categoryId, Integer importTypeId) throws Exception;
     
+    algorithmCategories setAlgorithmsForOneImportCategory (Integer categoryId, Integer importTypeId, boolean setDataElement, boolean getActiveOnly) throws Exception;
     
+    programUploadTypeAlgorithmFields setFieldActionSQL (programUploadTypeAlgorithmFields putField) throws Exception;
 }

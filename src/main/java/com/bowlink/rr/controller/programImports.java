@@ -296,7 +296,8 @@ public class programImports {
      * @param validationId This will hold the id of the selected validation type
      * @param validationName This will hold the name of the selected validation type
      * @param requiredfield This will hold value if the field is required or not
-     *
+     * @param multiValue This will hold value if the field allows multiValues or not
+     * @param useField This will hold value if the field is in used or not
      * @Return	This function will return the existing import fields that will display the table of newly selected import type
      */
     @RequestMapping(value = "/setField.do", method = RequestMethod.POST)
@@ -308,6 +309,9 @@ public class programImports {
             @RequestParam(value = "validationId", required = true) Integer validationId,
             @RequestParam(value = "validationName", required = true) String validationName,
             @RequestParam(value = "requiredField", required = true) boolean requiredField, 
+            @RequestParam(value = "useField", required = true) boolean useField, 
+            @RequestParam(value = "multiValue", required = true) boolean multiValue, 
+            
             HttpSession session
     ) throws Exception {
 
@@ -326,6 +330,8 @@ public class programImports {
         field.setValidationName(validationName);
         field.setRequiredField(requiredField);
         field.setDspPos(dspPos);
+        field.setMultiValue(multiValue);
+        field.setUseField(useField);
 
         importFields.add(field);
         mav.addObject("existingFields", importFields);

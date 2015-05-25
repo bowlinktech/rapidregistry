@@ -1202,13 +1202,14 @@ public class importDAOImpl implements importDAO {
 				+ " select programUploadId, programUploadRecordId, 9, :hierarchyFieldId, :permissionField, F"+ permissionField 
 				+ " from programUploadRecordDetails "
 				+ " where F"+ permissionField + " not in (select orgHierarchyDetailId from user_authorizedOrgHierarchy  "
-				+ " where programId = :programId and programHierarchyId = :programHierarchyId and systemuserid = :systemUserId)";
+				+ " where programId = :programId and programHierarchyId = :programHierarchyId and systemuserid = :systemUserId) and programUploadId = :programUploadId";
         Query insertData = sessionFactory.getCurrentSession().createSQLQuery(sql);
         insertData.setParameter("permissionField", permissionField);
         insertData.setParameter("hierarchyFieldId", hierarchyFieldId);
         insertData.setParameter("programId", programUpload.getProgramId());
         insertData.setParameter("programHierarchyId", programHierarchyId);
         insertData.setParameter("systemUserId", programUpload.getSystemUserId());
+        insertData.setParameter("programUploadId", programUpload.getId());      
         insertData.executeUpdate();		
 	}
 }

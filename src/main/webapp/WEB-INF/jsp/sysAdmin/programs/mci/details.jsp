@@ -110,7 +110,7 @@
                                                     <select name="fieldIds" class="form-control xs-input" style="width:150px;">
                                                         <option value="">- Choose a Field -</option>
                                                         <c:forEach var="field"  items="${availableFields}">
-                                                            <option value="${field.fieldId}">${field.fieldName}</option>
+                                                            <option value="${field.id}">${field.fieldName}</option>
                                                         </c:forEach>
                                                     </select>
                                                 </td>

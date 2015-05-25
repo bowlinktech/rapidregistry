@@ -25,6 +25,12 @@ public class programUploadTypeAlgorithmFields {
     @Transient
     private String fieldName = null;
     
+    @Transient
+    private dataElements dataElement;
+    
+    @Transient 
+    private programUploadTypesFormFields putField;
+     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID", nullable = false)
@@ -33,11 +39,14 @@ public class programUploadTypeAlgorithmFields {
     @Column(name = "algorithmId", nullable = false)
     private Integer algorithmId = null;
     
-    @Column(name = "FIELDID", nullable = false)
-    private Integer fieldId = null;
+    @Column(name = "putFormFieldId", nullable = false)
+    private Integer putFormFieldId = null;
     
     @Column(name = "ACTION", nullable = false)
     private String action = "equals";
+    
+    @Column(name = "ACTIONSQL", nullable = false)
+    private String actionSQL = "=";
 
     public int getId() {
         return id;
@@ -45,14 +54,6 @@ public class programUploadTypeAlgorithmFields {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public Integer getFieldId() {
-        return fieldId;
-    }
-
-    public void setFieldId(Integer fieldId) {
-        this.fieldId = fieldId;
     }
 
     public String getAction() {
@@ -77,6 +78,38 @@ public class programUploadTypeAlgorithmFields {
 
 	public void setAlgorithmId(Integer algorithmId) {
 		this.algorithmId = algorithmId;
+	}
+
+	public dataElements getDataElement() {
+		return dataElement;
+	}
+
+	public void setDataElement(dataElements dataElement) {
+		this.dataElement = dataElement;
+	}
+
+	public String getActionSQL() {
+		return actionSQL;
+	}
+
+	public void setActionSQL(String actionSQL) {
+		this.actionSQL = actionSQL;
+	}
+
+	public programUploadTypesFormFields getPutField() {
+		return putField;
+	}
+
+	public void setPutField(programUploadTypesFormFields putField) {
+		this.putField = putField;
+	}
+
+	public Integer getPutFormFieldId() {
+		return putFormFieldId;
+	}
+
+	public void setPutFormFieldId(Integer putFormFieldId) {
+		this.putFormFieldId = putFormFieldId;
 	}
 
 }

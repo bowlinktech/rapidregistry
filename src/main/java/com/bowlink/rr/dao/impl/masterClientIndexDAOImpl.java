@@ -248,11 +248,14 @@ public class masterClientIndexDAOImpl implements masterClientIndexDAO {
 	@Override
 	@Transactional
 	public List<programUploadTypeAlgorithm> getPUTAlgorithmByCategory(
-			Integer catId, Integer importTypeId) throws Exception {
+			Integer catId, Integer importTypeId, boolean getActiveOnly) throws Exception {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(programUploadTypeAlgorithm.class);
         criteria.add(Restrictions.eq("categoryId", catId));
         criteria.add(Restrictions.eq("programUploadTypeId", importTypeId)); 
         criteria.addOrder(Order.asc("processOrder"));
+        if (getActiveOnly) {
+        	criteria.add(Restrictions.eq("status", true)); 
+        }
         
 		List<programUploadTypeAlgorithm> algorithmList = criteria.list();      
         
@@ -291,5 +294,5 @@ public class masterClientIndexDAOImpl implements masterClientIndexDAO {
         	return null;
         }
 	}
-	
+
 }

@@ -14,11 +14,16 @@ require(['./main'], function () {
         
         //This function will handle populating the program import field table
         $(document).on('click', '#submitFieldButton', function() {
-            var selectedField = $('#field').val();
+        	var selectedField = $('#field').val();
             var selectedFieldText = $('#field').find(":selected").attr("rel");
             var selectedValidation = $('#fieldValidation').val();
             var selectedValidationText = $('#fieldValidation').find(":selected").text();
+           
             var required = $('#requiredField').val();
+            var useField = $('#useField').val();
+            var multiValue = $('#multiValue').val();
+            
+            
             
             //Remove all error classes and error messages
             $('div').removeClass("has-error");
@@ -41,7 +46,7 @@ require(['./main'], function () {
                     url: "../setField.do",
                     type: "POST",
                     data: {'fieldId': selectedField, 'importTypeId': importTypeId, 'fieldText': selectedFieldText, 'validationId': selectedValidation
-                        , 'validationName': selectedValidationText, 'requiredField': required
+                        , 'validationName': selectedValidationText, 'requiredField': required, 'useField': useField, 'multiValue':multiValue
                     },
                     success: function(data) {
                         $('#fieldMsgDiv').show();

@@ -37,3 +37,34 @@ INSERT INTO `rapidregistry`.`dataElements` (`id`, `elementName`,`saveToTableName
 INSERT INTO `rapidregistry`.`dataElements` (`id`, `elementName`,`saveToTableName`,`saveToTableCol`,`status`,`answerType`,`populateFromTable`)VALUES (	'38', 'BP Diastolic', 'storage_engagements', 'bpDia', '1', '3', ''	);
 INSERT INTO `rapidregistry`.`dataelements` (`id`, `elementName`, `saveToTableName`, `saveToTableCol`, `status`, `answerType`) VALUES ('39', 'BP Systolic', 'storage_engagements', 'bpSys', 1, '3');
 
+/** grace 05.22.2015 12:21PM **/
+use rapidregistry;
+
+drop function if exists strSplit;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` FUNCTION `strSplit`(x varchar(255), delim varchar(12), pos int) RETURNS varchar(255) CHARSET latin1
+return replace(substring(substring_index(x, delim, pos), 
+length(substring_index(x, delim, pos - 1)) + 1), delim, '')$$
+DELIMITER ;
+
+/** grace 05.23.2015 01:24AM **/
+ALTER TABLE `rapidregistry`.`programUploadRecords` 
+ADD COLUMN `storage_patientsId` INT NULL AFTER `dateCreated`,
+ADD COLUMN `storage_engagementId` INT NULL AFTER `storage_patientsId`;
+
+
+ALTER TABLE `rapidregistry`.`put_algorithmFields` 
+ADD COLUMN `actionSQL` VARCHAR(5) NULL DEFAULT '=' AFTER `action`;
+
+ALTER TABLE `rapidregistry`.`put_algorithmFields` 
+ADD COLUMN `putFormFieldId` INT NULL AFTER `actionSQL`;
+
+ALTER TABLE `rapidregistry`.`put_algorithmFields` 
+DROP FOREIGN KEY `fk_programMPIFields_fieldId`;
+ALTER TABLE `rapidregistry`.`put_algorithmFields` 
+DROP COLUMN `fieldId`,
+DROP INDEX `fk_programMPIFields_fieldId` ;
+
+
+

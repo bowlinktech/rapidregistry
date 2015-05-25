@@ -10,7 +10,9 @@ import com.bowlink.rr.model.algorithmCategories;
 import com.bowlink.rr.model.algorithmMatchingActions;
 import com.bowlink.rr.model.programUploadTypeAlgorithm;
 import com.bowlink.rr.model.programUploadTypeAlgorithmFields;
+import com.bowlink.rr.model.programUploadTypesFormFields;
 import com.bowlink.rr.service.dataElementManager;
+import com.bowlink.rr.service.importManager;
 import com.bowlink.rr.service.masterClientIndexManager;
 
 import java.util.ArrayList;
@@ -33,6 +35,9 @@ public class masterClientIndexManagerImpl implements masterClientIndexManager {
     @Autowired
     dataElementManager dataelementmanager;
     
+    @Autowired
+    importManager importmanager;
+    
     @Override
     @Transactional
     public List<programUploadTypeAlgorithm> getProgramUploadTypeAlgorithm(Integer programUploadTypeId) throws Exception {
@@ -53,7 +58,8 @@ public class masterClientIndexManagerImpl implements masterClientIndexManager {
     	List<programUploadTypeAlgorithmFields> fieldList = masterClientIndexDAO.getMCIAlgorithmFields(algorithmId);
     	//set fieldName
     	for (programUploadTypeAlgorithmFields field : fieldList) {
-    		String fieldName = dataelementmanager.getfieldName(field.getFieldId());
+    		programUploadTypesFormFields putFormField = importmanager.getUploadTypeFieldById(field.getPutFormFieldId());
+			String fieldName = dataelementmanager.getfieldName(putFormField.getFieldId());
     		field.setFieldName(fieldName);
     	}
     	
@@ -75,6 +81,7 @@ public class masterClientIndexManagerImpl implements masterClientIndexManager {
     @Override
     @Transactional
     public void createMCIAlgorithmFields(programUploadTypeAlgorithmFields newField) throws Exception {
+    	newField = setFieldActionSQL(newField);
         masterClientIndexDAO.createMCIAlgorithmFields(newField);
     }
     
@@ -105,7 +112,7 @@ public class masterClientIndexManagerImpl implements masterClientIndexManager {
 	@Transactional
 	public void reorderAlgorithm(Integer categoryId, Integer importTypeId) throws Exception {
 		//first we get all algorithm for section 
-		List<programUploadTypeAlgorithm> algorithms = masterClientIndexDAO.getPUTAlgorithmByCategory(categoryId, importTypeId);
+		List<programUploadTypeAlgorithm> algorithms = masterClientIndexDAO.getPUTAlgorithmByCategory(categoryId, importTypeId, false);
 		//we loop through and reorder
 		int order = 1;
 		for (programUploadTypeAlgorithm algorithm : algorithms) {
@@ -166,20 +173,55 @@ public class masterClientIndexManagerImpl implements masterClientIndexManager {
 	@Override
 	public algorithmCategories setAlgorithmsForOneImportCategory(
 			Integer categoryId, Integer importTypeId) throws Exception {
+		return setAlgorithmsForOneImportCategory(categoryId, importTypeId, false, false);
+		
+	}
+
+	@Override
+	public algorithmCategories setAlgorithmsForOneImportCategory (
+			Integer categoryId, Integer importTypeId, boolean setDataElement, boolean getActiveOnly)
+			throws Exception {
 		
 		algorithmCategories category = getCategoryById(categoryId);
-		
-		category.setAlgorithms(masterClientIndexDAO.getPUTAlgorithmByCategory(category.getId(), importTypeId));
+		if (getActiveOnly) {
+			category.setAlgorithms(masterClientIndexDAO.getPUTAlgorithmByCategory(category.getId(), importTypeId, true));
+		} else {
+			category.setAlgorithms(masterClientIndexDAO.getPUTAlgorithmByCategory(category.getId(), importTypeId, false));
+		}
 		for (programUploadTypeAlgorithm algorithm : category.getAlgorithms()) {
 			//need to set action name
 			algorithm.setActionName(getActionById(algorithm.getAction()).getDisplayText());
 			//this set fields and names
-			algorithm.setFields(getMCIAlgorithmFields(algorithm.getId()));				
+			algorithm.setFields(getMCIAlgorithmFields(algorithm.getId()));	
+			if (setDataElement) {
+				for (programUploadTypeAlgorithmFields field : algorithm.getFields()) {
+					programUploadTypesFormFields putFormField = importmanager.getUploadTypeFieldById(field.getPutFormFieldId());
+					field.setDataElement(dataelementmanager.getFieldDetails(putFormField.getFieldId()));
+					field.setPutField(putFormField);
+				}
+			}
 		}
 		
 		return category;
 	}
 
-	
+	@Override
+	public programUploadTypeAlgorithmFields setFieldActionSQL(
+			programUploadTypeAlgorithmFields putField) throws Exception {
+		switch (putField.getAction()) {
+			case "equals":
+				putField.setActionSQL("=");
+				break;
+				
+			case "does not equal":
+					putField.setActionSQL("!=");
+					break;
+			default:
+					putField.setActionSQL("=");
+				break;		
+		}
+		return putField;
+	}
+
 	
 }

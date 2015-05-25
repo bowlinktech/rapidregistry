@@ -8,6 +8,7 @@ package com.bowlink.rr.service.impl;
 import com.bowlink.rr.dao.importDAO;
 import com.bowlink.rr.model.User;
 import com.bowlink.rr.model.MoveFilesLog;
+import com.bowlink.rr.model.algorithmCategories;
 import com.bowlink.rr.model.delimiters;
 import com.bowlink.rr.model.errorCodes;
 import com.bowlink.rr.model.fileTypes;
@@ -16,6 +17,7 @@ import com.bowlink.rr.model.program;
 import com.bowlink.rr.model.programOrgHierarchy;
 import com.bowlink.rr.model.programUploadRecordValues;
 import com.bowlink.rr.model.programUploadTypeAlgorithm;
+import com.bowlink.rr.model.programUploadTypeAlgorithmFields;
 import com.bowlink.rr.model.programUploadTypes;
 import com.bowlink.rr.model.programUploadTypesFormFields;
 import com.bowlink.rr.model.programUpload_Errors;
@@ -46,7 +48,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.HiddenFileFilter;
@@ -384,13 +389,15 @@ public class importManagerImpl implements importManager {
 		List <programUploadTypesFormFields> putFields = getImportTypeFields(programUpload.getProgramUploadTypeId());
 		for (programUploadTypesFormFields putField : putFields) {
 			 if (putField.isUseField()) {
-			if (putField.isRequiredField()) {
-				insertFailedRequiredFields(putField, programUpload.getId(), 0);
-			}
-			
-			//now we check validation
-			runValidations(programUpload.getId(), putField, 0);
-			
+				if (putField.isRequiredField()) {
+					insertFailedRequiredFields(putField, programUpload.getId(), 0);
+				}
+				//now we check validation, multi value we validate differently
+				if (!putField.isMultiValue()) {
+					runValidations(programUpload.getId(), putField, 0);
+				} else {
+					runMultiValueValidations(programUpload.getId(), putField, 0);
+				}
 			}
 		}
 		updateStatusForErrorRecord(programUpload.getId(), 14, 0);
@@ -424,7 +431,6 @@ public class importManagerImpl implements importManager {
 		
 		List<programOrgHierarchy> orgHierarchyList = orghierarchymanager.getProgramOrgHierarchy(programUpload.getProgramId());
 		
-		
 		Integer maxDspPosprogHierarchyId = orgHierarchyList.get(orgHierarchyList.size()-1).getId();
 		
 		/**reject
@@ -433,17 +439,61 @@ public class importManagerImpl implements importManager {
 		
 		updateStatusForErrorRecord(programUpload.getId(), 14, 0);
 		
-		
-		
-		
-		
 		/** at this point, we will have all the records that passed validation at status of 9**/
 		/** 
-		 * RUN MCI - this will set look for patient id and then visit info according to rule to find match patients
+		 * RUN MCI for all the non-rejected records,
+		 * this will set look for patient id and then visit info according to rule to find match patients
 		 * We always run rules for patients first
 		 */
-		
-		//get rules
+		program programDetail = programmanager.getProgramById(programUpload.getProgramId());
+		//get rules by category - we need to match patient, then visit
+		//we only have patient rules and visit rules
+			//we get patient rules
+			algorithmCategories patAlgorithms = mcimanager.setAlgorithmsForOneImportCategory(1, programUpload.getProgramUploadTypeId(), true, true);
+			//need distinct storage tables to construct sql properly
+        	for (programUploadTypeAlgorithm algorithm : patAlgorithms.getAlgorithms()){
+        		// we need table and column name, actionSQL to construct our sql statement
+        		int i = 1;
+        		for (programUploadTypeAlgorithmFields field: algorithm.getFields()) {
+        			if (i > 1) {
+        				System.out.print(" and ");
+        			}
+        			System.out.print("F" + field.getPutField().getDspPos() + " ");
+        			System.out.print(field.getActionSQL() + " ");
+        			System.out.print(field.getDataElement().getSaveToTableName() + "." + field.getDataElement().getSaveToTableCol());         			
+        			i++;
+        		}
+        		System.out.println("");
+        		//we check for matches for patients
+        		//if sharing
+        		if (programDetail.getSharing()) {
+        			
+        		}
+        		
+        		//if no matches, we insert into programPatient, storage_patient
+        		
+        		//
+        		
+        	}
+        	
+        	// now we check visit rules
+        	algorithmCategories visitAlgorithms = mcimanager.setAlgorithmsForOneImportCategory(2, programUpload.getProgramUploadTypeId());
+        	for (programUploadTypeAlgorithm algorithm : visitAlgorithms.getAlgorithms()){
+        		
+        		//we check for matches for visits
+        		//if only one visit is allowed per day and we already have a match, we decide here on how to insert
+        		if (programDetail.getVisitsPerDay() == 1) {
+        			
+        		}
+        		
+        		//if no matches, we insert into programPatient, storage_patient
+        		
+        		//
+        		
+        	}
+        	
+        	
+        
 		
 		
 		
@@ -1046,10 +1096,6 @@ public class importManagerImpl implements importManager {
 
 	@Override
     public void runValidations(Integer programUploadId, programUploadTypesFormFields putField, Integer programUploadRecordId) throws Exception {
-         /**
-         * MySql RegEXP validate numeric - ^-?[0-9]+[.]?[0-9]*$|^-?[.][0-9]+$ validate email - ^[a-z0-9\._%+!$&*=^|~#%\'`?{}/\-]+@[a-z0-9\.-]+\.[a-z]{2,6}$ or ^[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$ validate url - ^(https?://)?([\da-z.-]+).([a-z0-9])([0-9a-z]*)*[/]?$ - need to fix not correct - might have to run in java as mysql is not catching all. validate phone - should be no longer than 11 digits ^[0-9]{7,11}$ validate date - doing this in java
-         *
-         */
           switch (putField.getValidationId()) {
                 case 1:
                     break; // no validation
@@ -1067,8 +1113,8 @@ public class importManagerImpl implements importManager {
                     break;
                 //numeric   calling SQL to validation and insert - one statement      
                 case 5:
-                    genericValidation(putField, putField.getValidationId(), programUploadId, programUploadRecordId);
-                    break;
+                	genericValidation(putField, putField.getValidationId(), programUploadId, programUploadRecordId);
+                	break;
                 //url - need to rethink as regExp is not validating correctly
                 case 6:
                     urlValidation(putField, programUploadId, programUploadRecordId);
@@ -1371,5 +1417,103 @@ public class importManagerImpl implements importManager {
 		importDAO.insertInvalidPermission(permissionField, hierarchyFieldId, programUpload, programHierarchyId);
 		
 	}
+	//TODO
+	/** eventually should write a stored procedure, this seems time consuming, especially if we have to 
+	 * validation tons of FP records - Stored procedure cannot handle dynamic column, need to figure this out later
+	 * **/
+	@Override
+    public void runMultiValueValidations(Integer programUploadId, programUploadTypesFormFields putField, Integer programUploadRecordId) throws Exception {
+		//1. we grab all recordIds for programUploadRecord that are not length of 0 and not null 
+        List<programUploadRecordValues> prv = null;
+        if (programUploadRecordId == 0) {
+            prv = getFieldColAndValues(programUploadId, putField);
+        } else {
+        	prv = getFieldColAndValueByProgramUploadRecordId(putField, programUploadRecordId);
+        }
+        for (programUploadRecordValues pur : prv) {
+        	programUpload_Errors uploadError = new programUpload_Errors();
+    		uploadError.setDspPos(putField.getDspPos());
+    		uploadError.setErrorData(pur.getFieldValue());
+    		uploadError.setFieldId(putField.getFieldId());
+    		uploadError.setProgramUploadId(programUploadId);
+    		uploadError.setProgramUploadRecordId(pur.getProgramUploadRecordId());
+        	//split the list
+        	List<String> valueList = Arrays.asList(pur.getFieldValue().split(","));
+        	boolean doneWithLoop = false;
+        	for (String value : valueList) {
+	        	if (value.length()!= 0) {
+					switch (putField.getValidationId()) {
+		                case 2: //email
+		                	uploadError.setErrorId(2);
+		                	try {
+		                		InternetAddress internetAddress = new InternetAddress(value);
+		                		internetAddress.validate();
+		                	} catch (Exception ex) {
+		                		doneWithLoop = true;
+		                	}
+		                	break;
+		                //phone 
+		                case 3:
+		                	uploadError.setErrorId(28);
+		                	try {
+			                	String regex = "^\\(?([0-9]{3})\\)?[-.\\s]?([0-9]{3})[-.\\s]?([0-9]{4})$";
+			                	Pattern pattern = Pattern.compile(regex);
+			                	Matcher matcher = pattern.matcher(value);
+			                	if (!matcher.matches()) {
+			                		doneWithLoop = true;
+			                	}
+		                	} catch (Exception ex) {
+		                		doneWithLoop = true;
+		                	}
+		                	
+		                    break;
+		                // need to loop through each record / each field
+		                    //date should already be formatted to yyyy-dd-mm with HEL formatDateForDB(Date date)
+		                case 4:
+		                	uploadError.setErrorId(29);
+		                	try {
+		                			Date dateValue = null;	
+		                			dateValue = new SimpleDateFormat("yyyy-mm-dd").parse(value);
+		                		} catch (Exception ex) {
+		                			doneWithLoop = true;
+		                		}
+		                    break;
+		                //numeric   calling SQL to validation and insert - one statement      
+		                case 5:
+		                	uploadError.setErrorId(30);
+		                	try {
+		                		Integer.parseInt(value);              		
+		                	} catch (Exception ex) {
+		                		doneWithLoop = true;
+		                	}
+		                	break;
+		                case 6:
+		                	uploadError.setErrorId(31);
+		                	try {
+			                	String urlToValidate = value;
+			                    if (!urlToValidate.startsWith("http")) {
+			                        urlToValidate = "http://" + urlToValidate;
+			                    }
+			                    if (!isValidURL(urlToValidate)) {
+			                    	doneWithLoop = true;
+			                    }
+		                	} catch (Exception ex) {
+		                    	doneWithLoop = true;
+		                    }
+		                    break;
+		                //anything new we hope to only have to modify sp
+		                default:
+		                	doneWithLoop = true;
+		                   break;
+		            }
+	        	}
+	        	if (doneWithLoop) {
+	        		//insert error
+	        		insertError(uploadError);
+	        		break;
+	        	}
+        	}
+        }
+        }
 }
 

@@ -45,7 +45,7 @@ public interface masterClientIndexDAO {
     
     List <algorithmCategories> getCategoriesForUploadType (Integer importTypeId) throws Exception;
     
-    List <programUploadTypeAlgorithm> getPUTAlgorithmByCategory (Integer catId, Integer importTypeId) throws Exception;
+    List <programUploadTypeAlgorithm> getPUTAlgorithmByCategory (Integer catId, Integer importTypeId, boolean activeOnly) throws Exception;
     
     algorithmMatchingActions getActionById (Integer actionId) throws Exception;
     

@@ -187,7 +187,7 @@ public class masterClientIndex {
         for(Integer fieldId : fieldIds) {
         	if (fieldId != null) {
 	            programUploadTypeAlgorithmFields newField = new programUploadTypeAlgorithmFields();
-	            newField.setFieldId(fieldId);
+	            newField.setPutFormFieldId(fieldId);
 	            newField.setAlgorithmId(algorithmId);
 	            
 	            String selFieldAction = fieldAction.get(i);
@@ -263,7 +263,7 @@ public class masterClientIndex {
         for(Integer fieldId : fieldIds) {
         	if (fieldId != null)  {
 	            programUploadTypeAlgorithmFields newField = new programUploadTypeAlgorithmFields();
-	            newField.setFieldId(fieldId);
+	            newField.setPutFormFieldId(fieldId);
 	            newField.setAlgorithmId(mcidetails.getId());
 	            
 	            String selFieldAction = fieldAction.get(i);
@@ -323,7 +323,8 @@ public class masterClientIndex {
         
         for(programUploadTypeAlgorithmFields field : fields) {
             //Get the field name by id
-            String selfieldName = dataelementmanager.getfieldName(field.getFieldId());
+        	programUploadTypesFormFields putFormField = importmanager.getUploadTypeFieldById(field.getPutFormFieldId());
+            String selfieldName = dataelementmanager.getfieldName(putFormField.getFieldId());
             field.setFieldName(selfieldName);
         }
         mav.addObject("selFields", fields);
