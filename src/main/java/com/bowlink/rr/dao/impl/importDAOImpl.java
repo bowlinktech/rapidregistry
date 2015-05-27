@@ -42,6 +42,10 @@ public class importDAOImpl implements importDAO {
     
   //list of final status - these records we skip
     private List<Integer> finalStatuses = Arrays.asList(11, 12, 13, 16);
+    
+    //list of error status
+    private List<Integer> errorStatuses = Arrays.asList(14);
+    
 
     /**
      * The 'getUploadTypes' function will return a list of upload types set up for the program.
@@ -1211,5 +1215,67 @@ public class importDAOImpl implements importDAO {
         insertData.setParameter("systemUserId", programUpload.getSystemUserId());
         insertData.setParameter("programUploadId", programUpload.getId());      
         insertData.executeUpdate();		
+	}
+
+	@Override
+	@Transactional
+	public void updateProgramHierarchyId(Integer programUploadId, Integer programUploadRecordId, Integer dspPos) throws Exception {
+		String sql = "UPDATE programuploadRecords INNER JOIN programUploadRecordDetails ON "
+				+ " (programuploadRecords.id = programUploadRecordDetails.programUploadRecordId) "
+				+ " SET  programhierarchyid = f" + dspPos + " where statusid not in (:errorStatuses) "
+				+ "	and programuploadRecords.programuploadId = :programUploadId";
+				if (programUploadRecordId > 0) {
+					sql = sql + " and programUploadRecordId = :programUploadRecordId";
+				}
+		Query updatData = sessionFactory.getCurrentSession().createSQLQuery(sql);
+        updatData.setParameter("programUploadId", programUploadId);
+        updatData.setParameterList("errorStatuses", errorStatuses);
+        
+        
+        if (programUploadRecordId > 0) {
+        	updatData.setParameter("programUploadRecordId", programUploadRecordId);      
+        }
+        updatData.executeUpdate();		
+	}
+
+	@Override
+	@Transactional
+	@SuppressWarnings("unchecked")
+	public List<String> getOtherAlgorithmTables(Integer algorithmId)
+			throws Exception {
+		String sql = ("select distinct saveToTableName from dataElements where id in ("
+				+ " select fieldId from put_formFields where id in ("
+				+ " select putFormFieldId from put_algorithmFields where algorithmid = :algorithmId)) "
+				+ " and saveToTableName != 'storage_patients' order by saveToTableName;");
+  		
+				Query query = sessionFactory.getCurrentSession().createSQLQuery(sql)
+		        .setParameter("algorithmId", algorithmId);
+		        
+				List<String> tableNameList = query.list();
+
+				return tableNameList;
+	}
+
+	@Override
+	@Transactional
+	@SuppressWarnings("unchecked")
+	public boolean hasTable(String tableName, Integer algorithmId)
+			throws Exception {
+		String sql = ("select distinct saveToTableName from dataElements where id in ("
+				+ " select fieldId from put_formFields where id in ("
+				+ " select putFormFieldId from put_algorithmFields where algorithmid = :algorithmId)) "
+				+ " and saveToTableName = :tableName order by saveToTableName;");
+  		
+				Query query = sessionFactory.getCurrentSession().createSQLQuery(sql)
+		        .setResultTransformer(Transformers.aliasToBean(programUploadTypesFormFields.class))
+		        .setParameter("algorithmId", algorithmId)
+				.setParameter("tableName", tableName);
+				
+		        
+				List<String> tableNameList = query.list();
+				if (query.list().size() == 1) {
+					return true;
+				}
+				return false;
 	}
 }

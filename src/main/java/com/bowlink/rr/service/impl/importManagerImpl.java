@@ -439,41 +439,71 @@ public class importManagerImpl implements importManager {
 		
 		updateStatusForErrorRecord(programUpload.getId(), 14, 0);
 		
-		/** at this point, we will have all the records that passed validation at status of 9**/
+		/** update hierarchyId column in programUploadRecords, makes it easier to search and update **/
+		updateProgramHierarchyId(programUpload.getId(), 0, hierarchyColumn);
+		
+		
+		/** at this point, we will have all the records that passed validation at status of 9 **/
 		/** 
 		 * RUN MCI for all the non-rejected records,
 		 * this will set look for patient id and then visit info according to rule to find match patients
 		 * We always run rules for patients first
 		 */
 		program programDetail = programmanager.getProgramById(programUpload.getProgramId());
-		//get rules by category - we need to match patient, then visit
+		//get rules by category - we need to match patient - id from storage_Patient, then visit
 		//we only have patient rules and visit rules
 			//we get patient rules
 			algorithmCategories patAlgorithms = mcimanager.setAlgorithmsForOneImportCategory(1, programUpload.getProgramUploadTypeId(), true, true);
+			
 			//need distinct storage tables to construct sql properly
-        	for (programUploadTypeAlgorithm algorithm : patAlgorithms.getAlgorithms()){
+        	// we get storage tables involved in 
+			for (programUploadTypeAlgorithm algorithm : patAlgorithms.getAlgorithms()){
+        		boolean patientMatch = false;
         		// we need table and column name, actionSQL to construct our sql statement
+        		List <String> tableNames = getOtherAlgorithmTables (algorithm.getId());
+        		
         		int i = 1;
+        		String sql = "select id from programpatients where programid = " + programUpload.getProgramId()
+        				+ " and id in (select programpatientid from storage_patients where  ";
         		for (programUploadTypeAlgorithmFields field: algorithm.getFields()) {
         			if (i > 1) {
-        				System.out.print(" and ");
+        				sql = sql + (" and ");
         			}
-        			System.out.print("F" + field.getPutField().getDspPos() + " ");
-        			System.out.print(field.getActionSQL() + " ");
-        			System.out.print(field.getDataElement().getSaveToTableName() + "." + field.getDataElement().getSaveToTableCol());         			
+        			sql = sql + ("F" + field.getPutField().getDspPos() + " ");
+        			sql = sql + (field.getActionSQL() + " ");
+        			sql = sql + (field.getDataElement().getSaveToTableName() + "." + field.getDataElement().getSaveToTableCol());         			
         			i++;
         		}
-        		System.out.println("");
+        		if (tableNames.size() > 0 ) {
+        			for (String tableName : tableNames) {
+        				sql = sql + (" and storage_engagements.id = " + tableName + ".storage_engagementId");
+        			}
+        		}
+        		if (hasTable("'storage_engagements'", algorithm.getId()) || tableNames.size() > 0) {
+        			sql = sql + (" and storage_engagements.storagePatientsId = storage_patients.id");
+        		}
+        		//System.out.println(sql);
+        		
+        		sql = sql.replace("F3", "'223456'");
+        		
+        		System.out.println(sql);
         		//we check for matches for patients
-        		//if sharing
-        		if (programDetail.getSharing()) {
+        		//if sharing, we check across all sites in the entire registry
+        		if (!programDetail.getSharing()) {
+        			//we restrict to sites that users has permission to
         			
         		}
+        		// storage_patient
+        		
+        		
         		
         		//if no matches, we insert into programPatient, storage_patient
-        		
-        		//
-        		
+        		if (patientMatch) {
+        			//we see how many
+        			
+        			//we update programRecord
+        			break;
+        		}
         	}
         	
         	// now we check visit rules
@@ -1515,5 +1545,26 @@ public class importManagerImpl implements importManager {
         	}
         }
         }
+
+	@Override
+	public void updateProgramHierarchyId(Integer programUploadId,
+			Integer programUploadRecordId, Integer dspPos ) throws Exception {
+		importDAO.updateProgramHierarchyId(programUploadId, programUploadRecordId, dspPos);
+		
+	}
+
+	@Override
+	public List<String> getOtherAlgorithmTables(Integer algorithmId)
+			throws Exception {
+		return importDAO.getOtherAlgorithmTables(algorithmId);
+	}
+
+	@Override
+	public boolean hasTable(String tableName, Integer algorithmId)
+			throws Exception {
+		return importDAO.hasTable(tableName, algorithmId);
+	}
+	
+	
 }
 

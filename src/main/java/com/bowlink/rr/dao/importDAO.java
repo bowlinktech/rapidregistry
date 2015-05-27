@@ -114,6 +114,12 @@ public interface importDAO {
     List <programUploadTypesFormFields> getFieldDetailByTableAndColumn (String tableName, String columnName, Integer programUploadTypeId, Integer useField) throws Exception;
     
     void insertInvalidPermission (Integer permissionField,Integer hierarchyFieldId, programUploads programUpload, Integer programHierarchyId) throws Exception;
+    
+    void updateProgramHierarchyId (Integer programUploadId, Integer programUploadRecordId, Integer dspPos) throws Exception;
+    
+    List <String> getOtherAlgorithmTables (Integer algorithmId) throws Exception;
+    
+    boolean hasTable (String tableName, Integer algorithmId) throws Exception;
 }
 
 
