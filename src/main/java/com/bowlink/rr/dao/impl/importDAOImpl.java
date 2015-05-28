@@ -1278,4 +1278,68 @@ public class importDAOImpl implements importDAO {
 				}
 				return false;
 	}
+
+	@Override
+	@Transactional
+	public void insertNewProgramPatients(programUploads programUpload,
+			Integer programUploadRecordId) throws Exception {
+		String sql = "insert into programPatients (programId, programUploadRecordId, systemUserId)"
+				+ "select " + programUpload.getProgramId() +", id, "+ programUpload.getSystemUserId() +" from "
+				+ "ProgramUploadRecords where statusId = 10 "
+				+ "and programUploadId = :programUploadId and programPatientId is null";
+				if (programUploadRecordId > 0 ) {
+					sql = sql + " and id = :programUploadRecordId";
+				}
+		Query updatData = sessionFactory.getCurrentSession().createSQLQuery(sql);
+        updatData.setParameter("programUploadId", programUpload.getId());
+        
+        if (programUploadRecordId > 0) {
+        	updatData.setParameter("programUploadRecordId", programUploadRecordId);      
+        }
+        updatData.executeUpdate();			
+	}
+	
+	@Override
+	@Transactional
+	public void updateProgramPatientIdInUploadRecord(programUploads programUpload,
+			Integer programUploadRecordId) throws Exception {
+		String sql = "UPDATE programuploadRecords INNER JOIN programPatients ON "
+				+ " (programuploadRecords.id = programPatients.programUploadRecordId) "
+				+ " SET  programuploadRecords.programPatientId = programPatients.id where statusid  = 10"
+				+ "	and programuploadRecords.programpatientId is null"
+				+ " and programuploadid = :programUploadId";
+				if (programUploadRecordId > 0 ) {
+					sql = sql + " and id = :programUploadRecordId";
+				}
+		Query updatData = sessionFactory.getCurrentSession().createSQLQuery(sql);
+        updatData.setParameter("programUploadId", programUpload.getId());
+        
+        if (programUploadRecordId > 0) {
+        	updatData.setParameter("programUploadRecordId", programUploadRecordId);      
+        }
+        updatData.executeUpdate();			
+	}
+
+	@Override
+	@Transactional
+	public void changeProgramUploadRecordStatus(programUploads programUpload,
+			Integer programUploadRecordId, Integer oldStatusId,
+			Integer newStatusId) throws Exception {
+		String sql = "UPDATE programuploadRecords set statusId = :newStatusId"
+				+ " where statusid  = :oldStatusId"
+				+ "	and programuploadid = :programUploadId";
+				if (programUploadRecordId > 0 ) {
+					sql = sql + " and id = :programUploadRecordId";
+				}
+		Query updatData = sessionFactory.getCurrentSession().createSQLQuery(sql);
+        updatData.setParameter("programUploadId", programUpload.getId());
+        updatData.setParameter("newStatusId", newStatusId);
+        updatData.setParameter("oldStatusId", oldStatusId);
+        
+        if (programUploadRecordId > 0) {
+        	updatData.setParameter("programUploadRecordId", programUploadRecordId);      
+        }
+        updatData.executeUpdate();		
+		
+	}
 }

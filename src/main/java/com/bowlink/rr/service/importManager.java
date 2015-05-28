@@ -171,4 +171,12 @@ public interface importManager {
     List <String> getOtherAlgorithmTables (Integer algorithmId) throws Exception;
     
     boolean hasTable (String tableName, Integer algorithmId) throws Exception;
+    
+    void insertRecords (programUploads programUpload, Integer programUploadRecordId) throws Exception;
+    
+    void insertNewProgramPatients (programUploads programUpload, Integer programUploadRecordId) throws Exception;    
+    
+    void updateProgramPatientIdInUploadRecord (programUploads programUpload, Integer programUploadRecordId) throws Exception; 
+    
+    void changeProgramUploadRecordStatus (programUploads programUpload, Integer programUploadRecordId, Integer oldStatusId, Integer newStatusId) throws Exception;
 }
