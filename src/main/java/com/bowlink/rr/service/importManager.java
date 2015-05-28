@@ -15,6 +15,7 @@ import com.bowlink.rr.model.programUploadTypes;
 import com.bowlink.rr.model.programUploadTypesFormFields;
 import com.bowlink.rr.model.programUpload_Errors;
 import com.bowlink.rr.model.programUploads;
+
 import java.io.File;
 import java.util.Date;
 import java.util.List;
@@ -165,4 +166,17 @@ public interface importManager {
     
     void runMultiValueValidations(Integer programUploadId, programUploadTypesFormFields putField, Integer programUploadRecordId) throws Exception;
     
+    void updateProgramHierarchyId (Integer programUploadId, Integer programUploadRecordId, Integer dspPos) throws Exception;
+    
+    List <String> getOtherAlgorithmTables (Integer algorithmId) throws Exception;
+    
+    boolean hasTable (String tableName, Integer algorithmId) throws Exception;
+    
+    void insertRecords (programUploads programUpload, Integer programUploadRecordId) throws Exception;
+    
+    void insertNewProgramPatients (programUploads programUpload, Integer programUploadRecordId) throws Exception;    
+    
+    void updateProgramPatientIdInUploadRecord (programUploads programUpload, Integer programUploadRecordId) throws Exception; 
+    
+    void changeProgramUploadRecordStatus (programUploads programUpload, Integer programUploadRecordId, Integer oldStatusId, Integer newStatusId) throws Exception;
 }
