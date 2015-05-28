@@ -16,11 +16,10 @@ require(['./main'], function () {
         
         $(document).on('click', '#viewChangeLogs', function() {
         	var i = $(this).attr('rel');
-                var v = $(this).attr('rel2');
-        	
+                
         	$.ajax({
                 url: 'surveys/changeLog',
-                data:{'i':i, 'v': v},
+                data:{'surveyId':i},
                 type: "GET",
                 success: function(data) {
                     $("#changeLogModal").html(data);

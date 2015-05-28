@@ -1730,18 +1730,9 @@ public class surveyController {
      */
     @RequestMapping(value = "/changeLog", method = RequestMethod.GET)
     @ResponseBody
-    public ModelAndView viewChangeLog(HttpSession session, @RequestParam String i, @RequestParam String v) throws Exception {
+    public ModelAndView viewChangeLog(HttpSession session, @RequestParam Integer surveyId) throws Exception {
         
-        /* Decrypt the url */
-        decryptObject decrypt = new decryptObject();
         
-        Object obj = decrypt.decryptObject(i, v);
-        
-        String[] result = obj.toString().split((","));
-        
-        int surveyId = Integer.parseInt(result[0].substring(4));
-        
-       
         ModelAndView mav = new ModelAndView();
 
         surveys survey = checkSurveyPermission(session, surveyId, "/changeLog");

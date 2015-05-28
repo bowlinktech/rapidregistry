@@ -47,7 +47,7 @@
                                             <td class="center-text"><fmt:formatDate value="${survey.dateCreated}" type="Both" pattern="M/dd/yyyy h:mm a" /></td>
                                             <td class="center-text"><fmt:formatDate value="${survey.dateModified}" type="Both" pattern="M/dd/yyyy h:mm a" /></td>
                                             <td class="actions-col">
-                                                <a href="#changeLogModal" data-toggle="modal" id="viewChangeLogs" title="View" role="button" class="btn-link viewModules" rel="${staff.encryptedId}" rel2="${staff.encryptedSecret}">
+                                                <a href="#changeLogModal" data-toggle="modal" id="viewChangeLogs" title="View" role="button" class="btn-link" rel="${survey.id}">
                                                     View Change Log
                                                 </a>
                                             </td>

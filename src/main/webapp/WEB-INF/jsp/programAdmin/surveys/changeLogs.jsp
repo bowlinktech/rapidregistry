@@ -9,7 +9,7 @@
             <h3 class="panel-title">Change Log</h3>
          </div>
          <div class="modal-body">
-             <div class="form-container scrollable"><br />
+             <div class="form-container scrollable" style="height:300px; overflow: auto"><br />
                     <table class="table table-striped table-hover table-default" <c:if test="${not empty surveys}">id="dataTable"</c:if>>
                             <thead>
                                 <tr>
