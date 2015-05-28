@@ -15,7 +15,15 @@
 <c:forEach var="page" items="${surveyPages}">
     <div class="row" id="page${page.id}" style="height: 50px;">
         <div class="pull-left">
-            <h4>Page ${page.pageNum}</h4>
+            <div class="pull-left" style="padding-right:10px;">
+                <h4>Page ${page.pageNum}</h4>
+            </div>
+            <div class="pull-right">
+                <select rel="${page.id}" class="pageLogic form-control">
+                    <option value="">Page Logic</option>
+                    <option value="Page Skip Logic">Page Skip Logic</option>
+                </select>
+            </div>
         </div>
         <div class="pull-right pageSection" relPage="${page.id}">
             <div class="pull-right">
@@ -30,6 +38,35 @@
             </div>
         </div>
     </div>
+    <div class="row" id="pageLogic_${page.id}" style="display:none">
+        <div class="panel panel-default">
+            <div class="panel-heading clearfix" style="background-color: #4B7C88">
+                <div class="pull-left">
+                    <h4 id="pageTitleHeading_${page.id}">
+                        <span class="editTitle" style="color: #ffffff;">
+                            Page Skip Logic
+                        </span>
+                    </h4>
+                </div>
+            </div>
+            <div class="panel-body" style="background-color: #EFEFEF">
+                <div class="form-group">
+                    <label class="control-label" for="requiredResponse">After the current page is completed, skip to this page...</label>
+                    <div class="form-inline">
+                    <select style="width:250px;" id="selSkipToPage_${page.id}" class="form-control">
+                        <option value="0">- Select A Page -</option>
+                         <c:forEach var="p" items="${surveyPages}">
+                             <c:if test="${p.id > page.id}">
+                                 <option value="${p.id}" <c:if test="${page.skipToPage == p.id}">selected</c:if>>P${p.pageNum}: ${p.pageTitle}</option>
+                             </c:if>
+                        </c:forEach>
+                        <option value="-1" <c:if test="${page.skipToPage == -1}">selected</c:if>>End of the Survey</option>        
+                    </select>
+                    <button type="button" rel="${page.id}" class="btn btn-default submitPageSkipChanges">Save</button></div>
+               </div>            
+           </div>
+        </div> 
+   </div>
     <div class="row">               
         <div class="panel panel-default">
             <div class="panel-heading clearfix" style="background-color: #4B7C88">
@@ -132,71 +169,71 @@
                                                 <c:choose>
                                                     <c:when test="${question.dateDspType == 0}">
                                                         <div class="col-md-4">
-                                                        <div class="row">
-                                                            <c:choose>
-                                                                <c:when test="${question.dateFormatType == 1}">
-                                                                    <div class="col-md-2" style="width:55px;">
-                                                                        <div class="row text-center">MM</div>
+                                                            <div class="row">
+                                                                <c:choose>
+                                                                    <c:when test="${question.dateFormatType == 1}">
+                                                                        <div class="col-md-2" style="width:55px;">
+                                                                            <div class="row text-center">MM</div>
+                                                                            <div class="row">
+                                                                                <input type="text" class="form-control" type="text" disabled style="background-color:#ffffff; width:50px;" /> 
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-2" style="width:55px;">
+                                                                            <div class="row text-center">DD</div>
+                                                                            <div class="row ">
+                                                                                <input type="text" class="form-control" type="text" disabled style="background-color:#ffffff; width:50px;" />
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-2" style="width:55px;">
+                                                                            <div class="row text-center">YYYY</div>
+                                                                            <div class="row">
+                                                                                <input type="text" class="form-control" type="text" disabled style="background-color:#ffffff; width:55px;" />
+                                                                            </div>
+                                                                        </div>
+                                                                    </c:when>
+                                                                    <c:otherwise>
+                                                                        <div class="col-md-2" style="width:55px;">
+                                                                            <div class="row text-center">DD</div>
+                                                                            <div class="row">
+                                                                                <input type="text" class="form-control" type="text" disabled style="background-color:#ffffff; width:50px;" /> 
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-2" style="width:55px;">
+                                                                            <div class="row text-center">MM</div>
+                                                                            <div class="row ">
+                                                                                <input type="text" class="form-control" type="text" disabled style="background-color:#ffffff; width:50px;" />
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-2" style="width:55px;">
+                                                                            <div class="row text-center">YYYY</div>
+                                                                            <div class="row">
+                                                                                <input type="text" class="form-control" type="text" disabled style="background-color:#ffffff; width:55px;" />
+                                                                            </div>
+                                                                        </div>
+                                                                    </c:otherwise>
+                                                                </c:choose>
+                                                                <c:if test="${question.collectTimeInfo == true}">
+                                                                    <div class="col-md-2" style="padding-left: 30px; width:55px;">
+                                                                        <div class="row text-center">hh</div>
                                                                         <div class="row">
-                                                                            <input type="text" class="form-control" type="text" disabled style="background-color:#ffffff; width:50px;" /> 
+                                                                            <input type="text"class="form-control" type="text" disabled style="background-color:#ffffff; width:50px;" /> 
                                                                         </div>
                                                                     </div>
-                                                                    <div class="col-md-2" style="width:55px;">
-                                                                        <div class="row text-center">DD</div>
+                                                                    <div class="col-md-2" style="padding-left: 30px; width:55px;">
+                                                                        <div class="row text-center">mm</div>
                                                                         <div class="row ">
-                                                                            <input type="text" class="form-control" type="text" disabled style="background-color:#ffffff; width:50px;" />
+                                                                            <input type="text"class="form-control" type="text" disabled style="background-color:#ffffff; width:50px;" />
                                                                         </div>
                                                                     </div>
-                                                                    <div class="col-md-2" style="width:55px;">
-                                                                        <div class="row text-center">YYYY</div>
+                                                                    <div class="col-md-2" style="padding-left: 30px; width:55px;">
+                                                                        <div class="row text-center">AM/PM</div>
                                                                         <div class="row">
-                                                                            <input type="text" class="form-control" type="text" disabled style="background-color:#ffffff; width:55px;" />
+                                                                            <select disabled class="form-control" style="background-color:#ffffff; width:55px;"></select>
                                                                         </div>
                                                                     </div>
-                                                                </c:when>
-                                                                <c:otherwise>
-                                                                    <div class="col-md-2" style="width:55px;">
-                                                                        <div class="row text-center">DD</div>
-                                                                        <div class="row">
-                                                                            <input type="text" class="form-control" type="text" disabled style="background-color:#ffffff; width:50px;" /> 
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-2" style="width:55px;">
-                                                                        <div class="row text-center">MM</div>
-                                                                        <div class="row ">
-                                                                            <input type="text" class="form-control" type="text" disabled style="background-color:#ffffff; width:50px;" />
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-2" style="width:55px;">
-                                                                        <div class="row text-center">YYYY</div>
-                                                                        <div class="row">
-                                                                            <input type="text" class="form-control" type="text" disabled style="background-color:#ffffff; width:55px;" />
-                                                                        </div>
-                                                                    </div>
-                                                                </c:otherwise>
-                                                            </c:choose>
-                                                            <c:if test="${question.collectTimeInfo == true}">
-                                                                <div class="col-md-2" style="padding-left: 30px; width:55px;">
-                                                                    <div class="row text-center">hh</div>
-                                                                    <div class="row">
-                                                                        <input type="text"class="form-control" type="text" disabled style="background-color:#ffffff; width:50px;" /> 
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-2" style="padding-left: 30px; width:55px;">
-                                                                    <div class="row text-center">mm</div>
-                                                                    <div class="row ">
-                                                                        <input type="text"class="form-control" type="text" disabled style="background-color:#ffffff; width:50px;" />
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-2" style="padding-left: 30px; width:55px;">
-                                                                    <div class="row text-center">AM/PM</div>
-                                                                    <div class="row">
-                                                                        <select disabled class="form-control" style="background-color:#ffffff; width:55px;"></select>
-                                                                    </div>
-                                                                </div>
-                                                            </c:if>
-                                                        </div>
+                                                                </c:if>
                                                             </div>
+                                                        </div>
                                                     </c:when>
                                                     <c:when test="${question.dateDspType == 2}">
                                                         <c:forEach items="${question.dateQuestionRows}" var="row">

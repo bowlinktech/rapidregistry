@@ -436,6 +436,46 @@ public class surveyController {
         return pageTitle;
     }
     
+    /**
+     * The 'savePageSkipLogic.do' POST request will submit the survey page skip to chanage.
+     * 
+     * @param pageId    The id of the current page.
+     * @param skipToPageId The page id to skip to
+     * @param session
+     * @return
+     * @throws Exception 
+     */
+    @RequestMapping(value = "savePageSkipLogic.do", method = RequestMethod.POST)
+    public @ResponseBody boolean savePageSkipLogic(@RequestParam(value = "pageId", required = true) Integer pageId, @RequestParam(value = "skipToPageId", required = true) Integer skipToPageId, HttpSession session) throws Exception {
+
+        //get page info
+        SurveyPages surveyPage = surveymanager.getSurveyPageById(pageId);
+        surveyPage.setSkipToPage(skipToPageId);
+
+        // update 
+        surveymanager.updateSurveyPage(surveyPage);
+
+        /**
+         * log user *
+         */
+        try {
+            Log_userSurveyActivity ua = new Log_userSurveyActivity();
+            ua.setActivityDesc("Updated Page Skip logic");
+            ua.setController(controllerName);
+            ua.setPageAccessed("savePageTitleForm.do");
+            ua.setProgramId((Integer) session.getAttribute("selprogramId"));
+            ua.setSurveyId(surveyPage.getSurveyId());
+            ua.setPageId(surveyPage.getId());
+            User userDetails = (User) session.getAttribute("userDetails");
+            ua.setSystemUserId(userDetails.getId());
+            usermanager.insertUserLog(ua);
+        } catch (Exception ex1) {
+            ex1.printStackTrace();
+        }
+
+        return true;
+    }
+    
     
     /**
      * The 'getSurveyPages.do' GET request will return the list of pages associated with the selected survey.

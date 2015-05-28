@@ -46,6 +46,9 @@ public class SurveyPages {
 
     @Column(name = "pageDesc", nullable = false)
     private String pageDesc;
+    
+    @Column(name = "skipToPage", nullable = false)
+    private Integer skipToPage = 0;
 
     public int getId() {
         return id;
@@ -103,4 +106,12 @@ public class SurveyPages {
         this.pageDesc = pageDesc;
     }
 
+    public Integer getSkipToPage() {
+        return skipToPage;
+    }
+
+    public void setSkipToPage(Integer skipToPage) {
+        this.skipToPage = skipToPage;
+    }
+    
 }
