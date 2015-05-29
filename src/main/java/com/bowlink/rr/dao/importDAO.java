@@ -36,7 +36,7 @@ public interface importDAO {
     
     List<programUploadTypesFormFields> getImportTypeFields(Integer importTypeId) throws Exception;
     
-    void deleteUploadTypeFields(Integer importTypeId) throws Exception;
+    void deleteUploadTypeFieldsByStatus(Integer importTypeId, String status) throws Exception;
     
     Integer saveUploadTypeField(programUploadTypesFormFields field) throws Exception;
     
@@ -141,6 +141,10 @@ public interface importDAO {
     void blanksToNull (Integer fColumn, programUploads programUpload, Integer programUploadRecordId) throws Exception;
     
     List <Integer> getFColumnsForProgramUploadType (programUploads programUpload) throws Exception;
+    
+    void updateFormFieldStatus(Integer programUploadTypeId, String status) throws Exception;
+    
+    void deleteFormFieldsFromAlgorithms (Integer programUploadTypeId) throws Exception;
 }
 
 

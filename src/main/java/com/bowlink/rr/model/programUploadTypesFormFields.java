@@ -63,6 +63,10 @@ public class programUploadTypesFormFields {
     @Column(name = "multiValue", nullable = false)
     private boolean multiValue = false;
     
+    @Column(name = "formFieldStatus", nullable = false)
+    private String formFieldStatus;
+    
+    
     public int getId() {
         return id;
     }
@@ -151,4 +155,13 @@ public class programUploadTypesFormFields {
 		this.multiValue = multiValue;
 	}
 
+	public String getFormFieldStatus() {
+		return formFieldStatus;
+	}
+
+	public void setFormFieldStatus(String formFieldStatus) {
+		this.formFieldStatus = formFieldStatus;
+	}
+
+	
 }

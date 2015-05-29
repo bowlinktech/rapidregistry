@@ -113,9 +113,10 @@ public class importDAOImpl implements importDAO {
      * @throws Exception
      */
     @Override
-    public void deleteUploadTypeFields(Integer importTypeId) throws Exception {
-        Query deleteFields = sessionFactory.getCurrentSession().createQuery("delete from programUploadTypesFormFields where programUploadTypeId = :importTypeId");
+    public void deleteUploadTypeFieldsByStatus(Integer importTypeId, String status) throws Exception {
+        Query deleteFields = sessionFactory.getCurrentSession().createQuery("delete from programUploadTypesFormFields where programUploadTypeId = :importTypeId and formFieldStatus = :status");
         deleteFields.setParameter("importTypeId", importTypeId);
+        deleteFields.setParameter("status", status);  
         deleteFields.executeUpdate();
     }
 
@@ -129,9 +130,14 @@ public class importDAOImpl implements importDAO {
     @Override
     public Integer saveUploadTypeField(programUploadTypesFormFields field) throws Exception {
         Integer lastId = null;
+        if (field.getId() != 0) {
+        	lastId = field.getId();
+        	sessionFactory.getCurrentSession().update(field);
+        } else {
+        	lastId = (Integer) sessionFactory.getCurrentSession().save(field);
 
-        lastId = (Integer) sessionFactory.getCurrentSession().save(field);
-
+        }
+        
         return lastId;
     }
 
@@ -1491,5 +1497,30 @@ public class importDAOImpl implements importDAO {
 		        List <Integer> columnList = query.list();
 		        
 				return columnList;
+	}
+
+	@Override
+	@Transactional
+    public void updateFormFieldStatus(Integer programUploadTypeId, String status) throws Exception {
+		 Query updateFields = sessionFactory.getCurrentSession().createQuery("update programUploadTypesFormFields set formFieldStatus =  :status where programUploadTypeId = :importTypeId");
+			 updateFields.setParameter("importTypeId", programUploadTypeId);
+			 updateFields.setParameter("status", status);
+			 updateFields.executeUpdate();
+	}
+
+	@Override
+	@Transactional
+    public void deleteFormFieldsFromAlgorithms(Integer programUploadTypeId)
+			throws Exception {
+		String sql = "delete from put_algorithmFields  "
+				+ " where putFormFieldId in (select id from put_formFields where programuploadtypeid = :programUploadTypeId "
+				+ " and formfieldstatus = 'D') ";
+			
+        Query deleteData = sessionFactory.getCurrentSession().createSQLQuery(sql);
+        deleteData.setParameter("programUploadTypeId", programUploadTypeId);
+       
+        
+        deleteData.executeUpdate();
+		
 	}
 }

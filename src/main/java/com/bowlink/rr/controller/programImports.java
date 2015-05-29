@@ -406,7 +406,8 @@ public class programImports {
     public @ResponseBody
     Integer saveSectionFields(@RequestParam(value = "importTypeId", required = true) Integer importTypeId, HttpSession session) throws Exception {
 
-        importManager.deleteUploadTypeFields(importTypeId);
+        //we need to keep existing fieldId
+    	importManager.updateFormFieldStatus(importTypeId, "D");
         
         StringBuilder file_header = new StringBuilder();
         
@@ -414,15 +415,22 @@ public class programImports {
         int totalFields = importFields.size();
         int loopCounter = 1;
         for (programUploadTypesFormFields field : importFields) {
+        	//we are saving these, we set it to K - keep
+        	
             Integer oldFieldId = field.getId();
-
+            field.setFormFieldStatus("k");
             Integer newFieldId = importManager.saveUploadTypeField(field);
+            
             
             file_header.append(field.getFieldName());
             if(loopCounter < totalFields) {
                 file_header.append(",");
             }
         }
+        
+        //we need to delete these field from algorithm fields
+        importManager.deleteFormFieldsFromAlgorithms(importTypeId);
+        importManager.deleteUploadTypeFieldsByStatus(importTypeId, "D");
         
         //Generate sample CSV file for this import.
         

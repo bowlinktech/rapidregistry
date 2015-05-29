@@ -128,8 +128,8 @@ public class importManagerImpl implements importManager {
     
     @Override
     @Transactional
-    public void deleteUploadTypeFields(Integer importTypeId) throws Exception {
-        importDAO.deleteUploadTypeFields(importTypeId);
+    public void deleteUploadTypeFieldsByStatus(Integer importTypeId, String status) throws Exception {
+        importDAO.deleteUploadTypeFieldsByStatus(importTypeId, status);
     }
     
     @Override
@@ -1711,6 +1711,18 @@ public class importManagerImpl implements importManager {
 	public List <Integer> getFColumnsForProgramUploadType(
 			programUploads programUpload) throws Exception {
 		return importDAO.getFColumnsForProgramUploadType (programUpload);
+	}
+
+	@Override
+	public void updateFormFieldStatus(Integer programUploadTypeId, String status)  throws Exception {
+		importDAO.updateFormFieldStatus(programUploadTypeId, status);
+	}
+
+	@Override
+	public void deleteFormFieldsFromAlgorithms(Integer programUploadTypeId)
+			throws Exception {
+		importDAO.deleteFormFieldsFromAlgorithms(programUploadTypeId);
+		
 	}
 	
 	
