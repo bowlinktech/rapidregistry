@@ -9,6 +9,7 @@ import com.bowlink.rr.model.User;
 import com.bowlink.rr.model.MoveFilesLog;
 import com.bowlink.rr.model.delimiters;
 import com.bowlink.rr.model.errorCodes;
+import com.bowlink.rr.model.fieldsAndCols;
 import com.bowlink.rr.model.fileTypes;
 import com.bowlink.rr.model.programUploadRecordValues;
 import com.bowlink.rr.model.programUploadTypes;
@@ -172,11 +173,25 @@ public interface importManager {
     
     boolean hasTable (String tableName, Integer algorithmId) throws Exception;
     
-    void insertRecords (programUploads programUpload, Integer programUploadRecordId) throws Exception;
+    boolean insertRecords (programUploads programUpload, Integer programUploadRecordId) throws Exception;
     
     void insertNewProgramPatients (programUploads programUpload, Integer programUploadRecordId) throws Exception;    
     
     void updateProgramPatientIdInUploadRecord (programUploads programUpload, Integer programUploadRecordId) throws Exception; 
     
     void changeProgramUploadRecordStatus (programUploads programUpload, Integer programUploadRecordId, Integer oldStatusId, Integer newStatusId) throws Exception;
+    
+    boolean checkMultiValue (programUploads programUpload, String tableName) throws Exception;
+    
+    void insertStoragePatients(fieldsAndCols fieldsAndColumns, programUploads programUpload, Integer programUploadRecordId) throws Exception;
+    
+    void insertStorageEngagements(fieldsAndCols fieldsAndColumns, programUploads programUpload, Integer programUploadRecordId) throws Exception;
+    
+    List <fieldsAndCols> selectSingleInsertTableAndColumns (programUploads programUpload, String tableName);
+    
+    void updateEngagementIdForProgramUploadRecord (programUploads programUpload, Integer programUploadRecordId) throws Exception;
+    
+    void blanksToNull (programUploads programUpload, Integer programUploadRecordId) throws Exception;
+    
+    List <Integer> getFColumnsForProgramUploadType (programUploads programUpload) throws Exception;
 }

@@ -11,6 +11,7 @@ import com.bowlink.rr.model.MoveFilesLog;
 import com.bowlink.rr.model.algorithmCategories;
 import com.bowlink.rr.model.delimiters;
 import com.bowlink.rr.model.errorCodes;
+import com.bowlink.rr.model.fieldsAndCols;
 import com.bowlink.rr.model.fileTypes;
 import com.bowlink.rr.model.mailMessage;
 import com.bowlink.rr.model.program;
@@ -461,7 +462,7 @@ public class importManagerImpl implements importManager {
         		boolean patientMatch = false;
         		// we need table and column name, actionSQL to construct our sql statement
         		List <String> tableNames = getOtherAlgorithmTables (algorithm.getId());
-        		
+        		if (algorithm.getFields().size() > 0) {
         		int i = 1;
         		String sql = "select id from programpatients where programid = " + programUpload.getProgramId()
         				+ " and id in (select programpatientid from storage_patients where  ";
@@ -487,6 +488,7 @@ public class importManagerImpl implements importManager {
         		sql = sql.replace("F3", "'223456'");
         		
         		System.out.println(sql);
+        		}
         		//we check for matches for patients
         		//if sharing, we check across all sites in the entire registry
         		if (!programDetail.getSharing()) {
@@ -521,8 +523,14 @@ public class importManagerImpl implements importManager {
         	//update all ready records to 10
         	changeProgramUploadRecordStatus(programUpload, 0,9,10);
         	
-        	//insert records at this point all ready records with matches will 
-        	insertRecords(programUpload, 0);
+        	//insert records at this point all ready records
+        	 if (insertRecords(programUpload, 0)) {
+        		 //update batch status
+        		 	programUpload.setStatusId(7);
+        		 	programUpload.setStatusDateTime(new Date());
+			    	updateProgramUpload(programUpload);
+			    	return 1;
+        	 }
         	
 		return 0;
 }
@@ -1497,7 +1505,7 @@ public class importManagerImpl implements importManager {
 		                case 4:
 		                	uploadError.setErrorId(29);
 		                	try {
-		                			Date dateValue = new SimpleDateFormat("yyyy-mm-dd").parse(value);
+		                			new SimpleDateFormat("yyyy-mm-dd").parse(value);
 		                		} catch (Exception ex) {
 		                			doneWithLoop = true;
 		                		}
@@ -1567,35 +1575,70 @@ public class importManagerImpl implements importManager {
 	 * **/
 	@Override
 	@Transactional
-	public void insertRecords(programUploads programUpload,
+	public boolean insertRecords(programUploads programUpload,
 			Integer programUploadRecordId) throws Exception {
 		
 		//1 we get the insert statements,  storage_patients, storage_engagements should not have multi-values or multi-rows
+		boolean insertForPatient = checkMultiValue(programUpload, "storage_patients");
+		boolean insertForEngagement = checkMultiValue(programUpload, "storage_engagements");
 		
 		
-		/**	
-		 * we insert matched patients with new visits - 
-		 * matched patients - we need to look at action to see if we run more logics
-		 * 
-		 */
+		if (insertForPatient || insertForEngagement) {
+			//we insert error and stop processing
+			programUpload_Errors uploadError = new programUpload_Errors();
+			String errorData = " ";
+			if (insertForPatient) {
+				errorData = errorData + "storage_patients table";
+			}
+			if (insertForEngagement) {
+				errorData = errorData + "storage_engagements table";
+			}
+			uploadError.setErrorData(errorData);
+			uploadError.setErrorId(32);
+			uploadError.setProgramUploadId(programUpload.getId());
+			insertError(uploadError);
+			return false;
+		}	
+		
+			/** get fields list for storage_patients and storage_engagements first **/
+			List <fieldsAndCols> insertPatFields = selectSingleInsertTableAndColumns(programUpload,  "storage_patients");
+			List <fieldsAndCols> insertEngagementFields = selectSingleInsertTableAndColumns(programUpload,  "storage_engagements");
+			
+			/**	
+			 * we insert matched patients with new visits - 
+			 * matched patients - we need to look at action to see if we run more logics
+			 * 
+			 */
 			
 		
-		 /** 
-		  * we insert matched patients and matched visits
-		  * while insert matched visits, we need to check to see if we overwrite or use last visit's data
-		  */
+			 /** 
+			  * we insert matched patients and matched visits
+			  * while insert matched visits, we need to check to see if we overwrite or use last visit's data
+			  */
+				
+			/** we insert new patients last **/
+			//generate new program patient
+			insertNewProgramPatients(programUpload, 0);
+			//associate them back to programUploadRecord
+			updateProgramPatientIdInUploadRecord(programUpload, programUploadRecordId);
 			
-		/** we insert new patients last **/
-		//generate new program patient
-		insertNewProgramPatients(programUpload, 0);
-		//associate them back to programUploadRecord
-		updateProgramPatientIdInUploadRecord(programUpload, programUploadRecordId);
+			//need to set blank columns to null so it won't mess up insert statements
+			blanksToNull(programUpload, 0);
+			//insert these records
+			//1. insert into storage patients
+			insertStoragePatients(insertPatFields.get(0), programUpload, 0);
+			
+			//2. insert into storage engagements
+			insertStorageEngagements(insertEngagementFields.get(0), programUpload, 0);
+			
+			//update programUploadRecords with storage_engagementId with so we can link back
+			updateEngagementIdForProgramUploadRecord(programUpload, 0);
+			//loop through the rest of the tables and mass insert 
+			
+			//update the status of all these records
+			changeProgramUploadRecordStatus(programUpload, 0, 10, 12);
 		
-		//insert these records
-		
-		//update the status of all these records
-		changeProgramUploadRecordStatus(programUpload, 0, 10, 12);
-		
+		return true;
 		
 	}
 
@@ -1619,6 +1662,55 @@ public class importManagerImpl implements importManager {
 			throws Exception {
 		importDAO.changeProgramUploadRecordStatus(programUpload,programUploadRecordId, oldStatusId, newStatusId);
 		
+	}
+
+	@Override
+	public boolean checkMultiValue(programUploads programUpload,
+			String tableName) throws Exception {
+		return importDAO.checkMultiValue(programUpload,tableName);
+	}
+
+	@Override
+	public void insertStoragePatients(fieldsAndCols fieldsAndColumns,
+			programUploads programUpload, Integer programUploadRecordId) throws Exception {
+		importDAO.insertStoragePatients(fieldsAndColumns, programUpload, programUploadRecordId);
+	}
+
+	@Override
+	public List<fieldsAndCols> selectSingleInsertTableAndColumns(
+			programUploads programUpload, String tableName) {
+		return importDAO. selectSingleInsertTableAndColumns(programUpload, tableName);
+	}
+
+	@Override
+	public void insertStorageEngagements(fieldsAndCols fieldsAndColumns,
+			programUploads programUpload, Integer programUploadRecordId)
+			throws Exception {
+		importDAO.insertStorageEngagements(fieldsAndColumns, programUpload, programUploadRecordId);		
+	}
+
+	@Override
+	public void updateEngagementIdForProgramUploadRecord(
+			programUploads programUpload, Integer programUploadRecordId)
+			throws Exception {
+		importDAO.updateEngagementIdForProgramUploadRecord(programUpload, programUploadRecordId);	
+		
+	}
+
+
+
+	@Override
+	public void blanksToNull(programUploads programUpload, Integer programUploadRecordId) throws Exception {
+		List <Integer> fColumns = getFColumnsForProgramUploadType(programUpload);
+		for (Integer fColumn : fColumns) {
+			importDAO.blanksToNull(fColumn, programUpload, programUploadRecordId);		
+		}
+	}
+
+	@Override
+	public List <Integer> getFColumnsForProgramUploadType(
+			programUploads programUpload) throws Exception {
+		return importDAO.getFColumnsForProgramUploadType (programUpload);
 	}
 	
 	

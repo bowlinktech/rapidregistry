@@ -10,6 +10,7 @@ import com.bowlink.rr.model.User;
 import com.bowlink.rr.model.MoveFilesLog;
 import com.bowlink.rr.model.delimiters;
 import com.bowlink.rr.model.errorCodes;
+import com.bowlink.rr.model.fieldsAndCols;
 import com.bowlink.rr.model.fileTypes;
 import com.bowlink.rr.model.programUploadRecordValues;
 import com.bowlink.rr.model.programUploadTypes;
@@ -17,6 +18,7 @@ import com.bowlink.rr.model.programUploadTypesFormFields;
 import com.bowlink.rr.model.programUpload_Errors;
 import com.bowlink.rr.model.programUploads;
 
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
 
@@ -1227,15 +1229,15 @@ public class importDAOImpl implements importDAO {
 				if (programUploadRecordId > 0) {
 					sql = sql + " and programUploadRecordId = :programUploadRecordId";
 				}
-		Query updatData = sessionFactory.getCurrentSession().createSQLQuery(sql);
-        updatData.setParameter("programUploadId", programUploadId);
-        updatData.setParameterList("errorStatuses", errorStatuses);
+		Query updateData = sessionFactory.getCurrentSession().createSQLQuery(sql);
+        updateData.setParameter("programUploadId", programUploadId);
+        updateData.setParameterList("errorStatuses", errorStatuses);
         
         
         if (programUploadRecordId > 0) {
-        	updatData.setParameter("programUploadRecordId", programUploadRecordId);      
+        	updateData.setParameter("programUploadRecordId", programUploadRecordId);      
         }
-        updatData.executeUpdate();		
+        updateData.executeUpdate();		
 	}
 
 	@Override
@@ -1273,7 +1275,7 @@ public class importDAOImpl implements importDAO {
 				
 		        
 				List<String> tableNameList = query.list();
-				if (query.list().size() == 1) {
+				if (tableNameList.size() == 1) {
 					return true;
 				}
 				return false;
@@ -1290,13 +1292,13 @@ public class importDAOImpl implements importDAO {
 				if (programUploadRecordId > 0 ) {
 					sql = sql + " and id = :programUploadRecordId";
 				}
-		Query updatData = sessionFactory.getCurrentSession().createSQLQuery(sql);
-        updatData.setParameter("programUploadId", programUpload.getId());
+		Query updateData = sessionFactory.getCurrentSession().createSQLQuery(sql);
+        updateData.setParameter("programUploadId", programUpload.getId());
         
         if (programUploadRecordId > 0) {
-        	updatData.setParameter("programUploadRecordId", programUploadRecordId);      
+        	updateData.setParameter("programUploadRecordId", programUploadRecordId);      
         }
-        updatData.executeUpdate();			
+        updateData.executeUpdate();			
 	}
 	
 	@Override
@@ -1311,13 +1313,13 @@ public class importDAOImpl implements importDAO {
 				if (programUploadRecordId > 0 ) {
 					sql = sql + " and id = :programUploadRecordId";
 				}
-		Query updatData = sessionFactory.getCurrentSession().createSQLQuery(sql);
-        updatData.setParameter("programUploadId", programUpload.getId());
+		Query updateData = sessionFactory.getCurrentSession().createSQLQuery(sql);
+        updateData.setParameter("programUploadId", programUpload.getId());
         
         if (programUploadRecordId > 0) {
-        	updatData.setParameter("programUploadRecordId", programUploadRecordId);      
+        	updateData.setParameter("programUploadRecordId", programUploadRecordId);      
         }
-        updatData.executeUpdate();			
+        updateData.executeUpdate();			
 	}
 
 	@Override
@@ -1331,15 +1333,163 @@ public class importDAOImpl implements importDAO {
 				if (programUploadRecordId > 0 ) {
 					sql = sql + " and id = :programUploadRecordId";
 				}
-		Query updatData = sessionFactory.getCurrentSession().createSQLQuery(sql);
-        updatData.setParameter("programUploadId", programUpload.getId());
-        updatData.setParameter("newStatusId", newStatusId);
-        updatData.setParameter("oldStatusId", oldStatusId);
+		Query updateData = sessionFactory.getCurrentSession().createSQLQuery(sql);
+        updateData.setParameter("programUploadId", programUpload.getId());
+        updateData.setParameter("newStatusId", newStatusId);
+        updateData.setParameter("oldStatusId", oldStatusId);
         
         if (programUploadRecordId > 0) {
-        	updatData.setParameter("programUploadRecordId", programUploadRecordId);      
+        	updateData.setParameter("programUploadRecordId", programUploadRecordId);      
         }
-        updatData.executeUpdate();		
+        updateData.executeUpdate();		
 		
+	}
+
+	@Override
+	@Transactional
+	@SuppressWarnings("unchecked")
+	public boolean checkMultiValue(programUploads programUpload,
+			String tableName) throws Exception {
+		String sql = ("select count(*) as insertPerColumn from dataelements, put_formfields"
+				+ " where useField = 1 and dataelements.id = put_formfields.fieldId "
+				+ " and programuploadTypeid = :programUploadTypeId and saveToTableName = :tableName"
+				+ " group by saveToTableName, saveToTableCol "
+				+ " order by insertpercolumn desc, saveToTableName, saveToTableCol, multivalue;");
+  		
+				Query query = sessionFactory.getCurrentSession().createSQLQuery(sql)
+		        .setParameter("programUploadTypeId", programUpload.getProgramUploadTypeId())
+				.setParameter("tableName", tableName);
+				
+		        List<BigInteger> insertPerColumnList = query.list();
+				if (query.list().size() > 0) {
+					if (insertPerColumnList.get(0).compareTo(new BigInteger("1")) == 1) {
+						return true;
+					}
+				}
+				
+				return false;
+	}
+
+	@Override
+	@Transactional
+	public void insertStoragePatients(fieldsAndCols fieldsAndColumns,
+			programUploads programUpload, Integer programUploadRecordId)
+			throws Exception {
+		String sql = "insert into storage_patients (programPatientId, "+ fieldsAndColumns.getStorageFields() +") "
+				+ " select programpatientId, " +fieldsAndColumns.getfColumns() + " from programuploadrecords, programuploadRecorddetails "
+				+ " where programuploadrecords.id = programUploadRecordDetails.programUploadRecordId "
+				+ " and statusId = 10  and programuploadrecords.programUploadId = :programUploadId";
+				if (programUploadRecordId > 0 ) {
+					sql = sql + " and programuploadrecords.id = :programUploadRecordId";
+				}
+		Query updateData = sessionFactory.getCurrentSession().createSQLQuery(sql);
+        updateData.setParameter("programUploadId", programUpload.getId());
+        if (programUploadRecordId > 0) {
+        	updateData.setParameter("programUploadRecordId", programUploadRecordId);      
+        }
+        updateData.executeUpdate();	
+	}
+
+	@Override
+	@Transactional
+	@SuppressWarnings("unchecked")
+	public List <fieldsAndCols> selectSingleInsertTableAndColumns(programUploads programUpload, String tableName) {
+		String sql = ("select GROUP_CONCAT(saveToTableCol) as storageFields, GROUP_CONCAT((concat('F', dspPos))) as fColumns "
+				+ " from dataelements, put_formfields where useField = 1 and "
+				+ " dataelements.id = put_formfields.fieldId and programuploadTypeid = :programUploadTypeId "
+				+ "and saveToTableName = :tableName order by dspPos, saveToTableName, saveToTableCol;");
+  		
+				Query query = sessionFactory.getCurrentSession().createSQLQuery(sql)
+				.setResultTransformer(Transformers.aliasToBean(fieldsAndCols.class))
+		        .setParameter("programUploadTypeId", programUpload.getProgramUploadTypeId())
+				.setParameter("tableName", tableName);
+				
+		        List <fieldsAndCols> insertSQLList = query.list();
+				return insertSQLList;
+				
+	}
+	
+	@Override
+	@Transactional
+	public void insertStorageEngagements(fieldsAndCols fieldsAndColumns,
+			programUploads programUpload, Integer programUploadRecordId)
+			throws Exception {
+		String sql = "insert into storage_engagements (programPatientId, programId, programUploadRecordId,"
+				+ " "+ fieldsAndColumns.getStorageFields()+") "
+				+ " select programpatientId, "+ programUpload.getProgramId()+", programUploadRecordId, "+fieldsAndColumns.getfColumns()
+				+" from programuploadrecords, programuploadRecorddetails "
+				+ " where programuploadrecords.id = programUploadRecordDetails.programUploadRecordId "
+				+ " and statusId = 10  and programuploadrecords.programUploadId = :programUploadId";
+				if (programUploadRecordId > 0 ) {
+					sql = sql + " and programuploadrecords.id = :programUploadRecordId";
+				}
+		Query updateData = sessionFactory.getCurrentSession().createSQLQuery(sql);
+        updateData.setParameter("programUploadId", programUpload.getId());
+        if (programUploadRecordId > 0) {
+        	updateData.setParameter("programUploadRecordId", programUploadRecordId);      
+        }
+        updateData.executeUpdate();	
+	}
+
+	@Override
+	@Transactional
+	public void updateEngagementIdForProgramUploadRecord(
+			programUploads programUpload, Integer programUploadRecordId)
+			throws Exception {
+		
+		String sql = "UPDATE programUploadRecords INNER JOIN storage_engagements ON "
+				+ "(storage_engagements.programUploadRecordId = programUploadRecords.id)"
+				+ " SET programUploadRecords.storage_engagementId = storage_engagements.id "
+				+ " where statusId = 10 and programUploadId = :programUploadId";
+				if (programUploadRecordId > 0 ) {
+					sql = sql + " and programuploadrecords.id = :programUploadRecordId";
+				}
+		Query updateData = sessionFactory.getCurrentSession().createSQLQuery(sql);
+        updateData.setParameter("programUploadId", programUpload.getId());
+        if (programUploadRecordId > 0) {
+        	updateData.setParameter("programUploadRecordId", programUploadRecordId);      
+        }
+        updateData.executeUpdate();
+		
+	}
+
+	@Override
+	@Transactional
+	public void blanksToNull(Integer fColumn,
+			programUploads programUpload, Integer programUploadRecordId)
+			throws Exception {
+		String sql = "update programUploadRecordDetails set F" + fColumn + " = null where length(F"
+                + fColumn + ") = 0 "
+                + "and programUploadId = :programUploadId ";
+			if (programUploadRecordId > 0 ) {
+				sql = sql + "and id = :programUploadRecordId";
+			}
+
+        Query updateData = sessionFactory.getCurrentSession().createSQLQuery(sql);
+        updateData.setParameter("programUploadId", programUpload.getId());
+        if (programUploadRecordId > 0 ) {
+        	updateData.setParameter("programUploadRecordId", programUploadRecordId);
+		}
+        
+        updateData.executeUpdate();
+        
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	@Transactional
+	public List <Integer> getFColumnsForProgramUploadType(
+			programUploads programUpload) throws Exception {
+		String sql = ("select distinct dspPos as fColumns "
+				+ " from dataelements, put_formfields where useField = 1 and "
+				+ " dataelements.id = put_formfields.fieldId and programuploadTypeid = :programUploadTypeId "
+				+ " order by dspPos;");
+  		
+				Query query = sessionFactory.getCurrentSession().createSQLQuery(sql)
+				.setParameter("programUploadTypeId", programUpload.getProgramUploadTypeId());
+				
+		        List <Integer> columnList = query.list();
+		        
+				return columnList;
 	}
 }
