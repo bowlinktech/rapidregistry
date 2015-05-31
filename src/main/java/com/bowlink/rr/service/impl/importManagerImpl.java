@@ -44,6 +44,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -523,8 +524,31 @@ public class importManagerImpl implements importManager {
         	//update all ready records to 10
         	changeProgramUploadRecordStatus(programUpload, 0,9,10);
         	
+        	/** we check programUploadType configuration here 
+        	 * we should not have a table that contain a column that uses multi values and inserts by multi row
+        	 * patient and engagement are one to one, we should not have a record that need to insert twice into those tables
+        	 */
+        	
+        	List <String> errorList = checkProgamUploadTypeSetUp(programUpload);
+        	if (errorList.size() > 0) {
+				//we insert error and stop processing
+				programUpload_Errors uploadError = new programUpload_Errors();
+				String errorData = "Tables - ";
+				for (String error: errorList) {
+					errorData = errorData + " " +error;
+				}
+				uploadError.setErrorData(errorData);
+				uploadError.setErrorId(32);
+				uploadError.setProgramUploadId(programUpload.getId());
+				insertError(uploadError);
+				programUpload.setStatusId(7);
+    		 	programUpload.setStatusDateTime(new Date());
+		    	updateProgramUpload(programUpload);
+		    	return 1;
+			}
+        	
         	//insert records at this point all ready records
-        	 if (insertRecords(programUpload, 0)) {
+        	 if (!insertRecords(programUpload, 0)) {
         		 //update batch status
         		 	programUpload.setStatusId(7);
         		 	programUpload.setStatusDateTime(new Date());
@@ -1575,34 +1599,19 @@ public class importManagerImpl implements importManager {
 	 * **/
 	@Override
 	@Transactional
-	public boolean insertRecords(programUploads programUpload,
-			Integer programUploadRecordId) throws Exception {
-		
-		//1 we get the insert statements,  storage_patients, storage_engagements should not have multi-values or multi-rows
-		boolean insertForPatient = checkMultiValue(programUpload, "storage_patients");
-		boolean insertForEngagement = checkMultiValue(programUpload, "storage_engagements");
-		
-		
-		if (insertForPatient || insertForEngagement) {
-			//we insert error and stop processing
-			programUpload_Errors uploadError = new programUpload_Errors();
-			String errorData = " ";
-			if (insertForPatient) {
-				errorData = errorData + "storage_patients table";
-			}
-			if (insertForEngagement) {
-				errorData = errorData + "storage_engagements table";
-			}
-			uploadError.setErrorData(errorData);
-			uploadError.setErrorId(32);
-			uploadError.setProgramUploadId(programUpload.getId());
-			insertError(uploadError);
-			return false;
-		}	
+	public boolean insertRecords(programUploads programUpload, Integer programUploadRecordId) throws Exception {
 		
 			/** get fields list for storage_patients and storage_engagements first **/
-			List <fieldsAndCols> insertPatFields = selectSingleInsertTableAndColumns(programUpload,  "storage_patients");
-			List <fieldsAndCols> insertEngagementFields = selectSingleInsertTableAndColumns(programUpload,  "storage_engagements");
+			List <fieldsAndCols> insertPatFields = selectInsertTableAndColumns(programUpload,  "storage_patients");
+			List <fieldsAndCols> insertEngagementFields = selectInsertTableAndColumns(programUpload,  "storage_engagements");
+			
+			/**
+			 * There could be new patients that have multiple visits in this upload batch, 
+			 * we have to check and insert patients here and handle
+			 **/
+			
+			
+			 
 			
 			/**	
 			 * we insert matched patients with new visits - 
@@ -1633,7 +1642,43 @@ public class importManagerImpl implements importManager {
 			
 			//update programUploadRecords with storage_engagementId with so we can link back
 			updateEngagementIdForProgramUploadRecord(programUpload, 0);
-			//loop through the rest of the tables and mass insert 
+			
+			//rest of the tables
+			List <String> tableList = getNonMainTablesForProgramUploadType (programUpload.getProgramUploadTypeId());
+			 for (String tableName : tableList) {
+				 if (usesMultiValue(programUpload.getProgramUploadTypeId(), tableName)) {
+					 //we insert single values then we loop multiple values
+					 
+					 //we get fields with lists & blanks
+					 List <fieldsAndCols> insertFields = selectInsertTableAndColumns(programUpload, tableName);
+					 List <Integer> blankIds = getBlankRecordIds(insertFields.get(0), programUpload, 0);
+					 List <Integer> multiListIds = getListRecordIds(insertFields.get(0),programUpload,0);
+					 List <Integer> skipIds =  new ArrayList<Integer>(blankIds);
+					 skipIds.addAll(multiListIds);
+					 insertSingleStorageTable(insertFields.get(0), programUpload, tableName, 0, skipIds);						 
+					 
+					 //now we loop the field values and insert
+					//we loop through transactions with multiple values and use SP to loop values with delimiters
+		                for (Integer multiId : multiListIds) {
+		                    //we check how long field is
+		                    Integer subStringTotal = countSubString(insertFields.get(0), multiId);
+		                    for (int i = 0; i <= subStringTotal; i++) {
+		                        insertMultiValToMessageTables(insertFields.get(0), i+1, multiId, tableName, programUpload);
+		                    }
+		                }
+				} else if (multiRow(programUpload.getProgramUploadTypeId(), tableName)) {
+					 /** this only works for single field, single table values**/
+					 // we loop f values
+					 List <fieldsAndCols> insertFields = selectInsertTableAndColumns(programUpload, tableName);
+					 insertMultiRow(insertFields.get(0),programUpload, programUploadRecordId, tableName);
+				 } else {
+					 //old fashion select and insert
+					 List <fieldsAndCols> insertFields = selectInsertTableAndColumns(programUpload, tableName);
+					 insertSingleStorageTable(insertFields.get(0), programUpload, tableName, 0, getBlankRecordIds(insertFields.get(0), programUpload, 0));
+				 }
+						 
+						
+			 }
 			
 			//update the status of all these records
 			changeProgramUploadRecordStatus(programUpload, 0, 10, 12);
@@ -1677,9 +1722,9 @@ public class importManagerImpl implements importManager {
 	}
 
 	@Override
-	public List<fieldsAndCols> selectSingleInsertTableAndColumns(
+	public List<fieldsAndCols> selectInsertTableAndColumns(
 			programUploads programUpload, String tableName) {
-		return importDAO. selectSingleInsertTableAndColumns(programUpload, tableName);
+		return importDAO. selectInsertTableAndColumns(programUpload, tableName);
 	}
 
 	@Override
@@ -1724,9 +1769,111 @@ public class importManagerImpl implements importManager {
 		importDAO.deleteFormFieldsFromAlgorithms(programUploadTypeId);
 		
 	}
-	
-	
-	
+
+	/** this method gets tables needed for **/
+	@Override
+	public List<String> getNonMainTablesForProgramUploadType(
+			Integer programUploadTypeId) throws Exception {
+		return importDAO.getNonMainTablesForProgramUploadType(programUploadTypeId);
+	}
+
+	@Override
+	public boolean usesMultiValue(Integer programUploadTypeId, String tableName)
+			throws Exception {
+		return importDAO.usesMultiValue(programUploadTypeId, tableName);
+	}
+
+	@Override
+	public boolean multiRow(Integer programUploadTypeId, String tableName)
+			throws Exception {
+		return importDAO.multiRow(programUploadTypeId, tableName);
+	}
+
+	@Override
+	public List <String> checkProgamUploadTypeSetUp(programUploads programUpload) throws Exception {
+		 List<String> errorList = new ArrayList<String>();
+		 
+		 	//1 we get the insert statements,  storage_patients, storage_engagements should not have multiple values or multi-rows
+			if (checkMultiValue(programUpload, "storage_patients")) {
+				errorList.add("storage_patients");
+			}
+			if (checkMultiValue(programUpload, "storage_engagements")) {
+				errorList.add("storage_engagements");
+			} 
+			
+			//loop through the rest of the tables and determine if we need to mass insert 
+			 List <String> tableList = getNonMainTablesForProgramUploadType (programUpload.getProgramUploadTypeId());
+			 for (String tableName : tableList) {
+				 boolean containsMultiRow = multiRow(programUpload.getProgramUploadTypeId(), tableName);
+				 boolean useMultiValue = usesMultiValue(programUpload.getProgramUploadTypeId(), tableName);
+				 if (useMultiValue && containsMultiRow) {
+					 errorList.add(tableName);
+				 }	else if (containsMultiRow && !useMultiValue) {
+					 //we need to make sure it is a one to one ratio
+					 if (!checkMultiRowSetUp(programUpload.getProgramUploadTypeId(), tableName)) {
+						 errorList.add(tableName);
+					 }
+				 }
+			 }
+			 return errorList;
+
+	}
+
+	@Override
+	public void insertSingleStorageTable(fieldsAndCols fieldsAndColumns,
+			programUploads programUpload, String tableName, Integer programUploadRecordId, List<Integer> skipRecordIds) throws Exception {
+			importDAO.insertSingleStorageTable(fieldsAndColumns, programUpload, tableName, programUploadRecordId, skipRecordIds);
+		
+	}
+
+	@Override
+	public List<Integer> getBlankRecordIds (fieldsAndCols fieldsAndColumns, programUploads programUpload, Integer programUploadRecordId) 
+			throws Exception {
+		// TODO Auto-generated method stub
+		return importDAO.getBlankRecordIds (fieldsAndColumns, programUpload, programUploadRecordId);
+	}
+
+	@Override
+	public List<Integer> getListRecordIds(fieldsAndCols fieldsAndColumns,
+			programUploads programUpload, Integer programUploadRecordId)
+			throws Exception {
+		return importDAO.getListRecordIds (fieldsAndColumns, programUpload, programUploadRecordId);
+	}
+
+	@Override
+	public Integer countSubString(fieldsAndCols fieldsAndColumns, Integer programUploadRecordId) throws Exception{
+		String col = fieldsAndColumns.getfColumns();
+        if (fieldsAndColumns.getfColumns().contains(",")) {
+            col = fieldsAndColumns.getfColumns().substring(0, fieldsAndColumns.getfColumns().indexOf(","));        
+        }
+        return importDAO.countSubString(col, programUploadRecordId);
+	}
+
+	@Override
+	public void insertMultiValToMessageTables(fieldsAndCols fieldsAndColumns,
+			Integer subStringCounter, Integer programUploadRecordId, String tableName, programUploads programUpload)
+			throws Exception {
+		importDAO.insertMultiValToMessageTables(fieldsAndColumns, subStringCounter, programUploadRecordId, tableName, programUpload);		
+	}
+
+	@Override
+	public boolean checkMultiRowSetUp(Integer programUploadTypeId, String tableName) throws Exception {
+		return importDAO.checkMultiRowSetUp(programUploadTypeId, tableName);
+	}
+
+	@Override
+	public void insertMultiRow(fieldsAndCols fieldsAndColumns,
+			programUploads programUpload, Integer programUploadRecordId, String tableName)
+			throws Exception {
+		String storageColumn = Arrays.asList(fieldsAndColumns.getStorageFields().split("\\s*,\\s*")).get(0);
+		for (String fField : Arrays.asList(fieldsAndColumns.getfColumns().split("\\s*,\\s*"))) {
+			fieldsAndCols fNC = new fieldsAndCols();
+			fNC.setfColumns(fField);
+			fNC.setStorageFields(storageColumn);
+			insertSingleStorageTable(fNC, programUpload, tableName, 0, getBlankRecordIds(fNC, programUpload, 0));	
+		}
+		
+	}
 	
 }
 

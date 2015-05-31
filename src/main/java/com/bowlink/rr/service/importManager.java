@@ -187,7 +187,7 @@ public interface importManager {
     
     void insertStorageEngagements(fieldsAndCols fieldsAndColumns, programUploads programUpload, Integer programUploadRecordId) throws Exception;
     
-    List <fieldsAndCols> selectSingleInsertTableAndColumns (programUploads programUpload, String tableName);
+    List <fieldsAndCols> selectInsertTableAndColumns (programUploads programUpload, String tableName);
     
     void updateEngagementIdForProgramUploadRecord (programUploads programUpload, Integer programUploadRecordId) throws Exception;
     
@@ -198,4 +198,27 @@ public interface importManager {
     void updateFormFieldStatus(Integer programUploadTypeId, String status) throws Exception;
     
     void deleteFormFieldsFromAlgorithms (Integer programUploadTypeId) throws Exception;
+    
+    List <String> getNonMainTablesForProgramUploadType (Integer programUploadTypeId) throws Exception;
+    
+    boolean usesMultiValue (Integer programUploadTypeId, String tableName) throws Exception;
+    
+    boolean multiRow (Integer programUploadTypeId, String tableName) throws Exception;
+    
+    List <String> checkProgamUploadTypeSetUp (programUploads programUpload) throws Exception;
+    
+    void insertSingleStorageTable(fieldsAndCols fieldsAndColumns, programUploads programUpload, String tableName, Integer programUploadRecordId, List<Integer> skipRecordIds) throws Exception;
+    
+    List<Integer> getBlankRecordIds (fieldsAndCols fieldsAndColumns, programUploads programUpload, Integer programUploadRecordId) throws Exception;
+    
+    List<Integer> getListRecordIds (fieldsAndCols fieldsAndColumns, programUploads programUpload, Integer programUploadRecordId) throws Exception;
+    
+    Integer countSubString(fieldsAndCols fieldsAndColumns, Integer programUploadRecordId) throws Exception;
+    
+    void insertMultiValToMessageTables(fieldsAndCols fieldsAndColumns, Integer subStringCounter, Integer programUploadRecordId, String tableName, programUploads programUpload) throws Exception;
+    
+    boolean checkMultiRowSetUp(Integer programUploadTypeId, String tableName) throws Exception;
+    
+    void insertMultiRow(fieldsAndCols fieldsAndColumns, programUploads programUpload, Integer programUploadRecordId, String tableName) throws Exception;
+
 }

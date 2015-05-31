@@ -15,6 +15,8 @@ public class fieldsAndCols {
     
     String storageFields = null;
     String fColumns = null;
+    String checkForDelimSQL = null;
+    String splitFieldSQL = null;
     
 	public String getStorageFields() {
 		return storageFields;
@@ -28,5 +30,17 @@ public class fieldsAndCols {
 	public void setfColumns(String fColumns) {
 		this.fColumns = fColumns;
 	}
- 
+	public String getCheckForDelimSQL() {
+		return checkForDelimSQL;
+	}
+	public void setCheckForDelimSQL(String checkForDelimSQL) {
+		this.checkForDelimSQL = checkForDelimSQL;
+	}
+	public String getSplitFieldSQL() {
+		return splitFieldSQL;
+	}
+	public void setSplitFieldSQL(String splitFieldSQL) {
+		this.splitFieldSQL = splitFieldSQL;
+	}
+
 }
