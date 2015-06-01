@@ -26,6 +26,7 @@
                     <form:hidden path="id" id="id" />
                     <form:hidden path="programHierarchyId" />
                     <form:hidden path="dateCreated" />
+                    <input type="text" name="selActivityCodes" id="selActivityCodes" value="" />
                     <div class="form-container">
                         <div class="form-group">
                             <label for="status">Status *</label>
@@ -111,7 +112,7 @@
                                             <input type="checkbox" class="entitySelect" entityId="${entityItem.id}" <c:if test="${entityItem.isAssociated == true}">checked="checked"</c:if> />
                                         </span>
                                         <input type="text" class="form-control" value="${entityItem.name}" readonly="true" style="font-weight:bold">
-                                   </div>
+                                    </div>
                                 </li>
                             </c:forEach> 
                         </c:if>
@@ -119,6 +120,18 @@
                 </div>
             </div>
         </section>    
+        <section class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Associated Code Sets</h3>
+            </div>
+            <div class="panel-body">
+                <select multiple="" class="form-control" id="form-field-select-4">
+                    <c:forEach items="${availActivityCodes}" var="activityCode">
+                        <option value="${activityCode.id}">${activityCode.code} - ${activityCode.codeDesc}</option>
+                    </c:forEach>
+                </select>
+            </div>
+        </section>
     </div>
 </div>
 

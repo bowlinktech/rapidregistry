@@ -20,7 +20,7 @@ import javax.persistence.Table;
 @Table(name = "PROGRAMORGHIERARCHY_ASSOC")
 public class programOrgHierarchyAssoc {
     
-     @Id
+    @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID", nullable = false)
     private int id;

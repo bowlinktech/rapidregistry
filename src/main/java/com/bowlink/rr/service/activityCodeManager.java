@@ -48,4 +48,6 @@ public interface activityCodeManager {
     
     void removeCategoryAssoc(Integer id) throws Exception;
     
+    void saveActivityCodesForEntity(List<Integer> selActivityCodes, Integer EntityItemId) throws Exception;
+    
 }

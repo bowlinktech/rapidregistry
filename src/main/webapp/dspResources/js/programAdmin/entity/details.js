@@ -1,7 +1,14 @@
 
 
 require(['./main'], function() {
-    require(['jquery'], function($) {
+    require(['jquery', 'multiselect'], function($) {
+        
+        $('#form-field-select-4').multiselect({
+            inheritClass: true,
+            buttonWidth: '400px', 
+            numberDisplayed: 0,
+            includeSelectAllOption: true
+        });
 
         $("input:text,form").attr("autocomplete", "off");
 
@@ -12,11 +19,17 @@ require(['./main'], function() {
         
         $('#saveDetails').click(function(event) {
             $('#action').val('save');
+            
+            $('#selActivityCodes').val($('#form-field-select-4').val());
+            
             $("#hierarchyItemdetailsform").submit();
         });
 
         $('#saveCloseDetails').click(function(event) {
             $('#action').val('close');
+            
+            $('#selActivityCodes').val($('#form-field-select-4').val());
+            
             $("#hierarchyItemdetailsform").submit();
         });
         

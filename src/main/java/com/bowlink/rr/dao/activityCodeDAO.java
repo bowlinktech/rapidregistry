@@ -10,6 +10,7 @@ import com.bowlink.rr.model.activityCodeAssocCategories;
 import com.bowlink.rr.model.activityCodeCategories;
 import com.bowlink.rr.model.activityCodes;
 import com.bowlink.rr.model.programActivityCodes;
+import com.bowlink.rr.model.programOrgHierarchyDetailActivityCodes;
 import java.util.List;
 
 /**
@@ -47,5 +48,9 @@ public interface activityCodeDAO {
     void saveActivityCodeCategoryAssoc(activityCodeAssocCategories newAssoc) throws Exception;
     
     void removeCategoryAssoc(Integer id) throws Exception;
+    
+    void removeEntityActivityCodes(Integer entityItemId) throws Exception;
+    
+    void saveEntityActivityCodes(programOrgHierarchyDetailActivityCodes newCodeAssoc) throws Exception;
     
 }

@@ -5,12 +5,15 @@
  */
 package com.bowlink.rr.controller;
 
+import com.bowlink.rr.model.activityCodes;
+import com.bowlink.rr.model.programActivityCodes;
 import com.bowlink.rr.model.programOrgHierarchy;
 import com.bowlink.rr.model.programOrgHierarchyAssoc;
 import com.bowlink.rr.model.programOrgHierarchyDetails;
 import com.bowlink.rr.reference.USStateList;
 import com.bowlink.rr.security.decryptObject;
 import com.bowlink.rr.security.encryptObject;
+import com.bowlink.rr.service.activityCodeManager;
 import com.bowlink.rr.service.orgHierarchyManager;
 import com.bowlink.rr.service.programManager;
 import java.net.URLEncoder;
@@ -46,6 +49,10 @@ public class entityController {
     
     @Autowired
     orgHierarchyManager orghierarchymanager;
+    
+    @Autowired
+    activityCodeManager activitycodemanager;
+    
     
     private String topSecret = "What goes up but never comes down";
     
@@ -272,6 +279,13 @@ public class entityController {
         //Get the object that will hold the states
         mav.addObject("stateList", stateList.getStates());
         
+        /* Get a lit of available activity codes */
+        List<activityCodes> availActivityCodes = activitycodemanager.getActivityCodesByProgram((Integer) session.getAttribute("selprogramId"));
+        
+        
+        
+        mav.addObject("availActivityCodes", availActivityCodes);
+        
         return mav;
 
     }
@@ -294,6 +308,7 @@ public class entityController {
             @RequestParam String action, 
             @RequestParam String i, 
             @RequestParam String v, 
+            @RequestParam(value = "selActivityCodes", required = false) List<Integer> selActivityCodes,
             HttpSession session,
             HttpServletResponse response) throws Exception {
         
@@ -317,6 +332,10 @@ public class entityController {
         }
        
         orghierarchymanager.saveOrgHierarchyItem(entityItemDetails);
+        
+        if(selActivityCodes != null && !selActivityCodes.isEmpty()) {
+            activitycodemanager.saveActivityCodesForEntity(selActivityCodes, itemId);
+        }
 
         if (action.equals("save")) {
             redirectAttr.addFlashAttribute("savedStatus", "updated");

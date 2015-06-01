@@ -25,7 +25,10 @@ import org.springframework.format.annotation.DateTimeFormat;
 public class programActivityCodes {
     
     @Transient
-    private String codeValue = null;
+    private String codeValue;
+    
+    @Transient
+    private String codeDesc;
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -82,5 +85,13 @@ public class programActivityCodes {
         this.codeValue = codeValue;
     }
     
+
+    public String getCodeDesc() {
+        return codeDesc;
+    }
+
+    public void setCodeDesc(String codeDesc) {
+        this.codeDesc = codeDesc;
+    }
     
 }

@@ -11,6 +11,7 @@ import com.bowlink.rr.model.activityCodeAssocCategories;
 import com.bowlink.rr.model.activityCodeCategories;
 import com.bowlink.rr.model.activityCodes;
 import com.bowlink.rr.model.programActivityCodes;
+import com.bowlink.rr.model.programOrgHierarchyDetailActivityCodes;
 import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -282,6 +283,29 @@ public class activityCodeDAOImpl implements activityCodeDAO {
         Query deleteCategoryAssoc = sessionFactory.getCurrentSession().createQuery("delete from activityCodeAssocCategories where id = :id");
         deleteCategoryAssoc.setParameter("id", id);
         deleteCategoryAssoc.executeUpdate();
+    }
+    
+    /**
+     * The 'removeEntityActivityCodes' function will remove the existing activity code and entityId associations
+     * @param entityItemId
+     * @throws Exception 
+     */
+    @Override
+    public void removeEntityActivityCodes(Integer entityItemId) throws Exception {
+        Query deleteEntityActivityCodes = sessionFactory.getCurrentSession().createQuery("delete from programOrgHierarchyDetailActivityCodes where detailId = :detailId");
+        deleteEntityActivityCodes.setParameter("detailId", entityItemId);
+        deleteEntityActivityCodes.executeUpdate();
+    }
+    
+    /**
+     * The 'saveEntityActivityCodes' function will save the associated activity codes to the selected entityId
+     * activity code
+     * 
+     * @param   newCodeAssoc    The new activity code and entity object
+     */
+    @Override
+    public void saveEntityActivityCodes(programOrgHierarchyDetailActivityCodes newCodeAssoc) throws Exception {
+        sessionFactory.getCurrentSession().save(newCodeAssoc);
     }
     
 }

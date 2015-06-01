@@ -12,7 +12,8 @@ require.config({
         'daterangepicker': '../vendor/daterangepicker',
         'dataTables': '../vendor/jquery.dataTables.min',
         'duallistbox': '../vendor/jquery.bootstrap-duallistbox',
-        'summernote' : '../vendor/summernote.min'
+        'summernote' : '../vendor/summernote.min',
+        'multiselect' : '../bootstrap-multiselect.min'
     },
     shim: {
         'bootstrap': ['jquery'],
@@ -20,7 +21,8 @@ require.config({
         'daterangepicker': ['jquery', 'bootstrap'],
         'dataTables': ['jquery'],
         'duallistbox': ['jquery'],
-        'summernote': ['jquery']
+        'summernote': ['jquery'],
+        'multiselect':['jquery']
     }
 });
 

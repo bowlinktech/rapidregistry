@@ -11,8 +11,11 @@ import com.bowlink.rr.model.activityCodeAssocCategories;
 import com.bowlink.rr.model.activityCodeCategories;
 import com.bowlink.rr.model.activityCodes;
 import com.bowlink.rr.model.programActivityCodes;
+import com.bowlink.rr.model.programOrgHierarchyDetailActivityCodes;
 import com.bowlink.rr.service.activityCodeManager;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -116,6 +119,31 @@ public class activityCodeManagerImpl implements activityCodeManager {
     @Transactional
     public void removeCategoryAssoc(Integer id) throws Exception {
         activityCodeDAO.removeCategoryAssoc(id);
+    }
+    
+    @Override
+    @Transactional
+    public void saveActivityCodesForEntity(List<Integer> selActivityCodes, Integer entityItemId) throws Exception {
+        
+        try {
+            /* First remove existing activity code entity associations */
+            activityCodeDAO.removeEntityActivityCodes(entityItemId);
+        } catch (Exception ex) {
+            Logger.getLogger(activityCodeManagerImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        for(Integer codeId : selActivityCodes) {
+            programOrgHierarchyDetailActivityCodes newCodeAssoc = new programOrgHierarchyDetailActivityCodes();
+            newCodeAssoc.setCodeId(codeId);
+            newCodeAssoc.setDetailId(entityItemId);
+            
+            try {
+                activityCodeDAO.saveEntityActivityCodes(newCodeAssoc);
+            } catch (Exception ex) {
+                Logger.getLogger(activityCodeManagerImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
     }
     
 }
