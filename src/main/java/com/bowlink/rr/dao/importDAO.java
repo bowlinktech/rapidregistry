@@ -118,7 +118,7 @@ public interface importDAO {
     
     void updateProgramHierarchyId (Integer programUploadId, Integer programUploadRecordId, Integer dspPos) throws Exception;
     
-    List <String> getOtherAlgorithmTables (Integer algorithmId) throws Exception;
+    List <String> getAlgorithmTables (Integer algorithmId, String type) throws Exception;
     
     boolean hasTable (String tableName, Integer algorithmId) throws Exception;
     

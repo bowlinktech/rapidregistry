@@ -1251,12 +1251,12 @@ public class importDAOImpl implements importDAO {
 	@Override
 	@Transactional
 	@SuppressWarnings("unchecked")
-	public List<String> getOtherAlgorithmTables(Integer algorithmId)
+	public List<String> getAlgorithmTables(Integer algorithmId, String type)
 			throws Exception {
 		String sql = ("select distinct saveToTableName from dataElements where id in ("
 				+ " select fieldId from put_formFields where id in ("
 				+ " select putFormFieldId from put_algorithmFields where algorithmid = :algorithmId)) "
-				+ " and saveToTableName != 'storage_patients' order by saveToTableName;");
+				+ " and saveToTableName like '%"+ type + "%' order by saveToTableName;");
   		
 				Query query = sessionFactory.getCurrentSession().createSQLQuery(sql)
 		        .setParameter("algorithmId", algorithmId);

@@ -46,7 +46,7 @@ public class programUploadTypeAlgorithmFields {
     private String action = "equals";
     
     @Column(name = "ACTIONSQL", nullable = false)
-    private String actionSQL = "=";
+    private String actionSQL = "in";
 
     public int getId() {
         return id;

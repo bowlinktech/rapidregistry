@@ -462,34 +462,45 @@ public class importManagerImpl implements importManager {
 			for (programUploadTypeAlgorithm algorithm : patAlgorithms.getAlgorithms()){
         		boolean patientMatch = false;
         		// we need table and column name, actionSQL to construct our sql statement
-        		List <String> tableNames = getOtherAlgorithmTables (algorithm.getId());
+        		List <String> engagementTableNames = getAlgorithmTables (algorithm.getId(), "storage_engagement");
+        		List <String> patientTableNames = getAlgorithmTables (algorithm.getId(), "storage_patient");
+        		
         		if (algorithm.getFields().size() > 0) {
         		int i = 1;
+        		
         		String sql = "select id from programpatients where programid = " + programUpload.getProgramId()
-        				+ " and id in (select programpatientid from storage_patients where  ";
+        				+ " and id in (select storage_patients.programpatientid from ";
+        				/** we always have to add  storage_engagements table if other engagement tables are involved in algorithm **/
+		        		for (String engagementTableName : engagementTableNames) {
+							sql = sql + " " + engagementTableName + ",";
+						}
+		        		for (String patientTableName : patientTableNames) {
+        					sql = sql +  patientTableName + ",";
+        				}
+		        		
+		        		sql = sql.substring(0, sql.length()-1).trim() + " where ";
+		        		//TODO need to tweak join fields
+        				sql = sql + " storage_engagements.programpatientid = storage_patients.programpatientid ";
+        				
         		for (programUploadTypeAlgorithmFields field: algorithm.getFields()) {
-        			if (i > 1) {
-        				sql = sql + (" and ");
-        			}
-        			sql = sql + ("F" + field.getPutField().getDspPos() + " ");
-        			sql = sql + (field.getActionSQL() + " ");
-        			sql = sql + (field.getDataElement().getSaveToTableName() + "." + field.getDataElement().getSaveToTableCol());         			
+        			sql = sql + " and " + (field.getDataElement().getSaveToTableName() + "." + field.getDataElement().getSaveToTableCol());
+        			//in vs not in
+        			sql = sql + " " + (field.getActionSQL() + " "); 
+        			sql = sql +" (select " + ("F" + field.getPutField().getDspPos() + " ");
+        			sql = sql +"from programuploadrecorddetails where programuploadrecordid = :programUploadRecordId)";
         			i++;
         		}
-        		if (tableNames.size() > 0 ) {
-        			for (String tableName : tableNames) {
-        				sql = sql + (" and storage_engagements.id = " + tableName + ".storage_engagementId");
-        			}
-        		}
-        		if (hasTable("'storage_engagements'", algorithm.getId()) || tableNames.size() > 0) {
-        			sql = sql + (" and storage_engagements.storagePatientsId = storage_patients.id");
-        		}
-        		//System.out.println(sql);
         		
-        		sql = sql.replace("F3", "'223456'");
+        		sql = sql + ");";
         		
         		System.out.println(sql);
         		}
+        		
+        		//we create sql once and loop programUploadRecordId
+        		
+        		
+        		//we have to insert patients or else duplicate patients down the line won't be caught
+        		
         		//we check for matches for patients
         		//if sharing, we check across all sites in the entire registry
         		if (!programDetail.getSharing()) {
@@ -516,7 +527,7 @@ public class importManagerImpl implements importManager {
         		//we check for matches for visits
         		//if only one visit is allowed per day and we check for matches
         		if (programDetail.getVisitsPerDay() != 1) {
-        			//check rules, etc, we update programUploadRecord's status to 12, which means ready to insert
+        			//check rules, etc, we update programUploadRecord's status to 10, which means ready to insert
         		}
         		
         	}
@@ -1580,9 +1591,9 @@ public class importManagerImpl implements importManager {
 	}
 
 	@Override
-	public List<String> getOtherAlgorithmTables(Integer algorithmId)
+	public List<String> getAlgorithmTables(Integer algorithmId, String type)
 			throws Exception {
-		return importDAO.getOtherAlgorithmTables(algorithmId);
+		return importDAO.getAlgorithmTables(algorithmId, type);
 	}
 
 	@Override

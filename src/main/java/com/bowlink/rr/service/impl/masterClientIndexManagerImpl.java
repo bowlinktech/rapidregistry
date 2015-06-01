@@ -210,14 +210,14 @@ public class masterClientIndexManagerImpl implements masterClientIndexManager {
 			programUploadTypeAlgorithmFields putField) throws Exception {
 		switch (putField.getAction()) {
 			case "equals":
-				putField.setActionSQL("=");
+				putField.setActionSQL("in");
 				break;
 				
 			case "does not equal":
-					putField.setActionSQL("!=");
+					putField.setActionSQL("not in");
 					break;
 			default:
-					putField.setActionSQL("=");
+					putField.setActionSQL("in");
 				break;		
 		}
 		return putField;
