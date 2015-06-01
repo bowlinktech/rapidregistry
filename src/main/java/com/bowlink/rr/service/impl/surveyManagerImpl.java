@@ -9,7 +9,6 @@ import com.bowlink.rr.dao.surveyDAO;
 import com.bowlink.rr.model.AnswerTypes;
 import com.bowlink.rr.model.SurveyQuestionChoices;
 import com.bowlink.rr.model.SurveyChangeLogs;
-import com.bowlink.rr.model.SurveyDateQuestionRows;
 import com.bowlink.rr.model.SurveyPages;
 import com.bowlink.rr.model.SurveyQuestions;
 import com.bowlink.rr.model.surveys;
@@ -182,12 +181,6 @@ public class surveyManagerImpl implements surveyManager {
     
     @Override
     @Transactional
-    public List<SurveyDateQuestionRows> getDateRows(Integer questionId) throws Exception {
-        return surveyDAO.getDateRows(questionId);
-    }
-    
-    @Override
-    @Transactional
     public void removeQuestionChoices(Integer questionId) throws Exception {
         surveyDAO.removeQuestionChoices(questionId);
     }
@@ -208,12 +201,6 @@ public class surveyManagerImpl implements surveyManager {
     @Transactional
     public void removeDateRows(Integer questionId) throws Exception {
         surveyDAO.removeDateRows(questionId);
-    }
-    
-    @Override
-    @Transactional
-    public void saveDateRows(SurveyDateQuestionRows row) throws Exception {
-        surveyDAO.saveDateRows(row);
     }
     
     @Override
@@ -289,9 +276,8 @@ public class surveyManagerImpl implements surveyManager {
                         newQuestion.setOtherLabel(question.getOtherLabel());
                         newQuestion.setOtherDspChoice(question.getOtherDspChoice());
                         newQuestion.setDateFormatType(question.getDateFormatType());
-                        newQuestion.setCollectDateInfo(question.isCollectDateInfo());
-                        newQuestion.setCollectTimeInfo(question.isCollectTimeInfo());
-                        newQuestion.setDateDspType(question.getDateDspType());
+                        newQuestion.setDateType(question.getDateType());
+                        newQuestion.setIncludeTime(question.isIncludeTime());
                         
                         Integer newQuestionId = surveyDAO.saveNewSurveyQuestion(newQuestion);
                         

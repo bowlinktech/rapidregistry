@@ -13,7 +13,6 @@ import com.bowlink.rr.model.User;
 import com.bowlink.rr.model.activityCodes;
 import com.bowlink.rr.model.surveys;
 import com.bowlink.rr.model.Log_userSurveyActivity;
-import com.bowlink.rr.model.SurveyDateQuestionRows;
 import com.bowlink.rr.model.SurveyQuestionChoices;
 import com.bowlink.rr.model.programAvailableTables;
 import com.bowlink.rr.security.decryptObject;
@@ -519,10 +518,6 @@ public class surveyController {
                         List<SurveyQuestionChoices> questionChoices = surveymanager.getQuestionChoices(question.getId());
                         question.setquestionChoices(questionChoices);
                     }
-                    else if(question.getAnswerTypeId() == 6) {
-                        List<SurveyDateQuestionRows> rows = surveymanager.getDateRows(question.getId());
-                        question.setDateQuestionRows(rows);
-                    }
                 }
                 
                 page.setSurveyQuestions(questions);
@@ -691,17 +686,6 @@ public class surveyController {
             }
             surveyQuestion.setquestionChoices(questionChoices);
         }
-        /* Create 1 blank row for a date / time question */
-        else if(questionType == 6) {
-            List<SurveyDateQuestionRows> dateRows = new CopyOnWriteArrayList<>();
-            
-            for(int i = 1; i <= 1; i++) {
-                SurveyDateQuestionRows dateRow = new SurveyDateQuestionRows();
-                dateRows.add(dateRow);
-            }
-            surveyQuestion.setDateQuestionRows(dateRows);
-        }
-        
         
         mav.addObject("surveyQuestion", surveyQuestion);
        
@@ -751,11 +735,7 @@ public class surveyController {
             List<SurveyQuestionChoices> questionChoices = surveymanager.getQuestionChoices(questionId);
             questionDetails.setquestionChoices(questionChoices);
         }
-        else if(questionDetails.getAnswerTypeId() == 6) {
-            List<SurveyDateQuestionRows> dateRows = surveymanager.getDateRows(questionId);
-            questionDetails.setDateQuestionRows(dateRows);
-        }
-        
+       
         /* Get the page details */
         SurveyPages pageDetails = surveymanager.getSurveyPageById(questionDetails.getSurveyPageId());
         questionDetails.setPageNum(pageDetails.getPageNum());
@@ -913,18 +893,6 @@ public class surveyController {
             /* Delete existing date / time rows */
             surveymanager.removeDateRows(questionId);
             
-            if(surveyQuestion.getDateQuestionRows()!= null) {
-                
-                for(SurveyDateQuestionRows row : surveyQuestion.getDateQuestionRows()) {
-                    
-                    if(!"".equals(row.getLabel())) {
-                     
-                        row.setQuestionId(questionId);
-
-                        surveymanager.saveDateRows(row);
-                    }
-                }
-            }
         }
         
         return questionId;

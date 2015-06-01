@@ -27,9 +27,6 @@ public class SurveyQuestions {
     List<SurveyQuestionChoices> questionChoices;
     
     @Transient
-    List<SurveyDateQuestionRows> dateQuestionRows;
-    
-    @Transient
     private Integer pageNum = 0;
 
     @Id
@@ -111,14 +108,11 @@ public class SurveyQuestions {
     @Column(name = "dateFormatType", nullable = true)
     private int dateFormatType = 0;
     
-    @Column(name = "collectDateInfo", nullable = true)
-    private boolean collectDateInfo = true;
+    @Column(name = "includeTime", nullable = true)
+    private boolean includeTime = false;
     
-    @Column(name = "collectTimeInfo", nullable = true)
-    private boolean collectTimeInfo = false;
-    
-    @Column(name = "dateDspType", nullable = true)
-    private int dateDspType = 0;
+    @Column(name = "dateType", nullable = true)
+    private int dateType = 1;
     
     
     public int getId() {
@@ -329,36 +323,21 @@ public class SurveyQuestions {
         this.dateFormatType = dateFormatType;
     }
 
-    public boolean isCollectDateInfo() {
-        return collectDateInfo;
+    public boolean isIncludeTime() {
+        return includeTime;
     }
 
-    public void setCollectDateInfo(boolean collectDateInfo) {
-        this.collectDateInfo = collectDateInfo;
+    public void setIncludeTime(boolean includeTime) {
+        this.includeTime = includeTime;
     }
 
-    public boolean isCollectTimeInfo() {
-        return collectTimeInfo;
+    public int getDateType() {
+        return dateType;
     }
 
-    public void setCollectTimeInfo(boolean collectTimeInfo) {
-        this.collectTimeInfo = collectTimeInfo;
+    public void setDateType(int dateType) {
+        this.dateType = dateType;
     }
-
-    public int getDateDspType() {
-        return dateDspType;
-    }
-
-    public void setDateDspType(int dateDspType) {
-        this.dateDspType = dateDspType;
-    }
-
-    public List<SurveyDateQuestionRows> getDateQuestionRows() {
-        return dateQuestionRows;
-    }
-
-    public void setDateQuestionRows(List<SurveyDateQuestionRows> dateQuestionRows) {
-        this.dateQuestionRows = dateQuestionRows;
-    }
+    
     
 }
