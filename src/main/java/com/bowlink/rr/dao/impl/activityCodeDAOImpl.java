@@ -308,4 +308,21 @@ public class activityCodeDAOImpl implements activityCodeDAO {
         sessionFactory.getCurrentSession().save(newCodeAssoc);
     }
     
+    /**
+     * The 'getActivityCodesForEntity' function will return the list of associated activity code Ids for the selected entity.
+     * 
+     * @param entityItemId
+     * @return
+     * @throws Exception 
+     */
+    @Override
+    public List<Integer> getActivityCodesForEntity(Integer entityItemId) throws Exception {
+        
+        Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT codeId FROM programorghierarchy_detail_activitycodes where detailId = :entityItemId")
+            .setParameter("entityItemId", entityItemId);
+
+        return query.list();
+        
+    }
+    
 }

@@ -53,4 +53,6 @@ public interface activityCodeDAO {
     
     void saveEntityActivityCodes(programOrgHierarchyDetailActivityCodes newCodeAssoc) throws Exception;
     
+    List<Integer> getActivityCodesForEntity(Integer entityItemId) throws Exception;
+    
 }

@@ -282,7 +282,14 @@ public class entityController {
         /* Get a lit of available activity codes */
         List<activityCodes> availActivityCodes = activitycodemanager.getActivityCodesByProgram((Integer) session.getAttribute("selprogramId"));
         
+        List<Integer> associatedActivityCodes = activitycodemanager.getActivityCodesForEntity(entityItemId);
         
+        for(activityCodes activityCode : availActivityCodes) {
+            
+            if( associatedActivityCodes.contains(activityCode.getId())) {
+                activityCode.setSelected(true);
+            }
+        }
         
         mav.addObject("availActivityCodes", availActivityCodes);
         

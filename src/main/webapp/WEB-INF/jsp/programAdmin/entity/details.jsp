@@ -26,7 +26,7 @@
                     <form:hidden path="id" id="id" />
                     <form:hidden path="programHierarchyId" />
                     <form:hidden path="dateCreated" />
-                    <input type="text" name="selActivityCodes" id="selActivityCodes" value="" />
+                    <input type="hidden" name="selActivityCodes" id="selActivityCodes" value="" />
                     <div class="form-container">
                         <div class="form-group">
                             <label for="status">Status *</label>
@@ -127,7 +127,7 @@
             <div class="panel-body">
                 <select multiple="" class="form-control" id="form-field-select-4">
                     <c:forEach items="${availActivityCodes}" var="activityCode">
-                        <option value="${activityCode.id}">${activityCode.code} - ${activityCode.codeDesc}</option>
+                        <option value="${activityCode.id}" <c:if test="${activityCode.selected == true}">selected</c:if>>${activityCode.code} - ${activityCode.codeDesc}</option>
                     </c:forEach>
                 </select>
             </div>

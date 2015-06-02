@@ -50,4 +50,6 @@ public interface activityCodeManager {
     
     void saveActivityCodesForEntity(List<Integer> selActivityCodes, Integer EntityItemId) throws Exception;
     
+    List<Integer> getActivityCodesForEntity(Integer entityItemId) throws Exception;
+    
 }

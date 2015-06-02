@@ -146,4 +146,10 @@ public class activityCodeManagerImpl implements activityCodeManager {
         
     }
     
+    @Override
+    @Transactional
+    public List<Integer> getActivityCodesForEntity(Integer entityItemId) throws Exception {
+        return activityCodeDAO.getActivityCodesForEntity(entityItemId);
+    }
+    
 }
