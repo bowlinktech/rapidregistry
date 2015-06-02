@@ -9,3 +9,4 @@ context.xml
 .settings/org.eclipse.wst.common.component
 .settings/org.eclipse.wst.ws.service.policy.prefs
 
+src/main/webapp/dspResources/.DS_Store
