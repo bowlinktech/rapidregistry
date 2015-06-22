@@ -60,6 +60,8 @@ public class fileSystem {
                     new File(winDirectoryPath + dirName + "\\calendarUploadedFiles").mkdirs();
                     new File(winDirectoryPath + dirName + "\\forumUploadedFiles").mkdirs();
                     new File(winDirectoryPath + dirName + "\\faqUploadedFiles").mkdirs();
+                    //archive faq directory
+                    new File(winDirectoryPath + dirName + "\\archive_faqUploadedFiles").mkdirs();
                 }
             } //Mac
             else if (os.indexOf("mac") >= 0) {
@@ -73,6 +75,8 @@ public class fileSystem {
                     new File(macDirectoryPath + dirName + "/calendarUploadedFiles").mkdirs();
                     new File(macDirectoryPath + dirName + "/forumUploadedFiles").mkdirs();
                     new File(macDirectoryPath + dirName + "/faqUploadedFiles").mkdirs();
+                    new File(macDirectoryPath + dirName + "/archive_faqUploadedFiles").mkdirs();
+                    
                 }
             } //Unix or Linux or Solarix
             else if (os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0 || os.indexOf("aix") >= 0 || os.indexOf("sunos") >= 0) {
@@ -86,6 +90,7 @@ public class fileSystem {
                     new File(unixDirectoryPath + dirName + "/calendarUploadedFiles").mkdirs();
                     new File(unixDirectoryPath + dirName + "/forumUploadedFiles").mkdirs();
                     new File(unixDirectoryPath + dirName + "/faqUploadedFiles").mkdirs();
+                    new File(unixDirectoryPath + dirName + "/archive_faqUploadedFiles").mkdirs();
                 }
             } else {
                 System.out.println("Your OS is not support!!");
