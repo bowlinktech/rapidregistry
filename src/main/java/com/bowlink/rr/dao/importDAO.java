@@ -7,6 +7,7 @@ package com.bowlink.rr.dao;
 
 import com.bowlink.rr.model.User;
 import com.bowlink.rr.model.MoveFilesLog;
+import com.bowlink.rr.model.configuration;
 import com.bowlink.rr.model.delimiters;
 import com.bowlink.rr.model.errorCodes;
 import com.bowlink.rr.model.fieldsAndCols;
@@ -16,6 +17,7 @@ import com.bowlink.rr.model.programUploadTypes;
 import com.bowlink.rr.model.programUploadTypesFormFields;
 import com.bowlink.rr.model.programUpload_Errors;
 import com.bowlink.rr.model.programUploads;
+import com.bowlink.rr.model.putHELConfig;
 
 import java.util.List;
 
@@ -163,6 +165,8 @@ public interface importDAO {
     void insertMultiValToMessageTables(fieldsAndCols fieldsAndColumns, Integer subStringCounter, Integer programUploadRecordId, String tableName, programUploads programUpload) throws Exception;
     
     boolean checkMultiRowSetUp(Integer programUploadTypeId, String tableName) throws Exception;
+    
+    List<configuration> getHELConfigs(Integer orgId) throws Exception;
 }
 
 

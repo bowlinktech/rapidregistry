@@ -44,6 +44,9 @@ public class programUploadTypes {
 	@Transient
 	private List<algorithmCategories> algorithmCategories;
 	
+	@Transient
+	private List<putHELConfig> helConfigs;
+	
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID", nullable = false)
@@ -245,6 +248,14 @@ public class programUploadTypes {
 
 	public void setContainsHeaderRow(boolean containsHeaderRow) {
 		this.containsHeaderRow = containsHeaderRow;
+	}
+
+	public List<putHELConfig> getHelConfigs() {
+		return helConfigs;
+	}
+
+	public void setHelConfigs(List<putHELConfig> helConfigs) {
+		this.helConfigs = helConfigs;
 	}
 
 }

@@ -49,6 +49,10 @@ public class programUploads {
     @Column(name = "systemUserId", nullable = false)
     private Integer systemUserId = null;
     
+    @Column(name = "helBatchUploadId", nullable = false)
+    private Integer helBatchUploadId = null;
+    
+    
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
     @Column(name = "dateUploaded", nullable = true)
     private Date dateUploaded = new Date();
@@ -204,6 +208,14 @@ public class programUploads {
 
 	public void setStatusDateTime(Date statusDateTime) {
 		this.statusDateTime = statusDateTime;
+	}
+
+	public Integer getHelBatchUploadId() {
+		return helBatchUploadId;
+	}
+
+	public void setHelBatchUploadId(Integer helBatchUploadId) {
+		this.helBatchUploadId = helBatchUploadId;
 	}
 
 }

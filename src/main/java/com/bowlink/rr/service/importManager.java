@@ -7,6 +7,7 @@ package com.bowlink.rr.service;
 
 import com.bowlink.rr.model.User;
 import com.bowlink.rr.model.MoveFilesLog;
+import com.bowlink.rr.model.configuration;
 import com.bowlink.rr.model.delimiters;
 import com.bowlink.rr.model.errorCodes;
 import com.bowlink.rr.model.fieldsAndCols;
@@ -220,5 +221,6 @@ public interface importManager {
     boolean checkMultiRowSetUp(Integer programUploadTypeId, String tableName) throws Exception;
     
     void insertMultiRow(fieldsAndCols fieldsAndColumns, programUploads programUpload, Integer programUploadRecordId, String tableName) throws Exception;
-
+    
+    List<configuration> getHELConfigs(Integer orgId) throws Exception;
 }

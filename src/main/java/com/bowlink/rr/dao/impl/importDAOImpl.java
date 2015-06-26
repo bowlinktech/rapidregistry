@@ -8,6 +8,7 @@ package com.bowlink.rr.dao.impl;
 import com.bowlink.rr.dao.importDAO;
 import com.bowlink.rr.model.User;
 import com.bowlink.rr.model.MoveFilesLog;
+import com.bowlink.rr.model.configuration;
 import com.bowlink.rr.model.delimiters;
 import com.bowlink.rr.model.errorCodes;
 import com.bowlink.rr.model.fieldsAndCols;
@@ -17,6 +18,7 @@ import com.bowlink.rr.model.programUploadTypes;
 import com.bowlink.rr.model.programUploadTypesFormFields;
 import com.bowlink.rr.model.programUpload_Errors;
 import com.bowlink.rr.model.programUploads;
+import com.bowlink.rr.model.putHELConfig;
 
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -41,6 +43,9 @@ public class importDAOImpl implements importDAO {
 
     @Autowired
     private SessionFactory sessionFactory;
+    
+    @Autowired
+    private SessionFactory sessionFactoryHEL;
     
   //list of final status - these records we skip
     private List<Integer> finalStatuses = Arrays.asList(11, 12, 13, 16);
@@ -1739,6 +1744,26 @@ public class importDAOImpl implements importDAO {
         }
 
         return false;
+	}
+
+	@Override
+	@Transactional("hel")
+	@SuppressWarnings("unchecked")
+	public List<configuration> getHELConfigs(Integer orgId) throws Exception {
+		String sql = ("select orgId, configurations.id as configId, filelocation, encodingId, "
+				+ " configurationTransportDetails.fileType as fileTypeId,  ref_fileTypes.fileType, "
+				+ " fileExt, maxFileSize, fileDelimiter, delimChar "
+				+ " from configurations, configurationTransportDetails, ref_fileTypes, ref_delimiters"
+				+ " where configurations.id = configurationTransportDetails.configId "
+				+ " and ref_fileTypes.id = configurationTransportDetails.fileType "
+				+ " and ref_delimiters.id = fileDelimiter and orgId = :orgId");
+        
+		Query query = sessionFactoryHEL.getCurrentSession().createSQLQuery(sql);
+        query.setParameter("orgId", orgId);
+        
+        List<configuration> configList = query.list();
+        
+        return configList;
 	}
 
 }

@@ -9,7 +9,7 @@
     
     <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>classpath:/spring/applicationContext.xml, classpath:/spring/hibernateContext.xml, classpath:/spring/springSecurity.xml</param-value>
+        <param-value>classpath:/spring/applicationContext.xml, classpath:/spring/hibernateContext.xml, classpath:/spring/hibernateContextHEL.xml, classpath:/spring/springSecurity.xml</param-value>
     </context-param>
     
     <context-param>

@@ -68,6 +68,9 @@ public class program {
     
     @Column(name = "visitsPerDay", nullable = false)
     private int visitsPerDay = 1;
+    
+    @Column(name = "helOrgId", nullable = false)
+    private int helOrgId = 0;
      
 
     public int getId() {
@@ -158,4 +161,11 @@ public class program {
 		this.visitsPerDay = visitsPerDay;
 	}
 
+	public int getHelOrgId() {
+		return helOrgId;
+	}
+
+	public void setHelOrgId(int helOrgId) {
+		this.helOrgId = helOrgId;
+	}
 }

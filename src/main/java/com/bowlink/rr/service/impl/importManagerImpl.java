@@ -9,6 +9,7 @@ import com.bowlink.rr.dao.importDAO;
 import com.bowlink.rr.model.User;
 import com.bowlink.rr.model.MoveFilesLog;
 import com.bowlink.rr.model.algorithmCategories;
+import com.bowlink.rr.model.configuration;
 import com.bowlink.rr.model.delimiters;
 import com.bowlink.rr.model.errorCodes;
 import com.bowlink.rr.model.fieldsAndCols;
@@ -1887,6 +1888,11 @@ public class importManagerImpl implements importManager {
 			insertSingleStorageTable(fNC, programUpload, tableName, 0, getBlankRecordIds(fNC, programUpload, 0));	
 		}
 		
+	}
+	
+	@Override
+	public List<configuration> getHELConfigs(Integer orgId) throws Exception {
+		return importDAO.getHELConfigs(orgId);
 	}
 	
 }

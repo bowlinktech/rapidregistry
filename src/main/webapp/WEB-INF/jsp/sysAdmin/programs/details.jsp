@@ -68,8 +68,10 @@
 		                                </div>
 		                            </div>
 		                        </spring:bind> 
-	                        </div>
+	                        </div>	                        
                         </div>
+                        
+	                        
                         <spring:bind path="visitsPerDay">
 		                            <div class="form-group ${status.error ? 'has-error' : '' }">
 		                                <label class="control-label" for="visitsPerDay">Visit(s) Allowed Per Day *</label>
@@ -81,6 +83,14 @@
                             </form:select>
 		                            </div>
 		                </spring:bind> 
+		                <spring:bind path="helOrgId">
+		                            <div class="form-group ${status.error ? 'has-error' : '' }">
+		                                <label class="control-label" for="status">Health-e-link Org Id - enter 0 if unknown</label>
+								        <form:input path="helOrgId" id="helOrgId" class="form-control" type="text" maxLength="10" />
+										<form:errors path="helOrgId" cssClass="control-label" element="label" />
+                                	</div>
+		                        </spring:bind> 
+	                       
                         <spring:bind path="programName">
                             <div class="form-group ${status.error ? 'has-error' : '' } ${not empty existingProgram ? 'has-error' : ''}">
                                 <label class="control-label" for="programName">Program Name *</label>
