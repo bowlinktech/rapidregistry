@@ -10,11 +10,15 @@ import com.bowlink.rr.model.User;
 import com.bowlink.rr.model.mailMessage;
 import com.bowlink.rr.service.emailMessageManager;
 import com.bowlink.rr.service.userManager;
-import java.net.InetAddress;
+
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Properties;
+
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -27,7 +31,10 @@ import org.springframework.web.servlet.ModelAndView;
  */
 @ControllerAdvice
 public class ExceptionControllerAdvice {
-   
+	
+	@Resource(name = "myProps")
+	private Properties myProps;
+	
     @Autowired
     private emailMessageManager emailMessageManager;
     
@@ -45,7 +52,7 @@ public class ExceptionControllerAdvice {
         
         messageDetails.settoEmailAddress("information@health-e-link.net");
         messageDetails.setfromEmailAddress("information@health-e-link.net");
-        messageDetails.setmessageSubject("Exception Error " + InetAddress.getLocalHost().getHostAddress());
+        messageDetails.setmessageSubject("Exception Error " + myProps.getProperty("server.identity"));
         
         StringBuilder sb = new StringBuilder();
         //we log page with error and ip of remote client if possible

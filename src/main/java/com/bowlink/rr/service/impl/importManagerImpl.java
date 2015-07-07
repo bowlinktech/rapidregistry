@@ -38,7 +38,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -51,9 +50,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.annotation.Resource;
 import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.io.FilenameUtils;
@@ -70,7 +71,10 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @Service
 public class importManagerImpl implements importManager {
-    
+	
+	@Resource(name = "myProps")
+	private Properties myProps;
+	
     @Autowired
     importDAO importDAO;
     
@@ -669,12 +673,8 @@ public class importManagerImpl implements importManager {
 	 	mailMessage messageDetails = new mailMessage();
 	 	messageDetails.settoEmailAddress(importErrorToEmail);
 	 	messageDetails.setfromEmailAddress(importErrorFromEmail);
-	    try {
-        	messageDetails.setmessageSubject(subject + " " + InetAddress.getLocalHost().getHostAddress());
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
-	 
+	    messageDetails.setmessageSubject(subject + " " + myProps.getProperty("server.identity"));
+		
         StringBuilder sb = new StringBuilder();
         sb.append(new Date().toString() + "<br/>");
         if (ex != null) {
