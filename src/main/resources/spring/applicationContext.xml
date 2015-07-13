@@ -78,5 +78,9 @@
     
     <context:property-placeholder location="file:${catalina.home}/properties/RR.properties"/>
     
+    <bean id="myProps" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+ 	 <property name="location" value="file:${catalina.home}/properties/UT.properties"/>
+	</bean>
+    
     
 </beans>
