@@ -206,7 +206,7 @@
                                                             <c:when test="${question.choiceLayout == '2 Columns'}">
                                                                 <div class="row">
                                                                     <c:forEach items="${question.questionChoices}" var="choiceDetails">
-                                                                        <div class="col-md-3">
+                                                                        <div class="col-md-6">
                                                                             <label class="radio">
                                                                                 <input type="${question.allowMultipleAns == true ? 'checkbox' : 'radio'}" disabled="disabled" /> ${choiceDetails.choiceText}
                                                                             </label>
