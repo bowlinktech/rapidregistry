@@ -234,7 +234,7 @@ public class programDAOImpl implements programDAO {
      */
     @Override
     public void removeAdminProgram(Integer programId, Integer adminid) throws Exception {
-        Query removeAdminProgram = sessionFactory.getCurrentSession().createQuery("delete from programAdmin where userId = :adminid and programId = :programId");
+        Query removeAdminProgram = sessionFactory.getCurrentSession().createQuery("delete from programAdmin where systemUserId = :adminid and programId = :programId");
         removeAdminProgram.setParameter("adminid", adminid);
         removeAdminProgram.setParameter("programId", programId);
         removeAdminProgram.executeUpdate();
