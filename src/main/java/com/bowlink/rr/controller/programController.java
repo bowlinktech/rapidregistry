@@ -545,7 +545,7 @@ public class programController {
             return mav;
         }
         
-        
+        admindetails = usermanager.encryptPW(admindetails);
         Integer adminId = usermanager.createUser(admindetails);
 
         programAdmin adminprogram = new programAdmin();

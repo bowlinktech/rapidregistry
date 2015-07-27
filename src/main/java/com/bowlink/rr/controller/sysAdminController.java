@@ -105,6 +105,7 @@ public class sysAdminController {
             return mav;
         }
         
+        admindetails = usermanager.encryptPW(admindetails);
         Integer adminId = usermanager.createUser(admindetails);
 
         ModelAndView mav = new ModelAndView("/sysAdmin/sysAdmins/details");
