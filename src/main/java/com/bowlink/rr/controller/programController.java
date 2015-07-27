@@ -484,8 +484,10 @@ public class programController {
             for(programAdmin admin : administrators) {
                 User userDetails = usermanager.getUserById(admin.getsystemUserId());
                 userDetails.setTimesloggedIn(usermanager.findTotalLogins(admin.getsystemUserId()));
-           
-                programAdministrators.add(userDetails);
+                
+                if(userDetails.getRoleId() == 2) {
+                    programAdministrators.add(userDetails);
+                }
             }
         }
         
