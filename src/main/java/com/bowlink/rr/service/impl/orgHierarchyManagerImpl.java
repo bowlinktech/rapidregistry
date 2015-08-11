@@ -10,7 +10,10 @@ import com.bowlink.rr.model.programOrgHierarchy;
 import com.bowlink.rr.model.programOrgHierarchyAssoc;
 import com.bowlink.rr.model.programOrgHierarchyDetails;
 import com.bowlink.rr.model.userProgramHierarchy;
+import com.bowlink.rr.reference.fileSystem;
 import com.bowlink.rr.service.orgHierarchyManager;
+import com.bowlink.rr.service.programManager;
+import java.io.File;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +28,9 @@ public class orgHierarchyManagerImpl implements orgHierarchyManager {
     
     @Autowired
     orgHierarchyDAO orgHierarchyDAO;
+    
+    @Autowired
+    programManager programManager;
     
     @Override
     @Transactional
@@ -41,6 +47,7 @@ public class orgHierarchyManagerImpl implements orgHierarchyManager {
     @Override
     @Transactional
     public void saveOrgHierarchy(programOrgHierarchy hierarchyDetails) throws Exception {
+        
         orgHierarchyDAO.saveOrgHierarchy(hierarchyDetails);
     }
     
@@ -101,6 +108,23 @@ public class orgHierarchyManagerImpl implements orgHierarchyManager {
     @Override
     @Transactional
     public void saveOrgHierarchyItem(programOrgHierarchyDetails entityItemDetails) throws Exception {
+        
+        
+        /* See if the item hierarchy level is the top one */
+        programOrgHierarchy hierarchyDetails = orgHierarchyDAO.getOrgHierarchyById(entityItemDetails.getProgramHierarchyId());
+        if(hierarchyDetails.getDspPos() == 1) {
+            /* Create a document folder */
+            String registryName = programManager.getProgramById(hierarchyDetails.getProgramId()).getProgramName().replaceAll(" ", "-").toLowerCase();
+            
+            //Set the directory to save the brochures to
+            fileSystem dir = new fileSystem();
+            dir.setDir(registryName, "documents/");
+            
+            File newDirectory = new File(dir.getDir() + entityItemDetails.getName());
+            
+            newDirectory.mkdir();
+        }
+        
         orgHierarchyDAO.saveOrgHierarchyItem(entityItemDetails);
     }
     
