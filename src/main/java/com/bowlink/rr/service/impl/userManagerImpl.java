@@ -8,7 +8,6 @@ package com.bowlink.rr.service.impl;
 
 import com.bowlink.rr.dao.userDAO;
 import com.bowlink.rr.model.User;
-import com.bowlink.rr.model.programAdmin;
 import com.bowlink.rr.model.Log_userSurveyActivity;
 import com.bowlink.rr.model.userPrograms;
 import com.bowlink.rr.service.userManager;

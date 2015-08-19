@@ -9,7 +9,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 
-<div class="container pull-left" style="margin-left: 20px;">
+<div class="container pull-left" style="margin-left: 20px; width:98%;">
     <!-- Nav tabs -->
     <ul class="nav nav-tabs nav-tabs-question" role="tablist">
       <li class="paneTabLi editPaneTab active" rel="edit">

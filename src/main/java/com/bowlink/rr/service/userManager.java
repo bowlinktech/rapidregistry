@@ -10,15 +10,8 @@ import com.bowlink.rr.model.Log_userSurveyActivity;
 import com.bowlink.rr.model.userPrograms;
 
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
-import java.security.spec.KeySpec;
 import java.util.List;
-
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
-
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
