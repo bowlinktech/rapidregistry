@@ -6,11 +6,13 @@
 package com.bowlink.rr.service.impl;
 
 import com.bowlink.rr.dao.orgHierarchyDAO;
+import com.bowlink.rr.model.documentFolder;
 import com.bowlink.rr.model.programOrgHierarchy;
 import com.bowlink.rr.model.programOrgHierarchyAssoc;
 import com.bowlink.rr.model.programOrgHierarchyDetails;
 import com.bowlink.rr.model.userProgramHierarchy;
 import com.bowlink.rr.reference.fileSystem;
+import com.bowlink.rr.service.documentManager;
 import com.bowlink.rr.service.orgHierarchyManager;
 import com.bowlink.rr.service.programManager;
 import java.io.File;
@@ -31,6 +33,9 @@ public class orgHierarchyManagerImpl implements orgHierarchyManager {
     
     @Autowired
     programManager programManager;
+    
+    @Autowired
+    documentManager documentManager;
     
     @Override
     @Transactional
@@ -109,20 +114,32 @@ public class orgHierarchyManagerImpl implements orgHierarchyManager {
     @Transactional
     public void saveOrgHierarchyItem(programOrgHierarchyDetails entityItemDetails) throws Exception {
         
-        
         /* See if the item hierarchy level is the top one */
         programOrgHierarchy hierarchyDetails = orgHierarchyDAO.getOrgHierarchyById(entityItemDetails.getProgramHierarchyId());
         if(hierarchyDetails.getDspPos() == 1) {
-            /* Create a document folder */
-            String registryName = programManager.getProgramById(hierarchyDetails.getProgramId()).getProgramName().replaceAll(" ", "-").toLowerCase();
             
-            //Set the directory to save the brochures to
-            fileSystem dir = new fileSystem();
-            dir.setDir(registryName, "documents/");
-            
-            File newDirectory = new File(dir.getDir() + entityItemDetails.getName());
-            
-            newDirectory.mkdir();
+            if(entityItemDetails.getCreateFolders() == true) {
+                
+                documentFolder folder = new documentFolder();
+                folder.setCountyFolder(true);
+                folder.setAdminOnly(false);
+                folder.setFolderName(entityItemDetails.getName());
+                folder.setParentFolderId(0);
+                folder.setProgramId(hierarchyDetails.getProgramId());
+                
+                documentManager.saveFolder(folder);
+                
+                /* Create a document folder */
+                String registryName = programManager.getProgramById(hierarchyDetails.getProgramId()).getProgramName().replaceAll(" ", "-").toLowerCase();
+
+                //Set the directory to save the brochures to
+                fileSystem dir = new fileSystem();
+                dir.setDir(registryName, "documents/");
+
+                File newDirectory = new File(dir.getDir() + entityItemDetails.getName());
+
+                newDirectory.mkdir();
+            }
         }
         
         orgHierarchyDAO.saveOrgHierarchyItem(entityItemDetails);

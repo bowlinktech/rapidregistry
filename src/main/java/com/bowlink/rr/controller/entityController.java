@@ -6,7 +6,6 @@
 package com.bowlink.rr.controller;
 
 import com.bowlink.rr.model.activityCodes;
-import com.bowlink.rr.model.programActivityCodes;
 import com.bowlink.rr.model.programOrgHierarchy;
 import com.bowlink.rr.model.programOrgHierarchyAssoc;
 import com.bowlink.rr.model.programOrgHierarchyDetails;
@@ -167,6 +166,7 @@ public class entityController {
         mav.addObject("stateList", stateList.getStates());
        
         mav.addObject("hierarchyDetails",entityItemDetails);
+        mav.addObject("entityDspPos", entityDetails.getDspPos());
         mav.addObject("btnValue", btnValue);
         
         return mav;

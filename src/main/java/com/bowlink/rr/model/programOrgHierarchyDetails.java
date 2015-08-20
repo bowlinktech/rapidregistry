@@ -26,7 +26,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 public class programOrgHierarchyDetails {
     
     @Transient
-    private Boolean isAssociated = false;
+    private Boolean isAssociated = false, createFolders = false;
     
     @Transient
     private String encryptedId = null;
@@ -182,6 +182,14 @@ public class programOrgHierarchyDetails {
 
     public void setIsAssociated(Boolean isAssociated) {
         this.isAssociated = isAssociated;
+    }
+
+    public Boolean getCreateFolders() {
+        return createFolders;
+    }
+
+    public void setCreateFolders(Boolean createFolders) {
+        this.createFolders = createFolders;
     }
     
 }

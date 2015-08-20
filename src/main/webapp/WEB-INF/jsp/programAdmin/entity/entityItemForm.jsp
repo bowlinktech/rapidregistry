@@ -21,6 +21,26 @@
                 <form:hidden path="programHierarchyId" />
                 <form:hidden path="dateCreated" />
                 <div class="form-container">
+                    
+                    <c:choose>
+                        <c:when test="${hierarchyDetails.id == 0 && entityDspPos == 1}">
+                            <div class="form-group">
+                                <label for="createFolders">Create folder for document manager *</label>
+                                <div>
+                                    <label class="radio-inline">
+                                        <form:radiobutton id="createFolders" path="createFolders" value="true" /> Yes
+                                    </label>
+                                    <label class="radio-inline">
+                                        <form:radiobutton id="createFolders" path="createFolders" value="false" /> No
+                                    </label>
+                                </div>
+                            </div>
+                        </c:when>
+                        <c:otherwise>
+                            <form:hidden path="createFolders" value="false" />
+                        </c:otherwise>
+                    </c:choose>
+                        
                     <div class="form-group">
                         <label for="status">Status *</label>
                         <div>
