@@ -23,7 +23,7 @@
                 <div class="form-container">
                     
                     <c:choose>
-                        <c:when test="${hierarchyDetails.id == 0 && entityDspPos == 1}">
+                        <c:when test="${entityDspPos == 1}">
                             <div class="form-group">
                                 <label for="createFolders">Create folder for document manager *</label>
                                 <div>
