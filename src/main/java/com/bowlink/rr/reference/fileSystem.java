@@ -13,12 +13,11 @@ public class fileSystem {
 
     //Get the operating system
     String os = System.getProperty("os.name").toLowerCase();
+    String directoryPath = System.getProperty("directory.path");
+    
 
     String dir = null;
 
-    String macDirectoryPath = "/Applications/rapidRegistry/";
-    String winDirectoryPath = "c:\\rapidRegistry\\";
-    String unixDirectoryPath = "/home/rapidRegistry/";
 
     public String getDir() {
         return dir;
@@ -32,13 +31,13 @@ public class fileSystem {
 
         //Windows
         if (os.indexOf("win") >= 0) {
-            this.dir = winDirectoryPath + programName + "\\" + folderName + "\\";
+            this.dir = directoryPath + programName + "\\" + folderName + "\\";
         } //Mac
         else if (os.indexOf("mac") >= 0) {
-            this.dir = macDirectoryPath + programName + "/" + folderName + "/";
+            this.dir = directoryPath + programName + "/" + folderName + "/";
         } //Unix or Linux or Solarix
         else if (os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0 || os.indexOf("aix") >= 0 || os.indexOf("sunos") >= 0) {
-            this.dir = unixDirectoryPath + programName + "/" + folderName + "/";
+            this.dir = directoryPath + programName + "/" + folderName + "/";
         }
     }
     
@@ -50,51 +49,51 @@ public class fileSystem {
             //Windows
             if (os.indexOf("win") >= 0) {
                 //C:/BowLink/
-                String dir = winDirectoryPath + dirName;
+                String dir = directoryPath + dirName;
                 File directory = new File(dir);
                 if (!directory.exists()) {
                     directory.mkdir();
-                    new File(winDirectoryPath + dirName + "\\crosswalks").mkdirs();
-                    new File(winDirectoryPath + dirName + "\\importFiles").mkdirs();
-                    new File(winDirectoryPath + dirName + "\\exportFiles").mkdirs();
-                    new File(winDirectoryPath + dirName + "\\calendarUploadedFiles").mkdirs();
-                    new File(winDirectoryPath + dirName + "\\forumUploadedFiles").mkdirs();
-                    new File(winDirectoryPath + dirName + "\\faqUploadedFiles").mkdirs();
-                    new File(winDirectoryPath + dirName + "\\documents").mkdirs();
-                    new File(winDirectoryPath + dirName + "\\profilePhotos").mkdirs();
-                    new File(winDirectoryPath + dirName + "\\surveyUploadedFiles").mkdirs();
+                    new File(directoryPath + dirName + "\\crosswalks").mkdirs();
+                    new File(directoryPath + dirName + "\\importFiles").mkdirs();
+                    new File(directoryPath + dirName + "\\exportFiles").mkdirs();
+                    new File(directoryPath + dirName + "\\calendarUploadedFiles").mkdirs();
+                    new File(directoryPath + dirName + "\\forumUploadedFiles").mkdirs();
+                    new File(directoryPath + dirName + "\\faqUploadedFiles").mkdirs();
+                    new File(directoryPath + dirName + "\\documents").mkdirs();
+                    new File(directoryPath + dirName + "\\profilePhotos").mkdirs();
+                    new File(directoryPath + dirName + "\\surveyUploadedFiles").mkdirs();
                 }
             } //Mac
             else if (os.indexOf("mac") >= 0) {
-                String dir = macDirectoryPath + dirName;
+                String dir = directoryPath + dirName;
                 File directory = new File(dir);
                 if (!directory.exists()) {
                     directory.mkdir();
-                    new File(macDirectoryPath + dirName + "/crosswalks").mkdirs();
-                    new File(macDirectoryPath + dirName + "/importFiles").mkdirs();
-                    new File(macDirectoryPath + dirName + "/exportFiles").mkdirs();
-                    new File(macDirectoryPath + dirName + "/calendarUploadedFiles").mkdirs();
-                    new File(macDirectoryPath + dirName + "/forumUploadedFiles").mkdirs();
-                    new File(macDirectoryPath + dirName + "/faqUploadedFiles").mkdirs();
-                    new File(macDirectoryPath + dirName + "/documents").mkdirs();
-                    new File(macDirectoryPath + dirName + "/profilePhotos").mkdirs();
-                    new File(macDirectoryPath + dirName + "/surveyUploadedFiles").mkdirs();
+                    new File(directoryPath + dirName + "/crosswalks").mkdirs();
+                    new File(directoryPath + dirName + "/importFiles").mkdirs();
+                    new File(directoryPath + dirName + "/exportFiles").mkdirs();
+                    new File(directoryPath + dirName + "/calendarUploadedFiles").mkdirs();
+                    new File(directoryPath + dirName + "/forumUploadedFiles").mkdirs();
+                    new File(directoryPath + dirName + "/faqUploadedFiles").mkdirs();
+                    new File(directoryPath + dirName + "/documents").mkdirs();
+                    new File(directoryPath + dirName + "/profilePhotos").mkdirs();
+                    new File(directoryPath + dirName + "/surveyUploadedFiles").mkdirs();
                 }
             } //Unix or Linux or Solarix
             else if (os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0 || os.indexOf("aix") >= 0 || os.indexOf("sunos") >= 0) {
-                String dir = unixDirectoryPath + dirName;
+                String dir = directoryPath + dirName;
                 File directory = new File(dir);
                 if (!directory.exists()) {
                     directory.mkdir();
-                    new File(unixDirectoryPath + dirName + "/crosswalks").mkdirs();
-                    new File(unixDirectoryPath + dirName + "/importFiles").mkdirs();
-                    new File(unixDirectoryPath + dirName + "/exportFiles").mkdirs();
-                    new File(unixDirectoryPath + dirName + "/calendarUploadedFiles").mkdirs();
-                    new File(unixDirectoryPath + dirName + "/forumUploadedFiles").mkdirs();
-                    new File(unixDirectoryPath + dirName + "/faqUploadedFiles").mkdirs();
-                    new File(unixDirectoryPath + dirName + "/documents").mkdirs();
-                    new File(unixDirectoryPath + dirName + "/profilePhotos").mkdirs();
-                    new File(unixDirectoryPath + dirName + "/surveyUploadedFiles").mkdirs();
+                    new File(directoryPath + dirName + "/crosswalks").mkdirs();
+                    new File(directoryPath + dirName + "/importFiles").mkdirs();
+                    new File(directoryPath + dirName + "/exportFiles").mkdirs();
+                    new File(directoryPath + dirName + "/calendarUploadedFiles").mkdirs();
+                    new File(directoryPath + dirName + "/forumUploadedFiles").mkdirs();
+                    new File(directoryPath + dirName + "/faqUploadedFiles").mkdirs();
+                    new File(directoryPath + dirName + "/documents").mkdirs();
+                    new File(directoryPath + dirName + "/profilePhotos").mkdirs();
+                    new File(directoryPath + dirName + "/surveyUploadedFiles").mkdirs();
                 }
             } else {
                 System.out.println("Your OS is not support!!");
@@ -106,17 +105,8 @@ public class fileSystem {
     }
     
     public void setDirByName(String dirName) {
-        //Windows
-        if (os.indexOf("win") >= 0) {
-            this.dir = winDirectoryPath + dirName;
-        } //Mac
-        else if (os.indexOf("mac") >= 0) {
-            this.dir = macDirectoryPath + dirName;
-        } //Unix or Linux or Solarix
-        else if (os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0 || os.indexOf("aix") >= 0 || os.indexOf("sunos") >= 0) {
-            this.dir = unixDirectoryPath + dirName;
-        }
-    }
+         this.dir = directoryPath + dirName;
+   }
 
     public static void delete(File file) throws IOException {
 
@@ -215,13 +205,13 @@ public class fileSystem {
     	String path = "";
     	//Windows
         if (os.indexOf("win") >= 0) {
-        	path = winDirectoryPath.replace("\\rapidRegistry\\", "") + addOnPath.replace("", "").replace("/", "\\");  
+        	path = directoryPath.replace("\\rapidRegistry\\", "") + addOnPath.replace("", "").replace("/", "\\");  
         } //Mac
         else if (os.indexOf("mac") >= 0) {
-        	path = macDirectoryPath.replace("/rapidRegistry/", "") + addOnPath;
+        	path = directoryPath.replace("/rapidRegistry/", "") + addOnPath;
         } //Unix or Linux or Solarix
         else if (os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0 || os.indexOf("aix") >= 0 || os.indexOf("sunos") >= 0) {
-        	path = unixDirectoryPath.replace("/rapidRegistry/", "") + addOnPath;        
+        	path = directoryPath.replace("/rapidRegistry/", "") + addOnPath;        
         }
         return path;
     }
