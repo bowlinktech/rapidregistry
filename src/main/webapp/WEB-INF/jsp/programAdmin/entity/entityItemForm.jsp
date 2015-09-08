@@ -105,6 +105,13 @@
                             <form:errors path="phoneNumber" cssClass="control-label" element="label" />
                         </div>
                     </spring:bind>
+                    <spring:bind path="displayId">
+                        <div class="form-group ${status.error ? 'has-error' : '' }">
+                            <label class="control-label" for="displayId">Display Id</label>
+                            <form:input path="displayId" id="displayId" class="form-control" type="text"  maxLength="45" />
+                            <form:errors path="displayId" cssClass="control-label" element="label" />
+                        </div>
+                    </spring:bind>
                     <div class="form-group">
                         <input type="button" id="submitButton" role="button" class="btn btn-primary" value="Save"/>
                     </div>
