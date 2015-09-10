@@ -289,7 +289,7 @@ public class dataElementDAOImpl implements dataElementDAO {
     @SuppressWarnings("rawtypes")
     @Transactional
     public List getCrosswalkData(int cwId) {
-        Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT sourceValue, targetValue, descValue FROM rel_crosswalkData where crosswalkId = :crosswalkid order by id asc");
+        Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT sourceValue, targetValue, descValue, id FROM rel_crosswalkData where crosswalkId = :crosswalkid order by id asc");
         query.setParameter("crosswalkid", cwId);
 
         return query.list();

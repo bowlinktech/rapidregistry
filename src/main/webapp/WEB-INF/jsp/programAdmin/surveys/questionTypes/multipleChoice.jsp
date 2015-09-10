@@ -55,11 +55,11 @@
                     <label class="control-label" for="pageTitle"><!--<span class="qNum">Q${qnum}</span>:--> Multiple Choice</label>
                     <form:input path="question" placeholder="Enter your Question" id="question" class="form-control" type="text"  maxLength="255" />
                 </div>
-                <c:if test="${not empty availableTables}">
+                <c:if test="${not empty availableTables || not empty availableCW}">
                     <div class="well well-xsm" style="background-color:#ffffff; margin-bottom: 2px">
-                        <input type="checkbox" id="populate" <c:if test="${not empty surveyQuestion.populateFromTable}">checked="checked"</c:if> />&nbsp;<label class="control-label" for="populateFromTable">Populate choices from an existing table</label>
+                        <input type="checkbox" id="populate" <c:if test="${not empty surveyQuestion.populateFromTable || surveyQuestion.populateFromCW > 0}">checked="checked"</c:if> />&nbsp;<label class="control-label" for="populateFromTable">Populate choices from an existing table</label>
                     </div>
-                    <div class="well well-xsm" id="autoPopulateDiv" style="background-color:#ffffff; margin-bottom: 2px; height: 50px; ${not empty surveyQuestion.populateFromTable ? 'display:block;' : 'display:none;'}">
+                    <div class="well well-xsm" id="autoPopulateDiv" style="background-color:#ffffff; margin-bottom: 2px; height: 50px; ${not empty surveyQuestion.populateFromTable || surveyQuestion.populateFromCW > 0 ? 'display:block;' : 'display:none;'}">
                         <c:choose>
                             <c:when test="${surveyQuestion.id > 0}">
                                 <form:select path="populateFromTable" id="populateFromTable" class="form-control half sm-input">
@@ -67,6 +67,9 @@
                                     <c:forEach items="${availableTables}" var="table" varStatus="ftype">
                                         <option value="${table.tableName}" <c:if test="${surveyQuestion.populateFromTable == table.tableName}">selected</c:if>>${table.tableName}</option>
                                     </c:forEach>
+                                    <c:forEach items="${availableCW}" var="cw" varStatus="cwtype">
+                                        <option value="${cw.id}" <c:if test="${surveyQuestion.populateFromCW == cw.id}">selected</c:if>>${cw.name}</option>
+                                    </c:forEach>    
                                 </form:select>
                             </c:when>
                             <c:otherwise>
@@ -76,7 +79,7 @@
                     </div>
                 </c:if>
                 <div class="well well-xsm" style="background-color:#ffffff; margin-bottom: 2px">
-                   <input type="checkbox" id="manual" <c:if test="${empty surveyQuestion.populateFromTable && not empty surveyQuestion.questionChoices}">checked="checked"</c:if> />&nbsp;<label class="control-label" for="populateFromTable">Manually enter choices</label>
+                   <input type="checkbox" id="manual" <c:if test="${empty surveyQuestion.populateFromTable && surveyQuestion.populateFromCW == 0 && not empty surveyQuestion.questionChoices}">checked="checked"</c:if> />&nbsp;<label class="control-label" for="populateFromTable">Manually enter choices</label>
                 </div>
                 <c:if test="${surveyQuestion.questionChoices.size() > 0}">
                     <div class="panel" id="questionChoiceDiv" style="margin-bottom: 2px">

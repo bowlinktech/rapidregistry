@@ -453,7 +453,13 @@ require(['./main'], function () {
         $(document).on('change', '#populateFromTable', function () {
 
             var selTable = $(this).val();
-
+            var cwId = 0;
+            
+            if($.isNumeric(selTable)) {
+                cwId = eval(selTable*1);
+                selTable = "";
+            }
+            
             var s = $('#s').val();
             var v = $('#v').val();
 
@@ -461,7 +467,7 @@ require(['./main'], function () {
 
             $.ajax({
                 url: 'getQuestionChoicesForSelTable.do',
-                data: {'s': s, 'v': v, 'pageId': window.pageId, 'questionId': questionId, 'tableName': selTable},
+                data: {'s': s, 'v': v, 'pageId': window.pageId, 'questionId': questionId, 'tableName': selTable, 'cwId': cwId},
                 type: "GET",
                 success: function (data) {
                     $('#editQuestionDiv_' + questionId).html(data);

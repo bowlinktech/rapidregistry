@@ -14,6 +14,7 @@ import com.bowlink.rr.model.activityCodes;
 import com.bowlink.rr.model.surveys;
 import com.bowlink.rr.model.Log_userSurveyActivity;
 import com.bowlink.rr.model.SurveyQuestionChoices;
+import com.bowlink.rr.model.crosswalks;
 import com.bowlink.rr.model.programAvailableTables;
 import com.bowlink.rr.security.decryptObject;
 import com.bowlink.rr.security.encryptObject;
@@ -597,6 +598,10 @@ public class surveyController {
             /** Get a list of available tables to auto-populate from **/
             List<programAvailableTables> availableTables = programmanager.getAvailableTablesForSurveys((Integer) session.getAttribute("selprogramId"));
             mav.addObject("availableTables", availableTables);
+            
+            /** Get a list of available crosswalks to auto-populate from **/
+            List<crosswalks> availableCW = dataelementmanager.getCrosswalks(0, 0, (Integer) session.getAttribute("selprogramId"));
+            mav.addObject("availableCW", availableCW);
         }
         
         /** Drop down (select box) **/
@@ -606,6 +611,10 @@ public class surveyController {
             /** Get a list of available tables to auto-populate from **/
             List<programAvailableTables> availableTables = programmanager.getAvailableTablesForSurveys((Integer) session.getAttribute("selprogramId"));
             mav.addObject("availableTables", availableTables);
+            
+            /** Get a list of available crosswalks to auto-populate from **/
+            List<crosswalks> availableCW = dataelementmanager.getCrosswalks(0, 0, (Integer) session.getAttribute("selprogramId"));
+            mav.addObject("availableCW", availableCW);
         }
         
         /** Single text box **/
@@ -749,6 +758,10 @@ public class surveyController {
             /** Get a list of available tables to auto-populate from **/
             List<programAvailableTables> availableTables = programmanager.getAvailableTablesForSurveys((Integer) session.getAttribute("selprogramId"));
             mav.addObject("availableTables", availableTables);
+            
+            /** Get a list of available crosswalks to auto-populate from **/
+            List<crosswalks> availableCW = dataelementmanager.getCrosswalks(0, 0, (Integer) session.getAttribute("selprogramId"));
+            mav.addObject("availableCW", availableCW);
         }
         
         /** Drop down (select box) **/
@@ -758,6 +771,10 @@ public class surveyController {
             /** Get a list of available tables to auto-populate from **/
             List<programAvailableTables> availableTables = programmanager.getAvailableTablesForSurveys((Integer) session.getAttribute("selprogramId"));
             mav.addObject("availableTables", availableTables);
+            
+            /** Get a list of available crosswalks to auto-populate from **/
+            List<crosswalks> availableCW = dataelementmanager.getCrosswalks(0, 0, (Integer) session.getAttribute("selprogramId"));
+            mav.addObject("availableCW", availableCW);
         }
         
         /** Single text box **/
@@ -833,6 +850,16 @@ public class surveyController {
         Integer questionId = 0;
         if(surveyQuestion.getId() > 0) {
             questionId = surveyQuestion.getId();
+            
+            try {
+                int cwId = Integer.parseInt(surveyQuestion.getPopulateFromTable());
+                surveyQuestion.setPopulateFromCW(cwId);
+                surveyQuestion.setPopulateFromTable("");
+                
+            } catch(NumberFormatException e) {
+                surveyQuestion.setPopulateFromCW(0);
+            }
+            
             surveymanager.saveSurveyQuestion(surveyQuestion);
             
             /** Log the change **/
@@ -878,7 +905,7 @@ public class surveyController {
                 
                 for(SurveyQuestionChoices questionChoice : surveyQuestion.getquestionChoices()) {
                     
-                    if(!"".equals(questionChoice.getChoiceText())) {
+                    if(questionChoice.getChoiceText() != null && !"".equals(questionChoice.getChoiceText())) {
                      
                         questionChoice.setQuestionId(questionId);
 
@@ -912,7 +939,10 @@ public class surveyController {
      * @throws Exception 
      */
     @RequestMapping(value = "getQuestionChoicesForSelTable.do", method = RequestMethod.GET)
-    public @ResponseBody ModelAndView getQuestionChoicesForSelTable(@RequestParam String s, @RequestParam String v, @RequestParam Integer pageId, @RequestParam Integer questionId, @RequestParam String tableName, HttpSession session) throws Exception {
+    public @ResponseBody ModelAndView getQuestionChoicesForSelTable(
+            @RequestParam String s, @RequestParam String v, @RequestParam Integer pageId, 
+            @RequestParam Integer questionId, @RequestParam String tableName, @RequestParam Integer cwId,
+            HttpSession session) throws Exception {
         
         ModelAndView mav = new ModelAndView();
         
@@ -926,6 +956,7 @@ public class surveyController {
             surveymanager.removeQuestionChoices(questionId);
             
             questionDetails.setPopulateFromTable(tableName);
+            questionDetails.setPopulateFromCW(0);
             surveymanager.saveSurveyQuestion(questionDetails);
             
             /** Need to get all available rows for the selected table **/
@@ -951,6 +982,38 @@ public class surveyController {
                 questionDetails.setquestionChoices(questionChoices);
             }
         }
+        else if(cwId > 0 && !questionDetails.getPopulateFromCW().equals(cwId)) {
+            
+            /* Delete current options */
+            surveymanager.removeQuestionChoices(questionId);
+            
+            questionDetails.setPopulateFromTable("");
+            questionDetails.setPopulateFromCW(cwId);
+            surveymanager.saveSurveyQuestion(questionDetails);
+            
+            /** Need to get all available rows for the selected table **/
+            List cwValues = dataelementmanager.getCrosswalkData(cwId);
+            
+            /* Create 3 blank answers */
+            if(cwValues != null && !cwValues.isEmpty()) {
+                List<SurveyQuestionChoices> questionChoices = new CopyOnWriteArrayList<>();
+                
+                for (ListIterator iter = cwValues.listIterator(); iter.hasNext();) {
+                    
+                    SurveyQuestionChoices questionChoice = new SurveyQuestionChoices();
+            
+                    Object[] row = (Object[]) iter.next();
+                    
+                    questionChoice.setChoiceText(String.valueOf(row[0]));
+                    questionChoice.setChoiceValue(Integer.parseInt(String.valueOf(row[3])));
+                    questionChoice.setQuestionId(questionId);
+                    
+                    questionChoices.add(questionChoice);
+                }
+
+                questionDetails.setquestionChoices(questionChoices);
+            }
+        }
         else if(currentquestionChoices != null && !currentquestionChoices.isEmpty()) {
             
             questionDetails.setquestionChoices(currentquestionChoices);
@@ -965,6 +1028,10 @@ public class surveyController {
             /** Get a list of available tables to auto-populate from **/
             List<programAvailableTables> availableTables = programmanager.getAvailableTablesForSurveys((Integer) session.getAttribute("selprogramId"));
             mav.addObject("availableTables", availableTables);
+            
+            /** Get a list of available crosswalks to auto-populate from **/
+            List<crosswalks> availableCW = dataelementmanager.getCrosswalks(0, 0, (Integer) session.getAttribute("selprogramId"));
+            mav.addObject("availableCW", availableCW);
         }
         
         /** Drop down (select box) **/
@@ -974,6 +1041,10 @@ public class surveyController {
             /** Get a list of available tables to auto-populate from **/
             List<programAvailableTables> availableTables = programmanager.getAvailableTablesForSurveys((Integer) session.getAttribute("selprogramId"));
             mav.addObject("availableTables", availableTables);
+            
+            /** Get a list of available crosswalks to auto-populate from **/
+            List<crosswalks> availableCW = dataelementmanager.getCrosswalks(0, 0, (Integer) session.getAttribute("selprogramId"));
+            mav.addObject("availableCW", availableCW);
         }
         
         /** Single text box **/
@@ -1058,6 +1129,7 @@ public class surveyController {
         }       
         
         questionDetails.setPopulateFromTable("");
+        questionDetails.setPopulateFromCW(0);
         surveymanager.saveSurveyQuestion(questionDetails);
         
         List<SurveyQuestionChoices> currentquestionChoices = surveymanager.getQuestionChoices(questionId);
@@ -1087,6 +1159,10 @@ public class surveyController {
             /** Get a list of available tables to auto-populate from **/
             List<programAvailableTables> availableTables = programmanager.getAvailableTablesForSurveys((Integer) session.getAttribute("selprogramId"));
             mav.addObject("availableTables", availableTables);
+            
+            /** Get a list of available crosswalks to auto-populate from **/
+            List<crosswalks> availableCW = dataelementmanager.getCrosswalks(0, 0, (Integer) session.getAttribute("selprogramId"));
+            mav.addObject("availableCW", availableCW);
         }
         
         /** Drop down (select box) **/
@@ -1096,6 +1172,10 @@ public class surveyController {
             /** Get a list of available tables to auto-populate from **/
             List<programAvailableTables> availableTables = programmanager.getAvailableTablesForSurveys((Integer) session.getAttribute("selprogramId"));
             mav.addObject("availableTables", availableTables);
+            
+            /** Get a list of available crosswalks to auto-populate from **/
+            List<crosswalks> availableCW = dataelementmanager.getCrosswalks(0, 0, (Integer) session.getAttribute("selprogramId"));
+            mav.addObject("availableCW", availableCW);
         }
         
         /** Single text box **/

@@ -114,6 +114,9 @@ public class SurveyQuestions {
     @Column(name = "dateType", nullable = true)
     private int dateType = 1;
     
+    @Column(name = "populateFromCW", nullable = true)
+    private Integer populateFromCW = 0;
+    
     
     public int getId() {
         return id;
@@ -338,6 +341,13 @@ public class SurveyQuestions {
     public void setDateType(int dateType) {
         this.dateType = dateType;
     }
-    
+
+    public Integer getPopulateFromCW() {
+        return populateFromCW;
+    }
+
+    public void setPopulateFromCW(Integer populateFromCW) {
+        this.populateFromCW = populateFromCW;
+    }
     
 }
