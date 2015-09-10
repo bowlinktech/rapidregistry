@@ -71,6 +71,9 @@ public class programOrgHierarchyDetails {
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
     @Column(name = "DATECREATED", nullable = true)
     private Date dateCreated = new Date();
+    
+    @Column(name = "displayId", nullable = true)
+    private String displayId = "";
 
     public int getId() {
         return id;
@@ -190,6 +193,20 @@ public class programOrgHierarchyDetails {
 
     public void setCreateFolders(Boolean createFolders) {
         this.createFolders = createFolders;
+    }
+    
+    /**
+     * @return the displayId
+     */
+    public String getDisplayId() {
+        return displayId;
+    }
+
+    /**
+     * @param displayId the displayId to set
+     */
+    public void setDisplayId(String displayId) {
+        this.displayId = displayId;
     }
     
 }
