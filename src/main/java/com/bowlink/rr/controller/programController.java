@@ -1,6 +1,7 @@
 package com.bowlink.rr.controller;
 
 import com.bowlink.rr.model.User;
+import com.bowlink.rr.model.crosswalks;
 import com.bowlink.rr.model.program;
 import com.bowlink.rr.model.programAdmin;
 import com.bowlink.rr.model.programAvailableTables;
@@ -660,6 +661,32 @@ public class programController {
         programmanager.removeAdminProgram((Integer) session.getAttribute("programId"), adminId);
        
         return 1;
+    }
+    
+    /**
+     * The '/{programName}/crosswalks' GET request will display the clicked program list of crosswalks.
+     *
+     * @param programName   The {programName} will be the program name with spaces removed.
+     *
+     * @return	Will return the program details page.
+     *
+     * @throws Exception
+     *
+     */
+    @RequestMapping(value = "/{programName}/crosswalks", method = RequestMethod.GET)
+    public ModelAndView viewProgramCrosswalks(@PathVariable String programName, HttpSession session) throws Exception {
+
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/crosswalks");
+        
+        //get the list of crosswalks
+        List<crosswalks> crosswalks = dataelementmanager.getCrosswalks(0, 0, (Integer) session.getAttribute("programId"));
+        mav.addObject("crosswalks", crosswalks);
+        
+        mav.addObject("id", session.getAttribute("programId"));
+        
+        return mav;
+
     }
     
 }

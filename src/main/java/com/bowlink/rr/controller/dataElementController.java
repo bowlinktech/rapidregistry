@@ -173,7 +173,13 @@ public class dataElementController {
         //otherwise send back to the message type libarary translation page.
         if (programId > 0) {
             String programName = programmanager.getProgramById(programId).getProgramName().replace(" ", "-").toLowerCase();
-            ModelAndView mav = new ModelAndView(new RedirectView("../programs/"+programName+"/forms/"+frompage+"/fields?s=2"));
+            ModelAndView mav;
+            if(frompage != null && !"".equals(frompage)) {
+                mav = new ModelAndView(new RedirectView("../programs/"+programName+"/forms/"+frompage+"/fields?s=2"));
+            }
+            else {
+                mav = new ModelAndView(new RedirectView("../programs/"+programName+"/crosswalks"));
+            }
             return mav;
         } else {
             ModelAndView mav = new ModelAndView(new RedirectView("translations"));

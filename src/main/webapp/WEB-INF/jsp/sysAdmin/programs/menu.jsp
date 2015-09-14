@@ -12,6 +12,7 @@
             <li role="menuitem" ${param['page'] == 'cannedreports' ? 'class="active"' : ''} ${id > 0 ? '' : 'class="disabled"'}><a href="/sysAdmin/programs/${sessionScope.programName}/canned-reports" title="Canned Reports">Canned Reports</a></li>
             <li role="menuitem" ${param['page'] == 'imports' ? 'class="active"' : ''} ${id > 0 ? '' : 'class="disabled"'}><a href="/sysAdmin/programs/${sessionScope.programName}/imports" title="Imports">Imports</a></li>
             <li role="menuitem" ${param['page'] == 'admins' ? 'class="active"' : ''} ${id > 0 ? '' : 'class="disabled"'}><a href="/sysAdmin/programs/${sessionScope.programName}/program-admins" title="Program Admins">Program Admins</a></li>
+            <li role="menuitem" ${param['page'] == 'crosswalks' ? 'class="active"' : ''} ${id > 0 ? '' : 'class="disabled"'}><a href="/sysAdmin/programs/${sessionScope.programName}/crosswalks" title="crosswalks">Crosswalks</a></li>
         </ul>
     </nav>
 </aside>
