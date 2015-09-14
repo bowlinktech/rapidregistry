@@ -47,6 +47,7 @@ public class surveyDAOImpl implements surveyDAO {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(surveys.class);
         criteria.add(Restrictions.eq("programId", programId));
         criteria.add(Restrictions.eq("status", true));
+        criteria.addOrder(Order.asc("title"));
         return criteria.list();
     }
 
@@ -61,7 +62,7 @@ public class surveyDAOImpl implements surveyDAO {
     public List<surveys> getProgramSurveys(Integer programId) throws Exception {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(surveys.class);
         criteria.add(Restrictions.eq("programId", programId));
-
+        criteria.addOrder(Order.asc("title"));
         List<surveys> surveyList = criteria.list();
        
         return surveyList;
