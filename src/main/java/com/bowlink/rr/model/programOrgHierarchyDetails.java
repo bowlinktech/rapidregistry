@@ -5,7 +5,6 @@
  */
 package com.bowlink.rr.model;
 
-import com.bowlink.rr.validator.NoHtml;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -46,7 +45,6 @@ public class programOrgHierarchyDetails {
     private boolean status = true;
     
     @NotEmpty
-    @NoHtml
     @Column(name = "NAME", nullable = false)
     private String name;
     

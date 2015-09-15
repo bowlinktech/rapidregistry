@@ -7,6 +7,7 @@
 package com.bowlink.rr.controller;
 
 import com.bowlink.rr.model.crosswalks;
+import com.bowlink.rr.model.customProgramFields;
 import com.bowlink.rr.model.dataElements;
 import com.bowlink.rr.service.dataElementManager;
 import com.bowlink.rr.service.programManager;
@@ -152,7 +153,7 @@ public class dataElementController {
      */
     @RequestMapping(value = "/createCrosswalk", method = RequestMethod.POST)
     public @ResponseBody
-    ModelAndView createCrosswalk(@ModelAttribute(value = "crosswalkDetails") crosswalks crosswalkDetails, @RequestParam String frompage, BindingResult result, RedirectAttributes redirectAttr, HttpSession session) throws Exception {
+    ModelAndView createCrosswalk(@ModelAttribute(value = "crosswalkDetails") crosswalks crosswalkDetails, @RequestParam String sectionIdVal, @RequestParam String frompage, BindingResult result, RedirectAttributes redirectAttr, HttpSession session) throws Exception {
 
         int programId = 0;
 
@@ -175,7 +176,7 @@ public class dataElementController {
             String programName = programmanager.getProgramById(programId).getProgramName().replace(" ", "-").toLowerCase();
             ModelAndView mav;
             if(frompage != null && !"".equals(frompage)) {
-                mav = new ModelAndView(new RedirectView("../programs/"+programName+"/forms/"+frompage+"/fields?s=2"));
+                mav = new ModelAndView(new RedirectView("../programs/"+programName+"/forms/"+frompage+"/fields?s="+sectionIdVal));
             }
             else {
                 mav = new ModelAndView(new RedirectView("../programs/"+programName+"/crosswalks"));
@@ -349,6 +350,162 @@ public class dataElementController {
 
         List columns = dataelementmanager.getTableColumns(tableName);
         return columns;
+    }
+    
+    /**
+     * The '/getCustomFields.do' function will return all the available Custom Fields.
+     *
+     * @Return list of Custom Fields
+     */
+    @RequestMapping(value = "/getCustomFields.do", method = RequestMethod.GET)
+    public @ResponseBody
+    ModelAndView getCustomFields(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "maxFields", required = false) Integer maxFields, HttpSession session) throws Exception {
+       
+        if (page == null) {
+            page = 1;
+        }
+        
+        int programId = 0;
+
+        if (null != session.getAttribute("programId")) {
+            programId = (Integer) session.getAttribute("programId");
+        }
+        
+        if(maxFields == null) {
+            maxFields = 4;
+        }
+
+        double maxFieldsVal = maxFields;
+       
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/sysAdmin/programs/forms/customFields");
+
+        //Need to return a list of custom Fields
+        List<customProgramFields> customFields = dataelementmanager.getCustomFields(page, maxFields, programId);
+        mav.addObject("availableCustomFields", customFields);
+
+        //Find out the total number of custom Fields
+        double totalcustomFields = dataelementmanager.findTotalCustomFields(programId);
+        
+        Integer totalPages = (int) Math.ceil((double)totalcustomFields / maxFieldsVal);
+        mav.addObject("totalPages", totalPages);
+        mav.addObject("currentPage", page);
+
+        return mav;
+
+    }
+    
+    /**
+     * The '/newCustomField' GET request will be used to return a blank custom field form.
+     *
+     *
+     * @return	The custom field details page
+     *
+     * @Objects	(1) An object that will hold all the details of the clicked custom field
+     *
+     */
+    @RequestMapping(value = "/newCustomField", method = RequestMethod.GET)
+    public @ResponseBody
+    ModelAndView newCustomField(HttpSession session, @RequestParam String frompage) throws Exception {
+
+        int programId = 0;
+
+        if (null != session.getAttribute("programId")) {
+            programId = (Integer) session.getAttribute("programId");
+        }
+
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/sysAdmin/programs/forms/customFieldDetails");
+        mav.addObject("frompage", frompage);
+
+        customProgramFields customField = new customProgramFields();
+        customField.setProgramId(programId);
+        mav.addObject("customField", customField);
+        mav.addObject("btnValue", "Create");
+        
+        @SuppressWarnings("rawtypes")
+        List infoTables = dataelementmanager.getInformationTables();
+        mav.addObject("infoTables", infoTables);
+
+        return mav;
+    }
+    
+    /**
+     * The '/viewCustomField{params}' function will return the details of the selected custom field. The results will be displayed in the overlay.
+     *
+     * @Param	i	This will hold the id of the selected field
+     *
+     * @Return	This function will return the custom field details view.
+     */
+    @RequestMapping(value = "/viewCustomField{params}", method = RequestMethod.GET)
+    public @ResponseBody
+    ModelAndView viewCustomField(@RequestParam(value = "i", required = true) Integer fieldId, @RequestParam String frompage) throws Exception {
+
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/sysAdmin/programs/forms/customFieldDetails");
+
+        //Get the details of the selected field
+        customProgramFields customField = dataelementmanager.getCustomField(fieldId);
+        mav.addObject("customField", customField);
+
+        @SuppressWarnings("rawtypes")
+        List infoTables = dataelementmanager.getInformationTables();
+        mav.addObject("infoTables", infoTables);
+        
+        mav.addObject("frompage", frompage);
+
+        return mav;
+    }
+    
+    /**
+     *
+     */
+    @RequestMapping(value = "/checkCustomFieldName.do", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody
+    Long checkCustomFieldName(@RequestParam(value = "name", required = true) String name, @RequestParam(value = "fieldId", required = true) Integer fieldId, HttpSession session) throws Exception {
+
+        int programId = 0;
+
+        if (null != session.getAttribute("programId")) {
+            programId = (Integer) session.getAttribute("programId");
+        }
+
+        Long nameExists = (Long) dataelementmanager.checkCustomFieldName(name, programId, fieldId);
+
+        return nameExists;
+
+    }
+    
+    /**
+     * The '/saveCustomField' function will be used to create/edit the custom field
+     *
+     */
+    @RequestMapping(value = "/saveCustomField", method = RequestMethod.POST)
+    public @ResponseBody
+    ModelAndView saveCustomField(@ModelAttribute(value = "customField") customProgramFields customField, @RequestParam String sectionIdVal, @RequestParam String frompage, BindingResult result, RedirectAttributes redirectAttr, HttpSession session) throws Exception {
+
+        int programId = 0;
+
+        if (null != session.getAttribute("programId")) {
+            programId = (Integer) session.getAttribute("programId");
+        }
+        
+        if (customField.getId() > 0) {
+            redirectAttr.addFlashAttribute("savedStatus", "customfieldupdated");
+        } else {
+            redirectAttr.addFlashAttribute("savedStatus", "customfieldcreated");
+        }
+        
+        dataelementmanager.saveCustomField(customField);
+       
+        //if programId > 0 then need to send back to the configurations page
+        //otherwise send back to the message type libarary translation page.
+        String programName = programmanager.getProgramById(programId).getProgramName().replace(" ", "-").toLowerCase();
+        ModelAndView mav;
+        mav = new ModelAndView(new RedirectView("../programs/"+programName+"/forms/"+frompage+"/fields?s=" + sectionIdVal));
+       
+        return mav;
+        
     }
     
 }

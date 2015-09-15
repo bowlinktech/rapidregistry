@@ -7,6 +7,7 @@
 package com.bowlink.rr.service;
 
 import com.bowlink.rr.model.crosswalks;
+import com.bowlink.rr.model.customProgramFields;
 import com.bowlink.rr.model.dataElements;
 import java.util.List;
 
@@ -67,4 +68,15 @@ public interface dataElementManager {
     
     @SuppressWarnings("rawtypes")
     List getLookupTableValues(String tableName) throws Exception;
+    
+    List<customProgramFields> getCustomFields(int page, int maxResults, int programId) throws Exception;
+    
+    double findTotalCustomFields(int programId);
+    
+    customProgramFields getCustomField(int fieldId) throws Exception;
+    
+    Long checkCustomFieldName(String name, int programId, int fieldId);
+    
+    void saveCustomField(customProgramFields customField) throws Exception;
+    
 }

@@ -7,8 +7,11 @@ package com.bowlink.rr.dao.impl;
 
 import com.bowlink.rr.dao.dataElementDAO;
 import com.bowlink.rr.model.crosswalks;
+import com.bowlink.rr.model.customProgramFields;
 import com.bowlink.rr.model.dataElements;
 import java.util.List;
+import java.util.Properties;
+import javax.annotation.Resource;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
@@ -24,6 +27,9 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Repository
 public class dataElementDAOImpl implements dataElementDAO {
+    
+    @Resource(name = "myProps")
+    private Properties myProps;
 
     @Autowired
     private SessionFactory sessionFactory;
@@ -302,7 +308,7 @@ public class dataElementDAOImpl implements dataElementDAO {
     @SuppressWarnings("rawtypes")
     @Transactional
     public List getInformationTables() {
-        Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT distinct table_name FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'rapidregistry' and (TABLE_NAME = 'submittedsurveys' OR TABLE_NAME LIKE 'storage\\_%')");
+        Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT distinct table_name FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '"+ myProps.getProperty("schemaName") +"' and (TABLE_NAME = 'submittedsurveys' OR TABLE_NAME LIKE 'storage\\_%')");
 
         return query.list();
     }
@@ -314,7 +320,7 @@ public class dataElementDAOImpl implements dataElementDAO {
     @SuppressWarnings("rawtypes")
     @Transactional
     public List getAllTables() {
-        Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT distinct table_name FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'rapidregistry' ");
+        Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT distinct table_name FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '"+ myProps.getProperty("schemaName") +"' ");
 
         return query.list();
     }
@@ -327,7 +333,7 @@ public class dataElementDAOImpl implements dataElementDAO {
     @SuppressWarnings("rawtypes")
     @Transactional
     public List getTableColumns(String tableName) {
-        Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'rapidregistry' AND TABLE_NAME = :tableName and COLUMN_NAME not in ('id', 'dateCreated') order by COLUMN_NAME")
+        Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '"+ myProps.getProperty("schemaName") +"' AND TABLE_NAME = :tableName and COLUMN_NAME not in ('id', 'dateCreated') order by COLUMN_NAME")
                 .setParameter("tableName", tableName);
 
         return query.list();
@@ -378,7 +384,7 @@ public class dataElementDAOImpl implements dataElementDAO {
     @SuppressWarnings("rawtypes")
     @Transactional
     public List getLookUpTables() {
-        Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT distinct table_name FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'rapidregistry' and TABLE_NAME LIKE 'lu\\_%'");
+        Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT distinct table_name FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '"+ myProps.getProperty("schemaName") +"' and TABLE_NAME LIKE 'lu\\_%'");
 
         return query.list();
     }
@@ -402,5 +408,119 @@ public class dataElementDAOImpl implements dataElementDAO {
         Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT id, displayText from " + tableName + " where status = 1 order by displayText asc");
 
         return query.list();
+    }
+    
+    /**
+     * The 'getCustomFields' function will return the list of available custom program fields
+     *
+     * @param page	The current crosswalk page
+     * @param	maxResults	The maximum number of customProgramFields to return from each query
+     * @param	programId	The programId id (default 0)
+     *
+     * @Table	customProgramFields
+     *
+     * @Return	This function will return a list of customProgramFields
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<customProgramFields> getCustomFields(int page, int maxResults, int programId) {
+
+        Query query = null;
+
+        if (programId == 0) {
+            query = sessionFactory.getCurrentSession().createQuery("from customProgramFields where programId = 0 order by fieldName asc");
+        } else {
+            query = sessionFactory.getCurrentSession().createQuery("from customProgramFields where (programId = 0 or programId = :programId) order by fieldName asc");
+            query.setParameter("programId", programId);
+        }
+
+        int firstResult = 0;
+
+        //Set the parameters for paging
+        //Set the page to load
+        if (page > 1) {
+            firstResult = (maxResults * (page - 1));
+        }
+        query.setFirstResult(firstResult);
+
+        //Set the max results to display
+        //If 0 is passed then we want all crosswalks
+        if (maxResults > 0) {
+            query.setMaxResults(maxResults);
+        }
+
+        return query.list();
+
+    }
+    
+    /**
+     * The 'findTotalCustomFields' function will return the total number of custom fields in the system
+     *
+     * @param programId Will pass the programId 
+     *
+     * @Table	crosswalks
+     *
+     *
+     * @Return	This function will return the total number of custom fields set up in the system for the passed in program
+     */
+    @Override
+    public double findTotalCustomFields(int programId) {
+
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(customProgramFields.class);
+
+        if (programId == 0) {
+            criteria.add(Restrictions.eq("programId", 0));
+        }
+        else {
+           Disjunction or = Restrictions.disjunction();
+           or.add(Restrictions.eq("programId", 0));
+           or.add(Restrictions.eq("programId", programId));
+           criteria.add(or);
+            
+        }
+
+        double totalCustomFields = (double) criteria.list().size();
+
+        return totalCustomFields;
+    }
+    
+    /**
+     * The 'getCrosswalk' function will return the details for the passed in custom field.
+     *
+     * @param	fieldId	This will be id to find the specific field
+     *
+     * @return	The function will return a customProgramFields object
+     */
+    @Override
+    public customProgramFields getCustomField(int fieldId) {
+        return (customProgramFields) sessionFactory.getCurrentSession().get(customProgramFields.class, fieldId);
+    }
+    
+    /**
+     *
+     */
+    @Override
+    public Long checkCustomFieldName(String name, int programId, int fieldId) {
+        Query query = sessionFactory.getCurrentSession().createQuery("select count(id) as total from customProgramFields where id <> :fieldId and fieldName = :name and programId = :programId");
+        query.setParameter("name", name);
+        query.setParameter("programId", programId);
+        query.setParameter("fieldId", fieldId);
+        
+        Long fieldNameId = (Long) query.uniqueResult();
+
+        return fieldNameId;
+    }
+    
+    /**
+     * The 'saveCustomField" function will create/edit the custom field
+     *
+     * @Table	customProgramFields
+     *
+     * @param	customField	This will hold the custom field object from the form
+     *
+     */
+    @Override
+    public void saveCustomField(customProgramFields customField) {
+        sessionFactory.getCurrentSession().saveOrUpdate(customField);
     }
 }

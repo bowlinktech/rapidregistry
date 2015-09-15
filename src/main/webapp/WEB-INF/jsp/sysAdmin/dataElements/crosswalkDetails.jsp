@@ -13,6 +13,7 @@
             <form:form id="crosswalkdetailsform" commandName="crosswalkDetails" modelAttribute="crosswalkDetails" enctype="multipart/form-data" method="post" role="form">
                 <form:hidden path="id" id="id" />
                 <form:hidden path="dateCreated" />
+                <input type="hidden" name="sectionIdVal" id="sectionIdVal" value="0" />
                 <input type="hidden" name="programId" value="${programId}" />
                 <input type="hidden" id="frompage" name="frompage" value="${frompage}" />
                 <div class="form-container">

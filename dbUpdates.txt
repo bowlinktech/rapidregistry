@@ -1,70 +1,19 @@
-/** grace 05.14.2015 11:07PM **/
-ALTER TABLE `rapidregistry`.`storage_engagements` 
-ADD COLUMN `height` DECIMAL(2,0) NULL AFTER `BMI`,
-ADD COLUMN `weight` DECIMAL(2,0) NULL AFTER `height`,
-ADD COLUMN `bpDia` DECIMAL(2,0) NULL AFTER `weight`,
-ADD COLUMN `bpSys` DECIMAL(2,0) NULL AFTER `bpDia`;
+ALTER TABLE `rapidregistry`.`program_patientfields` 
+ADD COLUMN `readOnly` BIT(1) NOT NULL DEFAULT b'0' AFTER `hideField`;
 
-/** grace 05.18.2015 11:54PM **/
-UPDATE `rapidregistry`.`lu_errorcodes` SET 
-`displayText`='Invalid Hierarchy Permission', 
-`description`='User does not have permission to upload for hierarchy', 
-`dateCreated`=current_timestamp, `dateModified`=current_timestamp WHERE `id`='9';
-UPDATE `rapidregistry`.`lu_programModules` SET `linkIcon`='fa-list-alt' WHERE `id`='11';
+ALTER TABLE `rapidregistry`.`program_patientfields` 
+ADD COLUMN `saveToTable` VARCHAR(255) NULL AFTER `readOnly`;
 
-/** grace 05.20.15 06:12PM **/
-drop table if exists `rapidregistry`.`lu_noContraceptiveReasons` ;
-CREATE TABLE `rapidregistry`.`lu_noContraceptiveReasons` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `displayText` varchar(45) NOT NULL,
-  `status` bit(1) NOT NULL DEFAULT b'1',
-  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+ALTER TABLE `rapidregistry`.`program_patientfields` 
+ADD COLUMN `saveToTableCol` VARCHAR(255) NULL DEFAULT NULL AFTER `saveToTable`;
 
+ALTER TABLE `rapidregistry`.`program_patientfields` 
+ADD COLUMN `defaultValue` VARCHAR(255) NULL AFTER `saveToTableCol`;
 
-INSERT INTO `rapidregistry`.`dataElements` (`id`, `elementName`,`saveToTableName`,`saveToTableCol`,`status`,`answerType`,`populateFromTable`)VALUES (	'27', 'Misc', 'storage_engagementsMisc', 'field1', 1, '3', ''	);
-INSERT INTO `rapidregistry`.`dataElements` (`id`, `elementName`,`saveToTableName`,`saveToTableCol`,`status`,`answerType`,`populateFromTable`)VALUES (	'28', 'Entity Id', 'storage_engagements', 'programorghierarchy_detailsId', 1, '3', ''	);
-INSERT INTO `rapidregistry`.`dataElements` (`id`, `elementName`,`saveToTableName`,`saveToTableCol`,`status`,`answerType`,`populateFromTable`)VALUES (	'29', 'Multi-Race', 'storage_races', 'raceId', 1, '1', 'lu_races'	);
-INSERT INTO `rapidregistry`.`dataElements` (`id`, `elementName`,`saveToTableName`,`saveToTableCol`,`status`,`answerType`,`populateFromTable`)VALUES (	'30', 'Initial Contraceptive Method', 'storage_engagements', 'contraceptiveInitialId', 1, '2', 'lu_contraceptiveMethods'	);
-INSERT INTO `rapidregistry`.`dataElements` (`id`, `elementName`,`saveToTableName`,`saveToTableCol`,`status`,`answerType`,`populateFromTable`)VALUES (	'31', 'Primary Contraceptive Method', 'storage_engagements', 'contraceptiveMethodPrimaryId', 1, '2', 'lu_contraceptiveMethods'	);
-INSERT INTO `rapidregistry`.`dataElements` (`id`, `elementName`,`saveToTableName`,`saveToTableCol`,`status`,`answerType`,`populateFromTable`)VALUES (	'32', 'Secondary Contraceptive Method', 'storage_engagements', 'contraceptiveMethodAfterId', 1, '2', 'lu_contraceptiveMethods'	);
-INSERT INTO `rapidregistry`.`dataElements` (`id`, `elementName`,`saveToTableName`,`saveToTableCol`,`status`,`answerType`,`populateFromTable`)VALUES (	'33', 'Reason for No Method', 'storage_engagements', 'noContraceptiveReasonId', 1, '2', 'lu_noContraceptiveReasons'	);
-INSERT INTO `rapidregistry`.`dataElements` (`id`, `elementName`,`saveToTableName`,`saveToTableCol`,`status`,`answerType`,`populateFromTable`)VALUES (	'34', 'Local Use Code', 'storage_localCodes', 'localCode', 1, '3', ''	);
-INSERT INTO `rapidregistry`.`dataElements` (`id`, `elementName`,`saveToTableName`,`saveToTableCol`,`status`,`answerType`,`populateFromTable`)VALUES (	'35', 'Body Mass Index', 'storage_engagements', 'BMI', 1, '3', ''	);
-INSERT INTO `rapidregistry`.`dataElements` (`id`, `elementName`,`saveToTableName`,`saveToTableCol`,`status`,`answerType`,`populateFromTable`)VALUES (	'36', 'Height', 'storage_engagements', 'height', 1, '3', ''	);
-INSERT INTO `rapidregistry`.`dataElements` (`id`, `elementName`,`saveToTableName`,`saveToTableCol`,`status`,`answerType`,`populateFromTable`)VALUES (	'37', 'Weight', 'storage_engagements', 'weight', 1, '3', ''	);
-INSERT INTO `rapidregistry`.`dataElements` (`id`, `elementName`,`saveToTableName`,`saveToTableCol`,`status`,`answerType`,`populateFromTable`)VALUES (	'38', 'BP Diastolic', 'storage_engagements', 'bpDia', 1, '3', ''	);
-INSERT INTO `rapidregistry`.`dataElements` (`id`, `elementName`,`saveToTableName`,`saveToTableCol`,`status`, `answerType`,`populateFromTable`) VALUES ('39', 'BP Systolic', 'storage_engagements', 'bpSys', 1, '3', '');
-
-/** grace 05.22.2015 12:21PM **/
-use rapidregistry;
-
-drop function if exists strSplit;
-
-DELIMITER $$
-CREATE DEFINER=`root`@`localhost` FUNCTION `strSplit`(x varchar(255), delim varchar(12), pos int) RETURNS varchar(255) CHARSET latin1
-return replace(substring(substring_index(x, delim, pos), 
-length(substring_index(x, delim, pos - 1)) + 1), delim, '')$$
-DELIMITER ;
-
-/** grace 05.23.2015 01:24AM **/
-ALTER TABLE `rapidregistry`.`programUploadRecords` 
-ADD COLUMN `storage_patientsId` INT NULL AFTER `dateCreated`,
-ADD COLUMN `storage_engagementId` INT NULL AFTER `storage_patientsId`;
-
-
-ALTER TABLE `rapidregistry`.`put_algorithmFields` 
-ADD COLUMN `actionSQL` VARCHAR(5) NULL DEFAULT '=' AFTER `action`;
-
-ALTER TABLE `rapidregistry`.`put_algorithmFields` 
-ADD COLUMN `putFormFieldId` INT NULL AFTER `actionSQL`;
-
-ALTER TABLE `rapidregistry`.`put_algorithmFields` 
-DROP FOREIGN KEY `fk_programMPIFields_fieldId`;
-ALTER TABLE `rapidregistry`.`put_algorithmFields` 
-DROP COLUMN `fieldId`,
-DROP INDEX `fk_programMPIFields_fieldId` ;
-
-
-
+CREATE TABLE `rapidregistry`.`customprogramfields` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `fieldName` VARCHAR(255) NOT NULL,
+  `saveToTable` VARCHAR(255) NOT NULL,
+  `saveToTableCol` VARCHAR(255) NOT NULL,
+  `programId` INT NOT NULL,
+  PRIMARY KEY (`id`));

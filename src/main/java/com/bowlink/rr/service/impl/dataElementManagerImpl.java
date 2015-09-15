@@ -8,6 +8,7 @@ package com.bowlink.rr.service.impl;
 
 import com.bowlink.rr.dao.dataElementDAO;
 import com.bowlink.rr.model.crosswalks;
+import com.bowlink.rr.model.customProgramFields;
 import com.bowlink.rr.model.dataElements;
 import com.bowlink.rr.reference.fileSystem;
 import com.bowlink.rr.service.dataElementManager;
@@ -304,5 +305,35 @@ public class dataElementManagerImpl implements dataElementManager {
     @Transactional
     public List getLookupTableValues(String tableName) throws Exception {
         return dataElementDAO.getLookupTableValues(tableName);
+    }
+    
+    @Override
+    @Transactional
+    public List<customProgramFields> getCustomFields(int page, int maxResults, int programId) throws Exception {
+        return dataElementDAO.getCustomFields(page, maxResults, programId);
+    }
+    
+    @Override
+    @Transactional
+    public double findTotalCustomFields(int programId) {
+        return dataElementDAO.findTotalCustomFields(programId);
+    }
+    
+    @Override
+    @Transactional
+    public customProgramFields getCustomField(int fieldId) throws Exception {
+        return dataElementDAO.getCustomField(fieldId);
+    }
+    
+    @Override
+    @Transactional
+    public Long checkCustomFieldName(String name, int programId, int fieldId) {
+        return dataElementDAO.checkCustomFieldName(name, programId, fieldId);
+    }
+    
+    @Override
+    @Transactional
+    public void saveCustomField(customProgramFields customField) throws Exception {
+        dataElementDAO.saveCustomField(customField);
     }
  }

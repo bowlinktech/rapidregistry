@@ -24,6 +24,7 @@
                 <form:hidden path="programId" />
                 <form:hidden path="sectionId" />
                 <form:hidden path="fieldId" />
+                <form:hidden path="customfieldId" />
                 <form:hidden path="dateCreated" />
                 <form:hidden path="searchDspPos" />
                 <form:hidden path="dspPos" />
@@ -43,6 +44,17 @@
                             </c:forEach>
                         </form:select>
                     </div>
+                    <c:if test="${fieldDetails.crosswalkId > 0}">
+                        <div id="crosswalkDiv" class="form-group">
+                            <label class="control-label" for="defaultValue">Crosswalk Default Value</label>
+                            <form:select path="defaultValue" id="defaultValue" class="form-control half">
+                                <option value="">- Select -</option>
+                                <c:forEach var="defaultValue" items="${fieldDetails.defaultValues}">
+                                    <option value="${defaultValue['key']}" <c:if test="${fieldDetails.defaultValue == defaultValue['key']}">selected="true"</c:if>>${defaultValue['value']}</option>
+                                </c:forEach>
+                            </form:select>
+                        </div>
+                    </c:if>     
                     <div class="form-group">
                         <label class="control-label" for="fieldValidation">Field Validation</label>
                         <form:select path="validationId" id="fieldValidation" class="form-control half">
@@ -59,12 +71,29 @@
                         </form:select>
                     </div> 
                     <div class="form-group">
+                        <label class="control-label" for="readOnly">Read Only Field *</label>
+                        <form:select path="readOnly" id="readOnly" class="form-control half">
+                            <option value="false" <c:if test="${fieldDetails.readOnly == false}">selected</c:if>>False</option>
+                            <option value="true"  <c:if test="${fieldDetails.readOnly == true}">selected</c:if>>True</option>
+                        </form:select>
+                    </div>      
+                    <div class="form-group">
                         <label class="control-label" for=hideField">Hidden Field *</label>
                         <form:select path="hideField" id="hideField" class="form-control half">
                             <option value="false" <c:if test="${fieldDetails.hideField == false}">selected</c:if>>No</option>
                             <option value="true" <c:if test="${fieldDetails.hideField == true}">selected</c:if>>Yes</option>
                         </form:select>
-                    </div>      
+                    </div>    
+                    <div id="minValueDiv" class="form-group ${status.error ? 'has-error' : '' }">
+                        <label class="control-label" for="minFieldValue">Minimum Numeric Value</label>
+                         <form:input path="minFieldValue" id="minFieldValue" class="form-control half"  maxLength="4" />
+                        <span id="minValueMsg" class="control-label"></span>
+                    </div>
+                    <div id="maxValueDiv" class="form-group ${status.error ? 'has-error' : '' }">
+                        <label class="control-label" for="maxFieldValue">Maximum Numeric Value</label>
+                         <form:input path="maxFieldValue" id="maxFieldValue" class="form-control half"  maxLength="4" />
+                        <span id="maxValueMsg" class="control-label"></span>
+                    </div>  
                     <div class="form-group">
                         <label class="control-label" for=dataGridColumn">Show field in: *</label>
                         <div class="checkbox">

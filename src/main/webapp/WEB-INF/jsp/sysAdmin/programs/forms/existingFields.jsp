@@ -15,7 +15,7 @@
             <th scope="col">Field / Display Name</th>
             <th scope="col">Crosswalk/Auto Populate</th>
             <th scope="col">Field Validation</th>
-            <th scope="col" class="center-text">Required</th>
+            <th scope="col" class="center-text">Required / Read Only</th>
             <th scope="col" class="center-text">Hidden Field</th>
             <th scope="col" class="center-text">Form Dsp Position</th>
             <th scope="col">Show Field In</th>
@@ -29,12 +29,20 @@
                 <c:forEach items="${existingFields}" var="field" varStatus="fStatus">
                     <tr>
                         <td scope="row">
-                            ${existingFields[fStatus.index].fieldName} <br />
+                            <c:if test="${not empty existingFields[fStatus.index].fieldName}">${existingFields[fStatus.index].fieldName} <br /></c:if>
                             <strong>${existingFields[fStatus.index].fieldDisplayname} </strong>
                         </td>
                         <td>
                              <c:choose>
-                                 <c:when test="${not empty existingFields[fStatus.index].cwName}">${existingFields[fStatus.index].cwName}</c:when>
+                                 <c:when test="${not empty existingFields[fStatus.index].cwName}">
+                                    ${existingFields[fStatus.index].cwName}
+                                    <select rel="${existingFields[fStatus.index].id}" name="defaultValue" class="setDefaultValue form-control half">
+                                        <option value="">- Select Default Value -</option>
+                                        <c:forEach var="defaultValue" items="${existingFields[fStatus.index].defaultValues}">
+                                            <option value="${defaultValue['key']}" <c:if test="${existingFields[fStatus.index].defaultValue == defaultValue['key']}">selected="true"</c:if>>${defaultValue['value']}</option>
+                                        </c:forEach>
+                                    </select>
+                                 </c:when>
                                  <c:when test="${existingFields[fStatus.index].autoPopulate == true}">
                                      <a href="#selectValuesModal" data-toggle="modal" class="btn btn-link selectValues" rel="${existingFields[fStatus.index].id}"  title="Select Field Values">
                                          <span class="glyphicon glyphicon-search"></span>
@@ -48,7 +56,7 @@
                             ${existingFields[fStatus.index].validationName} 
                         </td>
                         <td class="center-text">
-                            ${existingFields[fStatus.index].requiredField} 
+                            ${existingFields[fStatus.index].requiredField} / ${existingFields[fStatus.index].readOnly}
                         </td>
                         <td class="center-text">
                             <c:choose>

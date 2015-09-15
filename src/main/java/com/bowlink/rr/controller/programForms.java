@@ -6,6 +6,7 @@
 package com.bowlink.rr.controller;
 
 import com.bowlink.rr.model.crosswalks;
+import com.bowlink.rr.model.customProgramFields;
 import com.bowlink.rr.model.dataElements;
 import com.bowlink.rr.model.program;
 import com.bowlink.rr.model.programEngagementFieldValues;
@@ -18,8 +19,10 @@ import com.bowlink.rr.service.dataElementManager;
 import com.bowlink.rr.service.programFormsManager;
 import com.bowlink.rr.service.programManager;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -328,6 +331,10 @@ public class programForms {
         //Return a list of available crosswalks
         List<crosswalks> crosswalks = dataelementmanager.getCrosswalks(1, 0, (Integer) session.getAttribute("programId"));
         mav.addObject("crosswalks", crosswalks);
+        
+        //Return a list of available custom program fields
+        List<customProgramFields> customFields = dataelementmanager.getCustomFields(1, 0, (Integer) session.getAttribute("programId"));
+        mav.addObject("customFields", customFields);
 
         //Return a list of validation types
         List validationTypes = dataelementmanager.getValidationTypes();
@@ -357,6 +364,9 @@ public class programForms {
             String fieldName;
             String crosswalkName;
             String validationName;
+            Map<String, String> defaultValues;
+            String optionDesc;
+            String optionValue;
             
             /* Patient Form Sections */        
             if("patient-sections".equals(section)) {
@@ -366,13 +376,20 @@ public class programForms {
                 for (programPatientFields field : existingPatientFields) {
                     
                     //Get the field Details
-                    dataElements fieldDetails = dataelementmanager.getFieldDetails(field.getFieldId());
-                    field.setFieldName(fieldDetails.getElementName());
-                    
-                    if(fieldDetails.getPopulateFromTable() != null && !fieldDetails.getPopulateFromTable().isEmpty()) {
-                        field.setAutoPopulate(true);
+                    if(field.getFieldId() > 0) {
+                        dataElements fieldDetails = dataelementmanager.getFieldDetails(field.getFieldId());
+                        field.setFieldName(fieldDetails.getElementName());
+
+                        if(fieldDetails.getPopulateFromTable() != null && !fieldDetails.getPopulateFromTable().isEmpty()) {
+                            field.setAutoPopulate(true);
+                        }
+                        else {
+                            field.setAutoPopulate(false);
+                        }
                     }
                     else {
+                        customProgramFields fieldDetails = dataelementmanager.getCustomField(field.getCustomfieldId());
+                        field.setFieldName(fieldDetails.getFieldName());
                         field.setAutoPopulate(false);
                     }
 
@@ -380,6 +397,23 @@ public class programForms {
                     if (field.getCrosswalkId() != 0) {
                         crosswalkName = dataelementmanager.getCrosswalkName(field.getCrosswalkId());
                         field.setCwName(crosswalkName);
+                        
+                        defaultValues = new HashMap<>();
+
+                        /* Get values of crosswalk */
+                        List crosswalkdata = dataelementmanager.getCrosswalkData(field.getCrosswalkId());
+
+                        Iterator cwDataIt = crosswalkdata.iterator();
+                        while (cwDataIt.hasNext()) {
+                            Object cwDatarow[] = (Object[]) cwDataIt.next();
+                            optionDesc = (String) cwDatarow[2];
+                            optionValue = (String) cwDatarow[0];
+
+                            defaultValues.put(optionValue, optionDesc);
+                        }
+
+                        field.setDefaultValues(defaultValues);
+                       
                     }
 
                     //Get the macro name by id
@@ -402,20 +436,43 @@ public class programForms {
                 for (programEngagementFields field : existingEngagementFields) {
                     
                     //Get the field Details
-                    dataElements fieldDetails = dataelementmanager.getFieldDetails(field.getFieldId());
-                    field.setFieldName(fieldDetails.getElementName());
-                    
-                    if(fieldDetails.getPopulateFromTable() != null && !fieldDetails.getPopulateFromTable().isEmpty()) {
-                        field.setAutoPopulate(true);
+                    if(field.getFieldId() > 0) {
+                        dataElements fieldDetails = dataelementmanager.getFieldDetails(field.getFieldId());
+                        field.setFieldName(fieldDetails.getElementName());
+
+                        if(fieldDetails.getPopulateFromTable() != null && !fieldDetails.getPopulateFromTable().isEmpty()) {
+                            field.setAutoPopulate(true);
+                        }
+                        else {
+                            field.setAutoPopulate(false);
+                        }
                     }
                     else {
+                        customProgramFields fieldDetails = dataelementmanager.getCustomField(field.getCustomfieldId());
+                        field.setFieldName(fieldDetails.getFieldName());
                         field.setAutoPopulate(false);
                     }
-
+                    
                     //Get the crosswalk name by id
                     if (field.getCrosswalkId() != 0) {
                         crosswalkName = dataelementmanager.getCrosswalkName(field.getCrosswalkId());
                         field.setCwName(crosswalkName);
+                        
+                        defaultValues = new HashMap<>();
+
+                        /* Get values of crosswalk */
+                        List crosswalkdata = dataelementmanager.getCrosswalkData(field.getCrosswalkId());
+
+                        Iterator cwDataIt = crosswalkdata.iterator();
+                        while (cwDataIt.hasNext()) {
+                            Object cwDatarow[] = (Object[]) cwDataIt.next();
+                            optionDesc = (String) cwDatarow[2];
+                            optionValue = (String) cwDatarow[0];
+
+                            defaultValues.put(optionValue, optionDesc);
+                        }
+
+                        field.setDefaultValues(defaultValues);
                     }
 
                     //Get the macro name by id
@@ -471,7 +528,7 @@ public class programForms {
     @RequestMapping(value = "/setField.do", method = RequestMethod.POST)
     public @ResponseBody
     ModelAndView setField(
-            @RequestParam(value = "fieldId", required = true) Integer fieldId, @RequestParam(value = "sectionId", required = true) Integer sectionId, @RequestParam(value = "fieldText", required = true) String fieldText,
+            @RequestParam(value = "fieldId", required = true) Integer fieldId, @RequestParam(value = "sectionId", required = true) Integer sectionId, @RequestParam(value = "fieldText", required = false, defaultValue="") String fieldText,
             @RequestParam(value = "fieldDisplayName", required = true) String fieldDisplayName,
             @RequestParam(value = "cw", required = true) Integer cw, @RequestParam(value = "CWText", required = true) String cwText,
             @RequestParam(value = "validationId", required = true) Integer validationId, @RequestParam(value = "validationName", required = true) String validationName,
@@ -481,6 +538,9 @@ public class programForms {
             @RequestParam(value = "section", required = true) String section,
             @RequestParam(value = "searchColumn", required = true) boolean searchColumn,
             @RequestParam(value = "summaryColumn", required = true) boolean summaryColumn,
+            @RequestParam(value = "customFieldId", required = true) Integer customFieldId,
+            @RequestParam(value = "customFieldText", required = false, defaultValue="") String customFieldText,
+            @RequestParam(value = "readOnly", required = true) boolean readOnly,
             HttpSession session
     ) throws Exception {
 
@@ -523,9 +583,32 @@ public class programForms {
             field.setSummaryField(summaryColumn);
             field.setSearchField(searchColumn);
             field.setHideField(hideField);
+            field.setReadOnly(readOnly);
+            field.setCustomfieldId(customFieldId);
             
             if(searchColumn == true) {
                 field.setSearchDspPos(totalSearchColumns+1);
+            }
+            
+            if(cw > 0) {
+                Map<String, String> defaultValues = new HashMap<>();;
+                String optionDesc;
+                String optionValue;
+
+                /* Get values of crosswalk */
+                List crosswalkdata = dataelementmanager.getCrosswalkData(cw);
+
+                Iterator cwDataIt = crosswalkdata.iterator();
+                while (cwDataIt.hasNext()) {
+                    Object cwDatarow[] = (Object[]) cwDataIt.next();
+                    optionDesc = (String) cwDatarow[2];
+                    optionValue = (String) cwDatarow[0];
+
+                    defaultValues.put(optionValue, optionDesc);
+
+                }
+
+                field.setDefaultValues(defaultValues);
             }
             
 
@@ -563,9 +646,32 @@ public class programForms {
             field.setSummaryField(summaryColumn);
             field.setSearchField(searchColumn);
             field.setHideField(hideField);
+            field.setReadOnly(readOnly);
+            field.setCustomfieldId(customFieldId);
             
             if(searchColumn == true) {
                 field.setSearchDspPos(totalSearchColumns+1);
+            }
+            
+            if(cw > 0) {
+                Map<String, String> defaultValues = new HashMap<>();;
+                String optionDesc;
+                String optionValue;
+
+                /* Get values of crosswalk */
+                List crosswalkdata = dataelementmanager.getCrosswalkData(cw);
+
+                Iterator cwDataIt = crosswalkdata.iterator();
+                while (cwDataIt.hasNext()) {
+                    Object cwDatarow[] = (Object[]) cwDataIt.next();
+                    optionDesc = (String) cwDatarow[2];
+                    optionValue = (String) cwDatarow[0];
+
+                    defaultValues.put(optionValue, optionDesc);
+
+                }
+
+                field.setDefaultValues(defaultValues);
             }
             
             engagementFields.add(field);
@@ -794,6 +900,27 @@ public class programForms {
         if("patient-sections".equals(section)) {
             programPatientFields fieldDetails = programformsmanager.getPatientFieldById(fieldId);
             
+            if(fieldDetails.getCrosswalkId() > 0) {
+                Map<String, String> defaultValues = new HashMap<>();;
+                String optionDesc;
+                String optionValue;
+
+                /* Get values of crosswalk */
+                List crosswalkdata = dataelementmanager.getCrosswalkData(fieldDetails.getCrosswalkId());
+
+                Iterator cwDataIt = crosswalkdata.iterator();
+                while (cwDataIt.hasNext()) {
+                    Object cwDatarow[] = (Object[]) cwDataIt.next();
+                    optionDesc = (String) cwDatarow[2];
+                    optionValue = (String) cwDatarow[0];
+
+                    defaultValues.put(optionValue, optionDesc);
+
+                }
+
+                fieldDetails.setDefaultValues(defaultValues);
+            }
+            
             mav.addObject("fieldDetails", fieldDetails);
         }
         
@@ -801,6 +928,27 @@ public class programForms {
         else if ("engagement-sections".equals(section)) {
             //Need to get a list of existing engagement fields
             programEngagementFields fieldDetails = programformsmanager.getEngagementFieldById(fieldId);
+            
+            if(fieldDetails.getCrosswalkId() > 0) {
+                Map<String, String> defaultValues = new HashMap<>();;
+                String optionDesc;
+                String optionValue;
+
+                /* Get values of crosswalk */
+                List crosswalkdata = dataelementmanager.getCrosswalkData(fieldDetails.getCrosswalkId());
+
+                Iterator cwDataIt = crosswalkdata.iterator();
+                while (cwDataIt.hasNext()) {
+                    Object cwDatarow[] = (Object[]) cwDataIt.next();
+                    optionDesc = (String) cwDatarow[2];
+                    optionValue = (String) cwDatarow[0];
+
+                    defaultValues.put(optionValue, optionDesc);
+
+                }
+
+                fieldDetails.setDefaultValues(defaultValues);
+            }
             
             mav.addObject("fieldDetails", fieldDetails);
  
@@ -1049,5 +1197,45 @@ public class programForms {
         
         return mav;
         
+    }
+    
+    /**
+     * The 'updateDefaultValue{params}' function will handle setting the crosswalk default value.
+     *
+     * @param	fieldId         This will hold the field that is being set
+     * @param	selValue	The selected default value
+     *
+     * @Return	1	The function will simply return a 1 back to the ajax call
+     */
+    @RequestMapping(value = "/updateDefaultValue{params}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody
+    Integer updateDefaultValue(@RequestParam(value = "section", required = true) String section, @RequestParam(value = "fieldId", required = true) Integer fieldId, @RequestParam(value = "selValue", required = true) String selValue) throws Exception {
+
+        if("patient-sections".equals(section)) {
+            Iterator<programPatientFields> it = patientFields.iterator();
+            
+            while (it.hasNext()) {
+                programPatientFields translation = it.next();
+                if (translation.getId() == fieldId) {
+                    translation.setDefaultValue(selValue);
+                }
+            }
+            
+        }
+        
+        /* Engagement Form Sections */
+        else if ("engagement-sections".equals(section)) {
+            Iterator<programEngagementFields> it = engagementFields.iterator();
+            
+            while (it.hasNext()) {
+                programEngagementFields translation = it.next();
+                if (translation.getId() == fieldId) {
+                    translation.setDefaultValue(selValue);
+                }
+            }
+            
+        }
+        
+        return 1;
     }
 }

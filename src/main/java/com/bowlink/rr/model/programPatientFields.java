@@ -7,6 +7,7 @@
 package com.bowlink.rr.model;
 
 import java.util.Date;
+import java.util.Map;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -35,6 +36,9 @@ public class programPatientFields {
     
     @Transient
     private boolean autoPopulate;
+    
+    @Transient
+    Map<String, String> defaultValues;
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -83,6 +87,21 @@ public class programPatientFields {
     
     @Column(name = "HIDEFIELD", nullable = false)
     private boolean hideField = false;
+    
+    @Column(name = "READONLY", nullable = false)
+    private boolean readOnly = false;
+    
+    @Column(name = "DEFAULTVALUE", nullable = true)
+    private String defaultValue = "";
+    
+    @Column(name = "CUSTOMFIELDID", nullable = false)
+    private int customfieldId = 0;
+    
+    @Column(name = "MINFIELDVALUE", nullable = false)
+    private int minFieldValue = 0;
+    
+    @Column(name = "MAXFIELDVALUE", nullable = false)
+    private int maxFieldValue = 0;
 
     public int getId() {
         return id;
@@ -234,6 +253,54 @@ public class programPatientFields {
 
     public void setHideField(boolean hideField) {
         this.hideField = hideField;
+    }
+
+    public boolean isReadOnly() {
+        return readOnly;
+    }
+
+    public void setReadOnly(boolean readOnly) {
+        this.readOnly = readOnly;
+    }
+
+    public String getDefaultValue() {
+        return defaultValue;
+    }
+
+    public void setDefaultValue(String defaultValue) {
+        this.defaultValue = defaultValue;
+    }
+
+    public int getCustomfieldId() {
+        return customfieldId;
+    }
+
+    public void setCustomfieldId(int customfieldId) {
+        this.customfieldId = customfieldId;
+    }
+
+    public int getMinFieldValue() {
+        return minFieldValue;
+    }
+
+    public void setMinFieldValue(int minFieldValue) {
+        this.minFieldValue = minFieldValue;
+    }
+
+    public int getMaxFieldValue() {
+        return maxFieldValue;
+    }
+
+    public void setMaxFieldValue(int maxFieldValue) {
+        this.maxFieldValue = maxFieldValue;
+    }
+
+    public Map<String, String> getDefaultValues() {
+        return defaultValues;
+    }
+
+    public void setDefaultValues(Map<String, String> defaultValues) {
+        this.defaultValues = defaultValues;
     }
     
 }

@@ -5,6 +5,7 @@ require(['./main'], function () {
         
         $("input:text,form").attr("autocomplete", "off");
         populateCrosswalks(1);
+        populateCustomFields(1);
         populateFields(0);
         
         //Fade out the updated/created message after being displayed.
@@ -17,6 +18,14 @@ require(['./main'], function () {
             var page = $(this).attr('rel');
             populateCrosswalks(page);
         });
+        
+        //This function will get the next/prev page for the custom field list
+        $(document).on('click', '.nextcustonFieldPage', function() {
+            var page = $(this).attr('rel');
+            populateCustomFields(page);
+        });
+        
+        
 
 
         //This function will launch the crosswalk overlay with the selected
@@ -30,8 +39,7 @@ require(['./main'], function () {
                 }
             });
         });
-
-
+        
         //This function will launch the new crosswalk overlay with a blank form
         $(document).on('click', '#createNewCrosswalk', function() {
             var orgId = $('#orgId').val();
@@ -50,6 +58,8 @@ require(['./main'], function () {
 
         //The function to submit the new crosswalk
         $(document).on('click', '#submitCrosswalkButton', function(event) {
+            
+            var sectionId = $('#sectionId').val();
 
             $('#crosswalkNameDiv').removeClass("has-error");
             $('#crosswalkNameMsg').removeClass("has-error");
@@ -111,6 +121,7 @@ require(['./main'], function () {
                 return false;
             }
             
+            $('#sectionIdVal').val(sectionId);
             $('#crosswalkdetailsform').attr('action', '/sysAdmin/data-elements/' + actionValue + 'Crosswalk');
             $('#crosswalkdetailsform').submit();
 
@@ -118,7 +129,16 @@ require(['./main'], function () {
         
         //Set the field display name on change
         $(document).on('change', '#field', function() {
+            $('#customfield option:eq("")').prop('selected', true);
             var selectedFieldText = $('#field').find(":selected").attr("rel");
+            $('#fieldDisplayName').val(selectedFieldText);
+            
+        });
+        
+        //Set the field display name on change of custom field
+        $(document).on('change', '#customfield', function() {
+            $('#field option:eq("")').prop('selected', true);
+            var selectedFieldText = $('#customfield').find(":selected").attr("rel");
             $('#fieldDisplayName').val(selectedFieldText);
             
         });
@@ -139,6 +159,9 @@ require(['./main'], function () {
             var dataGridColumn = $('#dataGridColumn').is(':checked');
             var searchColumn = $('#searchColumn').is(':checked');
             var summaryColumn = $('#summaryColumn').is(':checked');
+            var selectedCustomField = $('#customfield').val();
+            var selectedCustomFieldText = $('#customfield').find(":selected").attr("rel");
+            var readOnly = $('#readOnlyField').val();
             
             //Remove all error classes and error messages
             $('div').removeClass("has-error");
@@ -146,10 +169,13 @@ require(['./main'], function () {
 
             var errorFound = 0;
 
-            if (selectedField == "") {
+            if (selectedField == 0 && selectedCustomField == 0) {
                 $('#fieldDiv').addClass("has-error");
                 $('#fieldMsg').addClass("has-error");
                 $('#fieldMsg').html('A field must be selected!');
+                $('#customfieldDiv').addClass("has-error");
+                $('#customfieldMsg').addClass("has-error");
+                $('#customfieldMsg').html('A field must be selected!');
                 errorFound = 1;
             }
             
@@ -163,16 +189,18 @@ require(['./main'], function () {
                     type: "POST",
                     data: {'fieldId': selectedField, 'sectionId': sectionId, 'fieldText': selectedFieldText, 'fieldDisplayName': fieldDisplayName, 'cw': selectedCW, 'CWText': selectedCWText, 'validationId': selectedValidation
                         , 'validationName': selectedValidationText, 'requiredField': required, 'hideField': hideField, 'dataGridColumn' : dataGridColumn, 'section' : section
-                        , 'searchColumn': searchColumn, 'summaryColumn': summaryColumn
+                        , 'searchColumn': searchColumn, 'summaryColumn': summaryColumn, 'customFieldId': selectedCustomField, 'customFieldText': selectedCustomFieldText, 'readOnly': readOnly
                     },
                     success: function(data) {
                         $('#fieldMsgDiv').show();
                         $("#existingFields").html(data);
                         //Need to clear out the select boxes
                         $('#field option:eq("")').prop('selected', true);
+                        $('#customfield option:eq("")').prop('selected', true);
                         $('#crosswalk option:eq("")').prop('selected', true);
                         $('#fieldValidation option:eq("0")').prop('selected', true);
                         $('#requiredField option:eq("0")').prop('selected', true);
+                        $('#readOnlyField option:eq("0")').prop('selected', true);
                         $('#fieldDisplayName').val("");
                         $('#dataGridColumn').attr('checked', false); 
                         $('#searchColumn').attr('checked', false); 
@@ -415,9 +443,128 @@ require(['./main'], function () {
             }
            
             
-        })
+        });
+        
+        //This function will launch the new custom field overlay with a blank form
+        $(document).on('click', '#createNewCustomField', function() {
+            var orgId = $('#orgId').val();
+            var sectionName = $('#sectionName').val();
+
+            $.ajax({
+                url: '/sysAdmin/data-elements/newCustomField',
+                data: {'frompage': sectionName},
+                type: "GET",
+                success: function(data) {
+                    $("#customFieldModal").html(data);
+                }
+            });
+        });
+        
+        //This function will launch the custom field overlay with the selected
+        //field details
+        $(document).on('click', '.viewCustomField', function() {
+            var sectionName = $('#sectionName').val();
+            $.ajax({
+                url: '/sysAdmin/data-elements/viewCustomField' + $(this).attr('rel'),
+                data: {'frompage': sectionName},
+                type: "GET",
+                success: function(data) {
+                    $("#customFieldModal").html(data);
+                }
+            });
+        });
+        
+        //The function to submit the new custom field
+        $(document).on('click', '#submitCustomField', function(event) {
+            
+            var sectionId = $('#sectionId').val();
+            
+            $('#fieldNameDiv').removeClass("has-error");
+            $('#fieldNameMsg').removeClass("has-error");
+            $('#fieldNameMsg').html('');
+            $('#saveToTableDiv').removeClass("has-error");
+            $('#saveToTableMsg').removeClass("has-error");
+            $('#saveToTableMsg').html('');
+            $('#saveToTableColDiv').removeClass("has-error");
+            $('#saveToTableColMsg').removeClass("has-error");
+            $('#saveToTableColMsg').html('');
+
+            var errorFound = 0;
+          
+            //Make sure a field Name is entered
+            if ($('#fieldName').val() == '') {
+                $('#fieldNameDiv').addClass("has-error");
+                $('#fieldNameMsg').addClass("has-error");
+                $('#fieldNameMsg').html('The field name is a required field!');
+                errorFound = 1;
+            }
+            else {
+                $.ajax({
+                    url: '/sysAdmin/data-elements/checkCustomFieldName.do',
+                    type: "POST",
+                    async: false,
+                    data: {'name': $('#fieldName').val(), 'fieldId': $('#id').val()},
+                    success: function(data) {
+                        if (data == 1) {
+                            $('#fieldNameDiv').addClass("has-error");
+                            $('#fieldNameMsg').addClass("has-error");
+                            $('#fieldNameMsg').html('The field name entered has already been used!');
+                            errorFound = 1;
+                        }
+                    }
+                });
+            }
+
+            //Make sure a table is selected
+            if ($('#saveToTable').val() == '') {
+                $('#saveToTableDiv').addClass("has-error");
+                $('#saveToTableMsg').addClass("has-error");
+                $('#saveToTableMsg').html('The save to table is a required field!');
+                errorFound = 1;
+            }
+
+            //Make sure a table column is selected
+            if ($('#saveToTableCol').val() == '') {
+                $('#saveToTableColDiv').addClass("has-error");
+                $('#saveToTableColMsg').addClass("has-error");
+                $('#saveToTableColMsg').html('The save to table column is a required field!');
+                errorFound = 1;
+            }
+
+            if (errorFound == 1) {
+                event.preventDefault();
+                return false;
+            }
+            
+            $('#sectionIdVal').val(sectionId);
+            $('#customfielddetailsform').attr('action', '/sysAdmin/data-elements/saveCustomField');
+            $('#customfielddetailsform').submit();
+
+        });
+        
+        
+        //Function that will handle setting a default value for a field
+        //selected crosswalk.
+        $(document).on('change', '.setDefaultValue', function() {
+            var id = $(this).attr('rel');
+            var value = $(this).val();
+            var sectionName = $('#sectionName').val();
+            
+             //Need to update the saved process order
+            $.ajax({
+                url: '../updateDefaultValue?section=' + sectionName + '&fieldId=' + id + '&selValue=' + value,
+                type: "POST",
+                success: function(data) {
+                    $('#fieldMsgDiv').show();
+                    populateFields(1);
+                }
+            });
+            
+        });
         
     });
+    
+    
 });
 
 
@@ -445,6 +592,19 @@ function populateCrosswalks(page) {
         data: {'page': page, 'maxCrosswalks': 8},
         success: function(data) {
             $("#crosswalksTable").html(data);
+        }
+    });
+}
+
+function populateCustomFields(page) {
+    var orgId = $('#orgId').val();
+
+    $.ajax({
+        url: '/sysAdmin/data-elements/getCustomFields.do',
+        type: "GET",
+        data: {'page': page, 'maxFields': 8},
+        success: function(data) {
+            $("#customFieldTable").html(data);
         }
     });
 }
