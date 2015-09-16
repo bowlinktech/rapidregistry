@@ -407,7 +407,7 @@ public class programForms {
                         while (cwDataIt.hasNext()) {
                             Object cwDatarow[] = (Object[]) cwDataIt.next();
                             optionDesc = (String) cwDatarow[2];
-                            optionValue = (String) cwDatarow[0];
+                            optionValue = (String) cwDatarow[1];
 
                             defaultValues.put(optionValue, optionDesc);
                         }
