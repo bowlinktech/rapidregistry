@@ -88,8 +88,8 @@ public class orgHierarchyManagerImpl implements orgHierarchyManager {
     
     @Override
     @Transactional
-    public void removeUserProgramHierarchy(Integer entityId) throws Exception {
-        orgHierarchyDAO.removeUserProgramHierarchy(entityId);
+    public void removeUserProgramHierarchy(Integer entityId, Integer userId) throws Exception {
+        orgHierarchyDAO.removeUserProgramHierarchy(entityId, userId);
     }
     
     @Override

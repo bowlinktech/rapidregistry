@@ -175,10 +175,11 @@ public class orgHierarchyDAOImpl implements orgHierarchyDAO {
      * @throws Exception 
      */
     @Override
-    public void removeUserProgramHierarchy(Integer entityId) throws Exception {
+    public void removeUserProgramHierarchy(Integer entityId, Integer userId) throws Exception {
        
-        Query removeProgram = sessionFactory.getCurrentSession().createQuery("delete from userProgramHierarchy where programHierarchyId = :entityId");
+        Query removeProgram = sessionFactory.getCurrentSession().createQuery("delete from userProgramHierarchy where systemUserId = :userId and programHierarchyId = :entityId");
         removeProgram.setParameter("entityId", entityId);
+        removeProgram.setParameter("userId", userId);
         removeProgram.executeUpdate();
         
     }

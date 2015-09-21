@@ -33,7 +33,7 @@ public interface orgHierarchyDAO {
     
     List<userProgramHierarchy> getUserAssociatedEntities(Integer programId, Integer userId, Integer entityId) throws Exception;
     
-    void removeUserProgramHierarchy(Integer entityId) throws Exception;
+    void removeUserProgramHierarchy(Integer entityId, Integer userId) throws Exception;
     
     List<programOrgHierarchyDetails> getProgramHierarchyItems(Integer hierarchyId) throws Exception;
     

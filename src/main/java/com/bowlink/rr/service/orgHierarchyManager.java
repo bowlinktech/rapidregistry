@@ -35,7 +35,7 @@ public interface orgHierarchyManager {
     
     List<programOrgHierarchyDetails> getProgramHierarchyItemsByAssoc(Integer hierarchyId, Integer assocId) throws Exception;
     
-    void removeUserProgramHierarchy(Integer entityId) throws Exception;
+    void removeUserProgramHierarchy(Integer entityId, Integer userId) throws Exception;
     
     List<programOrgHierarchyDetails> getProgramHierarchyItems(Integer hierarchyId) throws Exception;
     

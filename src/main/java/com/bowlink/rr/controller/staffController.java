@@ -678,7 +678,7 @@ public class staffController {
         
         if(!selectedEntityItems.isEmpty()) {
             
-            orghierarchymanager.removeUserProgramHierarchy(entityId);
+            orghierarchymanager.removeUserProgramHierarchy(entityId, userId);
             
             for(Integer hierarchyValue : selectedEntityItems) {
                 userProgramHierarchy hierarchy = new userProgramHierarchy();
