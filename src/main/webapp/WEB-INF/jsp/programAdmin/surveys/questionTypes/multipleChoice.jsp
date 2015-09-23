@@ -173,7 +173,7 @@
                 </div>
                 <div class="panel" id="choiceLayoutDiv" style="${not empty surveyQuestion.choiceLayout ? 'display:block;' : 'display:none;'}">
                     <div class="panel-body">
-                        <div class="form-group">
+                        <%--<div class="form-group">
                             <label class="radio-inline control-label">
                                 <form:radiobutton path="choiceLayout" class="radio" value="1 Column" /> <strong>1 Column</strong>
                             </label>
@@ -186,6 +186,11 @@
                         <div class="form-group">
                             <label class="radio-inline control-label">
                                 <form:radiobutton path="choiceLayout" class="radio" value="3 Columns" /> <strong>3 Columns</strong>
+                            </label>
+                        </div>--%>
+                        <div class="form-group">
+                            <label class="radio-inline control-label">
+                                <form:radiobutton path="choiceLayout" class="radio" value="responsive" /> <strong>Responsive (Columns)</strong>
                             </label>
                         </div>
                         <div class="form-group">
