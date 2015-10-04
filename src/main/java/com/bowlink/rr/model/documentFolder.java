@@ -45,6 +45,10 @@ public class documentFolder {
     @Column(name = "SYSTEMUSERID", nullable = false)
     private int systemUserId;
     
+    /** need to associate a folder with an entity to search for users belong to entity when sending out email **/
+    @Column(name = "entityId", nullable = false)
+    private Integer entityId = 0;
+    
     @Column(name = "FOLDERNAME", nullable = false)
     private String folderName = "";
     
@@ -147,6 +151,20 @@ public class documentFolder {
 
     public void setSubfolders(List<documentFolder> subfolders) {
         this.subfolders = subfolders;
+    }
+
+    /**
+     * @return the entityId
+     */
+    public Integer getEntityId() {
+        return entityId;
+    }
+
+    /**
+     * @param entityId the entityId to set
+     */
+    public void setEntityId(Integer entityId) {
+        this.entityId = entityId;
     }
     
 }

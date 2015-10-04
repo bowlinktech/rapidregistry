@@ -7,6 +7,7 @@ package com.bowlink.rr.dao.impl;
 
 import com.bowlink.rr.dao.documentDAO;
 import com.bowlink.rr.model.documentFolder;
+import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -29,7 +30,24 @@ public class documentDAOImpl implements documentDAO {
      */
     public void saveFolder(documentFolder folderDetails) throws Exception {
         sessionFactory.getCurrentSession().save(folderDetails);
-
+    }
+    
+    public documentFolder getFolderDetailsByName (documentFolder folder) throws Exception {
+        Query query = sessionFactory.getCurrentSession().createQuery(
+                "from documentFolder where folderName = :folderName and "
+                + " programId = :programId");
+        query.setParameter("folderName", folder.getFolderName());
+        query.setParameter("programId", folder.getProgramId());
+         
+        if (query.list().size() > 0) {
+            return (documentFolder) query.list().get(0);
+        } else  {
+           return new documentFolder();
+        }
+    }
+    
+    public void updateFolder(documentFolder folderDetails) throws Exception {
+        sessionFactory.getCurrentSession().update(folderDetails);
     }
     
 }

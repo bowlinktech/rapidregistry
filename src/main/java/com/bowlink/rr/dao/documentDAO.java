@@ -16,4 +16,8 @@ import org.springframework.stereotype.Repository;
 public interface documentDAO {
     
     void saveFolder(documentFolder folder) throws Exception;
+    
+    documentFolder getFolderDetailsByName (documentFolder folder) throws Exception;
+    
+    void updateFolder(documentFolder folder) throws Exception;
 }

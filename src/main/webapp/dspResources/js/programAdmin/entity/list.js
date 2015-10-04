@@ -53,26 +53,43 @@ require(['./main'], function () {
         //Button to submit the entity item changes
         $(document).on('click','#submitButton', function(event) {
             var formData = $("#hierarchyItemdetailsform").serialize();
-            
             var entityId = $('#entityId').val();
-
+            
+            $('#nameDiv').removeClass("has-error");
+            $('#nameLabelDiv').removeClass("has-error");
+            $('#nameLabelDiv').html("");
+            
             $.ajax({
                 url: 'entity/saveEntityItem',
                 data: formData,
                 type: "POST",
                 async: false,
                 success: function(data) {
-                    
-                    loadEntities(entityId);
-                    $("#entityModal").modal('hide');
-
                     if (data.indexOf('itemUpdated') != -1) {
                         $('.itemSuccess').html('<strong>Success!</strong> The entity item has been successfully updated!');
+                        loadEntities(entityId);
+                        //only hide if no errors
+                        $("#entityModal").modal('hide');
                     }
                     else if (data.indexOf('itemCreated') != -1) {
                         $('.itemSuccess').html('<strong>Success!</strong> The entity item has been successfully created!');
+                        loadEntities(entityId);
+                        //only hide if no errors
+                        $("#entityModal").modal('hide');
+                    } else if (data.indexOf('itemHasError') != -1) {
+                        $('#nameDiv').addClass("has-error");
+                        $('#nameLabelDiv').addClass("has-error");
+                        $('#nameLabelDiv').html("Name cannot be blank");
+                        //$('.itemSuccess').html('<strong>Errors!</strong> The entity name must not be empty.'); 
+                    }  else if (data.indexOf('nameError') != -1) {
+                        $('#nameDiv').addClass("has-error");
+                        $('#nameLabelDiv').addClass("has-error");
+                        $('#nameLabelDiv').html("Another entity with the same name exists.");
+                    }  else if (data.indexOf('folderError') != -1) {
+                        $('#nameDiv').addClass("has-error");
+                        $('#nameLabelDiv').addClass("has-error");
+                        $('#nameLabelDiv').html("Another folder with the same name exists, please contact admin for assistance.");
                     }
-                    
                     $('.itemSuccess').show();
                     $('.alert').delay(2000).fadeOut(1000);
                 }

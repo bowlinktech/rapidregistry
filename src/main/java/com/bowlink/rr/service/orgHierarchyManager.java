@@ -9,6 +9,7 @@ import com.bowlink.rr.model.programOrgHierarchy;
 import com.bowlink.rr.model.programOrgHierarchyAssoc;
 import com.bowlink.rr.model.programOrgHierarchyDetails;
 import com.bowlink.rr.model.userProgramHierarchy;
+
 import java.util.List;
 
 /**
@@ -48,5 +49,14 @@ public interface orgHierarchyManager {
     void removeOrgHierarchyAssociation(Integer itemId, Integer entityId) throws Exception;
     
     List<programOrgHierarchyAssoc> getAssociatedItems(Integer itemId) throws Exception;
+    
+    programOrgHierarchyDetails getProgramHierarchyItemDetailsByName(programOrgHierarchyDetails newEntity) throws Exception;
+ 
+    void createEntityDocumentFolder (programOrgHierarchyDetails entityItemDetails, programOrgHierarchy hierarchyDetails) throws Exception;
+    
+    boolean checkFolderForOrg (programOrgHierarchyDetails entityDetails,  Integer programId) throws Exception;
+    
+    void changeFolderName (String oldName, String newName, Integer programId,  boolean createDirectory) throws Exception;
+    
     
 }

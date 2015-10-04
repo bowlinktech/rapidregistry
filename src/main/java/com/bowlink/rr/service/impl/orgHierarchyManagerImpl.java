@@ -52,7 +52,6 @@ public class orgHierarchyManagerImpl implements orgHierarchyManager {
     @Override
     @Transactional
     public void saveOrgHierarchy(programOrgHierarchy hierarchyDetails) throws Exception {
-        
         orgHierarchyDAO.saveOrgHierarchy(hierarchyDetails);
     }
     
@@ -113,36 +112,7 @@ public class orgHierarchyManagerImpl implements orgHierarchyManager {
     @Override
     @Transactional
     public void saveOrgHierarchyItem(programOrgHierarchyDetails entityItemDetails) throws Exception {
-        
-        /* See if the item hierarchy level is the top one */
-        programOrgHierarchy hierarchyDetails = orgHierarchyDAO.getOrgHierarchyById(entityItemDetails.getProgramHierarchyId());
-        if(hierarchyDetails.getDspPos() == 1) {
-            
-            if(entityItemDetails.getCreateFolders() == true) {
-                
-                documentFolder folder = new documentFolder();
-                folder.setCountyFolder(true);
-                folder.setAdminOnly(false);
-                folder.setFolderName(entityItemDetails.getName());
-                folder.setParentFolderId(0);
-                folder.setProgramId(hierarchyDetails.getProgramId());
-                
-                documentManager.saveFolder(folder);
-                
-                /* Create a document folder */
-                String registryName = programManager.getProgramById(hierarchyDetails.getProgramId()).getProgramName().replaceAll(" ", "-").toLowerCase();
-
-                //Set the directory to save the brochures to
-                fileSystem dir = new fileSystem();
-                dir.setDir(registryName, "documents/");
-
-                File newDirectory = new File(dir.getDir() + entityItemDetails.getName());
-
-                newDirectory.mkdir();
-            }
-        }
-        
-        orgHierarchyDAO.saveOrgHierarchyItem(entityItemDetails);
+    	orgHierarchyDAO.saveOrgHierarchyItem(entityItemDetails);
     }
     
     
@@ -163,4 +133,78 @@ public class orgHierarchyManagerImpl implements orgHierarchyManager {
     public List<programOrgHierarchyAssoc> getAssociatedItems(Integer itemId) throws Exception {
         return orgHierarchyDAO.getAssociatedItems(itemId);
     }
+    
+    @Override
+    @Transactional
+    public  programOrgHierarchyDetails getProgramHierarchyItemDetailsByName(programOrgHierarchyDetails newEntity) throws Exception {
+        return orgHierarchyDAO.getProgramHierarchyItemDetailsByName(newEntity);
+    }
+    
+    
+    @Override
+    @Transactional
+    public void createEntityDocumentFolder (programOrgHierarchyDetails entityItemDetails, programOrgHierarchy hierarchyDetails) throws Exception {
+                documentFolder folder = new documentFolder();
+                folder.setCountyFolder(true);
+                folder.setAdminOnly(false);
+                folder.setEntityId(entityItemDetails.getId());
+                folder.setFolderName(entityItemDetails.getName());
+                folder.setParentFolderId(0);
+                folder.setProgramId(hierarchyDetails.getProgramId());
+                
+                documentManager.saveFolder(folder);
+                
+                /* Create a document folder */
+                String registryName = programManager.getProgramById(hierarchyDetails.getProgramId()).getProgramName().replaceAll(" ", "-").toLowerCase();
+
+                //Set the directory to save the brochures to
+                fileSystem dir = new fileSystem();
+                dir.setDir(registryName, "documents/");
+
+                File newDirectory = new File(dir.getDir() + entityItemDetails.getName());
+
+                newDirectory.mkdir(); 
+                
+    }
+    
+    @Override
+    @Transactional
+    public boolean checkFolderForOrg (programOrgHierarchyDetails entityDetails, Integer programId) throws Exception {
+        
+        documentFolder folder = new documentFolder();
+        folder.setFolderName(entityDetails.getName());
+        folder.setProgramId(programId);
+        //not a subfolder
+        folder.setParentFolderId(0);
+        folder = documentManager.getFolderDetailsByName(folder);
+        if (folder.getId() != 0) { 
+            return true;  //folder exists
+        } else {
+            return false;
+        }
+    }
+    
+    @Override
+    @Transactional
+    public void changeFolderName (String oldName, String newName, Integer programId, boolean createDirectory) throws Exception {
+    	String registryName = programManager.getProgramById(programId).getProgramName().replaceAll(" ", "-").toLowerCase();
+    	fileSystem dir = new fileSystem();
+        dir.setDir(registryName, "documents/");
+        File oldDirectory = new File(dir.getDir() + oldName);
+        File newDirectory = new File(dir.getDir() + newName);
+        if (oldDirectory.exists()) {
+        	oldDirectory.renameTo(newDirectory);
+        	//we update old folder's info
+        	documentFolder folder = new documentFolder();
+        	folder.setProgramId(programId);
+        	folder.setFolderName(oldName);
+        	folder = documentManager.getFolderDetailsByName(folder);
+        	folder.setFolderName(newName);
+        	documentManager.updateFolder(folder);
+        } else {
+        	if (createDirectory) {
+        		newDirectory.mkdir(); 
+        	}
+        }
+    }    
 }

@@ -15,14 +15,17 @@ import com.bowlink.rr.security.encryptObject;
 import com.bowlink.rr.service.activityCodeManager;
 import com.bowlink.rr.service.orgHierarchyManager;
 import com.bowlink.rr.service.programManager;
+
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -186,28 +189,75 @@ public class entityController {
      */
     @RequestMapping(value = "/saveEntityItem", method = RequestMethod.POST)
     public @ResponseBody ModelAndView saveEntityItem(@Valid @ModelAttribute(value = "hierarchyDetails") programOrgHierarchyDetails entityItemDetails, BindingResult result, HttpSession session) throws Exception {
-
-        if (result.hasErrors()) {
-            ModelAndView mav = new ModelAndView();
-            mav.setViewName("/programAdmin/entity/entityItemForm");
-            
-            programOrgHierarchy entityDetails = orghierarchymanager.getOrgHierarchyById(entityItemDetails.getProgramHierarchyId());
-            
-            String btnValue;
+        boolean nameChange = false;
+       
+        programOrgHierarchy hierarchyDetails = orghierarchymanager.getOrgHierarchyById(entityItemDetails.getProgramHierarchyId());
+        String btnValue;
             if(entityItemDetails.getId() > 0) {
-                 btnValue = "Create " + entityDetails.getName();
+                 btnValue = "Create " + hierarchyDetails.getName();
             }
             else {
-                btnValue = "Edit " + entityDetails.getName();
-            }
+                btnValue = "Edit " + hierarchyDetails.getName();
+            } 
+        
+        if (result.hasErrors()) {
+        	ModelAndView mav = new ModelAndView();
+            mav.setViewName("/programAdmin/entity/entityItemForm");
+            mav.addObject("hierarchyDetails", hierarchyDetails);
             mav.addObject("btnValue", btnValue);
+            mav.addObject("success", "itemHasError");
+            
             return mav;
         }
-       
-        orghierarchymanager.saveOrgHierarchyItem(entityItemDetails);
-
-        ModelAndView mav = new ModelAndView("/programAdmin/entity/entityItemForm");
         
+        //see if name is in use
+        programOrgHierarchyDetails foundEntityItemDetails  = orghierarchymanager.getProgramHierarchyItemDetailsByName(entityItemDetails);
+        if (foundEntityItemDetails.getId() != entityItemDetails.getId()) {
+        		//if new entity, we send them back
+	            //we send them back
+        	if (foundEntityItemDetails.getId() != 0) {
+	        	ModelAndView mav = new ModelAndView();
+	            mav.setViewName("/programAdmin/entity/entityItemForm");
+	            mav.addObject("btnValue", btnValue);
+	            mav.addObject("success", "nameError");
+	            return mav;
+        	}
+        }
+        
+        if (entityItemDetails.getId() != 0) {
+	        //see if name changed, we get old info first
+	        programOrgHierarchyDetails oldEntityItemDetails = orghierarchymanager.getProgramHierarchyItemDetails(entityItemDetails.getId());
+	        if (!oldEntityItemDetails.getName().equalsIgnoreCase(entityItemDetails.getName())) {
+	            nameChange = true;  
+	        } 
+        }
+       
+        //if we are changing name we need to make sure there is not another program level folder with the same name
+        if (nameChange) {
+            boolean folderExists  = orghierarchymanager.checkFolderForOrg (entityItemDetails, hierarchyDetails.getProgramId());
+            if (folderExists) {
+                    System.out.println("folder exists");
+                    ModelAndView mav = new ModelAndView();
+                    mav.setViewName("/programAdmin/entity/entityItemForm");
+                    mav.addObject("btnValue", btnValue);
+                    mav.addObject("success", "folderError");
+                    return mav;
+            }   
+        }
+        
+        if (nameChange) {
+        	//move existing folder, update folder names	
+        	programOrgHierarchyDetails oldEntityItemDetails = orghierarchymanager.getProgramHierarchyItemDetails(entityItemDetails.getId());
+            orghierarchymanager.changeFolderName (oldEntityItemDetails.getName(), entityItemDetails.getName(), hierarchyDetails.getProgramId(), entityItemDetails.getCreateFolders());
+        	
+        } else if (entityItemDetails.getCreateFolders()) {
+        	orghierarchymanager.createEntityDocumentFolder (entityItemDetails, hierarchyDetails);
+        }
+        
+        orghierarchymanager.saveOrgHierarchyItem(entityItemDetails);
+        
+        ModelAndView mav = new ModelAndView();
+        mav = new ModelAndView("/programAdmin/entity/entityItemForm");
         
         if(entityItemDetails.getId() > 0) {
             mav.addObject("success", "itemUpdated");
@@ -299,7 +349,7 @@ public class entityController {
     
     
     /**
-     * The '/saveEntityItem' POST request will handle submitting the hierarchyform.
+     * The '/details' POST request will handle submitting the hierarchyform.
      *
      * @param admindetails    The object containing the system administrator form fields
      * @param result        The validation result

@@ -54,10 +54,11 @@
                     </div>
                     
                     <spring:bind path="name">
-                        <div class="form-group ${status.error ? 'has-error' : '' }">
+                        <div class="form-group ${status.error ? 'has-error' : '' }" id="nameDiv">
                             <label class="control-label" for="name">Name *</label>
                             <form:input path="name" id="name" class="form-control" type="text" maxLength="255" />
                             <form:errors path="name" cssClass="control-label" element="label" />
+                            <div class="control-label has-error" id="nameLabelDiv"></div>
                         </div>
                     </spring:bind>
                     <spring:bind path="address">

@@ -15,4 +15,7 @@ public interface documentManager {
     
     void saveFolder(documentFolder folder) throws Exception;
     
+    documentFolder getFolderDetailsByName (documentFolder folder) throws Exception;
+    
+    void updateFolder(documentFolder folder) throws Exception;
 }

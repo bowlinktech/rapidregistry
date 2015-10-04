@@ -49,4 +49,6 @@ public interface orgHierarchyDAO {
     
     List<programOrgHierarchyAssoc> getAssociatedItems(Integer itemId) throws Exception;
     
+    programOrgHierarchyDetails getProgramHierarchyItemDetailsByName(programOrgHierarchyDetails newEntity) throws Exception;
+    
 }

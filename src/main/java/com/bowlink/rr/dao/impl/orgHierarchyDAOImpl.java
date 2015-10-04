@@ -235,9 +235,12 @@ public class orgHierarchyDAOImpl implements orgHierarchyDAO {
      */
     @Override
     public void saveOrgHierarchyItem(programOrgHierarchyDetails entityItemDetails) throws Exception {
-       sessionFactory.getCurrentSession().saveOrUpdate(entityItemDetails);
+    	if (entityItemDetails.getId() == 0) {
+    		sessionFactory.getCurrentSession().saveOrUpdate(entityItemDetails);
+    	} else {
+    		sessionFactory.getCurrentSession().update(entityItemDetails);
+    	}
     }
-    
     /**
      * The 'saveOrgHierarchyAssociation' function will save the new association.
      * @param newAssoc
@@ -276,5 +279,27 @@ public class orgHierarchyDAOImpl implements orgHierarchyDAO {
         query.setParameter("itemId", itemId);
 
         return query.list();
+    }
+    
+    /**
+     * The 'getProgramHierarchyItemDetailsByName' function will return a list of items associated to the selected hierarchy.
+     * 
+     * @param name The id of the selected program hierarchy.
+     * @return This function will return a list of hierarchy items.
+     * @throws Exception 
+     */
+    @Override
+    public programOrgHierarchyDetails getProgramHierarchyItemDetailsByName(programOrgHierarchyDetails newEntity) throws Exception {
+        Query query = sessionFactory.getCurrentSession().createQuery(
+                "from programOrgHierarchyDetails where name = :name and "
+                + " programHierarchyId = :programHierarchyId");
+        query.setParameter("name", newEntity.getName());
+        query.setParameter("programHierarchyId", newEntity.getProgramHierarchyId());
+         
+        if (query.list().size() > 0) {
+            return (programOrgHierarchyDetails) query.list().get(0);
+        } else  {
+           return new programOrgHierarchyDetails();
+        }
     }
 }

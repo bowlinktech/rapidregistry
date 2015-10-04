@@ -27,4 +27,17 @@ public class documentManagerImpl implements documentManager {
     public void saveFolder(documentFolder folder) throws Exception {
         documentDAO.saveFolder(folder);
     }
+    
+    @Override
+    @Transactional
+    public documentFolder getFolderDetailsByName (documentFolder folder) throws Exception {
+        return documentDAO.getFolderDetailsByName(folder);
+    }
+    
+    @Override
+    @Transactional
+    public void updateFolder(documentFolder folder) throws Exception {
+        documentDAO.updateFolder(folder);
+    }
+    
 }
