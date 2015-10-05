@@ -90,9 +90,8 @@ public class ExceptionControllerAdvice {
         sb.append("Stack Trace: " + Arrays.toString(e.getStackTrace()));
         
         messageDetails.setmessageBody(sb.toString());
-        //System.out.println(sb.toString());
         e.printStackTrace();
-        //emailMessageManager.sendEmail(messageDetails); 
+        emailMessageManager.sendEmail(messageDetails); 
         //mav.addObject("messageBody",sb.toString());
         } catch (Exception ex) {
         	ex.printStackTrace();
