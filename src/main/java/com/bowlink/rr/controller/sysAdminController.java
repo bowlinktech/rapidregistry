@@ -159,6 +159,7 @@ public class sysAdminController {
             return mav;
         }
         
+        admindetails = usermanager.encryptPW(admindetails);
         usermanager.updateUser(admindetails);
 
         ModelAndView mav = new ModelAndView("/sysAdmin/sysAdmins/details");

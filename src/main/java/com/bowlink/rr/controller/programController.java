@@ -612,6 +612,7 @@ public class programController {
             return mav;
         }
         
+        admindetails = usermanager.encryptPW(admindetails);
         usermanager.updateUser(admindetails);
 
         ModelAndView mav = new ModelAndView("/sysAdmin/programs/programAdmins/details");
