@@ -21,7 +21,7 @@
                         <spring:bind path="fieldName">
                             <div id="fieldNameDiv" class="form-group ${status.error ? 'has-error' : '' }">
                                 <label class="control-label" for="fieldName">Field Name *</label>
-                                <form:input path="fieldName" id="fieldName" class="form-control" type="text" maxLength="45" />
+                                <form:input path="fieldName" id="fieldName" class="form-control" type="text" maxLength="255" />
                                 <form:errors path="fieldName" cssClass="control-label" element="label" />
                                 <span id="fieldNameMsg" class="control-label"></span>
                             </div>
