@@ -67,11 +67,18 @@
                         </spring:bind>
                         <spring:bind path="email">
                             <div class="form-group ${status.error ? 'has-error' : '' }">
-                                <label class="control-label" for="email">Email</label>
+                                <label class="control-label" for="email">Email *</label>
                                 <form:input path="email" id="email" class="form-control" type="text"  maxLength="255" />
                                 <form:errors path="email" cssClass="control-label" element="label" />
                             </div>
                         </spring:bind>
+                        <spring:bind path="username">
+                            <div class="form-group ${status.error ? 'has-error' : '' }">
+                                <label class="control-label" for="username">Username *</label>
+                                <form:input path="username" id="username" class="form-control" type="text"  maxLength="255" />
+                                <form:errors path="username" cssClass="control-label" element="label" />
+                            </div>
+                        </spring:bind>                
                         <spring:bind path="password">
                             <div id="passwordDiv" class="form-group ${status.error ? 'has-error' : '' }">
                                 <label class="control-label" for="password">Password *</label>

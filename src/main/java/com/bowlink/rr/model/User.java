@@ -87,6 +87,11 @@ public class User {
 
     @Column(name = "encryptedPw", nullable = true)
     private byte[] encryptedPw;
+    
+    @NotEmpty
+    @NoHtml
+    @Column(name = "username", nullable = false)
+    private String username;
 
     public byte[] getRandomSalt() {
         return randomSalt;
@@ -240,4 +245,13 @@ public class User {
         this.lastloggedIn = lastloggedIn;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    
 }
