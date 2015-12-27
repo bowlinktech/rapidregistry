@@ -34,6 +34,9 @@ public class User {
 
     @Transient
     private String encryptedSecret = null;
+    
+    @Transient
+    private String encryptedUserName = null;
 
     @Transient
     private String password;
@@ -108,6 +111,11 @@ public class User {
     public void setEncryptedPw(byte[] encryptedPw) {
         this.encryptedPw = encryptedPw;
     }
+    
+    @NoHtml
+    @Column(name = "profilePhoto", nullable = false)
+    private String profilePhoto;
+    
 
     public int getId() {
         return id;
@@ -253,5 +261,28 @@ public class User {
         this.username = username;
     }
 
-    
+	public String getEncryptedUserName() {
+		return encryptedUserName;
+	}
+
+	public void setEncryptedUserName(String encryptedUserName) {
+		this.encryptedUserName = encryptedUserName;
+	}
+
+	public String getResetCode() {
+		return resetCode;
+	}
+
+	public void setResetCode(String resetCode) {
+		this.resetCode = resetCode;
+	}
+
+	public String getProfilePhoto() {
+		return profilePhoto;
+	}
+
+	public void setProfilePhoto(String profilePhoto) {
+		this.profilePhoto = profilePhoto;
+	}
+	
 }

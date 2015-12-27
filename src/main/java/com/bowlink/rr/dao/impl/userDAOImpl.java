@@ -8,7 +8,6 @@ package com.bowlink.rr.dao.impl;
 
 import com.bowlink.rr.dao.userDAO;
 import com.bowlink.rr.model.User;
-import com.bowlink.rr.model.program;
 import com.bowlink.rr.model.programAdmin;
 import com.bowlink.rr.model.Log_userSurveyActivity;
 import com.bowlink.rr.model.userLogin;
@@ -433,8 +432,65 @@ public class userDAOImpl implements userDAO {
     }
     
     @Override
-    public void insertUserLog (Log_userSurveyActivity ual) {
+    public void insertUserLog (Log_userSurveyActivity ual) throws Exception{
     	sessionFactory.getCurrentSession().save(ual);
     }
+    
+    @Override
+    @SuppressWarnings("unchecked")
+    @Transactional
+    public List<User> getAllUsersByProgram(Integer programId) throws Exception {
+            String sql = ("SELECT users.* FROM user_programs, users "
+            		+ " where users.id = user_programs.systemUserId "
+            		+ " and status = 1 and programId = :programId order by firstname, lastname");
 
+            Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+            query.setResultTransformer(Transformers.aliasToBean(User.class));
+            query.setParameter("programId", programId);
+            List<User> userList = query.list();
+            return userList;
+    }
+
+    /**
+     * The 'getUserByUsername' function will return a single user object based on a username passed in.
+     *
+     * @param	username	This will used to query the username field of the users table
+     *
+     * @return	The function will return a user object
+     */
+    public User getUserByUsername(String username, Integer programId) throws Exception{
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(User.class);
+        criteria.add(Restrictions.eq("username", username));
+        criteria.add(Restrictions.eq("status", true));
+        
+        List<User> users = criteria.list();
+        
+        if(users == null || users.size() == 0) {
+            return null;
+        }
+        else {
+            
+            /* make sure the user is part of the passed in programId */
+            try {
+                User foundUser = null;
+                for(User user : users) {
+                    List<userPrograms> userPrograms = getUserPrograms(user.getId());
+                    
+                    if(userPrograms != null || userPrograms.size() > 0) {
+                        for(userPrograms program : userPrograms) {
+                            if(program.getProgramId() == programId) {
+                                foundUser = user;
+                            }
+                        }
+                    }
+                }
+                return foundUser;
+            }
+            catch (Exception e) {
+                return null;
+            }
+        }
+    }
+    
+    
 }

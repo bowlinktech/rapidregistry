@@ -25,5 +25,15 @@
         <put-attribute name="body" value="/WEB-INF/jsp/sysAdmin/adminFns/importfile.jsp" />
         <put-attribute name="jscript" value="/dspResources/js/sysAdmin/adminFns/importfile.js" />
     </definition>
+    
+    <definition name="/loginas" extends="base.definition.adminFns">
+        <put-attribute name="page-id" value="dashboard-details" />
+        <put-attribute name="page-section" value="section-dashboard" />
+        <put-attribute name="header" value="/WEB-INF/jsp/common/sysAdminHeader.jsp?sect=adminFns" />
+        <put-attribute name="actions" value="/WEB-INF/jsp/sysAdmin/adminFns/actionBar.jsp?page=loginas" />
+        <put-attribute name="menu" value="/WEB-INF/jsp/sysAdmin/adminFns/menu.jsp?page=loginas" />
+        <put-attribute name="body" value="/WEB-INF/jsp/sysAdmin/adminFns/loginas.jsp" />
+        <put-attribute name="jscript" value="/dspResources/js/sysAdmin/adminFns/loginas.js" />
+    </definition>
    
 </tiles-definitions>

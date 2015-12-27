@@ -10,15 +10,15 @@ import com.bowlink.rr.dao.userDAO;
 import com.bowlink.rr.model.User;
 import com.bowlink.rr.model.Log_userSurveyActivity;
 import com.bowlink.rr.model.userPrograms;
+import com.bowlink.rr.security.AESCrypt;
+import com.bowlink.rr.service.programManager;
 import com.bowlink.rr.service.userManager;
-
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.util.Arrays;
 import java.util.List;
-
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 
@@ -35,7 +35,10 @@ public class userManagerImpl implements userManager {
     
     @Autowired
     private userDAO userDAO;
-
+    
+    @Autowired
+    private programManager programmanager;
+   
     @Override
     @Transactional
     public Integer createUser(User user) {
@@ -211,7 +214,47 @@ public class userManagerImpl implements userManager {
     
     @Override
     @Transactional
-    public void insertUserLog (Log_userSurveyActivity ual) {
+    public void insertUserLog (Log_userSurveyActivity ual) throws Exception {
         userDAO.insertUserLog (ual);
     }
+    
+    @Override
+    @Transactional
+    public List<User> getEncryptedtUserListByProgram(Integer programId) throws Exception{
+    	List <User> userList = userDAO.getAllUsersByProgram(programId);
+    	//get encrypt phrase
+    	String topSecret = programmanager.getProgramSecurityInfo(programId).getEncryptedPhrase();    			
+    	for (User user : userList) {
+    		String encryptedValue64 = AESCrypt.encrypt(user.getUsername(), topSecret);
+            user.setEncryptedUserName(encryptedValue64);
+        }
+    	
+    	return userList;
+    }
+    
+    @Override
+    @Transactional
+    public List<User> getAllUsersByProgram(Integer programId) throws Exception {
+        return userDAO.getAllUsersByProgram(programId);
+    }
+    
+    @Override
+    @Transactional
+    public User getEncryptedUserByUserName(String encryptedUserName, String strProgramId) throws Exception {
+    	try {
+    		Integer programId = Integer.valueOf(strProgramId);
+    		String topSecret = programmanager.getProgramSecurityInfo(programId).getEncryptedPhrase();  
+        	String decryptedValue = AESCrypt.decrypt(encryptedUserName, topSecret);
+        	return getUserByUsername(decryptedValue, programId);
+    	} catch (Exception ex) {
+    		return null;
+    	} 		
+    }
+    
+    @Override
+    @Transactional
+    public User getUserByUsername(String encryptedUserName, Integer programId) throws Exception {
+        return userDAO.getUserByUsername(encryptedUserName, programId);
+    }
+
 }

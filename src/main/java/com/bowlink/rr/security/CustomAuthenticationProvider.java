@@ -23,7 +23,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     @Autowired
     private userManager usermanager;
-
+    
     private String strErrorMessage = "Bad Credentials";
 
     private String strErrorMessage1 = "Bad Credentials - please check the user. For security purposes, you have been logged out.";
@@ -62,7 +62,8 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                         if (details.getLoginAsUser() != null) {
                             strErrorMessage = strErrorMessage1;
                             loginUser = details.getLoginAsUser();
-                            loginUserInfo = usermanager.getUserByEmail(loginUser);
+                            loginUserInfo = usermanager.getEncryptedUserByUserName(loginUser, details.getProgramId());
+                            loginUser = loginUserInfo.getUsername();
                             //check status
                             if (!loginUserInfo.getStatus()) {
                                 throw new BadCredentialsException(strErrorMessage1);

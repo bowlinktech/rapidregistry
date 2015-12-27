@@ -58,5 +58,10 @@ public interface userDAO {
     
     List<String> getUserRoles (User user) throws Exception;
     
-    void insertUserLog (Log_userSurveyActivity ual);
+    void insertUserLog (Log_userSurveyActivity ual) throws Exception;
+    
+    List<User> getAllUsersByProgram(Integer programId) throws Exception;
+    
+    User getUserByUsername(String username, Integer programId) throws Exception;
+    
 }

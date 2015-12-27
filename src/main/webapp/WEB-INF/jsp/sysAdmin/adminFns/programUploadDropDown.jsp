@@ -2,6 +2,5 @@
 	<option  value="">- Program Upload Types - </option>
     <c:forEach items="${putList}" var="programUploadType">
     	<option value="${programUploadType.id}">${programUploadType.name}</option>
-    </c:forEach>                        
-                   
+    </c:forEach>                 
                     
