@@ -31,7 +31,7 @@ public interface userDAO {
 
     Long findTotalLogins(int userId);
 
-    void setLastLogin(String emailAddress);
+    void setLastLogin(String userName);
 
     User getUserByResetCode(String resetCode);
 
@@ -64,4 +64,5 @@ public interface userDAO {
     
     User getUserByUsername(String username, Integer programId) throws Exception;
     
+    User getUserByUserNameOnly(String userName);
 }

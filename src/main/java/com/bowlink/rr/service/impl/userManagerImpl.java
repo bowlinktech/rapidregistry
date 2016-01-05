@@ -73,8 +73,8 @@ public class userManagerImpl implements userManager {
 
     @Override
     @Transactional
-    public void setLastLogin(String emailAddress) {
-        userDAO.setLastLogin(emailAddress);
+    public void setLastLogin(String userName) {
+        userDAO.setLastLogin(userName);
     }
 
     @Override
@@ -255,6 +255,12 @@ public class userManagerImpl implements userManager {
     @Transactional
     public User getUserByUsername(String encryptedUserName, Integer programId) throws Exception {
         return userDAO.getUserByUsername(encryptedUserName, programId);
+    }
+    
+    @Override
+    @Transactional
+    public User getUserByUserNameOnly(String userName) {
+        return userDAO.getUserByUserNameOnly(userName);
     }
 
 }

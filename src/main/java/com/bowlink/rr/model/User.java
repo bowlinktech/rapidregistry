@@ -95,6 +95,13 @@ public class User {
     @NoHtml
     @Column(name = "username", nullable = false)
     private String username;
+    
+    @Column(name = "private", nullable = false)
+    private boolean privateProfile = false;
+    
+    @NoHtml
+    @Column(name = "phonenumber", nullable = true)
+    private String phoneNumber = null;
 
     public byte[] getRandomSalt() {
         return randomSalt;
@@ -284,5 +291,23 @@ public class User {
 	public void setProfilePhoto(String profilePhoto) {
 		this.profilePhoto = profilePhoto;
 	}
+
+	public boolean isPrivate() {
+		return privateProfile;
+	}
+
+	public void setPrivate(boolean privateProfile) {
+		this.privateProfile = privateProfile;
+	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+	
+	
 	
 }

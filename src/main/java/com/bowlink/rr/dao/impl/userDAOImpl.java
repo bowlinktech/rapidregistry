@@ -119,18 +119,18 @@ public class userDAOImpl implements userDAO {
      *
      */
     @Override
-    public void setLastLogin(String emailAddress) {
-        Query q1 = sessionFactory.getCurrentSession().createQuery("insert into userLogin (systemUserId)" + "select id from User where email = :emailAddress");
-        q1.setParameter("emailAddress", emailAddress);
+    public void setLastLogin(String userName) {
+        Query q1 = sessionFactory.getCurrentSession().createQuery("insert into userLogin (systemUserId)" + "select id from User where userName = :userName");
+        q1.setParameter("userName", userName);
         q1.executeUpdate();
         
         /* Update the users last logged in value */
-        Query q2 = sessionFactory.getCurrentSession().createQuery("from userLogin where systemUserId = (select id from User where email = :emailAddress) order by id desc");
-        q2.setParameter("emailAddress", emailAddress);
+        Query q2 = sessionFactory.getCurrentSession().createQuery("from userLogin where systemUserId = (select id from User where userName = :userName) order by id desc");
+        q2.setParameter("userName", userName);
         
         userLogin lastLogin = (userLogin) q2.list().get(0);
         
-        User user = getUserByEmail(emailAddress);
+        User user = getUserByUserNameOnly(userName);
         user.setLastloggedIn(lastLogin.getDateCreated());
         
         updateUser(user);
@@ -492,5 +492,19 @@ public class userDAOImpl implements userDAO {
         }
     }
     
+    /**
+     * The 'userNameOnly' function will return a single user object based on a user name passed in.
+     *
+     * @param	userNameOnly	This will used to query the email field of the users table
+     *
+     * @return	The function will return a user object
+     */
+    @Override
+    @Transactional
+    public User getUserByUserNameOnly(String userName) {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(User.class);
+        criteria.add(Restrictions.eq("username", userName));
+        return (User) criteria.uniqueResult();
+    }
     
 }

@@ -40,7 +40,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         //we login with email 
         String loginUser = name;
 
-        com.bowlink.rr.model.User user = usermanager.getUserByEmail(name);
+        com.bowlink.rr.model.User user = usermanager.getUserByUserNameOnly(name);
         com.bowlink.rr.model.User loginUserInfo = user;
 
         if (user == null) {

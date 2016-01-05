@@ -174,7 +174,7 @@ public class adminFnsController {
     String checkLoginAsPW(HttpServletRequest request,  
     		Authentication authentication) throws Exception {
 
-        User user = usermanager.getUserByEmail(authentication.getName());
+        User user = usermanager.getUserByUserNameOnly(authentication.getName());
         boolean okToLoginAs = false;
         
         /** we verify existing password **/

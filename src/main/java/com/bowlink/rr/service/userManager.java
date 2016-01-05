@@ -29,7 +29,7 @@ public interface userManager {
 
     Long findTotalLogins(int userId);
 
-    void setLastLogin(String emailAddress);
+    void setLastLogin(String userName);
 
     User getUserByResetCode(String resetCode);
 
@@ -75,5 +75,7 @@ public interface userManager {
     User getEncryptedUserByUserName(String encryptedUserName, String strProgramId) throws Exception;
     
     User getUserByUsername(String encryptedUserName, Integer programId) throws Exception;
+    
+    User getUserByUserNameOnly(String userName);
     
 }
