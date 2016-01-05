@@ -423,6 +423,11 @@ public class dataElementController {
         mav.addObject("customField", customField);
         mav.addObject("btnValue", "Create");
         
+        //Get the list of available file answer types
+        @SuppressWarnings("rawtypes")
+        List answerTypes = dataelementmanager.getAnswerTypes();
+        mav.addObject("answerTypes", answerTypes);
+        
         @SuppressWarnings("rawtypes")
         List infoTables = dataelementmanager.getInformationTables();
         mav.addObject("infoTables", infoTables);
@@ -447,6 +452,11 @@ public class dataElementController {
         //Get the details of the selected field
         customProgramFields customField = dataelementmanager.getCustomField(fieldId);
         mav.addObject("customField", customField);
+        
+        //Get the list of available file answer types
+        @SuppressWarnings("rawtypes")
+        List answerTypes = dataelementmanager.getAnswerTypes();
+        mav.addObject("answerTypes", answerTypes);
 
         @SuppressWarnings("rawtypes")
         List infoTables = dataelementmanager.getInformationTables();

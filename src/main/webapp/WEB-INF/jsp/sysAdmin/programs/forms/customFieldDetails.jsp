@@ -28,6 +28,17 @@
                         </spring:bind>
                     </div>
                     <div class="form-group">
+                        <spring:bind path="answerType">
+                            <label class="control-label" for="name">Field Type *</label>
+                            <form:select path="answerType" id="answerType" class="form-control half">
+                                <option value="">- Select -</option>
+                                <c:forEach items="${answerTypes}" var="atype" varStatus="aStatus">
+                                    <option value="${answerTypes[aStatus.index][0]}"  <c:if test="${fn:toLowerCase(customField.answerType) == fn:toLowerCase(answerTypes[aStatus.index][0])}">selected</c:if>>${answerTypes[aStatus.index][1]} </option>
+                                </c:forEach>
+                            </form:select>
+                        </spring:bind>
+                    </div>
+                    <div class="form-group">
                         <spring:bind path="saveToTable">
                             <div id="saveToTableDiv" class="form-group ${status.error ? 'has-error' : '' }">
                                 <label class="control-label" for="saveToTable">Table Name *</label>

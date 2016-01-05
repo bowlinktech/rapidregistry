@@ -1,12 +1,12 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
-<table class="table table-striped table-hover responsive">
+<table class="table table-striped table-hover">
     <thead>
         <tr>
             <th scope="col">Name</th>
             <th scope="col">Save To Table</th>
-            <th scope="col">Save To Table Column</th>
+            <th scope="col" class="center-text">Save To Column</th>
             <th scope="col"></th>
         </tr>
     </thead>
@@ -15,13 +15,13 @@
             <c:when test="${availableCustomFields.size() > 0}">
                 <c:forEach items="${availableCustomFields}" var="field" varStatus="pStatus">
                     <tr>
-                        <td scope="row">
-                            ${availableCustomFields[pStatus.index].fieldName}
+                        <td scope="row" style="width: 40%; word-wrap: normal;">
+                          ${availableCustomFields[pStatus.index].fieldName}
                         </td>
                         <td>
                             ${availableCustomFields[pStatus.index].saveToTable}
                         </td>
-                        <td>
+                        <td class="center-text">
                             ${availableCustomFields[pStatus.index].saveToTableCol}
                         </td>
                         <td class="center-text">
@@ -33,7 +33,7 @@
                     </tr>
                 </c:forEach>
             </c:when>
-            <c:otherwise><tr><td scope="row" colspan="3" style="text-align:center">No Custom Fields Found</td></c:otherwise>
+            <c:otherwise><tr><td scope="row" colspan="4" style="text-align:center">No Custom Fields Found</td></c:otherwise>
             </c:choose>
     </tbody>
 </table>

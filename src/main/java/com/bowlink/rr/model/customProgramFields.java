@@ -36,6 +36,9 @@ public class customProgramFields {
     
     @Column(name = "SAVETOTABLECOL", nullable = true)
     private String saveToTableCol = "";
+    
+    @Column(name = "ANSWERTYPE", nullable = false) 
+    private Integer answerType = 3;
 
     public int getId() {
         return id;
@@ -76,6 +79,13 @@ public class customProgramFields {
     public void setSaveToTableCol(String saveToTableCol) {
         this.saveToTableCol = saveToTableCol;
     }
-    
+
+    public Integer getAnswerType() {
+        return answerType;
+    }
+
+    public void setAnswerType(Integer answerType) {
+        this.answerType = answerType;
+    }
     
 }
