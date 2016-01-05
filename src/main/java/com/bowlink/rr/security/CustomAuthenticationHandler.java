@@ -42,7 +42,7 @@ public class CustomAuthenticationHandler extends SimpleUrlAuthenticationSuccessH
         if (roles.contains("ROLE_SYSTEMADMIN")) {
             
             /* Need to get the userId */
-            User userDetails = usermanager.getUserByEmail(authentication.getName());
+            User userDetails = usermanager.getUserByUserNameOnly(authentication.getName());
             
             /* Need to store the user object in session */
             session.setAttribute("userDetails", userDetails);
@@ -52,7 +52,7 @@ public class CustomAuthenticationHandler extends SimpleUrlAuthenticationSuccessH
         
         else if (roles.contains("ROLE_PROGRAMADMIN")) {
             /* Need to get the userId */
-            User userDetails = usermanager.getUserByEmail(authentication.getName());
+            User userDetails = usermanager.getUserByUserNameOnly(authentication.getName());
             
             /* Need to store the user object in session */
             session.setAttribute("userDetails", userDetails);

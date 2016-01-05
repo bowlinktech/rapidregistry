@@ -7,7 +7,9 @@
                     <c:when test="${param['page'] == 'importfile'}">
                         <a href="importfile" title="Import File As User" class="unstyled-link">Import File as User</a>
                     </c:when>
-   
+   					<c:when test="${param['page'] == 'loginas'}">
+                        <a href="loginAs" title="Login As User" class="unstyled-link">Login as User</a>
+                    </c:when>
                 </c:choose>
             </h1>
         </div>

@@ -29,7 +29,7 @@ public interface userManager {
 
     Long findTotalLogins(int userId);
 
-    void setLastLogin(String emailAddress);
+    void setLastLogin(String userName);
 
     User getUserByResetCode(String resetCode);
 
@@ -66,5 +66,16 @@ public interface userManager {
 
     List<String> getUserRoles (User user) throws Exception;
     
-    void insertUserLog (Log_userSurveyActivity ual);
+    void insertUserLog (Log_userSurveyActivity ual) throws Exception;
+    
+    public List<User> getEncryptedtUserListByProgram(Integer programId) throws Exception;
+    
+    public List<User> getAllUsersByProgram(Integer programId) throws Exception;
+    
+    User getEncryptedUserByUserName(String encryptedUserName, String strProgramId) throws Exception;
+    
+    User getUserByUsername(String encryptedUserName, Integer programId) throws Exception;
+    
+    User getUserByUserNameOnly(String userName);
+    
 }

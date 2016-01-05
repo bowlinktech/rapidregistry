@@ -18,7 +18,15 @@
         <intercept-url access="permitAll" pattern="/logout"></intercept-url>
         <intercept-url access="hasAnyRole('ROLE_SYSTEMADMIN', 'ROLE_USER','ROLE_PROGRAMADMIN')" pattern="/FileDownload/**"></intercept-url>
         <logout invalidate-session="true" delete-cookies="JSESSIONID" logout-success-url="/login" logout-url="/logout"></logout>
-        <form-login authentication-success-handler-ref="authenticationSuccessRedirecthandler" authentication-failure-url="/loginfailed" login-page="/login"></form-login>
+        <!--
+        <form-login authentication-success-handler-ref="authenticationSuccessRedirecthandler" 
+        authentication-failure-url="/loginfailed" login-page="/login"></form-login>
+        -->
+        <form-login authentication-success-handler-ref="authenticationSuccessRedirecthandler" 
+        authentication-failure-url="/loginfailed" 
+        authentication-details-source-ref="customWebAuthenticationDetails"
+        login-page="/login"></form-login>
+        
         <session-management invalid-session-url="/login"></session-management>
         <headers>
             <cache-control />
@@ -38,16 +46,5 @@
     <beans:bean class="com.bowlink.rr.security.CustomWebAuthenticationDetails" id="customWebAuthenticationDetails"></beans:bean>
     <beans:bean class="com.bowlink.rr.security.CustomAuthenticationProvider" id="customAuthenticationProvider"></beans:bean>
     <beans:bean class="com.bowlink.rr.security.CustomAuthenticationHandler" id="authenticationSuccessRedirecthandler"></beans:bean>
-    
-	<!-- 
-    <authentication-manager>
-        <authentication-provider>
-            <jdbc-user-service data-source-ref="dataSource"
- 							   users-by-username-query="select email,password,status from users where email=?" 
- 							   authorities-by-username-query="select u.email, r.role as authority from users u inner join user_roles r on u.roleId = r.id where u.status = 1 and u.email =?  " 
- 			/>
-        </authentication-provider>
-    </authentication-manager>
-   <beans:bean class="com.bowlink.rr.security.CustomAuthenticationHandler" id="authenticationSuccessRedirecthandler"></beans:bean>
-    -->
+
 </beans:beans>

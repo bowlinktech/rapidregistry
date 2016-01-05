@@ -11,6 +11,7 @@ import com.bowlink.rr.model.program;
 import com.bowlink.rr.model.programAdmin;
 import com.bowlink.rr.model.programAvailableTables;
 import com.bowlink.rr.model.programPatientEntryMethods;
+import com.bowlink.rr.model.programSecurityInfo;
 import com.bowlink.rr.model.programUploadTypes;
 import com.bowlink.rr.reference.fileSystem;
 import com.bowlink.rr.service.programManager;
@@ -189,6 +190,13 @@ public class programManagerImpl implements programManager {
 	public List<programUploadTypes> getProgramUploadTypes(
 			Integer programId) throws Exception {
 		return programDAO.getProgramUploadTypes(programId);
+	}
+
+	@Override
+	@Transactional
+	public programSecurityInfo getProgramSecurityInfo(Integer programId)
+			throws Exception {
+		return programDAO.getProgramSecurityInfo(programId);
 	}
     
 }

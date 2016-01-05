@@ -11,6 +11,7 @@ import com.bowlink.rr.model.program;
 import com.bowlink.rr.model.programAdmin;
 import com.bowlink.rr.model.programAvailableTables;
 import com.bowlink.rr.model.programPatientEntryMethods;
+import com.bowlink.rr.model.programSecurityInfo;
 import com.bowlink.rr.model.programUploadTypes;
 
 import java.util.List;
@@ -420,6 +421,22 @@ public class programDAOImpl implements programDAO {
 		List<programUploadTypes> putList = criteria.list();
         
         return putList;
+	}
+
+	@Override
+	public programSecurityInfo getProgramSecurityInfo(Integer programId)
+			throws Exception {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(programSecurityInfo.class);
+        if (programId != 0) {
+        	criteria.add(Restrictions.eq("programId", programId));
+        }
+       
+		List<programSecurityInfo> putList = criteria.list();
+        if (putList.size() ==1) {
+        	return putList.get(0);    
+        } else {
+        	return null;
+        }
 	}
     
     

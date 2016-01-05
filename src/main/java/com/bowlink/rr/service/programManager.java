@@ -11,6 +11,7 @@ import com.bowlink.rr.model.program;
 import com.bowlink.rr.model.programAdmin;
 import com.bowlink.rr.model.programAvailableTables;
 import com.bowlink.rr.model.programPatientEntryMethods;
+import com.bowlink.rr.model.programSecurityInfo;
 import com.bowlink.rr.model.programUploadTypes;
 
 import java.util.List;
@@ -64,5 +65,7 @@ public interface programManager {
     List<program> getAvailbleProgramsForUser(Integer userId) throws Exception;
     
     List<programUploadTypes> getProgramUploadTypes(Integer programId) throws Exception;
+    
+    programSecurityInfo getProgramSecurityInfo(Integer programId) throws Exception;
     
 }

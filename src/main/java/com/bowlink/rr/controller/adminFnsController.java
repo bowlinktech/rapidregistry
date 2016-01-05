@@ -1,17 +1,22 @@
 package com.bowlink.rr.controller;
 
+
 import java.util.List;
 import com.bowlink.rr.model.User;
+import com.bowlink.rr.model.program;
 import com.bowlink.rr.model.programUploadTypes;
 import com.bowlink.rr.model.programUploads;
 import com.bowlink.rr.service.fileManager;
 import com.bowlink.rr.service.importManager;
+import com.bowlink.rr.service.programManager;
+import com.bowlink.rr.service.userManager;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -40,7 +45,13 @@ public class adminFnsController {
     
     @Autowired
     fileManager filemanager;
-      
+    
+    @Autowired
+    programManager programmanager;
+    
+    @Autowired
+    userManager usermanager;
+    
     /**
      * The '/importfile' request will serve up the user list drop down of program types so the 
      * admin can upload as
@@ -126,5 +137,62 @@ public class adminFnsController {
             return mav;
 
     }
+    
+    @RequestMapping(value = "/loginas", method = RequestMethod.GET)
+    public ModelAndView loginAsForm(HttpServletRequest request, HttpServletResponse response, 
+    		HttpSession session, RedirectAttributes redirectAttr) throws Exception {
+
+    	User userDetails = (User) session.getAttribute("userDetails");
+    	
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/loginas");
+        //we get list of programs
+        List<program> programList = programmanager.getAllPrograms();
+        mav.addObject("programList", programList);
+        mav.addObject("userDetails", userDetails);
+        
+        return mav;
+    }
+    
+    @RequestMapping(value = "/getProgramUsers.do", method = RequestMethod.POST)
+    public @ResponseBody ModelAndView getProgramUsers(@RequestParam(value = "programId", required = true) Integer programId)
+    		throws Exception {
+    	
+    	ModelAndView mav = new ModelAndView();
+    	mav.setViewName("/sysAdmin/adminFns/userListDropDown");
+    	List <User> userList =  usermanager.getEncryptedtUserListByProgram(programId);
+    	mav.addObject("userList", userList); 
+    	program programDetails = programmanager.getProgramById(programId);
+    	mav.addObject("programURL", programDetails.getUrl()); 
+    	return mav;
+    }
+    
+    
+    /** login as post check - response body **/
+    @RequestMapping(value = "loginAsCheck.do", method = RequestMethod.POST)
+    public @ResponseBody
+    String checkLoginAsPW(HttpServletRequest request,  
+    		Authentication authentication) throws Exception {
+
+        User user = usermanager.getUserByUserNameOnly(authentication.getName());
+        boolean okToLoginAs = false;
+        
+        /** we verify existing password **/
+        if (user.getRoleId() == 1 || user.getRoleId() == 4) {
+	        try  {
+	        	okToLoginAs = usermanager.authenticate(request.getParameter("j_password"), user.getEncryptedPw(), user.getRandomSalt());
+	        } catch(Exception ex) {
+	        	okToLoginAs = false;
+	        }
+        }
+        
+        if (okToLoginAs) {
+        	return "pwmatched";
+        } else {
+        	return "failed";
+            
+        }
+    }
+    
 
 }

@@ -17,15 +17,23 @@ public class CustomWebAuthenticationDetails extends
   class MyAuthenticationDetails extends WebAuthenticationDetails {
 
     private final String loginAsUser;
+    
+    private final String programId;
 
     public MyAuthenticationDetails(HttpServletRequest request) {
       super(request);
       this.loginAsUser = request.getParameter("loginAsUser");
+      this.programId = request.getParameter("programId");
+      
     }
 
     public String getLoginAsUser() {
       return loginAsUser;
     }
+    
+    public String getProgramId() {
+        return programId;
+      }
   }
 
 }
