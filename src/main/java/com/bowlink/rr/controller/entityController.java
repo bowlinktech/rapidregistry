@@ -420,6 +420,9 @@ public class entityController {
     @ResponseBody public Integer associateEntity(@RequestParam(value = "isChecked" , required = true) Boolean isChecked, @RequestParam(value = "entityId", required = true) Integer entityId, @RequestParam(value = "itemId", required = true) Integer itemId) throws Exception {
         
         if(isChecked) {
+            /* Delete all associations */
+            orghierarchymanager.removeOrgHierarchyAssociation(itemId);
+            
             programOrgHierarchyAssoc newAssoc = new programOrgHierarchyAssoc();
             newAssoc.setAssociatedWith(entityId);
             newAssoc.setProgramHierarchyId(itemId);

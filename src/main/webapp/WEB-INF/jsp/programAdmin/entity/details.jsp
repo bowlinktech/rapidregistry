@@ -116,7 +116,7 @@
                                 <li class="list-group-item">
                                     <div class="input-group">
                                         <span class="input-group-addon">
-                                            <input type="checkbox" class="entitySelect" entityId="${entityItem.id}" <c:if test="${entityItem.isAssociated == true}">checked="checked"</c:if> />
+                                            <input type="radio" name="entityItem" class="entitySelect" entityId="${entityItem.id}" <c:if test="${entityItem.isAssociated == true}">checked="checked"</c:if> />
                                         </span>
                                         <input type="text" class="form-control" value="${entityItem.name}" readonly="true" style="font-weight:bold">
                                     </div>

@@ -130,6 +130,12 @@ public class orgHierarchyManagerImpl implements orgHierarchyManager {
     
     @Override
     @Transactional
+    public void removeOrgHierarchyAssociation(Integer itemId) throws Exception {
+        orgHierarchyDAO.removeOrgHierarchyAssociation(itemId);
+    }
+    
+    @Override
+    @Transactional
     public List<programOrgHierarchyAssoc> getAssociatedItems(Integer itemId) throws Exception {
         return orgHierarchyDAO.getAssociatedItems(itemId);
     }

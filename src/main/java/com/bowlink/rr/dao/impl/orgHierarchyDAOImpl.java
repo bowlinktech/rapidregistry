@@ -255,6 +255,19 @@ public class orgHierarchyDAOImpl implements orgHierarchyDAO {
      * The 'removeOrgHierarchyAssocation' will remove the association for the passed in item and 
      * entityId.
      * @param itemId
+     * @throws Exception 
+     */
+    @Override
+    public void removeOrgHierarchyAssociation(Integer itemId) throws Exception {
+        Query removeAssociation = sessionFactory.getCurrentSession().createQuery("delete from programOrgHierarchyAssoc where programHierarchyId = :itemId");
+        removeAssociation.setParameter("itemId", itemId);
+        removeAssociation.executeUpdate();
+    }
+    
+    /**
+     * The 'removeOrgHierarchyAssocation' will remove the association for the passed in item and 
+     * entityId.
+     * @param itemId
      * @param entityId
      * @throws Exception 
      */

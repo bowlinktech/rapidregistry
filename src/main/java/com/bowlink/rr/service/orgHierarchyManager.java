@@ -48,6 +48,8 @@ public interface orgHierarchyManager {
     
     void removeOrgHierarchyAssociation(Integer itemId, Integer entityId) throws Exception;
     
+    void removeOrgHierarchyAssociation(Integer itemId) throws Exception;
+    
     List<programOrgHierarchyAssoc> getAssociatedItems(Integer itemId) throws Exception;
     
     programOrgHierarchyDetails getProgramHierarchyItemDetailsByName(programOrgHierarchyDetails newEntity) throws Exception;
