@@ -19,9 +19,9 @@
                     </c:forEach>
                 </div>
             </li>
-            <li role="menuitem" ${param['page'] == 'categories' ? 'class="active"' : ''}><a href="/programAdmin/services/categories" title="Service Categories">Service Categories</a></li>
+            <%--<li role="menuitem" ${param['page'] == 'categories' ? 'class="active"' : ''}><a href="/programAdmin/services/categories" title="Service Categories">Service Categories</a></li>
             <li role="menuitem" ${param['page'] == 'services' ? 'class="active"' : ''}><a href="/programAdmin/services" title="Services">Services</a></li>
-            <%--<li role="menuitem" ${param['page'] == 'schedules' ? 'class="active"' : ''}><a href="/programAdmin/client-schedules" title="Surveys">Client Schedules</a></li>
+            <li role="menuitem" ${param['page'] == 'schedules' ? 'class="active"' : ''}><a href="/programAdmin/client-schedules" title="Surveys">Client Schedules</a></li>
             <li role="menuitem" ${param['page'] == 'calendar' ? 'class="active"' : ''}><a href="/programAdmin/calendar" title="Inactive Day Calendar">Inactive Day Calendar</a></li>--%>
         </ul>
     </nav>
