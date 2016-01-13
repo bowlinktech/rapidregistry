@@ -50,6 +50,14 @@
                                 <c:if test="${not empty existingUser}"><span class="control-label has-error">${existingUser}</span></c:if>
                             </div>
                         </spring:bind>
+                         <spring:bind path="username">
+                            <div id="usernameDiv" class="form-group ${status.error ? 'has-error' : '' }">
+                                <label class="control-label" for="password">Username *</label>
+                                <form:input path="username" id="username" class="form-control" type="text" maxLength="2555" autocomplete="off"  />
+                                <form:errors path="username" cssClass="control-label" element="label" />
+                                <span id="usernameMsg" class="control-label"></span>
+                            </div>
+                        </spring:bind>        
                         <spring:bind path="password">
                             <div id="passwordDiv" class="form-group ${status.error ? 'has-error' : '' }">
                                 <label class="control-label" for="password">Password *</label>

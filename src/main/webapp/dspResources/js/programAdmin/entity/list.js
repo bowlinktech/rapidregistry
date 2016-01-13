@@ -58,6 +58,9 @@ require(['./main'], function () {
             $('#nameDiv').removeClass("has-error");
             $('#nameLabelDiv').removeClass("has-error");
             $('#nameLabelDiv').html("");
+            $('#displayDiv').removeClass("has-error");
+            $('#displayIdDiv').removeClass("has-error");
+            $('#displayIdDiv').html("");
             
             $.ajax({
                 url: 'entity/saveEntityItem',
@@ -80,6 +83,12 @@ require(['./main'], function () {
                         $('#nameDiv').addClass("has-error");
                         $('#nameLabelDiv').addClass("has-error");
                         $('#nameLabelDiv').html("Name cannot be blank");
+                        //$('.itemSuccess').html('<strong>Errors!</strong> The entity name must not be empty.'); 
+                    }
+                     else if (data.indexOf('displayIdHasError') != -1) {
+                        $('#displayDiv').addClass("has-error");
+                        $('#displayIdDiv').addClass("has-error");
+                        $('#displayIdDiv').html("Display Id cannot be blank");
                         //$('.itemSuccess').html('<strong>Errors!</strong> The entity name must not be empty.'); 
                     }  else if (data.indexOf('nameError') != -1) {
                         $('#nameDiv').addClass("has-error");

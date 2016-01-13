@@ -41,6 +41,13 @@ require(['./main'], function () {
                 return false;
             } 
             
+            
+            if($('#username').val() === "") {
+                $('#usernameDiv').addClass("has-error");
+                $('#usernameMsg').addClass("has-error");
+                $('#usernameMsg').html('The username is a requried field.');
+            }
+            
             var newPassword = $('#password').val();
             var confirmPassword = $('#confirmPassword').val();
             
@@ -59,7 +66,7 @@ require(['./main'], function () {
                 $('#confirmPasswordMsg').addClass("has-error");
                 $('#confirmPasswordMsg').html('The confirm password must be equal to the new password.');
             } else {
-           
+                
                 var formData = $("#staffmemberdetailsform").serialize();
 
                 var actionValue = $(this).attr('rel').toLowerCase();

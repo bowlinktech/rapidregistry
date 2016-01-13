@@ -70,8 +70,9 @@ public class programOrgHierarchyDetails {
     @Column(name = "DATECREATED", nullable = true)
     private Date dateCreated = new Date();
     
+    @NotEmpty
     @Column(name = "displayId", nullable = true)
-    private String displayId = "";
+    private String displayId = "99999";
 
     public int getId() {
         return id;

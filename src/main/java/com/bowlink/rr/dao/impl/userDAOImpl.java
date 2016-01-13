@@ -90,7 +90,13 @@ public class userDAOImpl implements userDAO {
     public User getUserByEmail(String emailAddress) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(User.class);
         criteria.add(Restrictions.eq("email", emailAddress));
-        return (User) criteria.uniqueResult();
+        
+        if(criteria.list().size() > 0) {
+            return (User) criteria.list().get(0);
+        }
+        else { 
+            return null;
+        }
     }
 
     /**
