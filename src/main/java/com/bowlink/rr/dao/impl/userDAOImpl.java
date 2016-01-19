@@ -422,10 +422,10 @@ public class userDAOImpl implements userDAO {
     public List<String> getUserRoles(User user) {
         try {
             String sql = ("select r.role as authority from users u inner join "
-            		+ " user_roles r on u.roleId = r.id where u.status = 1 and u.email = :email");
+            		+ " user_roles r on u.roleId = r.id where u.status = 1 and u.id = :userId");
 
             Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
-            query.setParameter("email", user.getEmail());
+            query.setParameter("userId", user.getId());
             List<String> roles = query.list();
 
             return roles;
@@ -510,6 +510,7 @@ public class userDAOImpl implements userDAO {
     public User getUserByUserNameOnly(String userName) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(User.class);
         criteria.add(Restrictions.eq("username", userName));
+        
         return (User) criteria.uniqueResult();
     }
     

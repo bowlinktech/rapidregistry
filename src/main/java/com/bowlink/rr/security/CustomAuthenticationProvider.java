@@ -54,6 +54,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         try {
             
             if (usermanager.authenticate(password, user.getEncryptedPw(), user.getRandomSalt())) {
+               
                 //password is ok - check to see if user is an admin
                 if (user.getRoleId() == 1 || user.getRoleId() == 2) {
                     Object obj = authentication.getDetails();
