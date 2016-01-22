@@ -192,7 +192,7 @@ public class orgHierarchyDAOImpl implements orgHierarchyDAO {
      * @throws Exception 
      */
     public List<programOrgHierarchyDetails> getProgramHierarchyItems(Integer hierarchyId) throws Exception {
-        Query query = sessionFactory.getCurrentSession().createQuery("from programOrgHierarchyDetails where programHierarchyId = :hierarchyId order by id asc");
+        Query query = sessionFactory.getCurrentSession().createQuery("from programOrgHierarchyDetails where programHierarchyId = :hierarchyId order by name, id asc");
         query.setParameter("hierarchyId", hierarchyId);
 
         List<programOrgHierarchyDetails> itemList = query.list();
