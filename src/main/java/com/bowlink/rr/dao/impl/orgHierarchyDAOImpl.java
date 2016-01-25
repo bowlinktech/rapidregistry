@@ -194,7 +194,7 @@ public class orgHierarchyDAOImpl implements orgHierarchyDAO {
     public List<programOrgHierarchyDetails> getProgramHierarchyItems(Integer hierarchyId) throws Exception {
         
         String searchQuery = "SELECT a.*, GROUP_CONCAT(c.name SEPARATOR ',') as associatedWith"
-                    +" FROM rapidregistrydev.programorghierarchy_details a left outer join"
+                    +" FROM programorghierarchy_details a left outer join"
                     +" programorghierarchy_assoc b on b.programHierarchyId = a.id left outer join"
                     +" programorghierarchy_details c on c.id = b.associatedWith" 
                     +" where a.programHierarchyId = " + hierarchyId 
