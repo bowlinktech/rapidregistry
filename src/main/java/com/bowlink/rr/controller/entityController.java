@@ -148,7 +148,7 @@ public class entityController {
         mav.addObject("entityId", entityId);
 
         programOrgHierarchy entityDetails = orghierarchymanager.getOrgHierarchyById(entityId);
-
+        
         String btnValue;
         programOrgHierarchyDetails entityItemDetails;
         if (itemId == 0) {
@@ -157,6 +157,10 @@ public class entityController {
             btnValue = "Create " + entityDetails.getName();
         } else {
             entityItemDetails = orghierarchymanager.getProgramHierarchyItemDetails(itemId);
+            
+            if(entityItemDetails.getDisplayId() == null || "".equals(entityItemDetails.getDisplayId())) {
+                entityItemDetails.setDisplayId("99999");
+            }
             btnValue = "Edit " + entityDetails.getName();
         }
 
@@ -307,6 +311,11 @@ public class entityController {
         int entityItemId = Integer.parseInt(result[0].substring(4));
 
         programOrgHierarchyDetails entityItemDetails = orghierarchymanager.getProgramHierarchyItemDetails(entityItemId);
+        
+        if(entityItemDetails.getDisplayId() == null || "".equals(entityItemDetails.getDisplayId())) {
+            entityItemDetails.setDisplayId("99999");
+        }
+        
         mav.addObject("hierarchyDetails", entityItemDetails);
         mav.addObject("selEntity", entityItemDetails.getProgramHierarchyId());
 
@@ -449,7 +458,8 @@ public class entityController {
             ModelAndView mav = new ModelAndView(new RedirectView("/programAdmin/entity/details?i=" + URLEncoder.encode(i, "UTF-8") + "&v=" + URLEncoder.encode(v, "UTF-8")));
             return mav;
         } else {
-            ModelAndView mav = new ModelAndView(new RedirectView("/programAdmin/entity?i=" + entityItemDetails.getProgramHierarchyId() + "&msg=updated"));
+            ModelAndView mav = new ModelAndView(new RedirectView("/programAdmin/entity?msg=updated"));
+            
             return mav;
         }
 
