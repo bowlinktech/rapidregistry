@@ -23,6 +23,7 @@
                     <th scope="col">Name</th>
                     <th scope="col" class="center-text">Status</th>
                     <th scope="col" class="center-text">Date Created</th>
+                    <th scope="col">Associated With</th>
                     <th scope="col" class="center-text"></th>
                 </tr>
             </thead>
@@ -38,6 +39,16 @@
                                 <c:choose><c:when test="${entityItem.status == true}">Active</c:when><c:otherwise>Inactive</c:otherwise></c:choose>
                             </td>
                             <td class="center-text"><fmt:formatDate value="${entityItem.dateCreated}" type="date" pattern="M/dd/yyyy h:mm a" /></td>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${entityDsp == 1}">
+                                        N/A
+                                    </c:when>
+                                    <c:otherwise>
+                                        ${entityItem.associatedWith}
+                                    </c:otherwise>
+                                </c:choose>
+                            </td>
                             <td class="actions-col">
                                 <c:choose>
                                     <c:when test="${entityDsp == 1}">
