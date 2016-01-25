@@ -33,6 +33,9 @@ public class programOrgHierarchyDetails {
     @Transient
     private String encryptedSecret = null;
     
+    @Transient
+    private String associatedWith = "";
+    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID", nullable = false)
@@ -206,6 +209,14 @@ public class programOrgHierarchyDetails {
      */
     public void setDisplayId(String displayId) {
         this.displayId = displayId;
+    }
+
+    public String getAssociatedWith() {
+        return associatedWith;
+    }
+
+    public void setAssociatedWith(String associatedWith) {
+        this.associatedWith = associatedWith;
     }
     
 }

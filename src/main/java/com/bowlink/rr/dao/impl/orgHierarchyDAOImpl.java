@@ -192,8 +192,20 @@ public class orgHierarchyDAOImpl implements orgHierarchyDAO {
      * @throws Exception 
      */
     public List<programOrgHierarchyDetails> getProgramHierarchyItems(Integer hierarchyId) throws Exception {
-        Query query = sessionFactory.getCurrentSession().createQuery("from programOrgHierarchyDetails where programHierarchyId = :hierarchyId order by name, id asc");
-        query.setParameter("hierarchyId", hierarchyId);
+        
+        String searchQuery = "SELECT a.*, GROUP_CONCAT(c.name SEPARATOR ',') as associatedWith"
+                    +" FROM rapidregistrydev.programorghierarchy_details a left outer join"
+                    +" programorghierarchy_assoc b on b.programHierarchyId = a.id left outer join"
+                    +" programorghierarchy_details c on c.id = b.associatedWith" 
+                    +" where a.programHierarchyId = " + hierarchyId 
+                    +" group by a.id";
+        
+        //Query query = sessionFactory.getCurrentSession().createQuery("from programOrgHierarchyDetails where programHierarchyId = :hierarchyId order by name, id asc");
+        //query.setParameter("hierarchyId", hierarchyId);
+        
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(searchQuery) 
+        .setResultTransformer(Transformers.aliasToBean(programOrgHierarchyDetails.class)
+        );
 
         List<programOrgHierarchyDetails> itemList = query.list();
         return itemList;
