@@ -514,4 +514,54 @@ public class userDAOImpl implements userDAO {
         return (User) criteria.uniqueResult();
     }
     
+    /**
+     * The 'checkDuplicateUsername' function will return a single user object based on a username passed in.
+     *
+     * @param	username	This will used to query the username field of the users table
+     *
+     * @return	The function will return a user object
+     */
+    public User checkDuplicateUsername(String username, Integer programId, Integer userId) {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(User.class);
+        criteria.add(Restrictions.eq("username", username));
+        criteria.add(Restrictions.ne("id", userId));
+        
+        User user = (User) criteria.uniqueResult();
+        
+        if(user == null) {
+            return null;
+        }
+        else {
+            
+            /* make sure the user is part of the passed in programId */
+            try {
+               List<userPrograms> userPrograms = getUserPrograms(user.getId()); 
+               
+               if(userPrograms == null || userPrograms.size() == 0) {
+                   return null;
+               }
+               else {
+                   boolean programFound = false;
+                   for(userPrograms program : userPrograms) {
+                       if(program.getProgramId() == programId) {
+                           programFound = true;
+                       }
+                   }
+                   
+                   if(programFound == true) {
+                       return user;
+                   }
+                   else {
+                       return null;
+                   }
+               }
+            }
+            catch (Exception e) {
+                return null;
+            }
+            
+        }
+        
+    }
+    
 }

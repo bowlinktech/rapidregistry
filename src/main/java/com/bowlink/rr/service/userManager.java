@@ -78,4 +78,6 @@ public interface userManager {
     
     User getUserByUserNameOnly(String userName);
     
+    public User checkDuplicateUsername(String username, Integer programId, Integer userId) throws Exception;
+    
 }

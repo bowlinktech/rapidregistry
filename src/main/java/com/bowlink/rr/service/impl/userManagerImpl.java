@@ -262,5 +262,12 @@ public class userManagerImpl implements userManager {
     public User getUserByUserNameOnly(String userName) {
         return userDAO.getUserByUserNameOnly(userName);
     }
+    
+    @Override
+    @Transactional
+    public User checkDuplicateUsername(String username, Integer programId, Integer userId) throws Exception {
+        return userDAO.checkDuplicateUsername(username, programId, userId);
+    }
+    
 
 }

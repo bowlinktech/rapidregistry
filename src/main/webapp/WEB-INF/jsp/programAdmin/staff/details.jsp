@@ -36,7 +36,6 @@
                 <div class="form-container">
                     <form:form id="staffdetails" commandName="staffdetails"  method="post" role="form">
                         <input type="hidden" id="action" name="action" value="save" />
-                        <form:hidden path="roleId" />
                         <form:hidden path="id" />
                         <form:hidden path="createdBy" />
                         <form:hidden path="dateCreated" />
@@ -51,6 +50,16 @@
                                 </label>
                             </div>
                         </div>
+                        <spring:bind path="roleId">
+                            <div class="form-group ${status.error ? 'has-error' : '' }">
+                                <label class="control-label" for="roleId">Role *</label>
+                                <form:select path="roleId" id="roleId" class="form-control">
+                                    <option value="3" <c:if test="${staffdetails.roleId == 3}">selected</c:if>>User</option>
+                                    <option value="4" <c:if test="${staffdetails.roleId == 4}">selected</c:if>>Admin</option>
+                                </form:select>
+                                <form:errors path="roleId" cssClass="control-label" element="label" />
+                            </div>
+                        </spring:bind>        
                         <spring:bind path="firstName">
                             <div class="form-group ${status.error ? 'has-error' : '' }">
                                 <label class="control-label" for="firstName">First Name *</label>
@@ -66,13 +75,21 @@
                             </div>
                         </spring:bind>
                         <spring:bind path="email">
-                            <div class="form-group ${status.error || not empty existingUser ? 'has-error' : '' }">
+                            <div class="form-group ${status.error}">
                                 <label class="control-label" for="email">Email *</label>
                                 <form:input path="email" id="email" class="form-control" type="text"  maxLength="255" />
                                 <form:errors path="email" cssClass="control-label" element="label" />
-                                <c:if test="${not empty existingUser}"><span class="control-label has-error">${existingUser}</span></c:if>
                             </div>
                         </spring:bind>
+                        <spring:bind path="username">
+                            <div id="usernameDiv" class="form-group ${status.error || not empty existingUser ? 'has-error' : '' }">
+                                <label class="control-label" for="email">Username *</label>
+                                <form:input path="username" id="username" class="form-control" type="text"  maxLength="255" />
+                                <form:errors path="username" cssClass="control-label" element="label" />
+                                <c:if test="${not empty existingUser}"><span class="control-label has-error">${existingUser}</span></c:if>
+                                <span id="usernameMsg" class="control-label"></span>
+                            </div>
+                        </spring:bind>        
                         <spring:bind path="password">
                         	
                             <div id="passwordDiv" class="form-group ${status.error ? 'has-error' : '' }">

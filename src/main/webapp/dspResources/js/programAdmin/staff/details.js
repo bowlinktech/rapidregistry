@@ -233,6 +233,21 @@ require(['./main'], function() {
            }
         });
         
+        $(document).on('click','.programModules',function() {
+            var moduleid = $(this).val();
+            if($(this).is(':checked')) {
+                $.each($('.permissions_'+moduleid+ '.use'), function() {
+                    $(this).prop('disabled', false);
+                });
+            }
+            else {
+                $.each($('.permissions_'+moduleid), function() {
+                    $(this).prop('checked', false);
+                    $(this).prop('disabled', true);
+                });
+            }
+         });
+        
 
     });
 });
