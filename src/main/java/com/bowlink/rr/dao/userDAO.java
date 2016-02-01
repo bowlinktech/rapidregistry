@@ -65,4 +65,6 @@ public interface userDAO {
     User getUserByUsername(String username, Integer programId) throws Exception;
     
     User getUserByUserNameOnly(String userName);
+    
+    public User checkDuplicateUsername(String username, Integer programId, Integer userId) throws Exception;
 }

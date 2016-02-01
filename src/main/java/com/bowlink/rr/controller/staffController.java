@@ -302,6 +302,8 @@ public class staffController {
         
         staffdetails.setId(readableUserId);
         
+        System.out.println(staffdetails.getRoleId());
+        
         if (result.hasErrors()) {
             ModelAndView mav = new ModelAndView();
             mav.setViewName("/staffMemberDetails");
@@ -309,16 +311,16 @@ public class staffController {
             return mav;
         }
         
-        /* Check for duplicate email address */
-        User existingUser = usermanager.getUserByEmail(staffdetails.getEmail());
+        /* Check for duplicate username */
+        User existingUser = usermanager.checkDuplicateUsername(staffdetails.getUsername(), (Integer) session.getAttribute("selprogramId"), readableUserId);
         if (existingUser != null && existingUser.getId() != readableUserId) {
             ModelAndView mav = new ModelAndView();
             mav.setViewName("/staffMemberDetails");
-            mav.addObject("userTypes", userTypes);
-            mav.addObject("existingUser", "The email address is already being used by another user.");
+            mav.addObject("existingUser", "The username is already being used by another user.");
 
             return mav;
         }
+       
         
         if (!staffdetails.getPassword().equalsIgnoreCase("")) {
         	staffdetails = usermanager.encryptPW(staffdetails);
