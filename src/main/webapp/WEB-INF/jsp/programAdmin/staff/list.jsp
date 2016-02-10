@@ -78,10 +78,9 @@
                             <thead>
                                 <tr>
                                     <th scope="col">Name</th>
-                                    <th scope="col" class="center-text">Staff Type</th>
+                                    <th scope="col" class="center-text">Role</th>
                                     <th scope="col" class="center-text">Date Created</th>
                                     <th scope="col" class="center-text">Last Logged In</th>
-                                    <th scope="col">Programs</th>
                                     <th scope="col"></th>
                                 </tr>
                             </thead>
@@ -97,13 +96,13 @@
                                                 (<c:choose><c:when test="${staff.status == true}">Active</c:when><c:otherwise>Inactive</c:otherwise></c:choose>)</a>
                                             </td>
                                             <td class="center-text">
-                                                ${staff.staffType}
+                                                <c:choose>
+                                                    <c:when test="${staff.roleId == 3}">User</c:when>
+                                                    <c:otherwise>Admin</c:otherwise>
+                                                </c:choose>
                                             </td>
                                             <td class="center-text"><fmt:formatDate value="${staff.dateCreated}" type="date" pattern="M/dd/yyyy" /></td>
                                             <td class="center-text"><fmt:formatDate value="${staff.lastloggedIn}" type="Both" pattern="M/dd/yyyy h:mm a" /></td>
-                                            <td>
-                                                
-                                            </td>
                                             <td class="actions-col">
                                                 <a href="staff/details?i=${staff.encryptedId}&v=${staff.encryptedSecret}" class="btn btn-link editSysAdmin" title="Edit this Staff Member" role="button">
                                                     <span class="glyphicon glyphicon-edit"></span>
@@ -114,7 +113,7 @@
                                     </c:forEach>
                                 </c:when>
                                 <c:otherwise>
-                                    <tr><td colspan="6" class="center-text">There are currently no staff members set up.</td></tr>
+                                    <tr><td colspan="5" class="center-text">There are currently no staff members set up.</td></tr>
                                 </c:otherwise>
                             </c:choose>
                         </tbody>
