@@ -19,6 +19,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
@@ -335,7 +336,11 @@ public class userDAOImpl implements userDAO {
             
             Criteria criteria = sessionFactory.getCurrentSession().createCriteria(User.class);
             criteria.add(Restrictions.in("id", userIds));
-            criteria.add(Restrictions.eq("roleId", 3));
+            
+            Disjunction or = Restrictions.disjunction();
+            or.add(Restrictions.eq("roleId",3));
+            or.add(Restrictions.eq("roleId",4));
+            criteria.add(or);
             
             if(firstName != null && !"".equals(firstName)) {
                 criteria.add(Restrictions.like("firstName", firstName+"%"));
