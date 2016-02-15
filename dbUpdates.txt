@@ -1,19 +1,1 @@
-ALTER TABLE `rapidregistry`.`program_patientfields` 
-ADD COLUMN `readOnly` BIT(1) NOT NULL DEFAULT b'0' AFTER `hideField`;
 
-ALTER TABLE `rapidregistry`.`program_patientfields` 
-ADD COLUMN `saveToTable` VARCHAR(255) NULL AFTER `readOnly`;
-
-ALTER TABLE `rapidregistry`.`program_patientfields` 
-ADD COLUMN `saveToTableCol` VARCHAR(255) NULL DEFAULT NULL AFTER `saveToTable`;
-
-ALTER TABLE `rapidregistry`.`program_patientfields` 
-ADD COLUMN `defaultValue` VARCHAR(255) NULL AFTER `saveToTableCol`;
-
-CREATE TABLE `rapidregistry`.`customprogramfields` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `fieldName` VARCHAR(255) NOT NULL,
-  `saveToTable` VARCHAR(255) NOT NULL,
-  `saveToTableCol` VARCHAR(255) NOT NULL,
-  `programId` INT NOT NULL,
-  PRIMARY KEY (`id`));

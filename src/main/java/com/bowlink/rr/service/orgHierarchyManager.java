@@ -60,5 +60,5 @@ public interface orgHierarchyManager {
     
     void changeFolderName (String oldName, String newName, Integer programId,  boolean createDirectory) throws Exception;
     
-    
+    String removeOrgHierarchyItem(Integer itemId) throws Exception;
 }

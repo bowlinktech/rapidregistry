@@ -494,4 +494,28 @@ public class entityController {
 
         return 1;
     }
+    
+    /**
+     * The 'deleteEntity' POST request will check to see if the selected entity is associated to anything in the DB, if so
+     * it will not allow the deletion of the entity.
+     * 
+     * @param entityId
+     * @param dspPos
+     * @param itemId
+     * @return
+     * @throws Exception 
+     */
+    @RequestMapping(value = "/deleteEntity", method = RequestMethod.POST)
+    @ResponseBody
+    public String associateEntity(@RequestParam(value = "entityId", required = true) Integer entityId,
+            @RequestParam(value = "dspPos", required = true) Integer dspPos, 
+            @RequestParam(value = "itemId", required = true) Integer itemId) throws Exception {
+        
+        String deleted = null;
+        
+        deleted = orghierarchymanager.removeOrgHierarchyItem(itemId);
+        
+        return deleted;
+    }
+
 }

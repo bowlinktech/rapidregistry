@@ -23,8 +23,15 @@
                        <spring:bind path="codeDesc">
                            <div class="form-group ${status.error ? 'has-error' : '' }">
                                <label class="control-label" for="codeDesc">Code Description *</label>
-                               <form:textarea path="codeDesc" class="form-control"  rows="10" />
+                               <form:textarea path="codeDesc" class="form-control"  rows="5" />
                                <form:errors path="codeDesc" cssClass="control-label" element="label" />
+                           </div>
+                       </spring:bind>
+                       <spring:bind path="displayText">
+                           <div class="form-group ${status.error ? 'has-error' : '' }">
+                               <label class="control-label" for="displayText">Display Text </label>
+                               <form:textarea path="displayText" class="form-control" rows="5" />
+                               <form:errors path="displayText" cssClass="control-label" element="label" />
                            </div>
                        </spring:bind>
                        <div class="form-group">

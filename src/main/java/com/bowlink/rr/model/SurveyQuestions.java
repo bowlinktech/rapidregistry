@@ -117,6 +117,9 @@ public class SurveyQuestions {
     @Column(name = "populateFromCW", nullable = true)
     private Integer populateFromCW = 0;
     
+    @Column(name = "reportText", nullable = true)
+    private String reportText;
+    
     
     public int getId() {
         return id;
@@ -348,6 +351,14 @@ public class SurveyQuestions {
 
     public void setPopulateFromCW(Integer populateFromCW) {
         this.populateFromCW = populateFromCW;
+    }
+
+    public String getReportText() {
+        return reportText;
+    }
+
+    public void setReportText(String reportText) {
+        this.reportText = reportText;
     }
     
 }
