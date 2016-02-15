@@ -8,7 +8,6 @@ package com.bowlink.rr.model;
 
 import com.bowlink.rr.validator.NoHtml;
 import java.util.Date;
-import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -48,6 +47,10 @@ public class activityCodes {
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
     @Column(name = "DATECREATED", nullable = true)
     private Date dateCreated = new Date();
+    
+    @NoHtml
+    @Column(name = "DISPLAYTEXT", nullable = true)
+    private String displayText;
 
     public int getId() {
         return id;
@@ -89,4 +92,12 @@ public class activityCodes {
         this.selected = selected;
     }
 
+    public String getDisplayText() {
+        return displayText;
+    }
+
+    public void setDisplayText(String displayText) {
+        this.displayText = displayText;
+    }
+    
 }

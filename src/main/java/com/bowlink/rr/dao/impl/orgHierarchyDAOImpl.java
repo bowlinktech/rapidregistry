@@ -327,4 +327,92 @@ public class orgHierarchyDAOImpl implements orgHierarchyDAO {
            return new programOrgHierarchyDetails();
         }
     }
+    
+    @Override
+    public String removeOrgHierarchyItem(Integer itemId) throws Exception {
+        
+        StringBuilder sb = new StringBuilder();
+        boolean canDelete = true;
+        
+        Query query;
+        
+        /** See if the selected entity is associated to any other entity **/
+        query = sessionFactory.getCurrentSession().createQuery(
+                "from programOrgHierarchyAssoc where associatedWith = :itemId");
+        query.setParameter("itemId", itemId);
+        
+        if(query.list().size() > 0) {
+            sb.append("Entity is associated with another entity.").append("<br />");
+            canDelete = false;
+        }
+        
+        /** See if the selected entity is associated to any calendar events **/
+        query = sessionFactory.getCurrentSession().createSQLQuery(
+                "select id from rel_calendarevententities where entityId = :itemId")
+                .setParameter("itemId", itemId);
+        
+        if(query.list().size() > 0) {
+            sb.append("Entity is associated with at least one calendar event.").append("<br />");
+            canDelete = false;
+        }
+        
+        /** See if the selected entity is associated to any documents **/
+        query = sessionFactory.getCurrentSession().createSQLQuery(
+                "select id from documents where folderId in (select id from documentfolders where entityId  = :itemId)")
+                .setParameter("itemId", itemId);
+        
+        if(query.list().size() > 0) {
+            sb.append("Entity is associated with at least one document.").append("<br />");
+            canDelete = false;
+        }
+        
+        /** See if the selected entity is associated to any forum posts **/
+        query = sessionFactory.getCurrentSession().createSQLQuery(
+                "select id from rel_forumtopicentities where entityId = :itemId")
+                .setParameter("itemId", itemId);
+        
+        if(query.list().size() > 0) {
+            sb.append("Entity is associated with at least one forum post.").append("<br />");
+            canDelete = false;
+        }
+        
+        /** See if the selected entity is associated to any patients **/
+        query = sessionFactory.getCurrentSession().createSQLQuery(
+                "select id from programpatiententities where (entity1Id = :itemId OR entity2Id = :itemId OR entity3Id = :itemId)")
+                .setParameter("itemId", itemId);
+        
+        if(query.list().size() > 0) {
+            sb.append("Entity is associated with at least one patient.").append("<br />");
+            canDelete = false;
+        }
+        
+        /** See if the selected entity is associated to any surveys **/
+        query = sessionFactory.getCurrentSession().createSQLQuery(
+                "select id from submittedsurveyentities where entityId = :itemId")
+                .setParameter("itemId", itemId);
+        
+        if(query.list().size() > 0) {
+            canDelete = false;
+        }
+        
+        /** See if the selected entity is associated to any users **/
+        query = sessionFactory.getCurrentSession().createSQLQuery(
+                "select id from user_authorizedorghierarchy where orgHierarchyDetailId = :itemId")
+                .setParameter("itemId", itemId);
+        
+        if(query.list().size() > 0) {
+            sb.append("Entity is associated with at least one user.").append("<br />");
+            canDelete = false;
+        }  
+        
+        /** Not in use, delete **/
+        if(canDelete == true) {
+           Query deleteEntity = sessionFactory.getCurrentSession().createQuery("delete from programOrgHierarchyDetails where id = :itemId");
+           deleteEntity.setParameter("itemId", itemId);
+           deleteEntity.executeUpdate();
+        }
+        
+        return sb.toString();
+        
+    }
 }

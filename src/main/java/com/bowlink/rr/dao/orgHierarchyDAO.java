@@ -53,4 +53,5 @@ public interface orgHierarchyDAO {
     
     programOrgHierarchyDetails getProgramHierarchyItemDetailsByName(programOrgHierarchyDetails newEntity) throws Exception;
     
+    String removeOrgHierarchyItem(Integer itemId) throws Exception;
 }

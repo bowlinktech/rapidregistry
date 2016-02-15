@@ -16,6 +16,7 @@
                 </div>
             </c:when>
         </c:choose>
+        <div class="alert alert-danger cantDelete" style="display:none;"></div>
         <section class="panel panel-default" id="entityList"></section>
     </div>
 </div>

@@ -6,9 +6,8 @@
 
 require(['./main'], function () {
     require(['jquery'], function($) {
-
         //Fade out the updated/created message after being displayed.
-        if ($('.alert').length > 0) {
+        if ($('.alert').length > 0) { 
             $('.alert').delay(2000).fadeOut(1000);
         }
         
@@ -106,6 +105,32 @@ require(['./main'], function () {
             event.preventDefault();
             return false;
         });
+        
+        // Delete Entity 
+        $(document).on('click', '.deleteEntity', function() {
+            
+            var entityId = $(this).attr('rel');
+            var dspPos = $(this).attr('dspPos');
+            var itemId = $(this).attr('itemId');
+            
+            $.ajax({
+                url: 'entity/deleteEntity',
+                data: {'entityId':entityId, 'dspPos': dspPos, 'itemId': itemId},
+                type: "POST",
+                success: function(data) {
+                    if(data == "") {
+                        loadEntities(entityId);
+                    }
+                    else {
+                        $('.cantDelete').show();
+                        $('.cantDelete').html("<p><strong>The selected entity can't be deleted because of the following:</strong></p>" + data);
+                        $('.cantDelete').delay(2000).fadeOut(1000);
+                    }
+                }
+           });
+            
+            
+        })
         
     });
 });

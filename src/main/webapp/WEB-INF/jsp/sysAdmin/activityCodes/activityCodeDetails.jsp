@@ -35,10 +35,17 @@
                         </spring:bind>
                         <spring:bind path="codeDesc">
                             <div class="form-group ${status.error ? 'has-error' : '' }">
-                                <label class="control-label" for="codeDesc">Code Description</label>
+                                <label class="control-label" for="codeDesc">Code Description *</label>
                                 <form:textarea path="codeDesc" id="codeDesc" class="form-control" type="text"  maxLength="500" />
+                                <form:errors path="codeDesc" cssClass="control-label" element="label" />
                             </div>
-                        </spring:bind>         
+                        </spring:bind>   
+                        <spring:bind path="displayText">
+                            <div class="form-group ${status.error ? 'has-error' : '' }">
+                                <label class="control-label" for="displayText">Display Text</label>
+                                <form:textarea path="displayText" id="displayText" class="form-control" type="text"  maxLength="255" />
+                            </div>
+                        </spring:bind>   
                     </div>
                 </div>
             </section>

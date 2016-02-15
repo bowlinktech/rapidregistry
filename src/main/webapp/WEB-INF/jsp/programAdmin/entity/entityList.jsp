@@ -8,7 +8,6 @@
 <%@ taglib prefix="s" uri="http://www.springframework.org/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
-
 <div class="panel-heading">
     <div class="pull-right">
         <a href="#entityModal" data-toggle="modal" class="btn btn-primary btn-xs btn-action entityItemDetails" rel="${entityId}" dspPos="${entityDsp}" itemId="0" title="Create New ${entityName}">Create New ${entityName}</a>
@@ -31,7 +30,7 @@
             <c:choose>
                 <c:when test="${not empty entityItems}">
                     <c:forEach var="entityItem" items="${entityItems}">
-                        <tr>
+                        <tr id="${entityItem.id}">
                             <td>
                                 ${entityItem.name}
                             </td>
@@ -52,7 +51,7 @@
                             <td class="actions-col">
                                 <c:choose>
                                     <c:when test="${entityDsp == 1}">
-                                        <a href="#entityModal" data-toggle="modal"rel="${entityId}" dspPos="${entityDsp}" itemId="${entityItem.id}" class="btn btn-link entityItemDetails" title="Edit this ${entityName}" role="button">
+                                        <a href="#entityModal" data-toggle="modal" rel="${entityId}" dspPos="${entityDsp}" itemId="${entityItem.id}" class="btn btn-link entityItemDetails" title="Edit this ${entityName}" role="button">
                                             Edit
                                             <span class="glyphicon glyphicon-edit"></span>
                                         </a>
@@ -64,6 +63,10 @@
                                         </a>
                                     </c:otherwise>
                                 </c:choose>
+                                <a href="javascript:void(0);" class="btn btn-link deleteEntity" rel="${entityId}" dspPos="${entityDsp}" itemId="${entityItem.id}" title="Delete this ${entityName}" role="button">
+                                    Delete
+                                    <span class="glyphicon glyphicon-remove-circle"></span>
+                                </a>
                             </td>
                         </tr>
                     </c:forEach>

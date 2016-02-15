@@ -213,4 +213,10 @@ public class orgHierarchyManagerImpl implements orgHierarchyManager {
         	}
         }
     }    
+    
+    @Override
+    @Transactional
+    public String removeOrgHierarchyItem(Integer itemId) throws Exception {
+        return orgHierarchyDAO.removeOrgHierarchyItem(itemId);
+    }
 }
