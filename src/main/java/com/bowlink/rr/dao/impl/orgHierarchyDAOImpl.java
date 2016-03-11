@@ -198,7 +198,7 @@ public class orgHierarchyDAOImpl implements orgHierarchyDAO {
                     +" programorghierarchy_assoc b on b.programHierarchyId = a.id left outer join"
                     +" programorghierarchy_details c on c.id = b.associatedWith" 
                     +" where a.programHierarchyId = " + hierarchyId 
-                    +" group by a.id";
+                    +" group by a.id order by a.name, a.id";
         
         //Query query = sessionFactory.getCurrentSession().createQuery("from programOrgHierarchyDetails where programHierarchyId = :hierarchyId order by name, id asc");
         //query.setParameter("hierarchyId", hierarchyId);
