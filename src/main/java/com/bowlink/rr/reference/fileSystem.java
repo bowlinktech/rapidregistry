@@ -63,6 +63,7 @@ public class fileSystem {
                     new File(directoryPath + dirName + "\\profilePhotos").mkdirs();
                     new File(directoryPath + dirName + "\\surveyUploadedFiles").mkdirs();
                     new File(directoryPath + dirName + "\\reports").mkdirs();
+                    new File(directoryPath + dirName + "\\announcementUploadedFiles").mkdirs();
                 }
             } //Mac
             else if (os.indexOf("mac") >= 0) {
@@ -80,6 +81,7 @@ public class fileSystem {
                     new File(directoryPath + dirName + "/profilePhotos").mkdirs();
                     new File(directoryPath + dirName + "/surveyUploadedFiles").mkdirs();
                     new File(directoryPath + dirName + "/reports").mkdirs();
+                    new File(directoryPath + dirName + "/announcementUploadedFiles").mkdirs();
                 }
             } //Unix or Linux or Solarix
             else if (os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0 || os.indexOf("aix") >= 0 || os.indexOf("sunos") >= 0) {
@@ -97,6 +99,7 @@ public class fileSystem {
                     new File(directoryPath + dirName + "/profilePhotos").mkdirs();
                     new File(directoryPath + dirName + "/surveyUploadedFiles").mkdirs();
                     new File(directoryPath + dirName + "/reports").mkdirs();
+                    new File(directoryPath + dirName + "/announcementUploadedFiles").mkdirs();
                 }
             } else {
                 System.out.println("Your OS is not support!!");
