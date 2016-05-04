@@ -1,1 +1,4 @@
-
+/** grace 05042016  on dev only**/
+ALTER TABLE `rapidregistrydev`.`patientengagements` 
+CHANGE COLUMN `status` `status` BIT(1) NOT NULL DEFAULT b'1' ,
+ADD COLUMN `MCIReview` BIT(1) NOT NULL DEFAULT 0 AFTER `status`;
