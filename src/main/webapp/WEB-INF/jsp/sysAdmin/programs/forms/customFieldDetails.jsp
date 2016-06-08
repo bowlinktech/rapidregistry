@@ -38,6 +38,9 @@
                             </form:select>
                         </spring:bind>
                     </div>
+                    <div class="form-group" id="allowMultipleDiv" style="display:none">
+                        <form:checkbox path="allowMultipleAns" id="allowMultipleAns" />&nbsp;<label class="control-label" for="allowMultipleAns">Allow more than one answer to this question (use checkboxes)</label>
+                    </div>
                     <div class="form-group">
                         <spring:bind path="saveToTable">
                             <div id="saveToTableDiv" class="form-group ${status.error ? 'has-error' : '' }">
@@ -105,6 +108,17 @@
             var tableName = $(this).val();
             populateTableColumns(tableName,"");
         });
+        
+         //Need to populate the table columns or the selected table
+        $(document).on('change', '#answerType', function() {
+            if($('#answerType').val() == 1) {
+                $('#allowMultipleDiv').show();
+            }
+            else {
+                $('#allowMultipleDiv').hide();
+            }
+        });
+        
        
     });
     
