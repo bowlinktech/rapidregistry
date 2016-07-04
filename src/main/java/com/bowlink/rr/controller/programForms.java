@@ -15,6 +15,8 @@ import com.bowlink.rr.model.programEngagementSections;
 import com.bowlink.rr.model.programPatientFieldValues;
 import com.bowlink.rr.model.programPatientFields;
 import com.bowlink.rr.model.programPatientSections;
+import com.bowlink.rr.model.programProfileFieldValues;
+import com.bowlink.rr.model.programProfileFields;
 import com.bowlink.rr.service.dataElementManager;
 import com.bowlink.rr.service.programFormsManager;
 import com.bowlink.rr.service.programManager;
@@ -59,6 +61,8 @@ public class programForms {
     private static List<programPatientFields> patientFields = null;
 
     private static List<programEngagementFields> engagementFields = null;
+    
+    private static List<programProfileFields> programProfileFields = null;
     
     /**
      * The '/{programName}/patient-detail-sections' GET request will display the page that will list the patient detail sections to a program.
@@ -289,13 +293,15 @@ public class programForms {
      *
      */
     @RequestMapping(value = "/{section}/fields", method = RequestMethod.GET)
-    public ModelAndView programSectionFields(@PathVariable String section, @RequestParam(value = "s", required = true) Integer sectionId, HttpSession session) throws Exception {
+    public ModelAndView programSectionFields(
+            @PathVariable String section, 
+            @RequestParam(value = "s", required = true, defaultValue = "0") Integer sectionId, HttpSession session) throws Exception {
         
         ModelAndView mav = new ModelAndView();
         mav.addObject("id", session.getAttribute("programId"));
         mav.addObject("programName", session.getAttribute("programName"));
         
-        /* Patient Form Sections */        
+        // Patient Form Sections      
         if("patient-sections".equals(section)) {
             patientFields = new CopyOnWriteArrayList<programPatientFields>();
             mav.setViewName("/patientFields");
@@ -305,14 +311,18 @@ public class programForms {
         
         }
         
-        /* Engagement Form Sections */
+        // Engagement Form Sections
         else if ("engagement-sections".equals(section)) {
            engagementFields  = new CopyOnWriteArrayList<programEngagementFields>(); 
            mav.setViewName("/engagementFields");
            
            programEngagementSections sectionDetails = programformsmanager.getEngagementSectionById(sectionId);
-            mav.addObject("sectionDetails", sectionDetails);
+           mav.addObject("sectionDetails", sectionDetails);
         
+        }
+        else if("programProfile".equals(section)) {
+           programProfileFields  = new CopyOnWriteArrayList<programProfileFields>(); 
+           mav.setViewName("/programProfileFields");
         }
 
         mav.addObject("sectionId", sectionId);
@@ -368,7 +378,7 @@ public class programForms {
             String optionDesc;
             String optionValue;
             
-            /* Patient Form Sections */        
+            // Patient Form Sections         
             if("patient-sections".equals(section)) {
                 //Need to get a list of existing patient fields
                 List<programPatientFields> existingPatientFields = programformsmanager.getPatientFields((Integer) session.getAttribute("programId"), sectionId);
@@ -428,7 +438,7 @@ public class programForms {
                 mav.addObject("existingFields", patientFields);
             }
             
-            /* Engagement Form Sections */
+            // Engagement Form Sections 
             else if ("engagement-sections".equals(section)) {
                 //Need to get a list of existing engagement fields
                 List<programEngagementFields> existingEngagementFields = programformsmanager.getEngagementFields((Integer) session.getAttribute("programId"), sectionId);
@@ -487,18 +497,82 @@ public class programForms {
                 mav.addObject("existingFields", engagementFields);
                 
             }
+            // Program Profile Fields
+            else if ("programProfile".equals(section)) {
+                //Need to get a list of existing engagement fields
+                List<programProfileFields> existingProgramProfileFields = programformsmanager.getProgramProfileFields((Integer) session.getAttribute("programId"));
+
+                for (programProfileFields field : existingProgramProfileFields) {
+                    
+                    //Get the field Details
+                    if(field.getFieldId() > 0) {
+                        dataElements fieldDetails = dataelementmanager.getFieldDetails(field.getFieldId());
+                        field.setFieldName(fieldDetails.getElementName());
+
+                        if(fieldDetails.getPopulateFromTable() != null && !fieldDetails.getPopulateFromTable().isEmpty()) {
+                            field.setAutoPopulate(true);
+                        }
+                        else {
+                            field.setAutoPopulate(false);
+                        }
+                    }
+                    else {
+                        customProgramFields fieldDetails = dataelementmanager.getCustomField(field.getCustomfieldId());
+                        field.setFieldName(fieldDetails.getFieldName());
+                        field.setAutoPopulate(false);
+                    }
+                    
+                    //Get the crosswalk name by id
+                    if (field.getCrosswalkId() != 0) {
+                        crosswalkName = dataelementmanager.getCrosswalkName(field.getCrosswalkId());
+                        field.setCwName(crosswalkName);
+                        
+                        defaultValues = new HashMap<>();
+
+                        /* Get values of crosswalk */
+                        List crosswalkdata = dataelementmanager.getCrosswalkData(field.getCrosswalkId());
+
+                        Iterator cwDataIt = crosswalkdata.iterator();
+                        while (cwDataIt.hasNext()) {
+                            Object cwDatarow[] = (Object[]) cwDataIt.next();
+                            optionDesc = (String) cwDatarow[2];
+                            optionValue = (String) cwDatarow[0];
+
+                            defaultValues.put(optionValue, optionDesc);
+                        }
+
+                        field.setDefaultValues(defaultValues);
+                    }
+
+                    //Get the macro name by id
+                    if (field.getValidationId() > 0) {
+                        validationName = dataelementmanager.getValidationName(field.getValidationId());
+                        field.setValidationName(validationName);
+                    }
+
+                    programProfileFields.add(field);
+                }
+                
+                mav.addObject("existingFields", programProfileFields);
+                
+            }
         }
 
         else {
             
-            /* Patient Form Sections */        
+            // Patient Form Sections        
             if("patient-sections".equals(section)) {
                 mav.addObject("existingFields", patientFields);
             }
             
-            /* Engagement Form Sections */
+            // Engagement Form Sections
             else if ("engagement-sections".equals(section)) {
                 mav.addObject("existingFields", engagementFields);
+            }
+            
+            // Program Profile Form Sections
+            else if ("programProfile".equals(section)) {
+                mav.addObject("existingFields", programProfileFields);
             }
             
         }
@@ -591,7 +665,7 @@ public class programForms {
             }
             
             if(cw > 0) {
-                Map<String, String> defaultValues = new HashMap<>();;
+                Map<String, String> defaultValues = new HashMap<>();
                 String optionDesc;
                 String optionValue;
 
@@ -654,7 +728,7 @@ public class programForms {
             }
             
             if(cw > 0) {
-                Map<String, String> defaultValues = new HashMap<>();;
+                Map<String, String> defaultValues = new HashMap<>();
                 String optionDesc;
                 String optionValue;
 
@@ -677,6 +751,50 @@ public class programForms {
             engagementFields.add(field);
             mav.addObject("existingFields", engagementFields);
         }
+        
+        // Program Profile Form Sections 
+        else if ("programProfile".equals(section)) {
+            dspPos = programProfileFields.size() + 1;
+            
+            Integer totalSearchColumns = 0;
+            
+            programProfileFields field = new programProfileFields();
+            field.setProgramId((Integer) session.getAttribute("programId"));
+            field.setCrosswalkId(cw);
+            field.setCwName(cwText);
+            field.setFieldId(fieldId);
+            field.setFieldName(fieldText);
+            field.setFieldDisplayname(fieldDisplayName);
+            field.setValidationId(validationId);
+            field.setValidationName(validationName);
+            field.setRequiredField(requiredField);
+            field.setDspPos(dspPos);
+            field.setCustomfieldId(customFieldId);
+           
+            if(cw > 0) {
+                Map<String, String> defaultValues = new HashMap<>();
+                String optionDesc;
+                String optionValue;
+
+                /* Get values of crosswalk */
+                List crosswalkdata = dataelementmanager.getCrosswalkData(cw);
+
+                Iterator cwDataIt = crosswalkdata.iterator();
+                while (cwDataIt.hasNext()) {
+                    Object cwDatarow[] = (Object[]) cwDataIt.next();
+                    optionDesc = (String) cwDatarow[2];
+                    optionValue = (String) cwDatarow[0];
+
+                    defaultValues.put(optionValue, optionDesc);
+
+                }
+
+                field.setDefaultValues(defaultValues);
+            }
+            
+            programProfileFields.add(field);
+            mav.addObject("existingFields", programProfileFields);
+        }
 
         return mav;
     }
@@ -695,7 +813,7 @@ public class programForms {
     public @ResponseBody
     Integer removeField(@RequestParam(value = "section", required = true) String section, @RequestParam(value = "fieldId", required = true) Integer fieldId, @RequestParam(value = "dspOrder", required = true) Integer dspOrder, @RequestParam(value = "searchDspOrder", required = true) Integer searchDspOrder) throws Exception {
 
-        /* Patient Form Sections */
+        // Patient Form Sections 
         if ("patient-sections".equals(section)) {
             Iterator<programPatientFields> it = patientFields.iterator();
 
@@ -719,7 +837,7 @@ public class programForms {
             }
         } 
         
-        /* Engagement Form Sections */
+        // Engagement Form Sections
         else if ("engagement-sections".equals(section)) {
             Iterator<programEngagementFields> it = engagementFields.iterator();
 
@@ -741,6 +859,24 @@ public class programForms {
                 }
             }
         }
+        
+        // Program Profile Form Fields
+        else if ("programProfile".equals(section)) {
+            Iterator<programProfileFields> it = programProfileFields.iterator();
+
+            int currdspOrder;
+            int currsearchdspOrder;
+
+            while (it.hasNext()) {
+                programProfileFields field = it.next();
+                if (field.getFieldId() == fieldId && field.getDspPos() == dspOrder) {
+                    programProfileFields.remove(field);
+                } else if (field.getDspPos() > dspOrder) {
+                    currdspOrder = field.getDspPos();
+                    field.setDspPos(currdspOrder - 1);
+                }
+            }
+        }
 
         return 1;
     }
@@ -759,7 +895,7 @@ public class programForms {
     public @ResponseBody
     Integer updateFormDisplayOrder(@RequestParam(value = "section", required = true) String section, @RequestParam(value = "currdspOrder", required = true) Integer currdspOrder, @RequestParam(value = "newdspOrder", required = true) Integer newdspOrder) throws Exception {
 
-        /* Patient Form Sections */
+        // Patient Form Sections 
         if ("patient-sections".equals(section)) {
             Iterator<programPatientFields> it = patientFields.iterator();
 
@@ -773,12 +909,26 @@ public class programForms {
             }
         } 
         
-        /* Engagement Form Sections */
+        // Engagement Form Sections
         else if ("engagement-sections".equals(section)) {
             Iterator<programEngagementFields> it = engagementFields.iterator();
 
             while (it.hasNext()) {
                 programEngagementFields field = it.next();
+                if (field.getDspPos() == currdspOrder) {
+                    field.setDspPos(newdspOrder);
+                } else if (field.getDspPos() == newdspOrder) {
+                    field.setDspPos(currdspOrder);
+                }
+            }
+        }
+        
+        // Program Profile Form Sections
+        else if ("programProfile".equals(section)) {
+            Iterator<programProfileFields> it = programProfileFields.iterator();
+
+            while (it.hasNext()) {
+                programProfileFields field = it.next();
                 if (field.getDspPos() == currdspOrder) {
                     field.setDspPos(newdspOrder);
                 } else if (field.getDspPos() == newdspOrder) {
@@ -803,7 +953,7 @@ public class programForms {
     public @ResponseBody
     Integer updateFieldSearchDspOrder(@RequestParam(value = "section", required = true) String section, @RequestParam(value = "currdspOrder", required = true) Integer currdspOrder, @RequestParam(value = "newdspOrder", required = true) Integer newdspOrder) throws Exception {
 
-        /* Patient Form Sections */
+        // Patient Form Sections
         if ("patient-sections".equals(section)) {
             Iterator<programPatientFields> it = patientFields.iterator();
 
@@ -817,7 +967,7 @@ public class programForms {
             }
         } 
         
-        /* Engagement Form Sections */
+        // Engagement Form Sections
         else if ("engagement-sections".equals(section)) {
             Iterator<programEngagementFields> it = engagementFields.iterator();
 
@@ -830,7 +980,8 @@ public class programForms {
                 }
             }
         }
-
+        
+        
         return 1;
     }
 
@@ -843,7 +994,7 @@ public class programForms {
     public @ResponseBody
     Integer saveSectionFields(@RequestParam(value = "section", required = true) String section, @RequestParam(value = "sectionId", required = true) Integer sectionId, HttpSession session) throws Exception {
 
-        /* Patient Form Sections */   
+        // Patient Form Sections
         if("patient-sections".equals(section)) {
             programformsmanager.deletePatientFields((Integer) session.getAttribute("programId"), sectionId);
             
@@ -861,7 +1012,7 @@ public class programForms {
             }
         }
         
-        /* Engagement Form Sections */
+        // Engagement Form Sections 
         else if ("engagement-sections".equals(section)) {
             programformsmanager.deleteEngagementFields((Integer) session.getAttribute("programId"), sectionId);
             
@@ -878,6 +1029,25 @@ public class programForms {
                 programformsmanager.saveEngagementFieldValueFieldId(oldFieldId,newFieldId);
             }
         }
+        
+        // Program Profile Form Sections 
+        else if ("programProfile".equals(section)) {
+            programformsmanager.deleteProgramProfileFields((Integer) session.getAttribute("programId"));
+            
+            //Loop through the list of translations
+            for (programProfileFields field : programProfileFields) {
+                Integer oldFieldId = field.getId();
+                
+                //Delete field
+                programformsmanager.deleteProgramProfileField(field.getId());
+                
+                Integer newFieldId = programformsmanager.saveProgramProfileFields(field);
+                
+                //Update any populated field values
+                programformsmanager.saveProgramProfileFieldValueFieldId(oldFieldId,newFieldId);
+            }
+        }
+        
             
         return 1;
     }
@@ -924,10 +1094,39 @@ public class programForms {
             mav.addObject("fieldDetails", fieldDetails);
         }
         
-        /* Engagement Form Sections */
+        // Engagement Form Sections 
         else if ("engagement-sections".equals(section)) {
             //Need to get a list of existing engagement fields
             programEngagementFields fieldDetails = programformsmanager.getEngagementFieldById(fieldId);
+            
+            if(fieldDetails.getCrosswalkId() > 0) {
+                Map<String, String> defaultValues = new HashMap<>();;
+                String optionDesc;
+                String optionValue;
+
+                /* Get values of crosswalk */
+                List crosswalkdata = dataelementmanager.getCrosswalkData(fieldDetails.getCrosswalkId());
+
+                Iterator cwDataIt = crosswalkdata.iterator();
+                while (cwDataIt.hasNext()) {
+                    Object cwDatarow[] = (Object[]) cwDataIt.next();
+                    optionDesc = (String) cwDatarow[2];
+                    optionValue = (String) cwDatarow[0];
+
+                    defaultValues.put(optionValue, optionDesc);
+
+                }
+
+                fieldDetails.setDefaultValues(defaultValues);
+            }
+            
+            mav.addObject("fieldDetails", fieldDetails);
+ 
+        }
+        
+        // Progaam Profile Form Sections 
+        else if ("programProfile".equals(section)) {
+            programProfileFields fieldDetails = programformsmanager.getProgramProfileFieldById(fieldId);
             
             if(fieldDetails.getCrosswalkId() > 0) {
                 Map<String, String> defaultValues = new HashMap<>();;
@@ -1070,6 +1269,53 @@ public class programForms {
     }
     
     /**
+     * The '/saveProgramProfileField' POST request will submit the engagement field.
+     *
+     * @param fieldDetails	The object holding the patient engagement form fields
+     * @param result	The validation result
+     * @param redirectAttr	The variable that will hold values that can be read after the redirect
+     * @param action	The variable that holds which button was pressed
+     *
+     * @throws Exception
+     */
+    @RequestMapping(value = "/saveProgramProfileField", method = RequestMethod.POST)
+    public @ResponseBody ModelAndView saveProgramProfileField(@Valid @ModelAttribute(value = "fieldDetails") programProfileFields fieldDetails, BindingResult result, @RequestParam String action, @RequestParam String section, HttpSession session) throws Exception {
+
+        if (result.hasErrors()) {
+            ModelAndView mav = new ModelAndView();
+            mav.setViewName("/sysAdmin/programs/forms/fieldForm");
+            
+            List<dataElements> dataElements = dataelementmanager.getdataElements();
+            mav.addObject("availableFields", dataElements);
+
+            //Return a list of available crosswalks
+            List<crosswalks> crosswalks = dataelementmanager.getCrosswalks(1, 0, (Integer) session.getAttribute("programId"));
+            mav.addObject("crosswalks", crosswalks);
+
+            //Return a list of validation types
+            List validationTypes = dataelementmanager.getValidationTypes();
+            mav.addObject("validationTypes", validationTypes);
+            
+            mav.addObject("programName", session.getAttribute("programName"));
+            mav.addObject("section", section);
+            mav.addObject("error", result.getFieldError());
+            
+            return mav;
+        }
+        
+        programformsmanager.saveProgramProfileField(fieldDetails);
+
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/sysAdmin/programs/forms/fieldForm");
+        mav.addObject("programName", session.getAttribute("programName"));
+        mav.addObject("sectionName", section);
+        mav.addObject("success", "fieldSaved");
+        
+        return mav;
+
+    }        
+    
+    /**
      * The '/getFieldValues' GET request will return the list of values for the selected table.
      * 
      * @param section   The section the field belongs to either "patient-sections" or "engagement-sections"
@@ -1106,7 +1352,7 @@ public class programForms {
             
         }
         
-        /* Engagement Form Sections */
+        //Engagement Form Sections 
         else if ("engagement-sections".equals(section)) {
             //Need to get a list of existing engagement fields
             programEngagementFields fieldDetails = programformsmanager.getEngagementFieldById(fieldId);
@@ -1122,6 +1368,31 @@ public class programForms {
             
             if(!selectedFieldValues.isEmpty()) {
                 for(programEngagementFieldValues fieldValue : selectedFieldValues) {
+                    selectedFieldIds.add(fieldValue.getValueId());
+                }
+            }
+            
+            
+            mav.addObject("selectedFieldIds", selectedFieldIds);
+            
+        }
+        
+        // Program Profile Form Sections 
+        else if ("prgoramProfile".equals(section)) {
+            //Need to get a list of existing program profile fields
+            programProfileFields fieldDetails = programformsmanager.getProgramProfileFieldById(fieldId);
+            mav.addObject("fieldName", fieldDetails.getFieldDisplayname());
+            
+            List tableValues = dataelementmanager.getLookupTableValues(fieldDetails.getFieldId());
+            mav.addObject("tableValues", tableValues);
+            
+            //Get already selected values 
+            List<programProfileFieldValues> selectedFieldValues = programformsmanager.getProgramProfileFieldValues(fieldId);
+            
+            List<Integer> selectedFieldIds = new ArrayList<Integer>() ;
+            
+            if(!selectedFieldValues.isEmpty()) {
+                for(programProfileFieldValues fieldValue : selectedFieldValues) {
                     selectedFieldIds.add(fieldValue.getValueId());
                 }
             }

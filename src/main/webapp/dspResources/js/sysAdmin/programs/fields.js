@@ -300,8 +300,11 @@ require(['./main'], function () {
             if($('#section').val() == 'patient-sections') {
                 var url = '../savePatientField';
             }
-            else {
+            else if($('#section').val() == 'engagement-sections') {
                 var url = '../saveEngagementField';
+            }
+            else {
+                var url = '../saveProgramProfileField';
             }
             
             $.ajax({

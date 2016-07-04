@@ -40,7 +40,7 @@
                     <dt>
                     <dd><strong>Program Summary:</strong></dd>
                         <dd><strong>Program Name:</strong> ${programDetails.programName}</dd>
-                        <dd><strong>Section Name:</strong> ${sectionDetails.sectionName}</dd>
+                        <c:if test="${not empty sectionDetails}"><dd><strong>Section Name:</strong> ${sectionDetails.sectionName}</dd></c:if>
                     </dt>
                 </div>
             </section>  

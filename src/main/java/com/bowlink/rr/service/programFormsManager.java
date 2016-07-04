@@ -11,6 +11,8 @@ import com.bowlink.rr.model.programEngagementSections;
 import com.bowlink.rr.model.programPatientFieldValues;
 import com.bowlink.rr.model.programPatientFields;
 import com.bowlink.rr.model.programPatientSections;
+import com.bowlink.rr.model.programProfileFieldValues;
+import com.bowlink.rr.model.programProfileFields;
 import java.util.List;
 
 /**
@@ -81,6 +83,22 @@ public interface programFormsManager {
     
     List<programEngagementFieldValues> getEngagementFieldValues(Integer fieldId) throws Exception;
     
+    List<programProfileFieldValues> getProgramProfileFieldValues(Integer fieldId) throws Exception;
+    
     List getFieldsForProgram(Integer programId) throws Exception;
+    
+    List<programProfileFields> getProgramProfileFields(Integer programId) throws Exception;
+    
+    void deleteProgramProfileFields(Integer programId) throws Exception;
+    
+    void deleteProgramProfileField(Integer fieldId) throws Exception;
+    
+    Integer saveProgramProfileFields(programProfileFields field) throws Exception;
+    
+    void saveProgramProfileField(programProfileFields field) throws Exception;
+    
+    void saveProgramProfileFieldValueFieldId(Integer oldFieldId, Integer newFieldId) throws Exception;
+    
+    programProfileFields getProgramProfileFieldById(Integer fieldId) throws Exception;
                     
 }

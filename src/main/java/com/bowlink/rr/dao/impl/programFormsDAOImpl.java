@@ -12,6 +12,8 @@ import com.bowlink.rr.model.programEngagementSections;
 import com.bowlink.rr.model.programPatientFieldValues;
 import com.bowlink.rr.model.programPatientFields;
 import com.bowlink.rr.model.programPatientSections;
+import com.bowlink.rr.model.programProfileFieldValues;
+import com.bowlink.rr.model.programProfileFields;
 import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
@@ -460,6 +462,15 @@ public class programFormsDAOImpl implements programFormsDAO {
         return query.list();
     }
     
+    @Override
+    @Transactional
+    public List<programProfileFieldValues> getProgramProfileFieldValues(Integer fieldId) throws Exception {
+        Query query = sessionFactory.getCurrentSession().createQuery("from programProfileFieldValues where programProfileFieldId = :fieldId");
+        query.setParameter("fieldId", fieldId);
+        
+        return query.list();
+    }
+    
     /**
      * The 'getFieldsForProgram' function will return the selected fields for the program. This will combine the fields for
      * the patient form and engagement forms
@@ -480,5 +491,99 @@ public class programFormsDAOImpl implements programFormsDAO {
 
         return query.list();
         
+    }
+    
+    /**
+     * The 'getProgramProfileFields' function will return a list of program profile fields associated with
+     * the passed in program Id.
+     * 
+     * @param programId     The id of the program to retrieve program profile fields
+     *  
+     * @return This function will return a list of data elements
+     */
+    @Override
+    public List<programProfileFields> getProgramProfileFields(Integer programId) throws Exception {
+        Query query = sessionFactory.getCurrentSession().createQuery("from programProfileFields where programId = :programId order by dspPos asc");
+        query.setParameter("programId", programId);
+        
+        return query.list();
+    }
+    
+    /**
+     * The 'deleteProgramProfileFields' function will remove all program profile fields for the passed in program.
+     * 
+     * @param programId The id that will contain the selected program
+     * 
+     * @throws Exception 
+     */
+    @Override
+    public void deleteProgramProfileFields(Integer programId) throws Exception {
+        Query deleteFields = sessionFactory.getCurrentSession().createQuery("delete from programProfileFields where programId = :programId");
+        deleteFields.setParameter("programId", programId);
+        deleteFields.executeUpdate();
+    }
+    
+    /**
+     * The 'deleteProgramProfileField' function will remove an Program Profile field for the passed in field id.
+     * 
+     * @param fieldId The id that will contain the selected field
+     * 
+     * @throws Exception 
+     */
+    @Override
+    public void deleteProgramProfileField(Integer fieldId) throws Exception {
+        Query deleteFields = sessionFactory.getCurrentSession().createQuery("delete from programProfileFields where id = :fieldId");
+        deleteFields.setParameter("fieldId", fieldId);
+        deleteFields.executeUpdate();
+    }
+    
+    /**
+     * The 'saveProgramProfileFields' function will save all selected Program Profile fields for the passed in program.
+     * 
+     * @param field         The programProfileFields object to save
+     * @throws Exception 
+     */
+    @Override
+    public Integer saveProgramProfileFields(programProfileFields field) throws Exception {
+        Integer lastId = null;
+
+        lastId = (Integer) sessionFactory.getCurrentSession().save(field);
+
+        return lastId;
+    }
+    
+    /**
+     * The 'saveProgramProfileField' function will save all selected Program Profile field for the passed in program.
+     * 
+     * @param field         The programProfileFields object to save
+     * @throws Exception 
+     */
+    @Override
+    public void saveProgramProfileField(programProfileFields field) throws Exception {
+        sessionFactory.getCurrentSession().update(field);
+    }
+    
+    /**
+     * The 'saveProgramProfileFieldValueFieldId' function will update the engagementFieldId.
+     */
+    @Override
+    public void saveProgramProfileFieldValueFieldId(Integer oldFieldId, Integer newFieldId) throws Exception {
+        Query query = sessionFactory.getCurrentSession().createSQLQuery("UPDATE programprofiles_fieldValues set programProfileFieldId = :newFieldId where programProfileFieldId = :oldFieldId")
+                .setParameter("newFieldId", newFieldId)
+                .setParameter("oldFieldId", oldFieldId);
+        
+        query.executeUpdate();
+    }
+    
+    /**
+     * The 'getProgramProfileFieldById' function will return the details of a passed in Program Profile field.
+     * 
+     * @param fieldId The fieldId is the id for the passed in Program Profile field
+     * @return This function will return a single programPatientFields object
+     * @throws Exception 
+     */
+    @Override
+    public programProfileFields getProgramProfileFieldById(Integer fieldId) throws Exception {
+        return (programProfileFields) sessionFactory.getCurrentSession().get(programProfileFields.class, fieldId); 
     }
 }

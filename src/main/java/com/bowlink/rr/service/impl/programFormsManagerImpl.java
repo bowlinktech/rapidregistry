@@ -12,6 +12,8 @@ import com.bowlink.rr.model.programEngagementSections;
 import com.bowlink.rr.model.programPatientFieldValues;
 import com.bowlink.rr.model.programPatientFields;
 import com.bowlink.rr.model.programPatientSections;
+import com.bowlink.rr.model.programProfileFieldValues;
+import com.bowlink.rr.model.programProfileFields;
 import com.bowlink.rr.service.programFormsManager;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -216,7 +218,56 @@ public class programFormsManagerImpl implements programFormsManager {
     
     @Override
     @Transactional
+    public List<programProfileFieldValues> getProgramProfileFieldValues(Integer fieldId) throws Exception {
+        return programFormsDAO.getProgramProfileFieldValues(fieldId);
+    }
+    
+    
+    @Override
+    @Transactional
     public List getFieldsForProgram(Integer programId) throws Exception {
         return programFormsDAO.getFieldsForProgram(programId);
+    }
+    
+    @Override
+    @Transactional
+    public List<programProfileFields> getProgramProfileFields(Integer programId) throws Exception {
+        return programFormsDAO.getProgramProfileFields(programId);
+    }
+    
+    @Override
+    @Transactional
+    public void deleteProgramProfileFields(Integer programId) throws Exception {
+        programFormsDAO.deleteProgramProfileFields(programId);
+    }
+    
+    @Override
+    @Transactional
+    public void deleteProgramProfileField(Integer fieldId) throws Exception {
+        programFormsDAO.deleteProgramProfileField(fieldId);
+    }
+    
+    @Override
+    @Transactional
+    public Integer saveProgramProfileFields(programProfileFields field) throws Exception {
+        return programFormsDAO.saveProgramProfileFields(field);
+    }
+    
+    @Override
+    @Transactional
+    public void saveProgramProfileField(programProfileFields field) throws Exception {
+        programFormsDAO.saveProgramProfileField(field);
+    }
+    
+    @Override
+    @Transactional
+    public void saveProgramProfileFieldValueFieldId(Integer oldFieldId, Integer newFieldId) throws Exception {
+        programFormsDAO.saveProgramProfileFieldValueFieldId(oldFieldId, newFieldId);
+    }
+    
+    @Override
+    @Transactional
+    public programProfileFields getProgramProfileFieldById(Integer fieldId) throws Exception {
+        return programFormsDAO.getProgramProfileFieldById(fieldId);
     }
 }
