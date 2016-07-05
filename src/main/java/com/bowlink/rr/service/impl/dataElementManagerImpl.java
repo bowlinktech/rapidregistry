@@ -307,6 +307,13 @@ public class dataElementManagerImpl implements dataElementManager {
         return dataElementDAO.getLookupTableValues(tableName);
     }
     
+    @SuppressWarnings("rawtypes")
+    @Override
+    @Transactional
+    public List getLookupTableValues(String tableName, Integer programId) throws Exception {
+        return dataElementDAO.getLookupTableValues(tableName,programId);
+    }
+    
     @Override
     @Transactional
     public List<customProgramFields> getCustomFields(int page, int maxResults, int programId) throws Exception {

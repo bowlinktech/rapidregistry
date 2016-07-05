@@ -69,6 +69,9 @@ public interface dataElementManager {
     @SuppressWarnings("rawtypes")
     List getLookupTableValues(String tableName) throws Exception;
     
+    @SuppressWarnings("rawtypes")
+    List getLookupTableValues(String tableName, Integer programId) throws Exception;
+    
     List<customProgramFields> getCustomFields(int page, int maxResults, int programId) throws Exception;
     
     double findTotalCustomFields(int programId);

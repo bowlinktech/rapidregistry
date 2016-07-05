@@ -960,7 +960,7 @@ public class surveyController {
             surveymanager.saveSurveyQuestion(questionDetails);
             
             /** Need to get all available rows for the selected table **/
-            List tableValues = dataelementmanager.getLookupTableValues(tableName);
+            List tableValues = dataelementmanager.getLookupTableValues(tableName, (Integer) session.getAttribute("selprogramId"));
             
             /* Create 3 blank answers */
             if(tableValues != null && !tableValues.isEmpty()) {

@@ -410,6 +410,27 @@ public class dataElementDAOImpl implements dataElementDAO {
         return query.list();
     }
     
+    @Override
+    @SuppressWarnings("rawtypes")
+    @Transactional
+    public List getLookupTableValues(String tableName, Integer programId) throws Exception {
+        
+        try {
+            Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT id, displayText from " + tableName + " where status = 1 order by displayText asc");
+
+            return query.list();
+        }
+        catch (Exception e) {
+            try {
+                Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT id, name from " + tableName + " where programId = " + programId + " order by name asc");
+                return query.list();
+            }
+            catch(Exception ex) {
+                return null;
+            }
+        }
+    }
+    
     /**
      * The 'getCustomFields' function will return the list of available custom program fields
      *
