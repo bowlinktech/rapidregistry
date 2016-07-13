@@ -518,21 +518,6 @@ require(['./main'], function () {
                 });
             }
 
-            //Make sure a table is selected
-            if ($('#saveToTable').val() == '') {
-                $('#saveToTableDiv').addClass("has-error");
-                $('#saveToTableMsg').addClass("has-error");
-                $('#saveToTableMsg').html('The save to table is a required field!');
-                errorFound = 1;
-            }
-
-            //Make sure a table column is selected
-            if ($('#saveToTableCol').val() == '') {
-                $('#saveToTableColDiv').addClass("has-error");
-                $('#saveToTableColMsg').addClass("has-error");
-                $('#saveToTableColMsg').html('The save to table column is a required field!');
-                errorFound = 1;
-            }
 
             if (errorFound == 1) {
                 event.preventDefault();

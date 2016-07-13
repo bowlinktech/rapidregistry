@@ -51,6 +51,9 @@
                         </form:select>
                     </spring:bind>
                 </div>
+                <div class="form-group" id="allowMultipleDiv" style="${dataElementFormFields.answerType == 1 ? 'display:block' : 'display:none'}">
+                    <form:checkbox path="allowMultipleAns" id="allowMultipleAns" />&nbsp;<label class="control-label" for="allowMultipleAns">Allow more than one answer to this question (use checkboxes)</label>
+                </div>
                 <div class="form-group">
                     <spring:bind path="saveToTableName">
                         <div id="saveToTableNameDiv" class="form-group ${status.error ? 'has-error' : '' }">
@@ -133,12 +136,22 @@
         
         $(document).on('change', '#answerType', function() {
            
-          if($(this).val() == 1 || $(this).val() == 2 || $(this).val() == 8 || $(this).val() == 9) {
+           
+          if($(this).val() === 1 || $(this).val() === 2 || $(this).val() === 8 || $(this).val() === 9) {
+              
+              if($(this).val() === 1) {
+                  $('#allowMultipleDiv').show();
+              }
+              else {
+                  $('#allowMultipleDiv').hide();
+              }
+            
               $('#populateFromTableDiv').show();
           }
           else {
               $('#populateFromTableDiv').hide();
               $('#populateFromTable').val("");
+              $('#allowMultipleDiv').hide();
           }
         
         });

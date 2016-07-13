@@ -51,6 +51,9 @@ public class dataElements {
     
     @Column(name = "POPULATEFROMTABLE", nullable = true)
     private String populateFromTable;
+    
+    @Column(name = "ALLOWMULTIPLEANS", nullable = false)
+    private Boolean allowMultipleAns = false;
 
     public int getId() {
         return id;
@@ -106,6 +109,14 @@ public class dataElements {
 
     public void setPopulateFromTable(String populateFromTable) {
         this.populateFromTable = populateFromTable;
+    }
+
+    public Boolean getAllowMultipleAns() {
+        return allowMultipleAns;
+    }
+
+    public void setAllowMultipleAns(Boolean allowMultipleAns) {
+        this.allowMultipleAns = allowMultipleAns;
     }
     
 }

@@ -38,13 +38,13 @@
                             </form:select>
                         </spring:bind>
                     </div>
-                    <div class="form-group" id="allowMultipleDiv" style="display:none">
+                    <div class="form-group" id="allowMultipleDiv" style="${customField.answerType == 1 ? 'display:block' : 'display:none'}">
                         <form:checkbox path="allowMultipleAns" id="allowMultipleAns" />&nbsp;<label class="control-label" for="allowMultipleAns">Allow more than one answer to this question (use checkboxes)</label>
                     </div>
                     <div class="form-group">
                         <spring:bind path="saveToTable">
                             <div id="saveToTableDiv" class="form-group ${status.error ? 'has-error' : '' }">
-                                <label class="control-label" for="saveToTable">Table Name *</label>
+                                <label class="control-label" for="saveToTable">Table Name</label>
                                 <form:select path="saveToTable" id="saveToTable" class="form-control half tableName">
                                     <option value="" label=" - Select - " ></option>
                                     <c:forEach items="${infoTables}"  var="infotablenames" varStatus="tname">
@@ -59,7 +59,7 @@
                     <div class="form-group">
                         <spring:bind path="saveToTableCol">
                             <div id="saveToTableColDiv" class="form-group ${status.error ? 'has-error' : '' }">
-                                <label class="control-label" for="saveToTableCol">Table Column Name *</label>
+                                <label class="control-label" for="saveToTableCol">Table Column Name</label>
                                 <form:select path="saveToTableCol" id="saveToTableCol" class="form-control half" rel="${customField.saveToTableCol}">
                                     <option value="" label=" - Select - " ></option>
                                 </form:select>
