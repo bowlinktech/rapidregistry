@@ -337,7 +337,7 @@ public class programForms {
          */
         List<dataElements> dataElements = dataelementmanager.getdataElements();
         mav.addObject("availableFields", dataElements);
-
+        
         //Return a list of available crosswalks
         List<crosswalks> crosswalks = dataelementmanager.getCrosswalks(1, 0, (Integer) session.getAttribute("programId"));
         mav.addObject("crosswalks", crosswalks);

@@ -42,6 +42,9 @@ public class customProgramFields {
     
     @Column(name = "ALLOWMULTIPLEANS", nullable = false)
     private Boolean allowMultipleAns = false;
+    
+    @Column(name = "POPULATEFROMTABLE", nullable = true)
+    private String populateFromTable = "";
 
     public int getId() {
         return id;
@@ -98,5 +101,12 @@ public class customProgramFields {
     public void setAllowMultipleAns(Boolean allowMultipleAns) {
         this.allowMultipleAns = allowMultipleAns;
     }
-    
+
+    public String getPopulateFromTable() {
+        return populateFromTable;
+    }
+
+    public void setPopulateFromTable(String populateFromTable) {
+        this.populateFromTable = populateFromTable;
+    }
 }

@@ -462,6 +462,10 @@ public class dataElementController {
         List infoTables = dataelementmanager.getInformationTables();
         mav.addObject("infoTables", infoTables);
         
+        @SuppressWarnings("rawtypes")
+        List availTables = dataelementmanager.getAllTables();
+        mav.addObject("availTables", availTables);
+        
         mav.addObject("frompage", frompage);
 
         return mav;
