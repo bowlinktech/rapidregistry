@@ -41,16 +41,26 @@
                     <div class="form-group" id="allowMultipleDiv" style="${customField.answerType == 1 ? 'display:block' : 'display:none'}">
                         <form:checkbox path="allowMultipleAns" id="allowMultipleAns" />&nbsp;<label class="control-label" for="allowMultipleAns">Allow more than one answer to this question (use checkboxes)</label>
                     </div>
-                    <div class="form-group" id="populateFromTableDiv" style="${customField.answerType == 4 ? 'display:block' : 'display:none'}">
-                        <spring:bind path="populateFromTable">
-                            <label class="control-label" for="name">Populate From Table</label>
-                            <form:select path="populateFromTable" id="populateFromTable" class="form-control half">
-                                <option value="">- Select -</option>
-                                <c:forEach items="${availTables}"  var="infotablenames" varStatus="tname">
-                                    <option value="${availTables[tname.index]}" <c:if test="${fn:toLowerCase(customField.populateFromTable) == fn:toLowerCase(availTables[tname.index])}">selected</c:if>>${availTables[tname.index]}</option>
-                                </c:forEach>
-                            </form:select>
+                    <div id="populateFromTableDiv" style="${customField.answerType == 4 ? 'display:block' : 'display:none'}">
+                        <div class="form-group">
+                            <spring:bind path="populateFromTable">
+                                <label class="control-label" for="name">Populate From Table</label>
+                                <form:select path="populateFromTable" id="populateFromTable" class="form-control half">
+                                    <option value="">- Select -</option>
+                                    <c:forEach items="${availTables}"  var="infotablenames" varStatus="tname">
+                                        <option value="${availTables[tname.index]}" <c:if test="${fn:toLowerCase(customField.populateFromTable) == fn:toLowerCase(availTables[tname.index])}">selected</c:if>>${availTables[tname.index]}</option>
+                                    </c:forEach>
+                                </form:select>
+                            </spring:bind>
+                        </div>
+                        <div class="form-group">
+                            <spring:bind path="populateFromTableCol">
+                            <div class="form-group ${status.error ? 'has-error' : '' }">
+                                <label class="control-label" for="populateFromTableCol">Use Column from Above Table</label>
+                                <form:input path="populateFromTableCol" id="populateFromTableCol" class="form-control" type="text" maxLength="55" />
+                            </div>
                         </spring:bind>
+                        </div>
                     </div>
                     <div class="form-group">
                         <spring:bind path="saveToTable">

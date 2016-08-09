@@ -45,6 +45,9 @@ public class customProgramFields {
     
     @Column(name = "POPULATEFROMTABLE", nullable = true)
     private String populateFromTable = "";
+    
+    @Column(name = "POPULATEFROMTABLECOL", nullable = true)
+    private String populateFromTableCol = "";
 
     public int getId() {
         return id;
@@ -109,4 +112,13 @@ public class customProgramFields {
     public void setPopulateFromTable(String populateFromTable) {
         this.populateFromTable = populateFromTable;
     }
+
+    public String getPopulateFromTableCol() {
+        return populateFromTableCol;
+    }
+
+    public void setPopulateFromTableCol(String populateFromTableCol) {
+        this.populateFromTableCol = populateFromTableCol;
+    }
+    
 }

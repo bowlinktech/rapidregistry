@@ -61,8 +61,8 @@
                                 </c:if>
                             </c:forEach>
                             <option value="-1" <c:if test="${page.skipToPage == -1}">selected</c:if>>End of the Survey</option>        
-                            </select>
-                            <button type="button" rel="${page.id}" class="btn btn-default submitPageSkipChanges">Save</button></div>
+                        </select>
+                       <button type="button" rel="${page.id}" class="btn btn-default submitPageSkipChanges">Save</button></div>
                 </div>            
             </div>
         </div> 
@@ -152,6 +152,20 @@
                                             </c:when>
                                             <c:when test="${question.answerTypeId == 3}">
                                                 <div class="form-group">
+                                                    <input type="text" placeholder="Enter your Question" class="form-control" type="text" maxLength="255" disabled style="background-color:#ffffff; width:500px;" />
+                                                </div>
+                                            </c:when>
+                                            <c:when test="${question.answerTypeId == 4}">
+                                                <div class="form-group">
+                                                    <span class="vcenter">Some text</span>
+                                                    <input type="text" placeholder="Enter your Question" class="form-control" type="text" maxLength="255" disabled style="background-color:#ffffff; width:500px;" />
+                                                </div>
+                                                <div class="form-group">
+                                                    <span class="vcenter">Some text</span>
+                                                    <input type="text" placeholder="Enter your Question" class="form-control" type="text" maxLength="255" disabled style="background-color:#ffffff; width:500px;" />
+                                                </div>
+                                                <div class="form-group">
+                                                    <span class="vcenter">Some text</span>
                                                     <input type="text" placeholder="Enter your Question" class="form-control" type="text" maxLength="255" disabled style="background-color:#ffffff; width:500px;" />
                                                 </div>
                                             </c:when>

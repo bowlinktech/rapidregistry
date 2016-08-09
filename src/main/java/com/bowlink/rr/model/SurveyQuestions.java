@@ -120,6 +120,9 @@ public class SurveyQuestions {
     @Column(name = "reportText", nullable = true)
     private String reportText;
     
+    @Column(name = "populateFromTableCol", nullable = true)
+    private String populateFromTableCol = "";
+    
     
     public int getId() {
         return id;
@@ -360,5 +363,15 @@ public class SurveyQuestions {
     public void setReportText(String reportText) {
         this.reportText = reportText;
     }
+
+    public String getPopulateFromTableCol() {
+        return populateFromTableCol;
+    }
+
+    public void setPopulateFromTableCol(String populateFromTableCol) {
+        this.populateFromTableCol = populateFromTableCol;
+    }
+    
+    
     
 }

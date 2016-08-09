@@ -624,7 +624,11 @@ public class surveyController {
         
         /** Multiple text box **/
         else if(questionType == 4) {
-            mav.setViewName("/programAdmin/surveys/questionTypes/multipleTextBox");
+            mav.setViewName("/programAdmin/surveys/questionTypes/multiTextbox");
+             
+            /** Get a list of available tables to auto-populate from **/
+            List<programAvailableTables> availableTables = programmanager.getAvailableTablesForSurveys((Integer) session.getAttribute("selprogramId"));
+            mav.addObject("availableTables", availableTables);
         }
         
         /** Comment box **/
@@ -784,7 +788,11 @@ public class surveyController {
         
         /** Multiple text box **/
         else if(questionDetails.getAnswerTypeId() == 4) {
-            mav.setViewName("/programAdmin/surveys/questionTypes/multipleTextBox");
+            mav.setViewName("/programAdmin/surveys/questionTypes/multiTextbox");
+             
+            /** Get a list of available tables to auto-populate from **/
+            List<programAvailableTables> availableTables = programmanager.getAvailableTablesForSurveys((Integer) session.getAttribute("selprogramId"));
+            mav.addObject("availableTables", availableTables);
         }
         
         /** Comment box **/
