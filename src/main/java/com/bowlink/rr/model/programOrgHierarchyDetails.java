@@ -76,6 +76,42 @@ public class programOrgHierarchyDetails {
     @NotEmpty
     @Column(name = "displayId", nullable = true)
     private String displayId = "99999";
+    
+    @Column(name = "website", nullable = true)
+    private String website = "";
+    
+    @Column(name = "email", nullable = true)
+    private String email = "";
+    
+    @Column(name = "primaryContactName", nullable = true)
+    private String primaryContactName = "";
+    
+    @Column(name = "primaryContactPhone", nullable = true)
+    private String primaryContactPhone = "";
+    
+    @Column(name = "primaryContactEmail", nullable = true)
+    private String primaryContactEmail = "";
+    
+    @Column(name = "county", nullable = true)
+    private String county = "";
+    
+    @Column(name = "CharitableChoiceOrganization", nullable = false)
+    private boolean CharitableChoiceOrganization = false;
+    
+    @Column(name = "meetsBeneficiaryRegs", nullable = false)
+    private boolean meetsBeneficiaryRegs = false;
+    
+    @Column(name = "meetsServiceRegs", nullable = false)
+    private boolean meetsServiceRegs = false;
+    
+    @Column(name = "servingTribalPopulations", nullable = false)
+    private boolean servingTribalPopulations = false;
+    
+    @Column(name = "organizationType", nullable = true)
+    private String organizationType = "";
+    
+    @Column(name = "organizationSector", nullable = true)
+    private String organizationSector = "";
 
     public int getId() {
         return id;
@@ -218,5 +254,102 @@ public class programOrgHierarchyDetails {
     public void setAssociatedWith(String associatedWith) {
         this.associatedWith = associatedWith;
     }
+
+    public String getWebsite() {
+        return website;
+    }
+
+    public void setWebsite(String website) {
+        this.website = website;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPrimaryContactName() {
+        return primaryContactName;
+    }
+
+    public void setPrimaryContactName(String primaryContactName) {
+        this.primaryContactName = primaryContactName;
+    }
+
+    public String getPrimaryContactPhone() {
+        return primaryContactPhone;
+    }
+
+    public void setPrimaryContactPhone(String primaryContactPhone) {
+        this.primaryContactPhone = primaryContactPhone;
+    }
+
+    public String getPrimaryContactEmail() {
+        return primaryContactEmail;
+    }
+
+    public void setPrimaryContactEmail(String primaryContactEmail) {
+        this.primaryContactEmail = primaryContactEmail;
+    }
+
+    public String getCounty() {
+        return county;
+    }
+
+    public void setCounty(String county) {
+        this.county = county;
+    }
+
+    public boolean isCharitableChoiceOrganization() {
+        return CharitableChoiceOrganization;
+    }
+
+    public void setCharitableChoiceOrganization(boolean CharitableChoiceOrganization) {
+        this.CharitableChoiceOrganization = CharitableChoiceOrganization;
+    }
+
+    public boolean isMeetsBeneficiaryRegs() {
+        return meetsBeneficiaryRegs;
+    }
+
+    public void setMeetsBeneficiaryRegs(boolean meetsBeneficiaryRegs) {
+        this.meetsBeneficiaryRegs = meetsBeneficiaryRegs;
+    }
+
+    public boolean isMeetsServiceRegs() {
+        return meetsServiceRegs;
+    }
+
+    public void setMeetsServiceRegs(boolean meetsServiceRegs) {
+        this.meetsServiceRegs = meetsServiceRegs;
+    }
+
+    public boolean isServingTribalPopulations() {
+        return servingTribalPopulations;
+    }
+
+    public void setServingTribalPopulations(boolean servingTribalPopulations) {
+        this.servingTribalPopulations = servingTribalPopulations;
+    }
+
+    public String getOrganizationType() {
+        return organizationType;
+    }
+
+    public void setOrganizationType(String organizationType) {
+        this.organizationType = organizationType;
+    }
+
+    public String getOrganizationSector() {
+        return organizationSector;
+    }
+
+    public void setOrganizationSector(String organizationSector) {
+        this.organizationSector = organizationSector;
+    }
+    
     
 }
