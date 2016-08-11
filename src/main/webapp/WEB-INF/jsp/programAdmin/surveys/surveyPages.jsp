@@ -259,6 +259,9 @@
                                                             </c:otherwise>
                                                         </c:choose>
                                                     </c:when>
+                                                    <c:when test="${not empty question.populateFromTable}">
+                                                        <span>Options will be pulled from the <strong>${question.populateFromTable}</strong> table</span>
+                                                    </c:when>
                                                     <c:otherwise>
                                                         <span>No Question Choices have been set up.</span>
                                                     </c:otherwise>
