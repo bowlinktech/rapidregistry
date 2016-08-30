@@ -38,7 +38,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -116,7 +115,11 @@ public class importManagerImpl implements importManager {
     @Override
     @Transactional
     public programUploadTypes getUploadTypeById(Integer importTypeId) throws Exception {
-        return importDAO.getUploadTypeById(importTypeId);
+    	programUploadTypes put = importDAO.getUploadTypeById(importTypeId);
+    	if (put.getParentProgramUploadTypeId() != 0) {
+    		put.setParent(true);
+    	}
+    	return put;
     }
 
     @Override

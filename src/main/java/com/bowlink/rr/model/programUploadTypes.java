@@ -42,6 +42,9 @@ public class programUploadTypes {
 	private String delimChar;
 	
 	@Transient
+	private boolean isParent = false;
+	
+	@Transient
 	private List<algorithmCategories> algorithmCategories;
 	
 	@Transient
@@ -69,6 +72,12 @@ public class programUploadTypes {
     
     @Column(name = "useHEL", nullable = false)
     private boolean useHEL = false;
+    
+    @Column(name = "helConfigId", nullable = false)
+    private Integer helConfigId = 0;
+    
+    @Column(name = "parentProgramUploadTypeId", nullable = false)
+    private Integer parentProgramUploadTypeId = 0;
     
     @NoHtml
     @Column(name = "HELPickUpPath", nullable = true)
@@ -258,4 +267,28 @@ public class programUploadTypes {
 		this.helConfigs = helConfigs;
 	}
 
+	public Integer getHelConfigId() {
+		return helConfigId;
+	}
+
+	public void setHelConfigId(Integer helConfigId) {
+		this.helConfigId = helConfigId;
+	}
+
+	public boolean isParent() {
+		return isParent;
+	}
+
+	public void setParent(boolean isParent) {
+		this.isParent = isParent;
+	}
+
+	public Integer getParentProgramUploadTypeId() {
+		return parentProgramUploadTypeId;
+	}
+
+	public void setParentProgramUploadTypeId(Integer parentProgramUploadTypeId) {
+		this.parentProgramUploadTypeId = parentProgramUploadTypeId;
+	}
+	
 }

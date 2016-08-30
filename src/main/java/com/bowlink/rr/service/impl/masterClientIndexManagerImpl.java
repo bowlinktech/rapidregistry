@@ -190,7 +190,7 @@ public class masterClientIndexManagerImpl implements masterClientIndexManager {
 		}
 		for (programUploadTypeAlgorithm algorithm : category.getAlgorithms()) {
 			//need to set action name
-			algorithm.setActionName(getActionById(algorithm.getAction()).getDisplayText());
+			algorithm.setActionName(getActionById(algorithm.getActionId()).getDisplayText());
 			//this set fields and names
 			algorithm.setFields(getMCIAlgorithmFields(algorithm.getId()));	
 			if (setDataElement) {

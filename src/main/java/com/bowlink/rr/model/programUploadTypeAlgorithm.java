@@ -43,8 +43,8 @@ public class programUploadTypeAlgorithm {
     @Column(name = "STATUS", nullable = false)
     private boolean status = false;
     
-    @Column(name = "ACTION", nullable = false)
-    private Integer action = 5;
+    @Column(name = "ACTIONId", nullable = false)
+    private Integer actionId = 5;
     
     @Column(name = "categoryId", nullable = false)
     private Integer categoryId = 1;
@@ -59,105 +59,84 @@ public class programUploadTypeAlgorithm {
     @Column(name = "DATECREATED", nullable = true)
     private Date dateCreated = new Date();
 
-
 	public List<programUploadTypeAlgorithmFields> getFields() {
 		return fields;
 	}
-
 
 	public void setFields(List<programUploadTypeAlgorithmFields> fields) {
 		this.fields = fields;
 	}
 
-
-	public int getId() {
-		return id;
-	}
-
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-
 	public Integer getProgramId() {
 		return programId;
 	}
-
 
 	public void setProgramId(Integer programId) {
 		this.programId = programId;
 	}
 
+	public String getActionName() {
+		return actionName;
+	}
+
+	public void setActionName(String actionName) {
+		this.actionName = actionName;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 
 	public boolean isStatus() {
 		return status;
 	}
 
-
 	public void setStatus(boolean status) {
 		this.status = status;
 	}
 
-
-	public Integer getAction() {
-		return action;
+	public Integer getActionId() {
+		return actionId;
 	}
 
-
-	public void setAction(Integer action) {
-		this.action = action;
+	public void setActionId(Integer actionId) {
+		this.actionId = actionId;
 	}
-
-	
-
-	public Integer getProgramUploadTypeId() {
-		return programUploadTypeId;
-	}
-
-
-	public void setProgramUploadTypeId(Integer programUploadTypeId) {
-		this.programUploadTypeId = programUploadTypeId;
-	}
-
-
-	public Integer getProcessOrder() {
-		return processOrder;
-	}
-
-
-	public void setProcessOrder(Integer processOrder) {
-		this.processOrder = processOrder;
-	}
-
-
-	public Date getDateCreated() {
-		return dateCreated;
-	}
-
-
-	public void setDateCreated(Date dateCreated) {
-		this.dateCreated = dateCreated;
-	}
-
 
 	public Integer getCategoryId() {
 		return categoryId;
 	}
 
-
 	public void setCategoryId(Integer categoryId) {
 		this.categoryId = categoryId;
 	}
 
-
-	public String getActionName() {
-		return actionName;
+	public Integer getProgramUploadTypeId() {
+		return programUploadTypeId;
 	}
 
+	public void setProgramUploadTypeId(Integer programUploadTypeId) {
+		this.programUploadTypeId = programUploadTypeId;
+	}
 
-	public void setActionName(String actionName) {
-		this.actionName = actionName;
+	public Integer getProcessOrder() {
+		return processOrder;
+	}
+
+	public void setProcessOrder(Integer processOrder) {
+		this.processOrder = processOrder;
+	}
+
+	public Date getDateCreated() {
+		return dateCreated;
+	}
+
+	public void setDateCreated(Date dateCreated) {
+		this.dateCreated = dateCreated;
 	}
 
 }

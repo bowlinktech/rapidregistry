@@ -46,6 +46,7 @@ require(['./main'], function () {
             var errorCount  = 0;
             var formData = $("#importTypeForm").serialize();
             
+            var helConfigId = $("#helConfigId").val();
             var helDropPath = $("#helDropPath").val();
             var helPickUpPath = $("#helPickUpPath").val();
             var outFileTypeId = $("#outFileTypeId").val();
@@ -127,6 +128,16 @@ function helPaths(show) {
 		$("#helPaths").show();
 	} else {
 		$("#helPaths").hide();
+	}
+}
+
+function isParentPUT(show) {
+	if (show) {
+		$("#isParentDiv").show();
+		$("#helPaths").hide();
+	} else {
+		$("#isParentDiv").hide();
+		$("#helPaths").show();
 	}
 }
 

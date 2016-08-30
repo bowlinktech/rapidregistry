@@ -31,6 +31,18 @@
                             </div>
                         </div>
                     </spring:bind> 
+                    <!--  if it is a parent -->
+                    <div class="form-group ${status.error ? 'has-error' : '' }">
+                            <label class="control-label" for="useHEL">Is Parent Config *</label>
+                            <div>
+                                <label class="radio-inline">
+                                    <input type="radio" id="isParent" value="true" onClick="isParent(true);" <c:if test="${importTypeDetails.isParent}">checked</c:if>/> Yes
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" id="isParent" path="useHEL" value="false" onClick="isParent(false);" <c:if test="${!importTypeDetails.isParent}">checked</c:if>/> No
+                                </label>
+                            </div>
+                            </div>
                     <%-- if yes display paths --%>
                     <spring:bind path="name">
                         <div class="form-group ${status.error ? 'has-error' : '' }">
@@ -52,8 +64,16 @@
                             </div>
                             </div>
                       </spring:bind>
-                          
-                        <div id="helPaths" <c:if test="${not importTypeDetails.useHEL}">style="display:none"</c:if>>
+                      <div id="helPaths" <c:if test="${not importTypeDetails.useHEL}">style="display:none"</c:if>>
+	                      <spring:bind path="helConfigId">
+	                        	<div class="form-group ${status.error ? 'has-error' : '' }" id="helDropPathDiv">
+		                            <label class="control-label" for="name">Health-e-link Config Id *</label>
+		                            <form:input path="helConfigId" id="helConfigId" class="form-control" type="text" maxLength="6" />
+		                            <span id="helConfigIdMsg" class="form-group control-label"></span>
+	                        	</div>
+	                   		</spring:bind>
+                      
+                      
                         <spring:bind path="helDropPath">
                         	<div class="form-group ${status.error ? 'has-error' : '' }" id="helDropPathDiv">
 	                            <label class="control-label" for="name">Health-e-link Input Path *</label>
