@@ -75,7 +75,7 @@
                                                          ${selField.fieldName}
                                                      </td>
                                                      <td>
-                                                         ${selField.actionId}
+                                                         ${selField.action}
                                                      </td>
                                                      <td>
                                                         <a href="javascript:void(0);" rel="${selField.id}" class="btn btn-link removeAlgorithmField pull-right" title="Remove this field" role="button">
