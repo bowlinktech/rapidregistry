@@ -31,16 +31,16 @@
                         </spring:bind>
                     </div>   
                    <div class="form-group">
-                      <spring:bind path="action">
+                      <spring:bind path="actionId">
                             <div id="actionDiv" class="form-group ${status.error ? 'has-error' : '' }">
                                 <label class="control-label" for="actionId">Action *</label>
-                                <form:select path="action" id="action" class="form-control half">
+                                <form:select path="actionId" id="action" class="form-control half">
                                     <option value="" label=" - Select - " >- Select -</option>
                                     <c:forEach items="${actionList}"  var="actionItem">
-                                        <option value="${actionItem.id}" <c:if test="${actionItem.id == mcidetails.action}">selected</c:if>>${actionItem.displayText}</option>
+                                        <option value="${actionItem.id}" <c:if test="${actionItem.id == mcidetails.actionId}">selected</c:if>>${actionItem.displayText}</option>
                                     </c:forEach>
                                 </form:select>
-                               <form:errors path="action" cssClass="control-label" element="label" />  
+                               <form:errors path="actionId" cssClass="control-label" element="label" />  
                                <span id="actionMsg" class="control-label"></span>    
                             </div>
                         </spring:bind>   
@@ -75,7 +75,7 @@
                                                          ${selField.fieldName}
                                                      </td>
                                                      <td>
-                                                         ${selField.action}
+                                                         ${selField.actionId}
                                                      </td>
                                                      <td>
                                                         <a href="javascript:void(0);" rel="${selField.id}" class="btn btn-link removeAlgorithmField pull-right" title="Remove this field" role="button">
