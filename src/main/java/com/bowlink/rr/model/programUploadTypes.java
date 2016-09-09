@@ -107,6 +107,10 @@ public class programUploadTypes {
     private boolean containsHeaderRow = false;
     
 
+    @Column(name = "sortByColumns", nullable = true)
+    private String sortByColumns;
+    
+    
 	public int getTotalFields() {
 		return totalFields;
 	}
@@ -290,5 +294,15 @@ public class programUploadTypes {
 	public void setParentProgramUploadTypeId(Integer parentProgramUploadTypeId) {
 		this.parentProgramUploadTypeId = parentProgramUploadTypeId;
 	}
+
+	public String getSortByColumns() {
+		return sortByColumns;
+	}
+
+	public void setSortByColumns(String sortByColumns) {
+		this.sortByColumns = sortByColumns;
+	}
+	
+	
 	
 }
