@@ -42,6 +42,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -80,6 +82,11 @@ public class surveyController {
     private String controllerName = "survey";
     
     private String topSecret = "What goes up but never comes down";
+    
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.setAutoGrowCollectionLimit(1000);
+    }
 
     /**
      * The '' request will display the list of surveys.
@@ -853,7 +860,10 @@ public class surveyController {
      * @throws Exception 
      */
     @RequestMapping(value = "submitSurveyQuestion", method = RequestMethod.POST)
-    public @ResponseBody Integer submitSurveyQuestion(@ModelAttribute(value = "surveyQuestion") SurveyQuestions surveyQuestion, HttpSession session) throws Exception {
+    public @ResponseBody Integer submitSurveyQuestion(
+            @ModelAttribute(value = "surveyQuestion") SurveyQuestions surveyQuestion,
+            HttpSession session
+    ) throws Exception {
         
         Integer questionId = 0;
         if(surveyQuestion.getId() > 0) {
@@ -912,7 +922,6 @@ public class surveyController {
             if(surveyQuestion.getquestionChoices() != null) {
                 
                 for(SurveyQuestionChoices questionChoice : surveyQuestion.getquestionChoices()) {
-                    
                     if(questionChoice.getChoiceText() != null && !"".equals(questionChoice.getChoiceText())) {
                      
                         questionChoice.setQuestionId(questionId);

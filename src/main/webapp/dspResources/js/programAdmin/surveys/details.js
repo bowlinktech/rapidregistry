@@ -786,7 +786,7 @@ require(['./main'], function () {
             }
 
             var formData = $("#surveyquestion").serialize();
-
+            
             $.ajax({
                 url: "submitSurveyQuestion.do",
                 data: formData,
