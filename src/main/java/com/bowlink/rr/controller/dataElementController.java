@@ -431,6 +431,10 @@ public class dataElementController {
         @SuppressWarnings("rawtypes")
         List infoTables = dataelementmanager.getInformationTables();
         mav.addObject("infoTables", infoTables);
+        
+        @SuppressWarnings("rawtypes")
+        List availTables = dataelementmanager.getAllTables();
+        mav.addObject("availTables", availTables);
 
         return mav;
     }
@@ -445,7 +449,7 @@ public class dataElementController {
     @RequestMapping(value = "/viewCustomField{params}", method = RequestMethod.GET)
     public @ResponseBody
     ModelAndView viewCustomField(@RequestParam(value = "i", required = true) Integer fieldId, @RequestParam String frompage) throws Exception {
-
+       
         ModelAndView mav = new ModelAndView();
         mav.setViewName("/sysAdmin/programs/forms/customFieldDetails");
 
