@@ -308,7 +308,7 @@ public class dataElementDAOImpl implements dataElementDAO {
     @SuppressWarnings("rawtypes")
     @Transactional
     public List getInformationTables() {
-        Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT distinct table_name FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '"+ myProps.getProperty("schemaName") +"' and (TABLE_NAME = 'submittedsurveys' OR TABLE_NAME = 'programprofiles' OR TABLE_NAME LIKE 'storage\\_%')");
+        Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT distinct table_name FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '"+ myProps.getProperty("schemaName") +"' and (TABLE_NAME = 'programpatiententities' or TABLE_NAME = 'submittedsurveys' OR TABLE_NAME = 'programprofiles' OR TABLE_NAME LIKE 'storage\\_%')");
 
         return query.list();
     }
