@@ -37,4 +37,6 @@ public interface moduleManager {
     
     List getAvailableModules(Integer programId) throws Exception;
     
+    Integer getLastProgramUsedModuleByPos(Integer programId) throws Exception;
+    
 }

@@ -196,4 +196,12 @@ public class moduleDAOImpl implements moduleDAO {
         return query.list();
     }
     
+    @Override
+    public Integer getLastProgramUsedModuleByPos(Integer programId) throws Exception {
+        Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT top 1 dspPos from program_modules where programId = :programId order by dspPos desc")
+                .setParameter("programId", programId);
+
+        return (Integer) query.uniqueResult();
+    }
+    
 }

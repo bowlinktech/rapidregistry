@@ -16,11 +16,12 @@ require(['./main'], function() {
             var moduleIdList = "";
             $('input[type=checkbox]').each(function() {
                 if(this.checked) {
-                    moduleIdList += $(this).val() + ',';
+                    //Get dspPos
+                    moduleIdList += $(this).val()+'-'+$('#dspPos-'+$(this).val()).val()+ ',';
                 }
             })
             
-            $('#moduleIds').val(moduleIdList.substring(0,moduleIdList.length-1));
+            $('#selectedModules').val(moduleIdList.substring(0,moduleIdList.length-1));
             
             $("#programModules").submit();
         });
@@ -31,11 +32,11 @@ require(['./main'], function() {
             var moduleIdList = "";
             $('input[type=checkbox]').each(function() {
                 if(this.checked) {
-                    moduleIdList += $(this).val() + ',';
+                   moduleIdList += $(this).val()+'-'+$('#dspPos-'+$(this).val()).val()+ ',';
                 }
             })
             
-            $('#moduleIds').val(moduleIdList.substring(0,moduleIdList.length-1));
+            $('#selectedModules').val(moduleIdList.substring(0,moduleIdList.length-1));
 
             $("#programModules").submit();
         });

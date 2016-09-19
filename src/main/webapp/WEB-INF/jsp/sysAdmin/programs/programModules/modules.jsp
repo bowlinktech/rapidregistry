@@ -26,7 +26,7 @@
   </div>
   <form:form id="programModules"  method="post" role="form">
        <input type="hidden" id="action" name="action" value="save" />
-       <input type="hidden" id="moduleIds" name="moduleIds" />
+       <input type="hidden" id="selectedModules" name="selectedModules" />
   </form:form>
   <div class="row-fluid">
       <div class="col-md-12">
@@ -40,7 +40,8 @@
                         <thead>
                             <tr>
                                 <th scope="col" class="center-text" style="width:10%">Use</th>
-                                <th scope="col">Module Name</th>
+                                <th scope="col"  style="width:20%">Module Name</th>
+                                <th scope="col">Display Position</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -49,10 +50,13 @@
                                     <c:forEach var="module" items="${availModules}">
                                         <tr>
                                             <td scope="row" class="center-text">
-                                                <input type="checkbox" name="moduleId" value="${module.id}" ${module.useModule == true ? 'checked="true"' : ''} />
+                                              <input type="checkbox" name="moduleId" value="${module.id}" ${module.useModule == true ? 'checked="true"' : ''} />
                                             </td>
                                             <td>
                                                 ${module.displayName}
+                                            </td>
+                                            <td>
+                                               <input type="text" id="dspPos-${module.id}" name="moduledspPos" value="${module.dspPos}" />
                                             </td>
                                         </tr>
                                     </c:forEach>

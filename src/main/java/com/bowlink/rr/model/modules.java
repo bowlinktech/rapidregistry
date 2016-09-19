@@ -27,6 +27,9 @@ public class modules {
     @Transient
     private boolean useModule = false;
     
+    @Transient
+    private int dspPos = 0;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID", nullable = false)
@@ -41,6 +44,7 @@ public class modules {
     @NoHtml
     @Column(name = "DISPLAYNAME", nullable = false)
     private String displayName;
+    
 
     public int getId() {
         return id;
@@ -73,5 +77,14 @@ public class modules {
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
     }
+
+    public int getDspPos() {
+        return dspPos;
+    }
+
+    public void setDspPos(int dspPos) {
+        this.dspPos = dspPos;
+    }
+    
     
 }

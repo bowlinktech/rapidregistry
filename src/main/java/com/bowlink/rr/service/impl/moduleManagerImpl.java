@@ -89,4 +89,10 @@ public class moduleManagerImpl implements moduleManager {
         return moduleDAO.getAvailableModules(programId);
     }
     
+    @Override
+    @Transactional
+    public Integer getLastProgramUsedModuleByPos(Integer programId) throws Exception {
+        return moduleDAO.getLastProgramUsedModuleByPos(programId);
+    }
+    
 }

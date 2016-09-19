@@ -56,16 +56,19 @@ public class programModules {
         mav.addObject("programDetails", programDetails);
 
         /* Get a list of modules the program uses */
-        List<Integer> usedModules = modulemanager.getModulesByProgram((Integer) session.getAttribute("programId"));
-
+        List<com.bowlink.rr.model.programModules> usedModules = modulemanager.getUsedModulesByProgram((Integer) session.getAttribute("programId"));
+        
         /* Get a list of other modules */
         List<modules> availModules = modulemanager.getAllModules();
 
         if (!usedModules.isEmpty()) {
             for (modules module : availModules) {
-
-                if (usedModules.contains(module.getId())) {
-                    module.setUseModule(true);
+                
+                for(com.bowlink.rr.model.programModules usedModule : usedModules) {
+                    if(usedModule.getModuleId() == module.getId()) {
+                        module.setUseModule(true);
+                        module.setDspPos(usedModule.getDspPos());
+                    }
                 }
             }
         }
@@ -87,21 +90,26 @@ public class programModules {
      *
      */
     @RequestMapping(value = "/program-modules", method = RequestMethod.POST)
-    public ModelAndView saveprogramModules(@RequestParam List<Integer> moduleIds, @RequestParam String action, RedirectAttributes redirectAttr, HttpSession session) throws Exception {
+    public ModelAndView saveprogramModules(@RequestParam List<String> selectedModules, @RequestParam String action, RedirectAttributes redirectAttr, HttpSession session) throws Exception {
 
         Integer selProgramId = (Integer) session.getAttribute("programId");
 
-        if (moduleIds.isEmpty()) {
+        if (selectedModules.isEmpty()) {
             modulemanager.deleteProgramModules(selProgramId);
         } else {
             modulemanager.deleteProgramModules(selProgramId);
 
-            for (Integer moduleId : moduleIds) {
+            for (String selectedModule : selectedModules) {
 
                 com.bowlink.rr.model.programModules module = new com.bowlink.rr.model.programModules();
+                
+                String[] moduleArray = selectedModule.split("-");
 
                 module.setProgramId(selProgramId);
-                module.setModuleId(moduleId);
+                module.setModuleId(Integer.parseInt(moduleArray[0]));
+                //Check to see if it is a new module
+                Integer dspPos = Integer.parseInt(moduleArray[1]);
+                module.setDspPos(dspPos);
 
                 modulemanager.saveProgramModules(module);
             }

@@ -39,4 +39,5 @@ public interface moduleDAO {
     
     List getAvailableModules(Integer programId) throws Exception;
     
+    Integer getLastProgramUsedModuleByPos(Integer programId) throws Exception;
 }
