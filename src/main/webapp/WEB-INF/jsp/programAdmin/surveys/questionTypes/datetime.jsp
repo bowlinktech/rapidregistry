@@ -48,11 +48,15 @@
             <div class="tab-pane tab-pane-question fade active in editPane" id="edit">
                 <div class="form-group">
                     <label class="control-label" for="pageTitle">Question</label>
-                    <form:input path="question" placeholder="Enter your Question" id="question" class="form-control" type="text"  maxLength="255" />
+                    <form:input path="question" placeholder="Enter your Question" id="question" class="form-control" type="text" />
                 </div>
                 <div class="form-group">
                     <label class="control-label" for="reportText">Report Text (will not appear on survey)</label>
                     <form:input path="reportText" placeholder="Enter your report text" id="reportText" class="form-control" type="text"  maxLength="255" />
+                </div>
+                <div class="form-group">
+                    <label class="control-label" for="questionTag">Question Tag</label>
+                    <form:input path="questionTag" placeholder="Enter a question tag" id="questionTag" class="form-control" type="text"  maxLength="75" />
                 </div>
                 <div class="well well-xsm" style="background-color:#ffffff;">
                     <div class="row">

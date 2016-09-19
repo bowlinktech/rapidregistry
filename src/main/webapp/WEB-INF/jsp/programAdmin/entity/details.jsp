@@ -24,9 +24,8 @@
             <form:hidden path="organizationType" />
             <form:hidden path="county" />
             <form:hidden path="organizationSector" />
-            <form:hidden path="CharitableChoiceOrganization" />
-            <form:hidden path="meetsBeneficiaryRegs" />
-            <form:hidden path="meetsServiceRegs" />
+            <form:hidden path="ReligiousFaithBasedOrganization" />
+            <form:hidden path="fundingaffiliations" />
             <form:hidden path="servingTribalPopulations" />
             <input type="hidden" name="selActivityCodes" id="selActivityCodes" value="" />
             <section class="panel panel-default">

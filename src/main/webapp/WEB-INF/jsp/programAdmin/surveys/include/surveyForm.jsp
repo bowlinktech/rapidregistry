@@ -77,18 +77,30 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="status">Reminder Status*</label>
-                            <div>
-                                <label class="radio-inline">
-                                    <form:radiobutton id="reminderStatus" path="reminderStatus" value="true" /> Active
-                                </label>
-                                <label class="radio-inline">
-                                    <form:radiobutton id="reminderStatus" path="reminderStatus" value="false" /> Inactive
-                                </label>
+                        <div class="row">
+                            <div class="form-group  col-md-4">
+                                <label for="status">Reminder Status*</label>
+                                <div>
+                                    <label class="radio-inline">
+                                        <form:radiobutton id="reminderStatus" path="reminderStatus" value="true" /> Active
+                                    </label>
+                                    <label class="radio-inline">
+                                        <form:radiobutton id="reminderStatus" path="reminderStatus" value="false" /> Inactive
+                                    </label>
+                                </div>
+                            </div> 
+                            <div class="form-group col-md-4">
+                                <label for="status">Can this survey be associated to Programs/Content Criteria? *</label>
+                                <div>
+                                    <label class="radio-inline">
+                                        <form:radiobutton id="associateToProgram" path="associateToProgram" value="true" /> Yes
+                                    </label>
+                                    <label class="radio-inline">
+                                        <form:radiobutton id="associateToProgram" path="associateToProgram" value="false" /> No
+                                    </label>
+                                </div>
                             </div>
-                        </div>           
-                        
+                        </div>
                         <spring:bind path="reminderText">
                             <div id="reminderTextDiv" class="form-group ${status.error ? 'has-error' : '' }">
                                 <label class="control-label" for="reminderText">Reminder Message</label>

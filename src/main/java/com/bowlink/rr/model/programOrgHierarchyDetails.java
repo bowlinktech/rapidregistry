@@ -95,14 +95,11 @@ public class programOrgHierarchyDetails {
     @Column(name = "county", nullable = true)
     private String county = "";
     
-    @Column(name = "CharitableChoiceOrganization", nullable = false)
-    private boolean CharitableChoiceOrganization = false;
+    @Column(name = "ReligiousFaithBasedOrganization", nullable = false)
+    private boolean ReligiousFaithBasedOrganization = false;
     
-    @Column(name = "meetsBeneficiaryRegs", nullable = false)
-    private boolean meetsBeneficiaryRegs = false;
-    
-    @Column(name = "meetsServiceRegs", nullable = false)
-    private boolean meetsServiceRegs = false;
+    @Column(name = "fundingaffiliations", nullable = false)
+    private String fundingaffiliations = "";
     
     @Column(name = "servingTribalPopulations", nullable = false)
     private boolean servingTribalPopulations = false;
@@ -303,30 +300,6 @@ public class programOrgHierarchyDetails {
         this.county = county;
     }
 
-    public boolean isCharitableChoiceOrganization() {
-        return CharitableChoiceOrganization;
-    }
-
-    public void setCharitableChoiceOrganization(boolean CharitableChoiceOrganization) {
-        this.CharitableChoiceOrganization = CharitableChoiceOrganization;
-    }
-
-    public boolean isMeetsBeneficiaryRegs() {
-        return meetsBeneficiaryRegs;
-    }
-
-    public void setMeetsBeneficiaryRegs(boolean meetsBeneficiaryRegs) {
-        this.meetsBeneficiaryRegs = meetsBeneficiaryRegs;
-    }
-
-    public boolean isMeetsServiceRegs() {
-        return meetsServiceRegs;
-    }
-
-    public void setMeetsServiceRegs(boolean meetsServiceRegs) {
-        this.meetsServiceRegs = meetsServiceRegs;
-    }
-
     public boolean isServingTribalPopulations() {
         return servingTribalPopulations;
     }
@@ -350,6 +323,23 @@ public class programOrgHierarchyDetails {
     public void setOrganizationSector(String organizationSector) {
         this.organizationSector = organizationSector;
     }
+
+    public boolean isReligiousFaithBasedOrganization() {
+        return ReligiousFaithBasedOrganization;
+    }
+
+    public void setReligiousFaithBasedOrganization(boolean ReligiousFaithBasedOrganization) {
+        this.ReligiousFaithBasedOrganization = ReligiousFaithBasedOrganization;
+    }
+
+    public String getFundingaffiliations() {
+        return fundingaffiliations;
+    }
+
+    public void setFundingaffiliations(String fundingaffiliations) {
+        this.fundingaffiliations = fundingaffiliations;
+    }
+    
     
     
 }

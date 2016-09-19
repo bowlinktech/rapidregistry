@@ -123,6 +123,8 @@ public class SurveyQuestions {
     @Column(name = "populateFromTableCol", nullable = true)
     private String populateFromTableCol = "";
     
+    @Column(name = "questionTag", nullable = true)
+    private String questionTag = "";
     
     public int getId() {
         return id;
@@ -370,6 +372,14 @@ public class SurveyQuestions {
 
     public void setPopulateFromTableCol(String populateFromTableCol) {
         this.populateFromTableCol = populateFromTableCol;
+    }
+
+    public String getQuestionTag() {
+        return questionTag;
+    }
+
+    public void setQuestionTag(String questionTag) {
+        this.questionTag = questionTag;
     }
     
     

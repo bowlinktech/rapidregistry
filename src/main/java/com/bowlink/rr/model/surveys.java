@@ -102,6 +102,9 @@ public class surveys {
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
     @Column(name = "DATEMODIFIED", nullable = true)
     private Date dateModified = new Date();
+    
+    @Column(name = "associateToProgram", nullable = false)
+    private boolean associateToProgram = false;
 
     public int getId() {
         return id;
@@ -269,6 +272,14 @@ public class surveys {
 
     public void setDoneBtnActivityCodeId(Integer doneBtnActivityCodeId) {
         this.doneBtnActivityCodeId = doneBtnActivityCodeId;
+    }
+
+    public boolean isAssociateToProgram() {
+        return associateToProgram;
+    }
+
+    public void setAssociateToProgram(boolean associateToProgram) {
+        this.associateToProgram = associateToProgram;
     }
     
 }
