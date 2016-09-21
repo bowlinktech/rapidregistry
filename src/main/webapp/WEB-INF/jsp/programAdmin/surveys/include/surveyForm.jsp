@@ -28,6 +28,16 @@
                                     </div> 
                             </spring:bind> 
                         </div>
+                        <div class="form-group">
+                            <spring:bind path="surveyTag">
+                                <div id="surveyTagDiv" class="form-group ${status.error ? 'has-error' : '' } ${not empty existingsurveyTag ? 'has-error' : ''}">
+                                    <label class="control-label" for="surveyTag">Survey Identifier (Used to identify this survey in code)</label>
+                                    <form:input path="surveyTag" id="surveyTag" class="form-control" type="text"  maxLength="255" />
+                                    <form:errors path="surveyTag" cssClass="control-label" element="label" />
+                                    <c:if test="${not empty existingsurveyTag}"><label id="surveyTag.errors" class="control-label">${existingsurveyTag}</label></c:if>
+                                    </div> 
+                            </spring:bind> 
+                        </div>
                         <div class="row">                           
                             <div class="form-group col-md-4">
                                 <label for="status">Status *</label>
@@ -97,6 +107,19 @@
                                     </label>
                                     <label class="radio-inline">
                                         <form:radiobutton id="associateToProgram" path="associateToProgram" value="false" /> No
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group  col-md-4">
+                                <label for="showInLeftCol">Can this survey be listed in the navigation?*</label>
+                                <div>
+                                    <label class="radio-inline">
+                                        <form:radiobutton id="showInLeftCol" path="showInLeftCol" value="true" /> Yes
+                                    </label>
+                                    <label class="radio-inline">
+                                        <form:radiobutton id="showInLeftCol" path="showInLeftCol" value="false" /> No
                                     </label>
                                 </div>
                             </div>

@@ -105,6 +105,12 @@ public class surveys {
     
     @Column(name = "associateToProgram", nullable = false)
     private boolean associateToProgram = false;
+    
+    @Column(name = "surveyTag", nullable = false)
+    private String surveyTag = "";
+    
+    @Column(name = "showInLeftCol", nullable = false)
+    private boolean showInLeftCol = true;
 
     public int getId() {
         return id;
@@ -281,5 +287,22 @@ public class surveys {
     public void setAssociateToProgram(boolean associateToProgram) {
         this.associateToProgram = associateToProgram;
     }
+
+    public String getSurveyTag() {
+        return surveyTag;
+    }
+
+    public void setSurveyTag(String surveyTag) {
+        this.surveyTag = surveyTag;
+    }
+
+    public boolean isShowInLeftCol() {
+        return showInLeftCol;
+    }
+
+    public void setShowInLeftCol(boolean showInLeftCol) {
+        this.showInLeftCol = showInLeftCol;
+    }
+    
     
 }
