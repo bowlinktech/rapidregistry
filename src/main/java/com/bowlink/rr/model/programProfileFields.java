@@ -79,6 +79,11 @@ public class programProfileFields {
     
     @Column(name = "MAXFIELDVALUE", nullable = false)
     private int maxFieldValue = 0;
+    
+    
+    @Column(name = "FIELDTAG", nullable = true)
+    private String fieldTag = "";
+    
 
     public int getId() {
         return id;
@@ -279,6 +284,12 @@ public class programProfileFields {
     public void setSectionId(Integer sectionId) {
         this.sectionId = sectionId;
     }
-    
-    
+
+    public String getFieldTag() {
+        return fieldTag;
+    }
+
+    public void setFieldTag(String fieldTag) {
+        this.fieldTag = fieldTag;
+    }
 }

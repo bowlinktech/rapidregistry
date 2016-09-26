@@ -94,6 +94,11 @@
                          <form:input path="maxFieldValue" id="maxFieldValue" class="form-control half"  maxLength="4" />
                         <span id="maxValueMsg" class="control-label"></span>
                     </div>  
+                    <div id="fieldTagDiv" class="form-group ${status.error ? 'has-error' : '' }">
+                        <label class="control-label" for="fieldTag">Field Tag</label>
+                         <form:input path="fieldTag" id="fieldTag" class="form-control half"  maxLength="45" />
+                        <span id="fieldTagMsg" class="control-label"></span>
+                    </div>    
                     <div class="form-group">
                         <label class="control-label" for=dataGridColumn">Show field in: *</label>
                         <div class="checkbox">

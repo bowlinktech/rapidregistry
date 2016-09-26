@@ -932,12 +932,7 @@ public class surveyController {
                 
             }
         }
-        else if(surveyQuestion.getAnswerTypeId() == 6) {
-            
-            /* Delete existing date / time rows */
-            surveymanager.removeDateRows(questionId);
-            
-        }
+       
         
         return questionId;
     }
