@@ -449,9 +449,9 @@ public class dataElementDAOImpl implements dataElementDAO {
         Query query = null;
 
         if (programId == 0) {
-            query = sessionFactory.getCurrentSession().createQuery("from customProgramFields where programId = 0 order by fieldName asc");
+            query = sessionFactory.getCurrentSession().createQuery("from customProgramFields where programId = 0 order by saveToTableCol * 1 asc");
         } else {
-            query = sessionFactory.getCurrentSession().createQuery("from customProgramFields where (programId = 0 or programId = :programId) order by fieldName asc");
+            query = sessionFactory.getCurrentSession().createQuery("from customProgramFields where (programId = 0 or programId = :programId) order by saveToTableCol * 1 asc");
             query.setParameter("programId", programId);
         }
 

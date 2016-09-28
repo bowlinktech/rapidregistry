@@ -32,7 +32,7 @@
                 <div class="form-container">
                     <div id="fieldDisplayDiv" class="form-group ${status.error ? 'has-error' : '' }">
                         <label class="control-label" for="fieldDisplayName">Field Display Name</label>
-                         <form:input path="fieldDisplayname" id="fieldDisplayName" class="form-control"  maxLength="55" />
+                         <form:input path="fieldDisplayname" id="fieldDisplayName" class="form-control"  maxLength="255" />
                         <span id="fieldDisplayMsg" class="control-label"></span>
                     </div>
                     <div id="crosswalkDiv" class="form-group">
