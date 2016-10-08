@@ -23,10 +23,16 @@
             <form:hidden path="dateCreated" />
             <form:hidden path="organizationType" />
             <form:hidden path="county" />
-            <form:hidden path="organizationSector" />
             <form:hidden path="ReligiousFaithBasedOrganization" />
-            <form:hidden path="fundingaffiliations" />
-            <form:hidden path="servingTribalPopulations" />
+            <form:hidden path="contractNumber" />
+            <form:hidden path="contractStartDate" />
+            <form:hidden path="contractEndDate" />
+            <form:hidden path="contractContactName" />
+            <form:hidden path="contractContactPhoneNumber" />
+            <form:hidden path="contractContactEmail" />
+            <form:hidden path="fiscalContactName" />
+            <form:hidden path="fiscalContactPhoneNumber" />
+            <form:hidden path="fiscalContactEmail" />
             <input type="hidden" name="selActivityCodes" id="selActivityCodes" value="" />
             <section class="panel panel-default">
                 <div class="panel-heading">

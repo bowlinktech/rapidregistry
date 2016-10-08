@@ -98,17 +98,37 @@ public class programOrgHierarchyDetails {
     @Column(name = "ReligiousFaithBasedOrganization", nullable = false)
     private boolean ReligiousFaithBasedOrganization = false;
     
-    @Column(name = "fundingaffiliations", nullable = false)
-    private String fundingaffiliations = "";
-    
-    @Column(name = "servingTribalPopulations", nullable = false)
-    private boolean servingTribalPopulations = false;
-    
     @Column(name = "organizationType", nullable = true)
     private String organizationType = "";
     
-    @Column(name = "organizationSector", nullable = true)
-    private String organizationSector = "";
+    @Column(name = "contractNumber", nullable = true)
+    private String contractNumber = "";
+    
+    @DateTimeFormat(pattern = "MM/dd/yyyy")
+    @Column(name = "contractStartDate", nullable = true)
+    private Date contractStartDate = new Date();
+    
+    @DateTimeFormat(pattern = "MM/dd/yyyy")
+    @Column(name = "contractEndDate", nullable = true)
+    private Date contractEndDate = new Date();
+    
+    @Column(name = "contractContactName", nullable = true)
+    private String contractContactName = "";
+    
+    @Column(name = "contractContactPhoneNumber", nullable = true)
+    private String contractContactPhoneNumber = "";
+    
+    @Column(name = "contractContactEmail", nullable = true)
+    private String contractContactEmail = "";
+    
+    @Column(name = "fiscalContactName", nullable = true)
+    private String fiscalContactName = "";
+    
+    @Column(name = "fiscalContactPhoneNumber", nullable = true)
+    private String fiscalContactPhoneNumber = "";
+    
+    @Column(name = "fiscalContactEmail", nullable = true)
+    private String fiscalContactEmail = "";
 
     public int getId() {
         return id;
@@ -300,28 +320,12 @@ public class programOrgHierarchyDetails {
         this.county = county;
     }
 
-    public boolean isServingTribalPopulations() {
-        return servingTribalPopulations;
-    }
-
-    public void setServingTribalPopulations(boolean servingTribalPopulations) {
-        this.servingTribalPopulations = servingTribalPopulations;
-    }
-
     public String getOrganizationType() {
         return organizationType;
     }
 
     public void setOrganizationType(String organizationType) {
         this.organizationType = organizationType;
-    }
-
-    public String getOrganizationSector() {
-        return organizationSector;
-    }
-
-    public void setOrganizationSector(String organizationSector) {
-        this.organizationSector = organizationSector;
     }
 
     public boolean isReligiousFaithBasedOrganization() {
@@ -332,14 +336,77 @@ public class programOrgHierarchyDetails {
         this.ReligiousFaithBasedOrganization = ReligiousFaithBasedOrganization;
     }
 
-    public String getFundingaffiliations() {
-        return fundingaffiliations;
+    public String getContractNumber() {
+        return contractNumber;
     }
 
-    public void setFundingaffiliations(String fundingaffiliations) {
-        this.fundingaffiliations = fundingaffiliations;
+    public void setContractNumber(String contractNumber) {
+        this.contractNumber = contractNumber;
     }
-    
+
+    public Date getContractStartDate() {
+        return contractStartDate;
+    }
+
+    public void setContractStartDate(Date contractStartDate) {
+        this.contractStartDate = contractStartDate;
+    }
+
+    public Date getContractEndDate() {
+        return contractEndDate;
+    }
+
+    public void setContractEndDate(Date contractEndDate) {
+        this.contractEndDate = contractEndDate;
+    }
+
+    public String getContractContactName() {
+        return contractContactName;
+    }
+
+    public void setContractContactName(String contractContactName) {
+        this.contractContactName = contractContactName;
+    }
+
+    public String getContractContactPhoneNumber() {
+        return contractContactPhoneNumber;
+    }
+
+    public void setContractContactPhoneNumber(String contractContactPhoneNumber) {
+        this.contractContactPhoneNumber = contractContactPhoneNumber;
+    }
+
+    public String getContractContactEmail() {
+        return contractContactEmail;
+    }
+
+    public void setContractContactEmail(String contractContactEmail) {
+        this.contractContactEmail = contractContactEmail;
+    }
+
+    public String getFiscalContactName() {
+        return fiscalContactName;
+    }
+
+    public void setFiscalContactName(String fiscalContactName) {
+        this.fiscalContactName = fiscalContactName;
+    }
+
+    public String getFiscalContactPhoneNumber() {
+        return fiscalContactPhoneNumber;
+    }
+
+    public void setFiscalContactPhoneNumber(String fiscalContactPhoneNumber) {
+        this.fiscalContactPhoneNumber = fiscalContactPhoneNumber;
+    }
+
+    public String getFiscalContactEmail() {
+        return fiscalContactEmail;
+    }
+
+    public void setFiscalContactEmail(String fiscalContactEmail) {
+        this.fiscalContactEmail = fiscalContactEmail;
+    }
     
     
 }
