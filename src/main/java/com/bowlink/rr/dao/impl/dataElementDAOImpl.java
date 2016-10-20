@@ -270,6 +270,21 @@ public class dataElementDAOImpl implements dataElementDAO {
 
         return lastId;
     }
+    
+    /**
+     * The 'updateCrosswalk" function will update the existing crosswalk
+     *
+     * @Table	crosswalks
+     *
+     * @param	crosswalkDetails	This will hold the crosswalk object from the form
+     *
+     * @return The function will return the id of the new crosswalk
+     *
+     */
+    @Override
+    public void updateCrosswalk(crosswalks crosswalkDetails) {
+        sessionFactory.getCurrentSession().update(crosswalkDetails);
+    }
 
     /**
      * The 'getCrosswalk' function will return a single crosswalk object based on the id passed in.

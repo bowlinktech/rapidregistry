@@ -126,6 +126,12 @@ public class SurveyQuestions {
     @Column(name = "questionTag", nullable = true)
     private String questionTag = "";
     
+    @Column(name = "showOnSummaryPage", nullable = true)
+    private boolean showOnSummaryPage = false;
+    
+    @Column(name = "summaryColName", nullable = true)
+    private String summaryColName = "";
+    
     public int getId() {
         return id;
     }
@@ -381,7 +387,21 @@ public class SurveyQuestions {
     public void setQuestionTag(String questionTag) {
         this.questionTag = questionTag;
     }
-    
-    
+
+    public boolean isShowOnSummaryPage() {
+        return showOnSummaryPage;
+    }
+
+    public void setShowOnSummaryPage(boolean showOnSummaryPage) {
+        this.showOnSummaryPage = showOnSummaryPage;
+    }
+
+    public String getSummaryColName() {
+        return summaryColName;
+    }
+
+    public void setSummaryColName(String summaryColName) {
+        this.summaryColName = summaryColName;
+    }
     
 }

@@ -39,6 +39,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -213,6 +214,20 @@ public class surveyController {
             mav.addObject("create", "create");
             mav.setViewName("/surveys/create");
             return mav;
+        }
+        
+        //check tag	
+        if (!"".equals(survey.getSurveyTag())) {
+            //we do not allow duplicate title
+            List<surveys> existingTag = surveymanager.getProgramSurveysByTag(survey);
+             if (!existingTag.isEmpty()) {
+                List<activityCodes> activityCodes = activitycodemanager.getActivityCodes((Integer) session.getAttribute("selprogramId"), 0);
+                mav.addObject("activityCodes", activityCodes);
+                mav.addObject("existingsurveyTag", "Survey Tag is in use by this program already.");
+                mav.addObject("create", "create");
+                mav.setViewName("/surveys/create");
+                return mav;
+            }
         }
 
         //insert survey into db
@@ -1964,6 +1979,18 @@ public class surveyController {
                 return mav;
             }
         }
+        
+        //check tag	
+        if (!"".equals(surveyNew.getSurveyTag()) && !survey.getSurveyTag().trim().equalsIgnoreCase(surveyNew.getSurveyTag().trim())) {
+            //we do not allow duplicate title
+            List<surveys> existingTag = surveymanager.getProgramSurveysByTitle(surveyNew);
+            if (existingTag.size() != 0) {
+                mav.addObject("survey", surveyNew);
+                mav.addObject("activityCodes", activityCodes);
+                mav.addObject("existingsurveyTag", "Survey Tag is in use by this program already.");
+                return mav;
+            }
+        }
 
         // update 
         surveymanager.updateSurvey(surveyNew);
@@ -2104,5 +2131,32 @@ public class surveyController {
         return survey;
 
     }
-
+    
+    /**
+     * The 'checkForDuplicateQuestionTag' GET request will query the system to make sure their is not a same contract number
+     * in the system.
+     * 
+     * @param i
+     * @param v
+     * @param enteredDate
+     * @return
+     * @throws Exception 
+     */
+    @RequestMapping(value = "/checkForDuplicateQuestionTag.do", method = RequestMethod.GET, produces={MediaType.TEXT_PLAIN_VALUE})
+    @ResponseBody
+    public String checkForDuplicateQuestionTag(
+            @RequestParam Integer surveyId, 
+            @RequestParam Integer questionId, 
+            @RequestParam String questionTag) throws Exception {
+        
+        boolean questionTagOk =  surveymanager.checkForDuplicateQuestionTag(surveyId, questionId, questionTag);
+        
+        if(questionTagOk == true) {
+            return "0";
+        }
+        else {
+            return "1";
+        }
+    }
+    
 }

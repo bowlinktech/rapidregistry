@@ -82,4 +82,6 @@ public interface dataElementManager {
     
     void saveCustomField(customProgramFields customField) throws Exception;
     
+    Integer uploadNewFileForCrosswalk(crosswalks crosswalkDetails);
+    
 }

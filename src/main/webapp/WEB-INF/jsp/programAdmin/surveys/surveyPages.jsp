@@ -277,7 +277,7 @@
                                         </c:if>                
                                     </div>
                                 </div>
-                                <div id="editQuestionDiv_${question.id}" class="row" style="display:none;"></div>            
+                                <div id="editQuestionDiv_${question.id}" class="row editQuestionDiv" style="display:none;"></div>            
                             </c:forEach>
                         </c:when>
                         <c:otherwise>

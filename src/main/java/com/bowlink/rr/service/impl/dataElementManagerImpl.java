@@ -199,6 +199,10 @@ public class dataElementManagerImpl implements dataElementManager {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            
+            Query deleteExistingCrosswalks = sessionFactory.getCurrentSession().createSQLQuery("delete from rel_crosswalkData where crosswalkId = :crosswalkId");
+            deleteExistingCrosswalks.setParameter("crosswalkId", id);
+            deleteExistingCrosswalks.executeUpdate();
 
             while (line != null) {
 
@@ -211,6 +215,7 @@ public class dataElementManagerImpl implements dataElementManager {
                 String sourceValue = lineValue[0];
                 String targetValue = lineValue[1];
                 String descVal = lineValue[2];
+                
 
                 //Need to insert all the fields into the crosswalk data Fields table
                 Query query = sessionFactory.getCurrentSession().createSQLQuery("INSERT INTO rel_crosswalkData (crosswalkId, sourceValue, targetValue, descValue)"
@@ -342,5 +347,67 @@ public class dataElementManagerImpl implements dataElementManager {
     @Transactional
     public void saveCustomField(customProgramFields customField) throws Exception {
         dataElementDAO.saveCustomField(customField);
+    }
+    
+    @Override
+    @Transactional
+    public Integer uploadNewFileForCrosswalk(crosswalks crosswalkDetails) {
+        MultipartFile file = crosswalkDetails.getFile();
+        String fileName = file.getOriginalFilename();
+
+        InputStream inputStream = null;
+        OutputStream outputStream = null;
+        fileSystem dir = new fileSystem();
+
+        dir.setDirByName("crosswalks/");
+        
+        File newFile = null;
+        newFile = new File(dir.getDir() + fileName);
+
+        try {
+            inputStream = file.getInputStream();
+
+            if (!newFile.exists()) {
+                newFile.createNewFile();
+            }
+            outputStream = new FileOutputStream(newFile);
+            int read = 0;
+            byte[] bytes = new byte[1024];
+
+            while ((read = inputStream.read(bytes)) != -1) {
+                outputStream.write(bytes, 0, read);
+            }
+            outputStream.close();
+
+            //Set the filename to the original file name
+            crosswalkDetails.setfileName(fileName);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //Need to get the actual delimiter character
+        String delimChar = (String) dataElementDAO.getDelimiterChar(crosswalkDetails.getFileDelimiter());
+
+        //Check to make sure the file contains the selected delimiter
+        //Set the directory that holds the crosswalk files
+        int delimCount = (Integer) dir.checkFileDelimiter(dir, fileName, delimChar);
+
+        if (delimCount > 0) {
+            //Submit the new message type to the database
+            dataElementDAO.updateCrosswalk(crosswalkDetails);
+
+            //Call the function that will load the content of the crosswalk text file
+            //into the rel_crosswalkData table
+            loadCrosswalkContents(crosswalkDetails.getId(), fileName, delimChar);
+
+            return crosswalkDetails.getId();
+        } else {
+            //Need to delete the file
+            newFile.delete();
+
+            //Need to return an error
+            return 0;
+        }
     }
  }

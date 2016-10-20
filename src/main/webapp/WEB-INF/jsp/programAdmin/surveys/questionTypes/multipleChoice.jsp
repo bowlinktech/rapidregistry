@@ -42,7 +42,7 @@
     </ul>
     
     <form:form id="surveyquestion" commandName="surveyQuestion" method="post" role="form">
-        <form:hidden path="id" />
+        <form:hidden path="id" id="qId" />
         <form:hidden path="surveyId" />
         <form:hidden path="surveyPageId" />
         <form:hidden path="answerTypeId" />
@@ -59,10 +59,22 @@
                     <label class="control-label" for="reportText">Report Text (will not appear on survey)</label>
                     <form:input path="reportText" placeholder="Enter your report text" id="reportText" class="form-control" type="text"  maxLength="255" />
                 </div>
-                <div class="form-group">
+                <div id="questionTagDiv" class="form-group">
                     <label class="control-label" for="questionTag">Question Tag</label>
                     <form:input path="questionTag" placeholder="Enter a question tag" id="questionTag" class="form-control" type="text"  maxLength="75" />
+                    <label id="questionTagMsg" class="control-label" style="display:none;">There is already a question with this tag.</label>
                 </div>
+                <div class="well well-xsm" style="background-color:#ffffff; margin-bottom: 2px">
+                    <form:checkbox path="showOnSummaryPage" id="showOnSummaryPage" />&nbsp;<label class="control-label" for="showOnSummaryPage">Show this question on the summary page?</label>
+                </div>
+                <div class="panel" id="showOnSummaryPageResponseDiv" style="${surveyQuestion.showOnSummaryPage == true ? 'display:block;' : 'display:none;'}">
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label class="control-label" for="summaryColName">Summary Column Name</label>
+                            <form:input path="summaryColName" placeholder="Enter Summary Column Name" id="summaryColName" class="form-control" type="text"  maxLength="45" />
+                        </div>
+                    </div>
+                </div>     
                 <c:if test="${not empty availableTables || not empty availableCW}">
                     <div class="well well-xsm" style="background-color:#ffffff; margin-bottom: 2px">
                         <input type="checkbox" id="populate" <c:if test="${not empty surveyQuestion.populateFromTable || surveyQuestion.populateFromCW > 0}">checked="checked"</c:if> />&nbsp;<label class="control-label" for="populateFromTable">Populate choices from an existing table</label>

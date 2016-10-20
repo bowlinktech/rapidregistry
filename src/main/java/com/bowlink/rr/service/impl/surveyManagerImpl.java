@@ -308,5 +308,17 @@ public class surveyManagerImpl implements surveyManager {
         
         return newSurveyId;
     }
+    
+    @Override
+    @Transactional
+    public List<surveys> getProgramSurveysByTag(surveys survey) throws Exception {
+        return surveyDAO.getProgramSurveysByTag(survey);
+    }
+    
+    @Override
+    @Transactional
+    public boolean checkForDuplicateQuestionTag(Integer surveyId, Integer questionId, String questionTag) throws Exception {
+        return surveyDAO.checkForDuplicateQuestionTag(surveyId, questionId, questionTag);
+    }
 }
 

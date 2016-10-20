@@ -83,4 +83,6 @@ public interface dataElementDAO {
     Long checkCustomFieldName(String name, int programId, int fieldId);
     
     void saveCustomField(customProgramFields customField) throws Exception;
+    
+    void updateCrosswalk(crosswalks crosswalkDetails);
 }

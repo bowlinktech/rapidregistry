@@ -334,4 +334,34 @@ public class surveyDAOImpl implements surveyDAO {
         deleteQuestionChoices.executeUpdate();
     }
     
+    @SuppressWarnings("unchecked")
+    public List<surveys> getProgramSurveysByTag(surveys survey) throws Exception {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(surveys.class);
+        criteria.add(Restrictions.eq("programId", survey.getProgramId()));
+        criteria.add(Restrictions.eq("surveyTag", survey.getSurveyTag()));
+        return criteria.list();
+    }
+    
+    /**
+     * The 'checkForDuplicateQuestionTag' function will check for duplicate question tags for a survey.
+     * @param surveyId
+     * @param questionTag
+     * @return
+     * @throws Exception 
+     */
+    public boolean checkForDuplicateQuestionTag(Integer surveyId, Integer questionId, String questionTag) throws Exception {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SurveyQuestions.class);
+        criteria.add(Restrictions.eq("surveyId", surveyId));
+        criteria.add(Restrictions.eq("questionTag", questionTag));
+        criteria.add(Restrictions.ne("id", questionId));
+        
+        List<SurveyQuestions> SurveyQuestions = criteria.list();
+        
+        if(SurveyQuestions != null && SurveyQuestions.size() > 0) {
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
 }

@@ -280,7 +280,7 @@ require(['./main'], function () {
 
         /** Click one of the question buttons **/
         $(document).on('click', '.questionButton', function () {
-
+            
             var questionId = $(this).attr('rel');
             var pane = $(this).attr('pane');
             var qNum = $('#qNum' + questionId).attr('rel');
@@ -408,7 +408,17 @@ require(['./main'], function () {
             else {
                 $('#requiredResponseDiv').hide();
             }
+        });
+        
+        /** Function to show the validation div for the edit/add question **/
+        $(document).on('change', '#showOnSummaryPage', function () {
 
+            if ($(this).is(':checked')) {
+                $('#showOnSummaryPageResponseDiv').show();
+            }
+            else {
+                $('#showOnSummaryPageResponseDiv').hide();
+            }
         });
 
         /** Function to show the save to field div for the edit/add question **/
@@ -784,18 +794,34 @@ require(['./main'], function () {
                 var sHTML = $('#question').code();
                 $('#questionVal').val(sHTML);
             }
-
-            var formData = $("#surveyquestion").serialize();
             
-            $.ajax({
-                url: "submitSurveyQuestion.do",
-                data: formData,
-                type: "POST",
-                async: false,
-                success: function (data) {
-                    getSurveyPages();
+            var questionTag = $('#questionTag').val();
+            
+            var errorFound = 0;
+            
+            if(questionTag !== "") {
+                
+                errorFound = checkForDuplicateQuestionTag($('#surveyId').val(),$('#qId').val(),questionTag);
+                
+                if(errorFound == 1) {
+                    $('#questionTagDiv').addClass("has-error");
+                    $('#questionTagMsg').show();
                 }
-            });
+            }
+            
+            if(errorFound == 0) {
+                var formData = $("#surveyquestion").serialize();
+            
+                $.ajax({
+                    url: "submitSurveyQuestion.do",
+                    data: formData,
+                    type: "POST",
+                    async: false,
+                    success: function (data) {
+                        getSurveyPages();
+                    }
+                });
+            }
 
         });
 
@@ -877,7 +903,6 @@ require(['./main'], function () {
             var confirmed = confirm("Are you sure want to remove this blank page?");
 
             if (confirmed == true) {
-
                 $.ajax({
                     url: "deleteSurveyPage.do",
                     data: {'pageId': pageId},
@@ -898,6 +923,30 @@ require(['./main'], function () {
 
     });
 });
+
+function checkForDuplicateQuestionTag(surveyId, questionId, questionTag) {
+    
+    var duplicateFound = 0;
+    
+    $.ajax({
+        url: 'checkForDuplicateQuestionTag.do',
+        data: {
+            'surveyId': surveyId,
+            'questionId': questionId,
+            'questionTag': questionTag
+        },
+        type: 'GET',
+        async: false,
+        success: function (data) {
+           duplicateFound = data;
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    });
+    
+    return duplicateFound;
+}
 
 function populateTableValues(pageId, questionId, indexVal, selValue) {
     $.getJSON('getQuestionsForSelectedPage.do', {

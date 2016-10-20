@@ -73,4 +73,8 @@ public interface surveyDAO {
     
     void removeDateRows(Integer questionId) throws Exception;
     
+    List<surveys> getProgramSurveysByTag(surveys survey) throws Exception;
+    
+    boolean checkForDuplicateQuestionTag(Integer surveyId, Integer questionId, String questionTag) throws Exception;
+    
 }

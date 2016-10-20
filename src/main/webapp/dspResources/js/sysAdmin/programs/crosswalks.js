@@ -69,21 +69,23 @@ require(['./main'], function () {
 
             //Need to make sure the crosswalk name doesn't already exist.
             var orgId = $('#orgId').val();
-
-            $.ajax({
-                url: '/sysAdmin/data-elements/checkCrosswalkName.do',
-                type: "POST",
-                async: false,
-                data: {'name': $('#name').val(), 'orgId': orgId},
-                success: function(data) {
-                    if (data == 1) {
-                        $('#crosswalkNameDiv').addClass("has-error");
-                        $('#crosswalkNameMsg').addClass("has-error");
-                        $('#crosswalkNameMsg').html('The name entered is already associated with another crosswalk in the system!');
-                        errorFound = 1;
+            
+            if(actionValue === "create") {
+                $.ajax({
+                    url: '/sysAdmin/data-elements/checkCrosswalkName.do',
+                    type: "POST",
+                    async: false,
+                    data: {'name': $('#name').val(), 'orgId': orgId},
+                    success: function(data) {
+                        if (data == 1) {
+                            $('#crosswalkNameDiv').addClass("has-error");
+                            $('#crosswalkNameMsg').addClass("has-error");
+                            $('#crosswalkNameMsg').html('The name entered is already associated with another crosswalk in the system!');
+                            errorFound = 1;
+                        }
                     }
-                }
-            });
+                });
+            }
 
             //Make sure a delimiter is selected
             if ($('#delimiter').val() == '') {

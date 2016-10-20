@@ -137,6 +137,7 @@ public class dataElementController {
         crosswalks crosswalkDetails = new crosswalks();
         mav.addObject("crosswalkDetails", crosswalkDetails);
         mav.addObject("btnValue", "Create");
+        mav.addObject("actionValue", "Create");
 
         //Get the list of available file delimiters
         @SuppressWarnings("rawtypes")
@@ -168,6 +169,52 @@ public class dataElementController {
             redirectAttr.addFlashAttribute("savedStatus", "error");
         } else {
             redirectAttr.addFlashAttribute("savedStatus", "created");
+        }
+
+        //if programId > 0 then need to send back to the configurations page
+        //otherwise send back to the message type libarary translation page.
+        if (programId > 0) {
+            String programName = programmanager.getProgramById(programId).getProgramName().replace(" ", "-").toLowerCase();
+            ModelAndView mav;
+            if(frompage != null && !"".equals(frompage)) {
+                mav = new ModelAndView(new RedirectView("../programs/"+programName+"/forms/"+frompage+"/fields?s="+sectionIdVal));
+            }
+            else {
+                mav = new ModelAndView(new RedirectView("../programs/"+programName+"/crosswalks"));
+            }
+            return mav;
+        } else {
+            ModelAndView mav = new ModelAndView(new RedirectView("translations"));
+            return mav;
+        }
+    }
+    
+    /**
+     * The '/UploadNewFile' function will be used to upload a new file for an existing crosswalk.
+     *
+     * @Return The function will either return the crosswalk form on error or redirect to the data translation page.
+     */
+    @RequestMapping(value = "/uploadnewfileCrosswalk", method = RequestMethod.POST)
+    public @ResponseBody 
+        ModelAndView uploadnewfileCrosswalk(
+            @ModelAttribute(value = "crosswalkDetails") crosswalks crosswalkDetails, 
+            @RequestParam String sectionIdVal, @RequestParam String frompage, 
+            BindingResult result, RedirectAttributes redirectAttr, HttpSession session
+    ) throws Exception {
+
+        int programId = 0;
+
+        if (null != session.getAttribute("programId")) {
+            programId = (Integer) session.getAttribute("programId");
+        }
+       
+        crosswalkDetails.setProgramId(programId);
+        int lastId = dataelementmanager.uploadNewFileForCrosswalk(crosswalkDetails);
+
+        if (lastId == 0) {
+            redirectAttr.addFlashAttribute("savedStatus", "error");
+        } else {
+            redirectAttr.addFlashAttribute("savedStatus", "updated");
         }
 
         //if programId > 0 then need to send back to the configurations page
@@ -234,6 +281,9 @@ public class dataElementController {
         @SuppressWarnings("rawtypes")
         List delimiters = dataelementmanager.getDelimiters();
         mav.addObject("delimiters", delimiters);
+        
+        mav.addObject("btnValue", "Upload New File");
+        mav.addObject("actionValue", "UploadNewFile");
 
         return mav;
     }
