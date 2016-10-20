@@ -24,9 +24,6 @@
             <form:hidden path="organizationType" />
             <form:hidden path="county" />
             <form:hidden path="ReligiousFaithBasedOrganization" />
-            <form:hidden path="contractNumber" />
-            <form:hidden path="contractStartDate" />
-            <form:hidden path="contractEndDate" />
             <form:hidden path="contractContactName" />
             <form:hidden path="contractContactPhoneNumber" />
             <form:hidden path="contractContactEmail" />
@@ -117,14 +114,21 @@
                                 <form:errors path="website" cssClass="control-label" element="label" />
                             </div>
                         </spring:bind>         
-                           <spring:bind path="displayId">
+                        <spring:bind path="displayId">
                             <div class="form-group ${status.error ? 'has-error' : '' }">
                                 <label class="control-label" for="displayId">Display Id *</label>
                                 <form:input path="displayId" id="displayId" class="form-control" type="text"  maxLength="45" />
                                 <form:errors path="displayId" cssClass="control-label" element="label" />
                             </div>
-                        </spring:bind>         
-                        </div>
+                        </spring:bind> 
+                        <spring:bind path="altDisplayId">
+                            <div class="form-group ${status.error ? 'has-error' : '' }">
+                                <label class="control-label" for="altDisplayId">Alternate Display Id</label>
+                                <form:input path="altDisplayId" id="altDisplayId" class="form-control" type="text"  maxLength="45" />
+                                <form:errors path="altDisplayId" cssClass="control-label" element="label" />
+                            </div>
+                        </spring:bind>               
+                    </div>
                 </div>
             </section>
             <section class="panel panel-default">

@@ -32,7 +32,7 @@ public class programProfileFields {
     private Integer searchDspPos = 0, sectionId = 0;
     
     @Transient
-    private boolean autoPopulate,  dataGridColumn = false, searchField = false, 
+    private boolean autoPopulate, searchField = false, 
             summaryField = false, hideField = false, readOnly = false;
     
     @Transient
@@ -80,11 +80,15 @@ public class programProfileFields {
     @Column(name = "MAXFIELDVALUE", nullable = false)
     private int maxFieldValue = 0;
     
-    
     @Column(name = "FIELDTAG", nullable = true)
     private String fieldTag = "";
     
-
+    @Column(name = "dataGridColumn", nullable = false)
+    private boolean dataGridColumn = false;
+    
+    @Column(name = "summaryFieldDisplayName", nullable = true)
+    private String summaryFieldDisplayName = "";
+    
     public int getId() {
         return id;
     }
@@ -292,4 +296,13 @@ public class programProfileFields {
     public void setFieldTag(String fieldTag) {
         this.fieldTag = fieldTag;
     }
+
+    public String getSummaryFieldDisplayName() {
+        return summaryFieldDisplayName;
+    }
+
+    public void setSummaryFieldDisplayName(String summaryFieldDisplayName) {
+        this.summaryFieldDisplayName = summaryFieldDisplayName;
+    }
+    
 }

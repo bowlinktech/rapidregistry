@@ -28,7 +28,6 @@
                 <form:hidden path="dateCreated" />
                 <form:hidden path="searchDspPos" />
                 <form:hidden path="dspPos" />
-                <form:hidden path="dataGridColumn" />
                 <div class="form-container">
                     <div id="fieldDisplayDiv" class="form-group ${status.error ? 'has-error' : '' }">
                         <label class="control-label" for="fieldDisplayName">Field Display Name</label>
@@ -103,7 +102,12 @@
                         <label class="control-label" for=dataGridColumn">Show field in: *</label>
                         <div class="checkbox">
                             <label>
-                              <form:checkbox path="searchField"  id="searchColumn"  value="true" /> Client Search
+                              <form:checkbox path="dataGridColumn" id="dataGridColumn"  value="true" /> Summary Grid
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                              <form:checkbox path="searchField" id="searchColumn"  value="true" /> Client Search
                             </label>
                         </div>
                         <div class="checkbox">
@@ -112,6 +116,11 @@
                             </label>
                         </div>  
                     </div>  
+                    <div id="summaryFieldDisplayNameDiv" class="form-group ${status.error ? 'has-error' : '' }">
+                        <label class="control-label" for="fieldTag">Summary Display Name</label>
+                         <form:input path="summaryFieldDisplayName" id="summaryFieldDisplayName" class="form-control half"  maxLength="25" />
+                        <span id="summaryFieldDisplayNameMsg" class="control-label"></span>
+                    </div>        
                     <div class="form-group">
                         <input type="button" id="submitFieldEditButton"  class="btn btn-primary" value="Update Field"/>
                     </div>

@@ -114,6 +114,14 @@
                             <div class="control-label has-error" id="displayIdDiv"></div>
                         </div>
                     </spring:bind>
+                    <spring:bind path="altDisplayId">
+                        <div class="form-group ${status.error ? 'has-error' : '' }" id="displayDiv">
+                            <label class="control-label" for="altDisplayId">Alternate Display Id</label>
+                            <form:input path="altDisplayId" id="altDisplayId" class="form-control" type="text"  maxLength="45" />
+                            <form:errors path="altDisplayId" cssClass="control-label" element="label" />
+                            <div class="control-label has-error" id="altDisplayIdDiv"></div>
+                        </div>
+                    </spring:bind>        
                     <div class="form-group">
                         <input type="button" id="submitButton" role="button" class="btn btn-primary" value="Save"/>
                     </div>

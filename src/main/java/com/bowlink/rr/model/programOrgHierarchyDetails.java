@@ -101,17 +101,6 @@ public class programOrgHierarchyDetails {
     @Column(name = "organizationType", nullable = true)
     private String organizationType = "";
     
-    @Column(name = "contractNumber", nullable = true)
-    private String contractNumber = "";
-    
-    @DateTimeFormat(pattern = "MM/dd/yyyy")
-    @Column(name = "contractStartDate", nullable = true)
-    private Date contractStartDate = new Date();
-    
-    @DateTimeFormat(pattern = "MM/dd/yyyy")
-    @Column(name = "contractEndDate", nullable = true)
-    private Date contractEndDate = new Date();
-    
     @Column(name = "contractContactName", nullable = true)
     private String contractContactName = "";
     
@@ -129,6 +118,9 @@ public class programOrgHierarchyDetails {
     
     @Column(name = "fiscalContactEmail", nullable = true)
     private String fiscalContactEmail = "";
+    
+    @Column(name = "altDisplayId", nullable = true)
+    private String altDisplayId = "99999";
 
     public int getId() {
         return id;
@@ -336,30 +328,6 @@ public class programOrgHierarchyDetails {
         this.ReligiousFaithBasedOrganization = ReligiousFaithBasedOrganization;
     }
 
-    public String getContractNumber() {
-        return contractNumber;
-    }
-
-    public void setContractNumber(String contractNumber) {
-        this.contractNumber = contractNumber;
-    }
-
-    public Date getContractStartDate() {
-        return contractStartDate;
-    }
-
-    public void setContractStartDate(Date contractStartDate) {
-        this.contractStartDate = contractStartDate;
-    }
-
-    public Date getContractEndDate() {
-        return contractEndDate;
-    }
-
-    public void setContractEndDate(Date contractEndDate) {
-        this.contractEndDate = contractEndDate;
-    }
-
     public String getContractContactName() {
         return contractContactName;
     }
@@ -406,6 +374,14 @@ public class programOrgHierarchyDetails {
 
     public void setFiscalContactEmail(String fiscalContactEmail) {
         this.fiscalContactEmail = fiscalContactEmail;
+    }
+
+    public String getAltDisplayId() {
+        return altDisplayId;
+    }
+
+    public void setAltDisplayId(String altDisplayId) {
+        this.altDisplayId = altDisplayId;
     }
     
     

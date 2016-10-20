@@ -28,9 +28,9 @@
             <c:when test="${existingFields.size() > 0}">
                 <c:forEach items="${existingFields}" var="field" varStatus="fStatus">
                     <tr>
-                        <td scope="row">
+                        <td scope="row" style="max-width:250px; width: 250px;">
                             <c:if test="${not empty existingFields[fStatus.index].fieldName}">${existingFields[fStatus.index].fieldName} <br /></c:if>
-                            <strong>${existingFields[fStatus.index].fieldDisplayname} </strong>
+                            <strong style="word-break: break-all;">${existingFields[fStatus.index].fieldDisplayname}</strong>
                         </td>
                         <td>
                              <c:choose>
@@ -73,7 +73,7 @@
                             </select>
                         </td>
                         <td>
-                            <%--<c:if test="${existingFields[fStatus.index].dataGridColumn == true}">Data Grid<br /></c:if>--%>
+                            <c:if test="${existingFields[fStatus.index].dataGridColumn == true}">Summary Grid<br /></c:if>
                             <c:if test="${existingFields[fStatus.index].searchField == true}">Client Search<br /></c:if>
                             <c:if test="${existingFields[fStatus.index].summaryField == true}">Client Summary</c:if>
                         </td>

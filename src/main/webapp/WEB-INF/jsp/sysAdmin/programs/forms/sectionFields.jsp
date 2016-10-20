@@ -119,22 +119,27 @@
                         </div>     
                         <div class="form-group">
                             <label class="control-label" for=dataGridColumn">Show field in: *</label>
-                            <%--<div class="checkbox">
-                                <label>
-                                  <input type="checkbox" id="dataGridColumn" name="search" value="true" />  Data Grid
-                                </label>
-                            </div>--%>
                             <div class="checkbox">
                                 <label>
-                                  <input type="checkbox" id="searchColumn" name="search" value="true" />  Client Search
+                                  <input type="checkbox" id="dataGridColumn" name="search" value="true" /> Summary Grid
                                 </label>
                             </div>
                             <div class="checkbox">
                                 <label>
-                                  <input type="checkbox" id="summaryColumn" name="summary" value="true" />  Client Summary
+                                  <input type="checkbox" id="searchColumn" name="search" value="true" /> Client Search
                                 </label>
-                            </div>  
-                        </div>  
+                            </div>
+                            <div class="checkbox">
+                                <label>
+                                  <input type="checkbox" id="summaryColumn" name="summary" value="true" /> Client Summary
+                                </label>
+                            </div>
+                        </div> 
+                        <div id="summaryFieldDisplayNameDiv" class="form-group ${status.error ? 'has-error' : '' }" style="display:none;">
+                            <label class="control-label" for="summaryFieldDisplayName">Summary Display Name</label>
+                            <input type="text" id="summaryFieldDisplayName" name="summaryFieldDisplayName" maxlength="25" class="form-control half" />
+                            <span id="summaryFieldDisplayNameMsg" class="control-label"></span>
+                        </div>
                         <div class="form-group">
                             <input type="button" id="submitFieldButton"  class="btn btn-primary" value="Add Field"/>
                         </div>

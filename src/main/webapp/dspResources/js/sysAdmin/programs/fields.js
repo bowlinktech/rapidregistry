@@ -142,6 +142,15 @@ require(['./main'], function () {
             $('#fieldDisplayName').val(selectedFieldText);
             
         });
+        
+        $(document).on('change', '#dataGridColumn', function() {
+            if($("#dataGridColumn").is(':checked')) {
+                $('#summaryFieldDisplayNameDiv').show();
+            }
+            else {
+                $('#summaryFieldDisplayNameDiv').hide();
+            }
+        });
 
         //This function will handle populating the program demographic field table
         //The trigger will be when a crosswalk is selected along with a
@@ -162,6 +171,7 @@ require(['./main'], function () {
             var selectedCustomField = $('#customfield').val();
             var selectedCustomFieldText = $('#customfield').find(":selected").attr("rel");
             var readOnly = $('#readOnlyField').val();
+            var summaryFieldDisplayName = $('#summaryFieldDisplayName').val();
             
             //Remove all error classes and error messages
             $('div').removeClass("has-error");
@@ -190,6 +200,7 @@ require(['./main'], function () {
                     data: {'fieldId': selectedField, 'sectionId': sectionId, 'fieldText': selectedFieldText, 'fieldDisplayName': fieldDisplayName, 'cw': selectedCW, 'CWText': selectedCWText, 'validationId': selectedValidation
                         , 'validationName': selectedValidationText, 'requiredField': required, 'hideField': hideField, 'dataGridColumn' : dataGridColumn, 'section' : section
                         , 'searchColumn': searchColumn, 'summaryColumn': summaryColumn, 'customFieldId': selectedCustomField, 'customFieldText': selectedCustomFieldText, 'readOnly': readOnly
+                        , 'summaryFieldDisplayName' : summaryFieldDisplayName
                     },
                     success: function(data) {
                         $('#fieldMsgDiv').show();

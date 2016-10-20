@@ -615,6 +615,7 @@ public class programForms {
             @RequestParam(value = "customFieldId", required = true) Integer customFieldId,
             @RequestParam(value = "customFieldText", required = false, defaultValue="") String customFieldText,
             @RequestParam(value = "readOnly", required = true) boolean readOnly,
+            @RequestParam(value = "summaryFieldDisplayName", required = false, defaultValue = "") String summaryFieldDisplayName,
             HttpSession session
     ) throws Exception {
 
@@ -770,6 +771,8 @@ public class programForms {
             field.setRequiredField(requiredField);
             field.setDspPos(dspPos);
             field.setCustomfieldId(customFieldId);
+            field.setDataGridColumn(dataGridColumn);
+            field.setSummaryFieldDisplayName(summaryFieldDisplayName);
            
             if(cw > 0) {
                 Map<String, String> defaultValues = new HashMap<>();
