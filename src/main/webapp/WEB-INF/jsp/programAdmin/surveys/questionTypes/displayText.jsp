@@ -32,10 +32,11 @@
     </ul>
     
     <form:form id="surveyquestion" commandName="surveyQuestion" method="post" role="form">
-        <form:hidden path="id" />
+        <form:hidden path="id" id="qId" />
         <form:hidden path="surveyId" />
         <form:hidden path="surveyPageId" />
         <form:hidden path="answerTypeId" />
+        <form:hidden path="questionTag" />
         <form:hidden path="questionNum" />
         <form:hidden path="dateCreated" />
         <form:hidden path="question" id="questionVal" />
