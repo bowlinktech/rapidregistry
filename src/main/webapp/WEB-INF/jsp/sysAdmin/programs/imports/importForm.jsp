@@ -31,19 +31,8 @@
                             </div>
                         </div>
                     </spring:bind> 
-                    <!--  if it is a parent -->
-                    <div class="form-group ${status.error ? 'has-error' : '' }">
-                            <label class="control-label" for="useHEL">Is Parent Config *</label>
-                            <div>
-                                <label class="radio-inline">
-                                    <input type="radio" id="isParent" value="true" onClick="isParent(true);" <c:if test="${importTypeDetails.isParent}">checked</c:if>/> Yes
-                                </label>
-                                <label class="radio-inline">
-                                    <input type="radio" id="isParent" path="useHEL" value="false" onClick="isParent(false);" <c:if test="${!importTypeDetails.isParent}">checked</c:if>/> No
-                                </label>
-                            </div>
-                            </div>
-                    <%-- if yes display paths --%>
+                   
+                    
                     <spring:bind path="name">
                         <div class="form-group ${status.error ? 'has-error' : '' }">
                             <label class="control-label" for="name">Name *</label>
@@ -51,32 +40,74 @@
                             <form:errors path="name" cssClass="control-label" element="label" />
                         </div>
                     </spring:bind>
+                    <spring:bind path="useMCI">
+                        <div class="form-group ${status.error ? 'has-error' : '' }">
+                            <label class="control-label" for="useMCI">Use MCI *</label>
+                            <div>
+                                <label class="radio-inline">
+                                    <form:radiobutton id="useMCI1" path="useMCI" value="true"/> Yes
+                                </label>
+                                <label class="radio-inline">
+                                    <form:radiobutton id="useMCI2" path="useMCI" value="false"/> No
+                                </label>
+                            </div>
+                            </div>
+                      </spring:bind>
+                       <spring:bind path="populateNewPatient">
+                        <div class="form-group ${status.error ? 'has-error' : '' }">
+                            <label class="control-label" for="populateNewPatient">Auto Populate New Patient Status*</label>
+                            <div>
+                                <label class="radio-inline">
+                                    <form:radiobutton id="populateNewPatient1" path="populateNewPatient" value="true"/> Yes
+                                </label>
+                                <label class="radio-inline">
+                                    <form:radiobutton id="populateNewPatient2" path="populateNewPatient" value="false"/> No
+                                </label>
+                            </div>
+                            </div>
+                      </spring:bind>
+                      <spring:bind path="parentProgramUploadTypeId">
+		                            <div class="form-group ${status.error ? 'has-error' : '' }" id="parentProgramUploadTypeIdDiv">
+		                                <label class="control-label" for="parentProgramUploadTypeId">Parent Program Upload Type</label>
+		                                <form:select path="parentProgramUploadTypeId" id="parentProgramUploadTypeId" class="form-control half parentProgramUploadTypeId" onChange="">
+		                                <option value="0" <c:if test="${put.id == importTypeDetails.parentProgramUploadTypeId}">selected</c:if>>None</option>
+                                <c:forEach items="${putList}" var="put">
+                               		<c:choose>
+                               		   <c:when test="${put.id != importTypeDetails.id}">
+	                                    	<option value="${put.id}" <c:if test="${put.id == importTypeDetails.parentProgramUploadTypeId}">selected</c:if>>${put.name}</option>
+	                                	</c:when>
+                                	</c:choose>
+                                </c:forEach>
+                            </form:select>
+                            <span id="parentProgramUploadTypeIdMsg" class="form-group control-label"></span>
+		                    </div>
+		            </spring:bind> 
+                      <%-- if yes display paths --%>
                     <spring:bind path="useHEL">
                         <div class="form-group ${status.error ? 'has-error' : '' }">
                             <label class="control-label" for="useHEL">Use Health-e-link *</label>
                             <div>
                                 <label class="radio-inline">
-                                    <form:radiobutton id="useHEL1" path="useHEL" value="true" onClick="helPaths(true);"/> Yes
+                                    <form:radiobutton id="useHEL1" path="useHEL" value="true"/> Yes
                                 </label>
                                 <label class="radio-inline">
-                                    <form:radiobutton id="useHEL2" path="useHEL" value="false" onClick="helPaths(false);" /> No
+                                    <form:radiobutton id="useHEL2" path="useHEL" value="false"/> No
                                 </label>
                             </div>
                             </div>
                       </spring:bind>
-                      <div id="helPaths" <c:if test="${not importTypeDetails.useHEL}">style="display:none"</c:if>>
-	                      <spring:bind path="helConfigId">
-	                        	<div class="form-group ${status.error ? 'has-error' : '' }" id="helDropPathDiv">
-		                            <label class="control-label" for="name">Health-e-link Config Id *</label>
+                       <spring:bind path="helConfigId">
+	                        	<div class="form-group ${status.error ? 'has-error' : '' }" id="helConfigIdDiv">
+		                            <label class="control-label" for="helConfigId">Health-e-link Config Id *</label>
 		                            <form:input path="helConfigId" id="helConfigId" class="form-control" type="text" maxLength="6" />
 		                            <span id="helConfigIdMsg" class="form-group control-label"></span>
 	                        	</div>
 	                   		</spring:bind>
-                      
-                      
-                        <spring:bind path="helDropPath">
+                    <div id="helPaths" <c:if test="${not importTypeDetails.useHEL}">style="display:none"</c:if>>
+	                     
+                      	<spring:bind path="helDropPath">
                         	<div class="form-group ${status.error ? 'has-error' : '' }" id="helDropPathDiv">
-	                            <label class="control-label" for="name">Health-e-link Input Path *</label>
+	                            <label class="control-label" for="helDropPath">Health-e-link Input Path *</label>
 	                            <form:input path="helDropPath" id="helDropPath" class="form-control" type="text" maxLength="100" />
 	                            <span id="helDropPathMsg" class="form-group control-label"></span>
                         	</div>
@@ -100,51 +131,48 @@
 		                    </div>
 		                </spring:bind> 
 	                     </div>
-	                      <spring:bind path="containsHeaderRow">
-                        <div class="form-group ${status.error ? 'has-error' : '' }">
-                            <label class="control-label" for="containsHeaderRow">Contain Header Row *</label>
-                            <div>
-                                <label class="radio-inline">
-                                    <form:radiobutton id="containsHeaderRow1" path="containsHeaderRow" value="true" /> Yes
-                                </label>
-                                <label class="radio-inline">
-                                    <form:radiobutton id="containsHeaderRow2" path="containsHeaderRow" value="false"/> No
-                                </label>
-                            </div>
-                            </div>
-                      </spring:bind>
-	                    <spring:bind path="inFileTypeId">
-		                            <div class="form-group ${status.error ? 'has-error' : '' }" >
-		                                <label class="control-label" for="inFileTypeId">File Type*</label>
-		                                <form:select path="inFileTypeId" id="inFileTypeId" class="form-control half inFileTypeId">
-                                <c:forEach items="${fileTypesList}" var="fileType">
-                                    <option value="${fileType.id}" <c:if test="${fileType.id == importTypeDetails.inFileTypeId}">selected</c:if>>${fileType.fileType}</option>
-                                </c:forEach>
-                            </form:select>
-		                    </div>
-		                </spring:bind> 
-		                <spring:bind path="fileDelimId">
-		                            <div class="form-group ${status.error ? 'has-error' : '' }">
-		                                <label class="control-label" for="fileDelimId">File Delimiter*</label>
-		                                <form:select path="fileDelimId" id="fileDelimId" class="form-control half fileDelimId">
-                               <c:forEach items="${delimiters}" var="fileDelim" varStatus="dStatus">
-                                        <option value="${delimiters[dStatus.index][0]}" <c:if test="${delimiters[dStatus.index][0] == importTypeDetails.fileDelimId}">selected</c:if>>${delimiters[dStatus.index][1]}</option>
-                                    </c:forEach>
-                            </form:select>
-		                    </div>
-		                </spring:bind> 
-	                   <spring:bind path="maxFileSize">
-                                    <div id="maxFileSizeDiv" class="form-group ${status.error ? 'has-error' : '' }">
-                                        <label class="control-label" for="maxFileSize">Max File Size (mb) *</label>
-                                        <form:input path="maxFileSize" id="maxFileSize" class="form-control" type="text" maxLength="11"/>
-                                        <form:errors path="maxFileSize" cssClass="control-label" element="label" />
-                                        <span id="maxFileSizeMsg" class="control-label"></span>                                    
-                                    </div>
-                        </spring:bind>
-                        
-                       
+		                 <spring:bind path="containsHeaderRow">
+	                        <div class="form-group ${status.error ? 'has-error' : '' }">
+	                            <label class="control-label" for="containsHeaderRow">Contain Header Row *</label>
+	                            <div>
+	                                <label class="radio-inline">
+	                                    <form:radiobutton id="containsHeaderRow1" path="containsHeaderRow" value="true" /> Yes
+	                                </label>
+	                                <label class="radio-inline">
+	                                    <form:radiobutton id="containsHeaderRow2" path="containsHeaderRow" value="false"/> No
+	                                </label>
+	                            </div>
+	                            </div>
+	                      </spring:bind>
+			              <spring:bind path="inFileTypeId">
+			                            <div class="form-group ${status.error ? 'has-error' : '' }" >
+			                                <label class="control-label" for="inFileTypeId">File Type*</label>
+			                                <form:select path="inFileTypeId" id="inFileTypeId" class="form-control half inFileTypeId">
+	                                <c:forEach items="${fileTypesList}" var="fileType">
+	                                    <option value="${fileType.id}" <c:if test="${fileType.id == importTypeDetails.inFileTypeId}">selected</c:if>>${fileType.fileType}</option>
+	                                </c:forEach>
+	                            </form:select>
+			                    </div>
+			                </spring:bind> 
+			                <spring:bind path="fileDelimId">
+			                            <div class="form-group ${status.error ? 'has-error' : '' }">
+			                                <label class="control-label" for="fileDelimId">File Delimiter*</label>
+			                                <form:select path="fileDelimId" id="fileDelimId" class="form-control half fileDelimId">
+	                               <c:forEach items="${delimiters}" var="fileDelim" varStatus="dStatus">
+	                                        <option value="${delimiters[dStatus.index][0]}" <c:if test="${delimiters[dStatus.index][0] == importTypeDetails.fileDelimId}">selected</c:if>>${delimiters[dStatus.index][1]}</option>
+	                                    </c:forEach>
+	                            </form:select>
+			                    </div>
+			                </spring:bind> 
+		                   <spring:bind path="maxFileSize">
+	                                    <div id="maxFileSizeDiv" class="form-group ${status.error ? 'has-error' : '' }">
+	                                        <label class="control-label" for="maxFileSize">Max File Size (mb) *</label>
+	                                        <form:input path="maxFileSize" id="maxFileSize" class="form-control" type="text" maxLength="11"/>
+	                                        <form:errors path="maxFileSize" cssClass="control-label" element="label" />
+	                                        <span id="maxFileSizeMsg" class="control-label"></span>                                    
+	                                    </div>
+	                        </spring:bind>                       
                     </div>
-               
                 <div class="form-group">
                     <input type="button" id="submitImportType" role="button" class="btn btn-primary" value="Save"/>
                 </div>

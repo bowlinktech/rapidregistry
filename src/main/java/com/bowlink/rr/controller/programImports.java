@@ -115,12 +115,19 @@ public class programImports {
         List <fileTypes> fileTypesList =  importManager.getFileTypes(0);
         mav.addObject("fileTypesList", fileTypesList);
         
+        List<programUploadTypes> putList = importManager.getParentUploadTypes((Integer) session.getAttribute("programId"));
+        
         //Get the list of available file delimiters
         @SuppressWarnings("rawtypes")
         List delimiters = dataelementmanager.getDelimiters();
         mav.addObject("delimiters", delimiters);
         
+        if (uploadType.getParentProgramUploadTypeId() != 0) {
+        	uploadType.setParent(true);
+        }
         mav.addObject("importTypeDetails", uploadType);
+        mav.addObject("putList", putList);
+        
        
         mav.addObject("programName", session.getAttribute("programName"));
 
@@ -161,7 +168,8 @@ public class programImports {
                 mav.addObject("modalTitle", "Create New Import Type");
             }
             mav.addObject("programName", session.getAttribute("programName"));
-            
+            List<programUploadTypes> putList = importManager.getParentUploadTypes((Integer) session.getAttribute("programId"));
+            mav.addObject("putList", putList);
             return mav;
         }
         

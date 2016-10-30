@@ -223,4 +223,6 @@ public interface importManager {
     void insertMultiRow(fieldsAndCols fieldsAndColumns, programUploads programUpload, Integer programUploadRecordId, String tableName) throws Exception;
     
     List<configuration> getHELConfigs(Integer orgId) throws Exception;
+    
+    List<programUploadTypes> getParentUploadTypes(Integer programId) throws Exception;
 }

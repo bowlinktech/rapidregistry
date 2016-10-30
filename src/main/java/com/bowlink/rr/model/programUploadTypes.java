@@ -63,29 +63,22 @@ public class programUploadTypes {
     @Column(name = "NAME", nullable = false)
     private String name;
     
-    @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
-    @Column(name = "DATECREATED", nullable = true)
-    private Date dateCreated = new Date();
-    
     @Column(name = "STATUS", nullable = false)
     private boolean status = true;
     
-    @Column(name = "useHEL", nullable = false)
-    private boolean useHEL = false;
+    @Column(name = "useHEL", nullable = true)
+    private boolean useHEL = true;
     
     @Column(name = "helConfigId", nullable = false)
     private Integer helConfigId = 0;
     
-    @Column(name = "parentProgramUploadTypeId", nullable = false)
-    private Integer parentProgramUploadTypeId = 0;
+    @NoHtml
+    @Column(name = "HELDropPath", nullable = true)
+    private String helDropPath;
     
     @NoHtml
     @Column(name = "HELPickUpPath", nullable = true)
     private String helPickUpPath;
-    
-    @NoHtml
-    @Column(name = "HELDropPath", nullable = true)
-    private String helDropPath;
     
     @Column(name = "inFileTypeId", nullable = false)
     private Integer inFileTypeId = 1;
@@ -93,24 +86,34 @@ public class programUploadTypes {
     @Column(name = "outFileTypeId", nullable = false)
     private Integer outFileTypeId = 2;
     
-    
-    @Column(name = "MAXFILESIZE", nullable = false)
-    private int maxFileSize = 0;
-    
     @Column(name = "fileDelimId", nullable = false)
     private int fileDelimId = 1;
     
     @Column(name = "encodingId", nullable = false)
     private int encodingId = 1;
     
+    @Column(name = "MAXFILESIZE", nullable = false)
+    private int maxFileSize = 0;
+    
+    @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
+    @Column(name = "DATECREATED", nullable = true)
+    private Date dateCreated = new Date();
+    
     @Column(name = "containsHeaderRow", nullable = false)
     private boolean containsHeaderRow = false;
     
-
+    @Column(name = "useMCI", nullable = false)
+    private boolean useMCI = false;
+    
+    @Column(name = "parentProgramUploadTypeId", nullable = false)
+    private Integer parentProgramUploadTypeId = 0;
+    
     @Column(name = "sortByColumns", nullable = true)
     private String sortByColumns;
     
-    
+    @Column(name = "populateNewPatient", nullable = true)
+    private boolean populateNewPatient = true;
+
 	public int getTotalFields() {
 		return totalFields;
 	}
@@ -143,12 +146,28 @@ public class programUploadTypes {
 		this.delimChar = delimChar;
 	}
 
+	public boolean isParent() {
+		return isParent;
+	}
+
+	public void setParent(boolean isParent) {
+		this.isParent = isParent;
+	}
+
 	public List<algorithmCategories> getAlgorithmCategories() {
 		return algorithmCategories;
 	}
 
 	public void setAlgorithmCategories(List<algorithmCategories> algorithmCategories) {
 		this.algorithmCategories = algorithmCategories;
+	}
+
+	public List<putHELConfig> getHelConfigs() {
+		return helConfigs;
+	}
+
+	public void setHelConfigs(List<putHELConfig> helConfigs) {
+		this.helConfigs = helConfigs;
 	}
 
 	public int getId() {
@@ -175,14 +194,6 @@ public class programUploadTypes {
 		this.name = name;
 	}
 
-	public Date getDateCreated() {
-		return dateCreated;
-	}
-
-	public void setDateCreated(Date dateCreated) {
-		this.dateCreated = dateCreated;
-	}
-
 	public boolean isStatus() {
 		return status;
 	}
@@ -199,12 +210,12 @@ public class programUploadTypes {
 		this.useHEL = useHEL;
 	}
 
-	public String getHelPickUpPath() {
-		return helPickUpPath;
+	public Integer getHelConfigId() {
+		return helConfigId;
 	}
 
-	public void setHelPickUpPath(String helPickUpPath) {
-		this.helPickUpPath = helPickUpPath;
+	public void setHelConfigId(Integer helConfigId) {
+		this.helConfigId = helConfigId;
 	}
 
 	public String getHelDropPath() {
@@ -215,6 +226,14 @@ public class programUploadTypes {
 		this.helDropPath = helDropPath;
 	}
 
+	public String getHelPickUpPath() {
+		return helPickUpPath;
+	}
+
+	public void setHelPickUpPath(String helPickUpPath) {
+		this.helPickUpPath = helPickUpPath;
+	}
+
 	public Integer getInFileTypeId() {
 		return inFileTypeId;
 	}
@@ -223,12 +242,12 @@ public class programUploadTypes {
 		this.inFileTypeId = inFileTypeId;
 	}
 
-	public int getMaxFileSize() {
-		return maxFileSize;
+	public Integer getOutFileTypeId() {
+		return outFileTypeId;
 	}
 
-	public void setMaxFileSize(int maxFileSize) {
-		this.maxFileSize = maxFileSize;
+	public void setOutFileTypeId(Integer outFileTypeId) {
+		this.outFileTypeId = outFileTypeId;
 	}
 
 	public int getFileDelimId() {
@@ -247,12 +266,20 @@ public class programUploadTypes {
 		this.encodingId = encodingId;
 	}
 
-	public Integer getOutFileTypeId() {
-		return outFileTypeId;
+	public int getMaxFileSize() {
+		return maxFileSize;
 	}
 
-	public void setOutFileTypeId(Integer outFileTypeId) {
-		this.outFileTypeId = outFileTypeId;
+	public void setMaxFileSize(int maxFileSize) {
+		this.maxFileSize = maxFileSize;
+	}
+
+	public Date getDateCreated() {
+		return dateCreated;
+	}
+
+	public void setDateCreated(Date dateCreated) {
+		this.dateCreated = dateCreated;
 	}
 
 	public boolean isContainsHeaderRow() {
@@ -263,28 +290,12 @@ public class programUploadTypes {
 		this.containsHeaderRow = containsHeaderRow;
 	}
 
-	public List<putHELConfig> getHelConfigs() {
-		return helConfigs;
+	public boolean isUseMCI() {
+		return useMCI;
 	}
 
-	public void setHelConfigs(List<putHELConfig> helConfigs) {
-		this.helConfigs = helConfigs;
-	}
-
-	public Integer getHelConfigId() {
-		return helConfigId;
-	}
-
-	public void setHelConfigId(Integer helConfigId) {
-		this.helConfigId = helConfigId;
-	}
-
-	public boolean isParent() {
-		return isParent;
-	}
-
-	public void setParent(boolean isParent) {
-		this.isParent = isParent;
+	public void setUseMCI(boolean useMCI) {
+		this.useMCI = useMCI;
 	}
 
 	public Integer getParentProgramUploadTypeId() {
@@ -302,7 +313,13 @@ public class programUploadTypes {
 	public void setSortByColumns(String sortByColumns) {
 		this.sortByColumns = sortByColumns;
 	}
-	
-	
-	
+
+	public boolean isPopulateNewPatient() {
+		return populateNewPatient;
+	}
+
+	public void setPopulateNewPatient(boolean populateNewPatient) {
+		this.populateNewPatient = populateNewPatient;
+	}
+    
 }

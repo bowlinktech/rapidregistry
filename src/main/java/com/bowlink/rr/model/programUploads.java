@@ -5,11 +5,7 @@
  */
 package com.bowlink.rr.model;
 
-import com.bowlink.rr.validator.NoHtml;
-
 import java.util.Date;
-import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,8 +13,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
 
 /**
@@ -30,81 +24,79 @@ import org.springframework.format.annotation.DateTimeFormat;
 public class programUploads {
     
 	@Transient
-    private programUploadTypes programUploadType;
+    processStatus processStatus;
 	
 	@Transient
-	private List <programUpload_Errors> errors;
+	Integer patientMCIRecords;
 	
+	@Transient
+	Integer engagementMCIRecords;
+	
+	@Transient 
+	String systemUserName;
+	
+	@Transient
+    private String encryptedId = null;
+
+    @Transient
+    private String encryptedSecret = null;
+    
+    @Transient
+    private String formDateUpload = null;
+    
+    
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID", nullable = false)
     private int id;
     
+    @Column(name = "helBatchUploadId", nullable = true)
+    private Integer helBatchUploadId = 0;
+    
     @Column(name = "PROGRAMID", nullable = false)
     private Integer programId = null;
     
-    @Column(name = "programUploadTypeId", nullable = false)
+    @Column(name = "PROGRAMUPLOADTYPEID", nullable = false)
     private Integer programUploadTypeId = null;
     
-    @Column(name = "systemUserId", nullable = false)
+    @Column(name = "uploadedAsProgramUploadTypeId", nullable = true)
+    private Integer uploadedAsProgramUploadTypeId = null;
+    
+    @Column(name = "SYSTEMUSERID", nullable = false)
     private Integer systemUserId = null;
     
-    @Column(name = "helBatchUploadId", nullable = false)
-    private Integer helBatchUploadId = null;
-    
-    
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
-    @Column(name = "dateUploaded", nullable = true)
+    @Column(name = "DATEUPLOADED", nullable = true)
     private Date dateUploaded = new Date();
-
     
-    @Column(name = "totalRows", nullable = false)
+    @Column(name = "TOTALROWS", nullable = false)
     private Integer totalRows = 0;
     
-    @Column(name = "totalInError", nullable = false)
+    @Column(name = "TOTALINERROR", nullable = false)
     private Integer totalInError = 0;
     
-    @NotEmpty
-    @NoHtml
     @Column(name = "uploadedFileName", nullable = true)
-    private String uploadedFileName = "";
-    
-    @NotEmpty
-    @NoHtml
+    private String uploadedFileName;
+
     @Column(name = "assignedFileName", nullable = true)
-    private String assignedFileName = "";
+    private String assignedFileName;
+
+    @Column(name = "inFileExt", nullable = true)
+    private String inFileExt;
     
-    @NotEmpty
-    @NoHtml
-    @Column(name = "assignedId", nullable = false)
-    private String assignedId = "";
+    @Column(name = "outFileExt", nullable = true)
+    private String outFileExt;
+    
     
     @Column(name = "statusId", nullable = false)
-    private Integer statusId = null;
-    
+    private Integer statusId = 0;
     
     @Column(name = "transportId", nullable = false)
-    private Integer transportId = null;
+    private Integer transportId = 0;
     
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
     @Column(name = "statusDateTime", nullable = true)
     private Date statusDateTime = new Date();
-
-	public programUploadTypes getProgramUploadType() {
-		return programUploadType;
-	}
-
-	public void setProgramUploadType(programUploadTypes programUploadType) {
-		this.programUploadType = programUploadType;
-	}
-
-	public List<programUpload_Errors> getErrors() {
-		return errors;
-	}
-
-	public void setErrors(List<programUpload_Errors> errors) {
-		this.errors = errors;
-	}
 
 	public int getId() {
 		return id;
@@ -112,6 +104,14 @@ public class programUploads {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public Integer getHelBatchUploadId() {
+		return helBatchUploadId;
+	}
+
+	public void setHelBatchUploadId(Integer helBatchUploadId) {
+		this.helBatchUploadId = helBatchUploadId;
 	}
 
 	public Integer getProgramId() {
@@ -178,14 +178,6 @@ public class programUploads {
 		this.assignedFileName = assignedFileName;
 	}
 
-	public String getAssignedId() {
-		return assignedId;
-	}
-
-	public void setAssignedId(String assignedId) {
-		this.assignedId = assignedId;
-	}
-
 	public Integer getStatusId() {
 		return statusId;
 	}
@@ -210,12 +202,85 @@ public class programUploads {
 		this.statusDateTime = statusDateTime;
 	}
 
-	public Integer getHelBatchUploadId() {
-		return helBatchUploadId;
+	public processStatus getProcessStatus() {
+		return processStatus;
 	}
 
-	public void setHelBatchUploadId(Integer helBatchUploadId) {
-		this.helBatchUploadId = helBatchUploadId;
+	public void setProcessStatus(processStatus processStatus) {
+		this.processStatus = processStatus;
+	}
+
+	public String getInFileExt() {
+		return inFileExt;
+	}
+
+	public void setInFileExt(String inFileExt) {
+		this.inFileExt = inFileExt;
+	}
+
+	public String getOutFileExt() {
+		return outFileExt;
+	}
+
+	public void setOutFileExt(String outFileExt) {
+		this.outFileExt = outFileExt;
+	}
+
+	public Integer getUploadedAsProgramUploadTypeId() {
+		return uploadedAsProgramUploadTypeId;
+	}
+
+	public void setUploadedAsProgramUploadTypeId(
+			Integer uploadedAsProgramUploadTypeId) {
+		this.uploadedAsProgramUploadTypeId = uploadedAsProgramUploadTypeId;
+	}
+
+	public Integer getPatientMCIRecords() {
+		return patientMCIRecords;
+	}
+
+	public void setPatientMCIRecords(Integer patientMCIRecords) {
+		this.patientMCIRecords = patientMCIRecords;
+	}
+
+	public Integer getEngagementMCIRecords() {
+		return engagementMCIRecords;
+	}
+
+	public void setEngagementMCIRecords(Integer engagementMCIRecords) {
+		this.engagementMCIRecords = engagementMCIRecords;
+	}
+
+	public String getSystemUserName() {
+		return systemUserName;
+	}
+
+	public void setSystemUserName(String systemUserName) {
+		this.systemUserName = systemUserName;
+	}
+
+	public String getEncryptedId() {
+		return encryptedId;
+	}
+
+	public void setEncryptedId(String encryptedId) {
+		this.encryptedId = encryptedId;
+	}
+
+	public String getEncryptedSecret() {
+		return encryptedSecret;
+	}
+
+	public void setEncryptedSecret(String encryptedSecret) {
+		this.encryptedSecret = encryptedSecret;
+	}
+
+	public String getFormDateUpload() {
+		return formDateUpload;
+	}
+
+	public void setFormDateUpload(String formDateUpload) {
+		this.formDateUpload = formDateUpload;
 	}
 
 }

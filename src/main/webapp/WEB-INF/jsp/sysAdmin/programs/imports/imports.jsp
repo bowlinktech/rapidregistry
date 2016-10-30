@@ -76,18 +76,21 @@
                                                     <span class="glyphicon glyphicon-edit"></span>
                                                     Edit
                                                 </a>
-                                                <a href="/sysAdmin/programs/${programName}/imports/fields?s=${importType.id}"  class="btn btn-link" title="View importable fields for this import type.">
-                                                    <span class="glyphicon glyphicon-align-justify"></span>
-                                                    Fields
-                                                </a>
-                                                <a href="/sysAdmin/programs/${programName}/mci-algorithms?s=${importType.id}"  class="btn btn-link" title="View rules on how to process this import type." rel="${importType.id}">
-                                                    <span class="glyphicon glyphicon-saved"></span>
-                                                    Rules
-                                                </a>
-                                                <a href="javascript:void(0);"  class="btn btn-link deleteImportType" rel="${importType.id}"  title="Delete this import type">
-                                                    <span class="glyphicon glyphicon-remove"></span>
-                                                    Delete
-                                                </a>
+                                                <c:if test="${importType.parentProgramUploadTypeId == 0}">
+	                                                <a href="/sysAdmin/programs/${programName}/imports/fields?s=${importType.id}"  class="btn btn-link" title="View importable fields for this import type.">
+	                                                    <span class="glyphicon glyphicon-align-justify"></span>
+	                                                    Fields
+	                                                </a>
+	                                                <a href="/sysAdmin/programs/${programName}/mci-algorithms?s=${importType.id}"  class="btn btn-link" title="View rules on how to process this import type." rel="${importType.id}">
+	                                                    <span class="glyphicon glyphicon-saved"></span>
+	                                                    Rules
+	                                                </a>
+	                                                </c:if>
+	                                                <a href="javascript:void(0);"  class="btn btn-link deleteImportType" rel="${importType.id}"  title="Delete this import type">
+	                                                    <span class="glyphicon glyphicon-remove"></span>
+	                                                    Delete
+	                                                </a>
+                                                
                                             </td>
                                         </tr>
                                     </c:forEach>

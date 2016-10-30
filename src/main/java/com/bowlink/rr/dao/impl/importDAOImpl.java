@@ -344,7 +344,7 @@ public class importDAOImpl implements importDAO {
     @SuppressWarnings("unchecked")
     public programUploads getProgramUploadByAssignedId(programUploads pu) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(programUploads.class);
-        criteria.add(Restrictions.eq("assignedId", pu.getAssignedId()));
+        criteria.add(Restrictions.eq("assignedFileName", pu.getAssignedFileName()));
 
         List<programUploads> programUploads = criteria.list();
         if (programUploads.size() == 1) {
@@ -1763,6 +1763,18 @@ public class importDAOImpl implements importDAO {
         List<configuration> configList = query.list();
         
         return configList;
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<programUploadTypes> getParentUploadTypes(Integer programId)
+			throws Exception {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(programUploadTypes.class);
+        criteria.add(Restrictions.eq("programId", programId));
+        criteria.add(Restrictions.eq("parentProgramUploadTypeId", 0));
+        List<programUploadTypes> programUploadTypeList = criteria.list();
+
+        return programUploadTypeList;
 	}
 
 }

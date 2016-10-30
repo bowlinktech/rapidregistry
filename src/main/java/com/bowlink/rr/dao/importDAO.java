@@ -167,6 +167,8 @@ public interface importDAO {
     boolean checkMultiRowSetUp(Integer programUploadTypeId, String tableName) throws Exception;
     
     List<configuration> getHELConfigs(Integer orgId) throws Exception;
+    
+    List<programUploadTypes> getParentUploadTypes(Integer programId) throws Exception;
 }
 
 

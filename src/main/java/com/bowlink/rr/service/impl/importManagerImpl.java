@@ -1878,5 +1878,11 @@ public class importManagerImpl implements importManager {
     public List<configuration> getHELConfigs(Integer orgId) throws Exception {
         return importDAO.getHELConfigs(orgId);
     }
+    
+    @Override
+    @Transactional
+    public List<programUploadTypes> getParentUploadTypes(Integer programId) throws Exception {
+        return importDAO.getParentUploadTypes(programId);
+    }
 
 }

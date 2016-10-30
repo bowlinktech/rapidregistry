@@ -5,12 +5,22 @@ require(['./main'], function () {
         
         $("input:text,form").attr("autocomplete", "off");
         
-        
         //Fade out the updated/created message after being displayed.
         if ($('.alert').length > 0) {
             $('.alert').delay(2000).fadeOut(1000);
         }
         
+        $(document).on('change', '#parentProgramUploadTypeId', function() {
+        	
+            var selParent = $('#parentProgramUploadTypeId').val();
+            if (selParent > 0) {
+                $('#parentConfig').hide();
+            }
+            else {
+            	$('#parentConfig').show();
+            }
+        });
+
         //Open up the modal to display the import type form
         $(document).on('click', '#createNewImportType', function() {
             $.ajax({
@@ -51,10 +61,26 @@ require(['./main'], function () {
             var helPickUpPath = $("#helPickUpPath").val();
             var outFileTypeId = $("#outFileTypeId").val();
             
-            
+            if($('#useHEL1').is(':checked')) {
+	            if (helConfigId < 1) {
+	        		 $("#helConfigIdDiv").addClass("has-error");
+	        		 $('#helConfigIdMsg').addClass("has-error");
+	                 $('#helConfigIdMsg').html('Health-e-link Config Id must be greater than 1'); 
+	                 errorCount++;
+	         	}
+	       	
+	       	
+		       	if ($.trim(helConfigId).length < 1) {
+		      		 $("#helConfigIdDiv").addClass("has-error");
+		      		 $('#helConfigIdMsg').addClass("has-error");
+		               $('#helConfigIdMsg').html('Health-e-link Config Id cannot be empty'); 
+		               errorCount++;
+		       	}
+        	}
             /**check to make sure paths are not blank**/
             if($('#useHEL1').is(':checked')) {
             	//make sure paths are filled in
+            	
             	if ($.trim(helDropPath).length < 1) {
             		 $("#helDropPathDiv").addClass("has-error");
             		 $('#helDropPathMsg').addClass("has-error");
@@ -123,21 +149,5 @@ require(['./main'], function () {
 });
 
 
-function helPaths(show) {
-	if (show) {
-		$("#helPaths").show();
-	} else {
-		$("#helPaths").hide();
-	}
-}
 
-function isParentPUT(show) {
-	if (show) {
-		$("#isParentDiv").show();
-		$("#helPaths").hide();
-	} else {
-		$("#isParentDiv").hide();
-		$("#helPaths").show();
-	}
-}
 
