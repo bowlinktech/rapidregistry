@@ -6,6 +6,8 @@
 package com.bowlink.rr.model;
 
 import java.util.Date;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,6 +15,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
 import org.springframework.format.annotation.DateTimeFormat;
 
 /**
@@ -44,6 +47,8 @@ public class programUploads {
     @Transient
     private String formDateUpload = null;
     
+    @Transient
+	private List <programUpload_Errors> errors;
     
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -283,4 +288,11 @@ public class programUploads {
 		this.formDateUpload = formDateUpload;
 	}
 
+	public List<programUpload_Errors> getErrors() {
+		return errors;
+	}
+
+	public void setErrors(List<programUpload_Errors> errors) {
+		this.errors = errors;
+	}
 }
