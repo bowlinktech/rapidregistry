@@ -732,7 +732,7 @@ public class importManagerImpl implements importManager {
                 programUploads pu = new programUploads();
                 //we remove file extension
                 String assignedId = fileName.substring(0, fileName.lastIndexOf("."));
-                pu.setAssignedId(assignedId);
+                pu.setAssignedFileName(assignedId);
                 programUploads puNew = getProgramUploadByAssignedId(pu);
 
                 String fileExt = fileName.substring((fileName.lastIndexOf(".") + 1), fileName.length());
@@ -960,8 +960,7 @@ public class importManagerImpl implements importManager {
         }
 
         programUploads pu = new programUploads();
-        pu.setAssignedFileName(assignedId + fileExt);
-        pu.setAssignedId(assignedId);
+        pu.setAssignedFileName(assignedId);
         pu.setUploadedFileName(uploadedFile.getOriginalFilename());
         pu.setProgramId(put.getProgramId());
         pu.setProgramUploadTypeId(put.getId());
@@ -1046,7 +1045,7 @@ public class importManagerImpl implements importManager {
         String actualFileName = null;
 
         String encodedFilePath = dir.setPath(processPath);
-        String encodedFileName = pu.getAssignedId() + "." + pu.getProgramUploadType().getOutFileExt();
+        String encodedFileName = pu.getAssignedFileName() + "." + pu.getProgramUploadType().getOutFileExt();
         File encodedFile = new File(encodedFilePath + encodedFileName);
 
         String decodedFilePath = dir.setPath(loadPath);

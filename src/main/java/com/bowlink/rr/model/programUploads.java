@@ -39,6 +39,9 @@ public class programUploads {
 	String systemUserName;
 	
 	@Transient
+    private programUploadTypes programUploadType;
+	
+	@Transient
     private String encryptedId = null;
 
     @Transient
@@ -295,4 +298,13 @@ public class programUploads {
 	public void setErrors(List<programUpload_Errors> errors) {
 		this.errors = errors;
 	}
+
+	public programUploadTypes getProgramUploadType() {
+		return programUploadType;
+	}
+
+	public void setProgramUploadType(programUploadTypes programUploadType) {
+		this.programUploadType = programUploadType;
+	}
+
 }
