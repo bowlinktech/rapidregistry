@@ -7,7 +7,13 @@
 package com.bowlink.rr.service;
 
 import com.bowlink.rr.model.programReports;
+import com.bowlink.rr.model.reportCrossTab;
+import com.bowlink.rr.model.reportCrossTabCWData;
+import com.bowlink.rr.model.reportCrossTabEntity;
+import com.bowlink.rr.model.reportDetails;
+import com.bowlink.rr.model.reportType;
 import com.bowlink.rr.model.reports;
+
 import java.util.List;
 
 /**
@@ -30,5 +36,18 @@ public interface reportManager {
     
     void deleteProgramReports(Integer programId) throws Exception;
     
+    List<reportType> getAllReportTypes() throws Exception;
+    
+    List<reportDetails> getAllForReportType(Integer programId, Integer reportTypeId) throws Exception;
+    
+    reportType getReportTypeById(Integer reportTypeId) throws Exception;
+    
+    reportDetails getReportDetailsById(Integer reportId, boolean aggregated) throws Exception;
+    
+    List <reportCrossTab> getCrossTabsByReportId (Integer reportId) throws Exception;
+    
+    List <reportCrossTabEntity> getCrossTabEntitiesByReportId (Integer reportId) throws Exception;
+    
+    List<reportCrossTabCWData> getReportCrossTabCWDataByCTId (Integer crossTabId) throws Exception;
     
 }

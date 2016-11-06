@@ -6,12 +6,17 @@
 package com.bowlink.rr.dao.impl;
 
 import com.bowlink.rr.dao.dataElementDAO;
+import com.bowlink.rr.model.crosswalkData;
 import com.bowlink.rr.model.crosswalks;
 import com.bowlink.rr.model.customProgramFields;
 import com.bowlink.rr.model.dataElements;
+import com.bowlink.rr.model.reportCrossTabCWData;
+
 import java.util.List;
 import java.util.Properties;
+
 import javax.annotation.Resource;
+
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
@@ -559,4 +564,14 @@ public class dataElementDAOImpl implements dataElementDAO {
     public void saveCustomField(customProgramFields customField) {
         sessionFactory.getCurrentSession().saveOrUpdate(customField);
     }
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<crosswalkData> getCrosswalkDataByCWId(Integer cwId)
+			throws Exception {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(crosswalkData.class);
+		criteria.add(Restrictions.eq("crosswalkId", cwId));
+		List <crosswalkData> dataList = criteria.list();
+		return dataList;
+	}
 }

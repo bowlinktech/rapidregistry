@@ -8,9 +8,16 @@ package com.bowlink.rr.service.impl;
 
 import com.bowlink.rr.dao.reportDAO;
 import com.bowlink.rr.model.programReports;
+import com.bowlink.rr.model.reportCrossTab;
+import com.bowlink.rr.model.reportCrossTabCWData;
+import com.bowlink.rr.model.reportCrossTabEntity;
+import com.bowlink.rr.model.reportDetails;
+import com.bowlink.rr.model.reportType;
 import com.bowlink.rr.model.reports;
 import com.bowlink.rr.service.reportManager;
+
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,5 +76,59 @@ public class reportManagerImpl implements reportManager {
     public void deleteProgramReports(Integer programId) throws Exception {
         reportDAO.deleteProgramReports(programId);
     }
+
+
+	@Override
+	@Transactional
+	public List<reportType> getAllReportTypes() throws Exception {
+		return reportDAO.getAllReportTypes();
+	}
+
+
+	@Override
+	@Transactional
+	public List<reportDetails> getAllForReportType(Integer programId,
+			Integer reportTypeId) throws Exception {
+		return reportDAO.getAllForReportType(programId, reportTypeId);	
+		}
+
+
+	@Override
+	@Transactional
+	public reportType getReportTypeById(Integer reportTypeId) throws Exception {
+		return reportDAO.getReportTypeById(reportTypeId);
+	}
+
+
+	@Override
+	@Transactional
+	public reportDetails getReportDetailsById(Integer reportId, boolean aggregated)
+			throws Exception {
+		return reportDAO.getReportDetailsById(reportId, aggregated);
+	}
+
+
+	@Override
+	@Transactional
+	public List<reportCrossTab> getCrossTabsByReportId(Integer reportId)
+			throws Exception {
+		return reportDAO.getCrossTabsByReportId(reportId);
+	}
+
+
+	@Override
+	@Transactional
+	public List<reportCrossTabEntity> getCrossTabEntitiesByReportId(
+			Integer reportId) throws Exception {
+		return reportDAO.getCrossTabEntitiesByReportId(reportId);
+	}
+
+
+	@Override
+	@Transactional
+	public List<reportCrossTabCWData> getReportCrossTabCWDataByCTId(
+			Integer crossTabId) throws Exception {
+		return reportDAO.getReportCrossTabCWDataByCTId(crossTabId);
+	}
     
 }

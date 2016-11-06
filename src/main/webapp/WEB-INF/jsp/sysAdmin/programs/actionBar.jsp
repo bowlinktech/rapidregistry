@@ -39,7 +39,10 @@
                     </c:when>
                     <c:when test="${param['page'] == 'cannedreports'}">
                         <a href="javascript:void(0);" title="Canned Reports" class="unstyled-link">Canned Reports</a>
-                    </c:when>  
+                    </c:when> 
+                    <c:when test="${param['page'] == 'aggreports'}">
+                        <a href="javascript:void(0);" title="Aggregated Reports" class="unstyled-link">Aggregated Reports</a>
+                    </c:when>   
                     <c:when test="${param['page'] == 'imports' ||param['page'] == 'importFields' ||param['page'] == 'importRules'}">
                         <a href="javascript:void(0);" title="Imports" class="unstyled-link">Imports</a>
                     </c:when>   

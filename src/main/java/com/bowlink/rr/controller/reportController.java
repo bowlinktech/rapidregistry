@@ -1,7 +1,5 @@
 package com.bowlink.rr.controller;
 
-
-import com.bowlink.rr.model.activityCodes;
 import com.bowlink.rr.model.program;
 import com.bowlink.rr.model.programReports;
 import com.bowlink.rr.model.reports;
@@ -228,7 +226,7 @@ public class reportController {
                 programReports report = new programReports();
 
                 report.setProgramId(selProgramId);
-                report.setReportId(reportId);
+                report.setId(reportId);
 
                 reportmanager.saveProgramReports(report);
             }
