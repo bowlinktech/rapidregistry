@@ -6,6 +6,7 @@
 
 package com.bowlink.rr.service;
 
+import com.bowlink.rr.model.programOrgHierarchyDetails;
 import com.bowlink.rr.model.programReports;
 import com.bowlink.rr.model.reportCrossTab;
 import com.bowlink.rr.model.reportCrossTabCWData;
@@ -49,5 +50,7 @@ public interface reportManager {
     List <reportCrossTabEntity> getCrossTabEntitiesByReportId (Integer reportId) throws Exception;
     
     List<reportCrossTabCWData> getReportCrossTabCWDataByCTId (Integer crossTabId) throws Exception;
+    
+    List<programOrgHierarchyDetails> getHierarchiesForAggregatedReport (Integer hierarchyId, Integer reportId, String matchField) throws Exception;
     
 }

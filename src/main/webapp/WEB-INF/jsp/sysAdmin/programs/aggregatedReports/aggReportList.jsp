@@ -91,7 +91,7 @@
                                     </c:forEach>
                                 </c:when>
                                 <c:otherwise>
-                                    <tr><td colspan="4" class="center-text">There are currently no reports set up for this report type.</td></tr>
+                                    <tr><td colspan="4" class="center-text">There are currently no aggregated reports set up for this report type.</td></tr>
                                 </c:otherwise>
                             </c:choose>
                        </tbody>

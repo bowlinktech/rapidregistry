@@ -7,6 +7,7 @@
 package com.bowlink.rr.service.impl;
 
 import com.bowlink.rr.dao.reportDAO;
+import com.bowlink.rr.model.programOrgHierarchyDetails;
 import com.bowlink.rr.model.programReports;
 import com.bowlink.rr.model.reportCrossTab;
 import com.bowlink.rr.model.reportCrossTabCWData;
@@ -129,6 +130,14 @@ public class reportManagerImpl implements reportManager {
 	public List<reportCrossTabCWData> getReportCrossTabCWDataByCTId(
 			Integer crossTabId) throws Exception {
 		return reportDAO.getReportCrossTabCWDataByCTId(crossTabId);
+	}
+
+
+	@Override
+	@Transactional
+	public List<programOrgHierarchyDetails> getHierarchiesForAggregatedReport(
+			Integer hierarchyId, Integer reportId, String matchField) throws Exception {
+		return reportDAO.getHierarchiesForAggregatedReport(hierarchyId, reportId, matchField );
 	}
     
 }

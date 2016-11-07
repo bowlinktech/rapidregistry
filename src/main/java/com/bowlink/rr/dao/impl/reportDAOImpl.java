@@ -7,6 +7,8 @@
 package com.bowlink.rr.dao.impl;
 
 import com.bowlink.rr.dao.reportDAO;
+import com.bowlink.rr.model.configuration;
+import com.bowlink.rr.model.programOrgHierarchyDetails;
 import com.bowlink.rr.model.programReports;
 import com.bowlink.rr.model.programUploadTypes;
 import com.bowlink.rr.model.reportCrossTab;
@@ -25,6 +27,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
+import org.hibernate.type.StandardBasicTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -200,7 +203,7 @@ public class reportDAOImpl implements reportDAO {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(reportDetails.class);
 		criteria.add(Restrictions.eq("id", reportId));
         if (aggregated == true) {
-        	criteria.add(Restrictions.eq("aggregated", true));
+        	criteria.add(Restrictions.eq("aggregatedReport", aggregated));
         }
 		List <reportDetails> repList = criteria.list();
 		
@@ -223,14 +226,15 @@ public class reportDAOImpl implements reportDAO {
         return reportCrossTabs;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<reportCrossTabEntity> getCrossTabEntitiesByReportId(
 			Integer reportId) throws Exception {
 			Criteria criteria = sessionFactory.getCurrentSession().createCriteria(reportCrossTabEntity.class);
 			criteria.add(Restrictions.eq("reportId", reportId));
-			criteria.addOrder( Order.asc("entityId1"));
-			criteria.addOrder( Order.asc("entityId2"));
-			criteria.addOrder( Order.asc("entityId3"));
+			criteria.addOrder( Order.asc("entity1Id"));
+			criteria.addOrder( Order.asc("entity2Id"));
+			criteria.addOrder( Order.asc("entity3Id"));
 			
 			List <reportCrossTabEntity> reportCrossTabs = criteria.list();
 			
@@ -245,6 +249,28 @@ public class reportDAOImpl implements reportDAO {
 		criteria.add(Restrictions.eq("reportCrossTabId", crossTabId));
 		List <reportCrossTabCWData> dataList = criteria.list();
 		return dataList;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<programOrgHierarchyDetails> getHierarchiesForAggregatedReport(
+			Integer hierarchyId, Integer reportId, String matchField)
+			throws Exception {
+		String sql = ("select programorghierarchy_details.*, "
+				+ "case when reportcrosstabentity.id is not null and reportId = :reportId then 1 else 0 end isSelected"
+				+ " from programorghierarchy_details left outer join reportcrosstabentity "
+				+ " on  reportcrosstabentity." + matchField  +" = programorghierarchy_details.id  "
+				+ " where programhierarchyId = :hierarchyId");
+
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sql)
+                .setResultTransformer(
+                        Transformers.aliasToBean(programOrgHierarchyDetails.class))
+                .setParameter("hierarchyId", hierarchyId);
+
+        query.setParameter("reportId", reportId);
+        
+        List<programOrgHierarchyDetails> putList = query.list();
+        return putList;
 	}
     
 }

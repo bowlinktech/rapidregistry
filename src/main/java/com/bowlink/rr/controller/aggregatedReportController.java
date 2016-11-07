@@ -100,7 +100,7 @@ public class aggregatedReportController {
     	ModelAndView mav = new ModelAndView();
         
         Integer programId = (Integer) session.getAttribute("programId");
-        mav.setViewName("reportDetails");
+        mav.setViewName("/reportDetails");
         mav.addObject("id", programId);
         
         program programDetails = programmanager.getProgramById(programId);
@@ -123,10 +123,8 @@ public class aggregatedReportController {
         List<programOrgHierarchy> hierarchyList = orghierarchymanager.getProgramOrgHierarchy(programId);
         
         //get selected aggregated fields
-        List<programOrgHierarchyDetails> entities = orghierarchymanager.getProgramHierarchyItems(hierarchyList.get(1).getId());
+        List<programOrgHierarchyDetails> entities = reportmanager.getHierarchiesForAggregatedReport(hierarchyList.get(1).getId(), reportId, "entity2Id");
 
-        //cw items
-        
         mav.addObject("entities", entities);
         mav.addObject("hierarchyList", hierarchyList);
         mav.addObject("reportDetail", details);

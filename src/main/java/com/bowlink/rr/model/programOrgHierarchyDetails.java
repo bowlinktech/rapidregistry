@@ -5,7 +5,9 @@
  */
 package com.bowlink.rr.model;
 
+import java.math.BigInteger;
 import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,6 +15,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -26,6 +29,9 @@ public class programOrgHierarchyDetails {
     
     @Transient
     private Boolean isAssociated = false, createFolders = false;
+    
+    @Transient
+    private BigInteger isSelected;
     
     @Transient
     private String encryptedId = null;
@@ -383,6 +389,13 @@ public class programOrgHierarchyDetails {
     public void setAltDisplayId(String altDisplayId) {
         this.altDisplayId = altDisplayId;
     }
-    
-    
+
+	public BigInteger getIsSelected() {
+		return isSelected;
+	}
+
+	public void setIsSelected(BigInteger isSelected) {
+		this.isSelected = isSelected;
+	}
+
 }

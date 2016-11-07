@@ -1,5 +1,6 @@
 
 require(['./main'], function () {
+    require(['jquery'], function($) {
 
 	    $(document).on('change', '.changeRepType', function() {
            var selRepType = $(this).val();
@@ -9,9 +10,6 @@ require(['./main'], function () {
            
         });
         
-        
-       
-        
     });
 
-
+});
