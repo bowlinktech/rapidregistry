@@ -20,6 +20,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -187,6 +188,7 @@ public class programDAOImpl implements programDAO {
             
             Criteria criteria = sessionFactory.getCurrentSession().createCriteria(program.class);
             criteria.add(Restrictions.in("id", programIds));
+            criteria.addOrder(Order.asc("programName"));
             
             programs = criteria.list();
             

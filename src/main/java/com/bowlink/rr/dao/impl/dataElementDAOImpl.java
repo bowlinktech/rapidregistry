@@ -430,18 +430,28 @@ public class dataElementDAOImpl implements dataElementDAO {
     @Transactional
     public List getLookupTableValues(String tableName, Integer programId) throws Exception {
         
-        try {
-            Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT id, displayText from " + tableName + " where status = 1 order by displayText asc");
-
+        if("programs".equals(tableName)) {
+            Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT id, programName from " + tableName + " where status = 1 order by programName asc");
             return query.list();
         }
-        catch (Exception e) {
+        else if("lu_programmodules".equals(tableName)) {
+            Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT id, displayName from " + tableName + " order by displayName asc");
+            return query.list();
+        }
+        else {
             try {
-                Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT id, name from " + tableName + " where programId = " + programId + " order by name asc");
+                Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT id, displayText from " + tableName + " where status = 1 order by displayText asc");
+
                 return query.list();
             }
-            catch(Exception ex) {
-                return null;
+            catch (Exception e) {
+                try {
+                    Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT id, name from " + tableName + " where programId = " + programId + " order by name asc");
+                    return query.list();
+                }
+                catch(Exception ex) {
+                    return null;
+                }
             }
         }
     }

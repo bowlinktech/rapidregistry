@@ -96,5 +96,5 @@ define(['jquery'], function ($) {
 	};
 
 	return fixedHeader;
-
+        
 });

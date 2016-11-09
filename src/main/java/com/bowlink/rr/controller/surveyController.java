@@ -1983,7 +1983,7 @@ public class surveyController {
         //check tag	
         if (!"".equals(surveyNew.getSurveyTag()) && !survey.getSurveyTag().trim().equalsIgnoreCase(surveyNew.getSurveyTag().trim())) {
             //we do not allow duplicate title
-            List<surveys> existingTag = surveymanager.getProgramSurveysByTitle(surveyNew);
+            List<surveys> existingTag = surveymanager.getProgramSurveysByTag(surveyNew);
             if (existingTag.size() != 0) {
                 mav.addObject("survey", surveyNew);
                 mav.addObject("activityCodes", activityCodes);

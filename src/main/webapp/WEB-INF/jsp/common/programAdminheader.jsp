@@ -1,4 +1,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <header id="header" class="header" role="banner">
     <!-- Primary Nav -->
     <!--role="navigation" used for accessibility -->
@@ -27,9 +28,23 @@
             </div>
             <div class="collapse navbar-collapse navbar-ex1-collapse">
                 <ul class="nav navbar-nav" role="menu">
-                    <c:forEach var="program" items="${sessionScope.availPrograms}">
-                        <li role="menuitem" class="${program[0] == sessionScope.selprogramId ? 'active' : 'none'}"><a href="<c:url value='/programAdmin/changeRegistry?i=${program[0]}' />" title="${program[1]}">${program[1]}</a><c:if test="${program[0] == sessionScope.selprogramId}"><span class="indicator-active arrow-up"></span></c:if></li>
-                    </c:forEach>
+                    <c:choose>
+                        <c:when test="${fn:length(sessionScope.availPrograms) > 4}">
+                            <li role="menuitem" class="active">
+                                <select class="form-control registrySelect" style="margin-top:10px;">
+                                    <option value="">- Select Registry-</option>
+                                    <c:forEach var="program" items="${sessionScope.availPrograms}">
+                                        <option value="${program[0]}" <c:if test="${program[0] == sessionScope.selprogramId}">selected</c:if>>${program[1]}</option>
+                                    </c:forEach>
+                                </select>
+                            </li>
+                        </c:when>
+                        <c:otherwise>
+                             <c:forEach var="program" items="${sessionScope.availPrograms}">
+                                <li role="menuitem" class="${program[0] == sessionScope.selprogramId ? 'active' : 'none'}"><a href="<c:url value='/programAdmin/changeRegistry?i=${program[0]}' />" title="${program[1]}">${program[1]}</a><c:if test="${program[0] == sessionScope.selprogramId}"><span class="indicator-active arrow-up"></span></c:if></li>
+                            </c:forEach>
+                        </c:otherwise>
+                    </c:choose>
                 </ul>
                 <ul class="nav navbar-nav navbar-right" id="secondary-nav">
                   <li><a class="logout" href="<c:url value='/logout' />">Log out</a></li>
@@ -39,3 +54,16 @@
     </nav>
     <!-- // End Primary Nav -->
 </header>
+                
+<script>
+    require(['./main'], function () {
+        require(['jquery'], function ($) {
+            $(document).on('change', '.registrySelect', function() {
+                if($(this).val() !== '') {
+                    window.location.href="/programAdmin/changeRegistry?i="+$(this).val();
+                } 
+             });
+        });
+    });
+    
+</script>
