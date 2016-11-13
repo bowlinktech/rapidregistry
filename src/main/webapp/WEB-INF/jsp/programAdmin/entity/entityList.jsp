@@ -7,6 +7,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="s" uri="http://www.springframework.org/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
 <div class="panel-heading">
     <div class="pull-right">
@@ -19,7 +20,7 @@
         <table class="table table-striped table-hover table-default" <c:if test="${not empty entityItems}">id="dataTable"</c:if>>
             <thead>
                 <tr>
-                    <th scope="col">Name</th>
+                    <th scope="col">Display Id - Name</th>
                     <th scope="col" class="center-text">Status</th>
                     <th scope="col" class="center-text">Date Created</th>
                     <th scope="col">Associated With</th>
@@ -32,7 +33,7 @@
                     <c:forEach var="entityItem" items="${entityItems}">
                         <tr id="${entityItem.id}">
                             <td>
-                                ${entityItem.name}
+                                <c:if test="${fn:length(entityItem.displayId) > 0}">${entityItem.displayId} - </c:if>${entityItem.name}
                             </td>
                             <td class="center-text">
                                 <c:choose><c:when test="${entityItem.status == true}">Active</c:when><c:otherwise>Inactive</c:otherwise></c:choose>

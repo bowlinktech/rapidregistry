@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 
 @Entity
 @Table(name = "reportcrosstab")
@@ -41,7 +43,11 @@ public class reportCrossTab {
     @Column(name = "dspPos", nullable = false)
     private int dspPos = 1;
     
-    @Column(name = "tableTitle", nullable = true)
+    @Column(name = "statusId", nullable = false)
+    private int statusId = 1;
+    
+    @NotEmpty
+    @Column(name = "tableTitle", nullable = false)
     private String tableTitle;
 
 	public List<reportCrossTabCWData> getCombineCWDataId() {
@@ -116,4 +122,11 @@ public class reportCrossTab {
 		this.cwDataCol = cwDataCol;
 	}
 
+	public int getStatusId() {
+		return statusId;
+	}
+
+	public void setStatusId(int statusId) {
+		this.statusId = statusId;
+	}
 }

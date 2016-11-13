@@ -53,6 +53,9 @@ CREATE TABLE `rapidregistrydev`.`reportcrosstabcwdata` (
   PRIMARY KEY (`id`));
 
 
+ALTER TABLE `rapidregistrydev`.`reportcrosstab` 
+CHANGE COLUMN `tableTitle` `tableTitle` VARCHAR(100) NOT NULL ,
+ADD COLUMN `statusId` INT NOT NULL DEFAULT 1 COMMENT '1 - active\n2 - inactive\n3 - deleted' AFTER `tableTitle`;
 
   
   

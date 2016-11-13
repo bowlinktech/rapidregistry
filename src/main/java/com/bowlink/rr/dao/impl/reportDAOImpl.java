@@ -7,10 +7,8 @@
 package com.bowlink.rr.dao.impl;
 
 import com.bowlink.rr.dao.reportDAO;
-import com.bowlink.rr.model.configuration;
 import com.bowlink.rr.model.programOrgHierarchyDetails;
 import com.bowlink.rr.model.programReports;
-import com.bowlink.rr.model.programUploadTypes;
 import com.bowlink.rr.model.reportCrossTab;
 import com.bowlink.rr.model.reportCrossTabCWData;
 import com.bowlink.rr.model.reportCrossTabEntity;
@@ -27,7 +25,6 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
-import org.hibernate.type.StandardBasicTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -65,7 +62,8 @@ public class reportDAOImpl implements reportDAO {
      * 
      * @return The function will return a list of canned reports in the system
      */
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public List<reports> getAllReports() throws Exception {
         Query query = sessionFactory.getCurrentSession().createQuery("from reports order by reportName asc");
 
@@ -110,7 +108,8 @@ public class reportDAOImpl implements reportDAO {
      * 
      * @return This function will return a list of report Ids
      */
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public List<Integer> getProgramReports(Integer programId) throws Exception {
         
         List<Integer> usedReports = new ArrayList<Integer>();
@@ -202,8 +201,9 @@ public class reportDAOImpl implements reportDAO {
 			throws Exception {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(reportDetails.class);
 		criteria.add(Restrictions.eq("id", reportId));
-        if (aggregated == true) {
-        	criteria.add(Restrictions.eq("aggregatedReport", aggregated));
+        //we ignore false
+		if (aggregated == true) {
+        	criteria.add(Restrictions.eq("aggregatedReport", true));
         }
 		List <reportDetails> repList = criteria.list();
 		
@@ -216,10 +216,11 @@ public class reportDAOImpl implements reportDAO {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<reportCrossTab> getCrossTabsByReportId(Integer reportId)
+	public List<reportCrossTab> getCrossTabsByReportId(Integer reportId, List<Integer> statusIds)
 			throws Exception {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(reportCrossTab.class);
 		criteria.add(Restrictions.eq("reportId", reportId));
+		criteria.add(Restrictions.in("statusId", statusIds));
 		criteria.addOrder( Order.asc("dspPos"));
 		List <reportCrossTab> reportCrossTabs = criteria.list();
 		
@@ -272,5 +273,66 @@ public class reportDAOImpl implements reportDAO {
         List<programOrgHierarchyDetails> putList = query.list();
         return putList;
 	}
-    
+
+	@Override
+	public void updateReportDetails(reportDetails reportDetails)
+			throws Exception {
+		sessionFactory.getCurrentSession().update(reportDetails);	
+	}
+
+	@Override
+	public Integer createReportDetails(reportDetails reportDetails)
+			throws Exception {
+		Integer lastId = null;
+
+        lastId = (Integer) sessionFactory.getCurrentSession().save(reportDetails);
+
+        return lastId;
+		
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public reportCrossTab getCrossTabsById(Integer crossTabId) throws Exception {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(reportCrossTab.class);
+		criteria.add(Restrictions.eq("id", crossTabId));
+		List <reportCrossTab> dataList = criteria.list();
+		if (dataList.size() > 0) {
+			return dataList.get(0);
+		} else  {
+			return new reportCrossTab();
+		}
+		
+	}
+
+	@Override
+	public Integer createCrossTabReport(reportCrossTab reportCrossTab)
+			throws Exception {
+		Integer lastId = null;
+		lastId = (Integer) sessionFactory.getCurrentSession().save(reportCrossTab);
+		return lastId;
+	}
+
+	@Override
+	public void updateCrossTabReport(reportCrossTab reportCrossTab)
+			throws Exception {
+		sessionFactory.getCurrentSession().update(reportCrossTab);
+	}
+
+	@Override
+	public void deleteCrossTabReport(Integer crossTabId) throws Exception {
+		Query q1 = sessionFactory.getCurrentSession().createQuery("delete from reportCrossTab where id = :crossTabId");
+        q1.setParameter("crossTabId", crossTabId);
+        q1.executeUpdate();
+		
+	}
+
+	@Override
+	public void deleteCrossTabReportCWDataByCTId(Integer crossTabId)
+			throws Exception {
+		Query q1 = sessionFactory.getCurrentSession().createQuery("delete from reportCrossTabCWData where reportCrossTabId = :crossTabId");
+        q1.setParameter("crossTabId", crossTabId);
+        q1.executeUpdate();
+	}
+
 }

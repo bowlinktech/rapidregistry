@@ -23,10 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- *
- * @author chadmccue
- */
+
 @Service
 public class reportManagerImpl implements reportManager {
     
@@ -111,9 +108,9 @@ public class reportManagerImpl implements reportManager {
 
 	@Override
 	@Transactional
-	public List<reportCrossTab> getCrossTabsByReportId(Integer reportId)
+	public List<reportCrossTab> getCrossTabsByReportId(Integer reportId, List <Integer> statusIds)
 			throws Exception {
-		return reportDAO.getCrossTabsByReportId(reportId);
+		return reportDAO.getCrossTabsByReportId(reportId, statusIds);
 	}
 
 
@@ -139,5 +136,60 @@ public class reportManagerImpl implements reportManager {
 			Integer hierarchyId, Integer reportId, String matchField) throws Exception {
 		return reportDAO.getHierarchiesForAggregatedReport(hierarchyId, reportId, matchField );
 	}
-    
+
+
+	@Override
+	@Transactional
+	public void updateReportDetails(reportDetails reportDetails)
+			throws Exception {
+		 reportDAO.updateReportDetails(reportDetails);
+		
+	}
+
+
+	@Override
+	@Transactional
+	public Integer createReportDetails(reportDetails reportDetails)
+			throws Exception {
+		return reportDAO.createReportDetails(reportDetails);
+	}
+	
+	@Override
+	@Transactional
+	public reportCrossTab getCrossTabsById (Integer crossTabId) throws Exception {
+		return reportDAO.getCrossTabsById (crossTabId);
+	}
+
+
+	@Override
+	@Transactional
+	public Integer createCrossTabReport(reportCrossTab reportCrossTab)
+			throws Exception {
+		return reportDAO.createCrossTabReport (reportCrossTab);
+	}
+
+
+	@Override
+	@Transactional
+	public void updateCrossTabReport(reportCrossTab reportCrossTab)
+			throws Exception {
+		reportDAO.updateCrossTabReport (reportCrossTab);
+	}
+
+
+	@Override
+	@Transactional
+	public void deleteCrossTabReport(Integer crossTabId) throws Exception {
+		reportDAO.deleteCrossTabReport(crossTabId);
+		
+	}
+
+
+	@Override
+	@Transactional
+	public void deleteCrossTabReportCWDataByCTId(Integer crossTabId)
+			throws Exception {
+		reportDAO.deleteCrossTabReportCWDataByCTId(crossTabId);
+	}
+
 }

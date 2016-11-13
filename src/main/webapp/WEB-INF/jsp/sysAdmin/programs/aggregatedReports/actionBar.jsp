@@ -4,24 +4,24 @@
         <div class="navbar-header">
             <h1 class="section-title navbar-brand">
                 <c:choose>
-                    <c:when test="${param['page'] == 'categories'}">
-                        <a href="javascript:void(0);" title="System Activity Code Categories" class="unstyled-link">System Activity Code Categories</a>
-                    </c:when>
-                    <c:when test="${param['page'] == 'codes'}">
-                        <a href="javascript:void(0);" title="System Activity Codes" class="unstyled-link">System Activity Codes</a>
-                    </c:when>
                     <c:when test="${param['page'] == 'details'}">
-                        <a href="javascript:void(0);" title="System Activity Code Details" class="unstyled-link">System Activity Code Details</a>
-                    </c:when>    
+                       <a href="javascript:void(0);" title="Aggregated Report Details" class="unstyled-link" id="reportTitleHref"><span id="actionBarReportTitle">${report.reportName}</span>&nbsp;&nbsp;<span class="glyphicon glyphicon-edit" style="cursor: pointer;"></span></a>
+                        <div id="reportTitleEdit" style="margin: 10px 0 0 0;display:none;">
+                        <form class="form-inline">
+                            <div id="reportTitleEditDiv" class="form-group">
+                                <input type="text" id="reportTitle" class="form-control" value="${report.reportName}" />
+                            </div>
+                            <button type="button" rel="${report.id}" class="btn btn-default submitReportTitleChange">Save</button>
+                        </form>
+                    </div>
+                    </c:when>                       
                 </c:choose>
             </h1>
         </div>
         <ul class="nav navbar-nav navbar-right navbar-actions" role="menu">
            <c:choose>
                 <c:when test="${param['page'] == 'details'}">
-                    <li role="menuitem"><a href="javascript:void(0);" id="saveDetails" title="Save Form" role="button"><span class="glyphicon glyphicon-ok icon-stacked"></span> Save </a></li>
-                    <li role="menuitem"><a href="javascript:void(0);" id="saveCloseDetails" title="Save &amp; Close" role="button"><span class="glyphicon glyphicon-floppy-disk icon-stacked"></span> Save &amp; Close</a></li>
-                </c:when>
+                 <li role="menuitem"><a href="../aggregated-reports" title="Cancel" role="button"><span class="glyphicon glyphicon-ban-circle icon-stacked"></span> Exit Report Builder</a></li></c:when>
           </c:choose>
         </ul>
     </div>

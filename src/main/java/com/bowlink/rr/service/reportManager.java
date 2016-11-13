@@ -45,7 +45,7 @@ public interface reportManager {
     
     reportDetails getReportDetailsById(Integer reportId, boolean aggregated) throws Exception;
     
-    List <reportCrossTab> getCrossTabsByReportId (Integer reportId) throws Exception;
+    List <reportCrossTab> getCrossTabsByReportId (Integer reportId, List<Integer> statusIds) throws Exception;
     
     List <reportCrossTabEntity> getCrossTabEntitiesByReportId (Integer reportId) throws Exception;
     
@@ -53,4 +53,19 @@ public interface reportManager {
     
     List<programOrgHierarchyDetails> getHierarchiesForAggregatedReport (Integer hierarchyId, Integer reportId, String matchField) throws Exception;
     
+    void updateReportDetails(reportDetails reportDetails) throws Exception;
+    
+    Integer createReportDetails(reportDetails reportDetails) throws Exception;
+    
+    reportCrossTab getCrossTabsById (Integer crossTabId) throws Exception;
+    
+    Integer createCrossTabReport(reportCrossTab reportCrossTab) throws Exception;
+    
+    void updateCrossTabReport(reportCrossTab reportCrossTab) throws Exception;
+    
+    void deleteCrossTabReport(Integer crossTabId) throws Exception;
+    
+    void deleteCrossTabReportCWDataByCTId (Integer crossTabId) throws Exception;
+
+ 
 }
