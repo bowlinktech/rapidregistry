@@ -61,11 +61,14 @@ public interface reportManager {
     
     Integer createCrossTabReport(reportCrossTab reportCrossTab) throws Exception;
     
-    void updateCrossTabReport(reportCrossTab reportCrossTab) throws Exception;
+    void updateCrossTabForm(reportCrossTab reportCrossTab) throws Exception;
     
     void deleteCrossTabReport(Integer crossTabId) throws Exception;
     
     void deleteCrossTabReportCWDataByCTId (Integer crossTabId) throws Exception;
+    
+    void createReportCrossTabCWData (reportCrossTabCWData crossTabCWData) throws Exception;
+    
+    List <String> getCombineCWDataByCTId (Integer crossTabId) throws Exception;
 
- 
 }

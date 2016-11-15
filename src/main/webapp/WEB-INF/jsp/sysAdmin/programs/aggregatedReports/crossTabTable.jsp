@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
 
       <div class="col-md-12">
@@ -17,22 +18,93 @@
               <c:if test="${crossTab.statusId == 2}">&nbsp;&nbsp;(INACTIVE)</c:if>
               <span id="crossTabId" class="${newCrossTab}" style="display:none;">${crossTab.id}</span>
             </div>
-              <div class="panel-body">
-              ${crossTab.cwIdRow} & ${crossTab.cwIdCol}
-					<div class="panel-body">
+            <div class="panel-body">
 	                    <div class="form-container">
 	                    	<%-- cross table tab form --%>
-	                    	<form:form id="cwDataForm" method="post">
-	                    	
-	                    	
-	                    	
-	                    	<div class="form-group">
-                            <input type="button" id="submitButton" rel1="${details.id}" rel="${btnValue}" role="button" class="btn btn-primary" value="${btnValue}"/>
+	                    	<form id="cwDataForm_${crossTab.id}" method="post">
+	                    	<table class="table table-striped table-hover table-default">
+            <thead>
+            	<tr>
+            	<th scope="col" class="center-text" colspan="${fn:length(crossTab.cwDataRow)+ 1}">${crossTab.tableTitle}
+            		<br/>Selection Data <i>(${hierarchyList[0].name}, ${hierarchyList[1].name}, Date selection, etc...)</i>
+            	</th>
+            	</tr>
+                <tr>
+                	<td>&nbsp;</td>
+                	 <c:forEach var="rowData" items="${crossTab.cwDataRow}">
+                   		 <th scope="col" class="center-text">${rowData.descValue}</th>
+                    </c:forEach>
+                   		 <th scope="col" class="center-text">Total</th>
+                </tr>
+            </thead>
+           <tbody>
+             <c:choose>
+                <c:when test="${not empty crossTab.cwDataRow}">
+                    <c:forEach var="colData" items="${crossTab.cwDataCol}">
+                        <tr id="col_${colData.id}_${rowData.id}">
+                            <th scope="row">
+                              ${colData.descValue}
+                            </th>
+                            <c:forEach var="formRowData" items="${crossTab.cwDataRow}">
+                            	<td class="center-text"><input type="checkbox" id="cwData_${colData.id}_${formRowData.id}" name="cwDataSet" value="${colData.id}_${formRowData.id}"/></td> 
+                            </c:forEach>
+                          	<td class="center-text">
+                                -- 
+                            </td>
+                        </tr>
+                    </c:forEach>
+                    <tr id="col_${colData.id}_${rowData.id}">
+                            <th scope="row" class="center-text">
+                              Total
+                            </th>
+                            <c:forEach var="colData" items="total_${crossTab.cwDataRow}">
+                            	<td class="center-text">--</td> 
+                            </c:forEach>
+                          	<td class="center-text">
+                                &nbsp; --
+                            </td>
+                        </tr>
+                </c:when>
+                <c:otherwise>
+                    <tr><td colspan="8" class="center-text">There are currently no items set up for this ${entityName}.</td></tr>
+                </c:otherwise>
+            </c:choose>
+            </tbody>
+        </table>
+		<div class="form-group">
+                            <input type="button" id="cwSaveButton_${crossTab.id}" rel="${crossTab.id}" role="button" class="btn btn-primary saveCWButton" value="Save"/>
+                            <input type="button" id="cwResetButton_${crossTab.id}" rel="${crossTab.reportId}" role="button" class="btn btn-danger cancelCWButton" value="Cancel"/>
+                            
                         </div>
-	                    	</form:form>
+                        	<input type="hidden" name="cwCrossTabId" value="${crossTab.id}"/>
+	                    	</form>
 	                    
 	                    </div>
                     </div>
-                </div>
        </section>
     </div>  
+
+<script type="text/javascript">
+require(['./main'], function () {
+	require(['jquery', 'multiselect'], function($) {
+	
+var crossTabId = ${crossTab.id};
+populateTableColumns(crossTabId);
+
+function populateTableColumns(crossTabId) {
+	
+	$.getJSON('getCWDataList.do', {
+        crossTabId: crossTabId, ajax: true
+    }, function(data) {
+        var len = data.length;
+        
+        for (var i = 0; i < len; i++) {
+        	$('#cwData_' + data[i]).prop('checked', true);
+        }
+       
+    });
+}
+
+	});
+});
+</script>

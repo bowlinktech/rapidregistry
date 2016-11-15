@@ -25,6 +25,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
+import org.hibernate.type.StandardBasicTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -314,7 +315,7 @@ public class reportDAOImpl implements reportDAO {
 	}
 
 	@Override
-	public void updateCrossTabReport(reportCrossTab reportCrossTab)
+	public void updateCrossTabForm(reportCrossTab reportCrossTab)
 			throws Exception {
 		sessionFactory.getCurrentSession().update(reportCrossTab);
 	}
@@ -333,6 +334,25 @@ public class reportDAOImpl implements reportDAO {
 		Query q1 = sessionFactory.getCurrentSession().createQuery("delete from reportCrossTabCWData where reportCrossTabId = :crossTabId");
         q1.setParameter("crossTabId", crossTabId);
         q1.executeUpdate();
+	}
+
+	@Override
+	public void createReportCrossTabCWData(reportCrossTabCWData crossTabCWData)
+			throws Exception {
+		sessionFactory.getCurrentSession().save(crossTabCWData);
+		
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<String> getCombineCWDataByCTId(Integer crossTabId)
+			throws Exception {
+		String sql = ("select combineCWDataId from reportcrosstabcwdata where reportCrossTabId = :crossTabId");
+
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sql).addScalar("combineCWDataId", StandardBasicTypes.STRING)
+        		.setParameter("crossTabId", crossTabId);
+        
+        return query.list();
 	}
 
 }

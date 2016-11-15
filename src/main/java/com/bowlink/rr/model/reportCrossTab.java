@@ -18,7 +18,10 @@ import org.hibernate.validator.constraints.NotEmpty;
 public class reportCrossTab {
 	
 	@Transient
-	List <reportCrossTabCWData> combineCWDataId;
+	List <reportCrossTabCWData> combineCWDataList;
+	
+	@Transient
+	List <String> combineCWDataStringList;
 	
 	@Transient
 	List <crosswalkData> cwDataRow;
@@ -50,12 +53,28 @@ public class reportCrossTab {
     @Column(name = "tableTitle", nullable = false)
     private String tableTitle;
 
-	public List<reportCrossTabCWData> getCombineCWDataId() {
-		return combineCWDataId;
+	public List<reportCrossTabCWData> getCombineCWDataList() {
+		return combineCWDataList;
 	}
 
-	public void setCombineCWDataId(List<reportCrossTabCWData> combineCWDataId) {
-		this.combineCWDataId = combineCWDataId;
+	public void setCombineCWDataList(List<reportCrossTabCWData> combineCWDataList) {
+		this.combineCWDataList = combineCWDataList;
+	}
+
+	public List<crosswalkData> getCwDataRow() {
+		return cwDataRow;
+	}
+
+	public void setCwDataRow(List<crosswalkData> cwDataRow) {
+		this.cwDataRow = cwDataRow;
+	}
+
+	public List<crosswalkData> getCwDataCol() {
+		return cwDataCol;
+	}
+
+	public void setCwDataCol(List<crosswalkData> cwDataCol) {
+		this.cwDataCol = cwDataCol;
 	}
 
 	public int getId() {
@@ -98,6 +117,14 @@ public class reportCrossTab {
 		this.dspPos = dspPos;
 	}
 
+	public int getStatusId() {
+		return statusId;
+	}
+
+	public void setStatusId(int statusId) {
+		this.statusId = statusId;
+	}
+
 	public String getTableTitle() {
 		return tableTitle;
 	}
@@ -106,27 +133,11 @@ public class reportCrossTab {
 		this.tableTitle = tableTitle;
 	}
 
-	public List<crosswalkData> getCwDataRow() {
-		return cwDataRow;
+	public List<String> getCombineCWDataStringList() {
+		return combineCWDataStringList;
 	}
 
-	public void setCwDataRow(List<crosswalkData> cwDataRow) {
-		this.cwDataRow = cwDataRow;
-	}
-
-	public List<crosswalkData> getCwDataCol() {
-		return cwDataCol;
-	}
-
-	public void setCwDataCol(List<crosswalkData> cwDataCol) {
-		this.cwDataCol = cwDataCol;
-	}
-
-	public int getStatusId() {
-		return statusId;
-	}
-
-	public void setStatusId(int statusId) {
-		this.statusId = statusId;
+	public void setCombineCWDataStringList(List<String> combineCWDataStringList) {
+		this.combineCWDataStringList = combineCWDataStringList;
 	}
 }

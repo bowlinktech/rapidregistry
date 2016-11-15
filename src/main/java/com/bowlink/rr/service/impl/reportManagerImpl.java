@@ -171,9 +171,9 @@ public class reportManagerImpl implements reportManager {
 
 	@Override
 	@Transactional
-	public void updateCrossTabReport(reportCrossTab reportCrossTab)
+	public void updateCrossTabForm(reportCrossTab reportCrossTab)
 			throws Exception {
-		reportDAO.updateCrossTabReport (reportCrossTab);
+		reportDAO.updateCrossTabForm (reportCrossTab);
 	}
 
 
@@ -190,6 +190,24 @@ public class reportManagerImpl implements reportManager {
 	public void deleteCrossTabReportCWDataByCTId(Integer crossTabId)
 			throws Exception {
 		reportDAO.deleteCrossTabReportCWDataByCTId(crossTabId);
+	}
+
+
+	@Override
+	@Transactional
+	public void createReportCrossTabCWData(reportCrossTabCWData crossTabCWData)
+			throws Exception {
+		reportDAO.createReportCrossTabCWData(crossTabCWData);
+		
+	}
+
+
+	@Override
+	@Transactional
+	public List<String> getCombineCWDataByCTId(Integer crossTabId)
+			throws Exception {
+		return reportDAO.getCombineCWDataByCTId(crossTabId);
+		
 	}
 
 }

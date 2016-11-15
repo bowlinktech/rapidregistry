@@ -7,6 +7,7 @@ import com.bowlink.rr.model.program;
 import com.bowlink.rr.model.programOrgHierarchy;
 import com.bowlink.rr.model.programOrgHierarchyDetails;
 import com.bowlink.rr.model.reportCrossTab;
+import com.bowlink.rr.model.reportCrossTabCWData;
 import com.bowlink.rr.model.reportDetails;
 import com.bowlink.rr.model.reportType;
 import com.bowlink.rr.service.dataElementManager;
@@ -14,6 +15,7 @@ import com.bowlink.rr.service.orgHierarchyManager;
 import com.bowlink.rr.service.programManager;
 import com.bowlink.rr.service.reportManager;
 import com.bowlink.rr.service.userManager;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Arrays;
 import java.util.List;
@@ -112,7 +114,7 @@ public class aggregatedReportController {
         List <reportCrossTab> ctList = reportmanager.getCrossTabsByReportId(reportId, Arrays.asList(1,2));
         for (reportCrossTab crossTab : ctList)
         {
-        	crossTab.setCombineCWDataId(reportmanager.getReportCrossTabCWDataByCTId(crossTab.getId()));
+        	crossTab.setCombineCWDataStringList(reportmanager.getCombineCWDataByCTId(crossTab.getId()));
         	crossTab.setCwDataCol(dataelementmanager.getCrosswalkDataByCWId(crossTab.getCwIdCol()));
         	crossTab.setCwDataRow(dataelementmanager.getCrosswalkDataByCWId(crossTab.getCwIdRow()));
         }
@@ -129,7 +131,8 @@ public class aggregatedReportController {
         mav.addObject("entities", entities);
         mav.addObject("hierarchyList", hierarchyList);
         mav.addObject("report", details);
-        
+
+       
 
         return mav;
 
@@ -159,7 +162,7 @@ public class aggregatedReportController {
     
     
     
-    @RequestMapping(value = "getCrossTabTable.do", method = RequestMethod.GET)
+    @RequestMapping(value = "getCrossTabForm.do", method = RequestMethod.GET)
     @ResponseBody public ModelAndView viewCrossTableTableForm(HttpSession session, @RequestParam(value = "crossTabId", required = true) Integer crossTabId) throws Exception {
         ModelAndView mav = new ModelAndView();
         mav.setViewName("/sysAdmin/programs/aggregatedReports/crossTabForm");
@@ -178,7 +181,7 @@ public class aggregatedReportController {
         return mav;
     } 
     
-    @RequestMapping(value = "updateCrossTabReport", method = RequestMethod.POST)
+    @RequestMapping(value = "updateCrossTabForm", method = RequestMethod.POST)
     public @ResponseBody ModelAndView saveCrossTabReport(
     		@Valid @ModelAttribute(value = "details") reportCrossTab details, 
     		BindingResult result, HttpSession session) throws Exception {
@@ -201,7 +204,10 @@ public class aggregatedReportController {
             return mav;
         } else {
         	if(details.getId() > 0) {
-        		reportmanager.updateCrossTabReport(details);
+        		reportmanager.updateCrossTabForm(details);
+        		details.setCombineCWDataStringList(reportmanager.getCombineCWDataByCTId(details.getId()));
+                details.setCwDataCol(dataelementmanager.getCrosswalkDataByCWId(details.getCwIdCol()));
+        		details.setCwDataRow(dataelementmanager.getCrosswalkDataByCWId(details.getCwIdRow()));
                 mav.addObject("btnValue", "Update");
                 mav.addObject("crossTab", details);
             	mav.setViewName("/sysAdmin/programs/aggregatedReports/crossTabTable");
@@ -211,6 +217,9 @@ public class aggregatedReportController {
          	   details.setDspPos(reportmanager.getCrossTabsByReportId (details.getReportId(), Arrays.asList(1,2)).size() + 1);
          	   Integer ctrId = reportmanager.createCrossTabReport(details);
                details.setId(ctrId);
+               details.setCombineCWDataStringList(reportmanager.getCombineCWDataByCTId(details.getId()));
+               details.setCwDataCol(dataelementmanager.getCrosswalkDataByCWId(details.getCwIdCol()));
+               details.setCwDataRow(dataelementmanager.getCrosswalkDataByCWId(details.getCwIdRow()));
                mav.setViewName("/sysAdmin/programs/aggregatedReports/returnText"); 
                mav.addObject("returnText", "addedNewCrossTabItem");
             }
@@ -264,5 +273,49 @@ public class aggregatedReportController {
     	
         return 1;
     } 
+    
+    @RequestMapping(value = "updateCrossTabCWData", method = RequestMethod.POST)
+    @ResponseBody public Integer updateCrossTabCW(HttpSession session, 
+    		@RequestParam(value = "cwDataSet", required = true) List <String> cwDataSet,
+    		@RequestParam(value = "cwCrossTabId", required = true) Integer crossTabId) 
+    		throws Exception {
+        
+        //first we delete existing set
+        reportmanager.deleteCrossTabReportCWDataByCTId(crossTabId);
+        
+    	//we loop through list and save 
+    	for (String cwData : cwDataSet) {
+    		reportCrossTabCWData combinedData = new reportCrossTabCWData();
+    		combinedData.setCombineCWDataId(cwData);
+    		combinedData.setReportCrossTabId(crossTabId);
+    		reportmanager.createReportCrossTabCWData(combinedData);	
+    	}
+    	
+    	//log user
+    	try {
+            Log_userSurveyActivity ua = new Log_userSurveyActivity();
+            ua.setActivityDesc("Updated Crosstab Table");
+            ua.setController(controllerName);
+            ua.setPageAccessed("updateCrossTabCWData");
+            ua.setActivityDesc("crossTabId" + crossTabId);
+            ua.setProgramId((Integer) session.getAttribute("programId"));
+            User userDetails = (User) session.getAttribute("userDetails");
+            ua.setSystemUserId(userDetails.getId());
+            usermanager.insertUserLog(ua);
+        } catch (Exception ex1) {
+            ex1.printStackTrace();
+        }
+    	
+        return 1;
+    }   
+    
+    
+    @SuppressWarnings("rawtypes")
+    @RequestMapping(value = "getCWDataList.do", method = RequestMethod.GET)
+    public @ResponseBody List getModules(@RequestParam(value = "crossTabId", required = true) Integer crossTabId) throws Exception {
+    	List <String> combineDataList  = reportmanager.getCombineCWDataByCTId(crossTabId);
+        return combineDataList;
+    }
+    
     
 }

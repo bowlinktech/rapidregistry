@@ -55,7 +55,7 @@ require(['./main'], function () {
         //This function will launch the new program service category overlay with a blank screen
         $(document).on('click', '.crossTabTitle', function() {
             $.ajax({
-                url: 'getCrossTabTable.do',
+                url: 'getCrossTabForm.do',
                 data: {'crossTabId':$(this).attr('rel')},
                 type: "GET",
                 success: function(data) {
@@ -85,7 +85,7 @@ require(['./main'], function () {
         	
         	var formData = $("#details").serialize();
             $.ajax({
-                url: 'updateCrossTabReport',
+                url: 'updateCrossTabForm',
                 data: formData,
                 type: "POST",
                 async: false,
@@ -129,6 +129,33 @@ require(['./main'], function () {
            }
         })
         	
+        $(document).on('click', '.saveCWButton', function(event) {
+        	var crossTabId = $(this).attr('rel');
+        	
+        	var formData = $('#cwDataForm_' + crossTabId).serialize();
+            $.ajax({
+                url: 'updateCrossTabCWData',
+                data: formData,
+                type: "POST",
+                async: false,
+                success: function(data) {
+                	if (data.indexOf('successCWUpdate') != -1) {
+                		window.location.href = "reportDetails?r="+ reportId +"&msg=cwAdded";
+                    } else {
+                    	window.location.href = "reportDetails?r="+ reportId +"&msg=cwFailed";
+                    }
+                }
+            });
+            event.preventDefault();
+            return false;
+        });
+        
+        $(document).on('click', '.cancelCWButton', function(event) {
+        	var reportId = $(this).attr('rel');
+        	window.location.href = "reportDetails?r="+ reportId;
+        });
+
+
         
         
         

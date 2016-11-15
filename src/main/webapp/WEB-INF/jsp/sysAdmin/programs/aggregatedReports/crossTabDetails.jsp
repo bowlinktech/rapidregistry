@@ -55,8 +55,7 @@
        </section>
        
     </div>
-     <c:forEach items="${report.reportCrossTabs}" var="crossTab">
-		<div class="row-fluid" id="tableDiv${crossTab.id}"><%@ include file="crossTabTable.jsp" %></div>
+     <c:forEach items="${report.reportCrossTabs}" var="crossTab"><div class="row-fluid" id="tableDiv${crossTab.id}"><%@ include file="crossTabTable.jsp" %></div>
  	</c:forEach>
 </div>
 </div>
