@@ -7,11 +7,13 @@
 package com.bowlink.rr.service.impl;
 
 import com.bowlink.rr.dao.dataElementDAO;
+import com.bowlink.rr.model.crosswalkData;
 import com.bowlink.rr.model.crosswalks;
 import com.bowlink.rr.model.customProgramFields;
 import com.bowlink.rr.model.dataElements;
 import com.bowlink.rr.reference.fileSystem;
 import com.bowlink.rr.service.dataElementManager;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,6 +24,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.List;
+
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -410,4 +413,11 @@ public class dataElementManagerImpl implements dataElementManager {
             return 0;
         }
     }
+
+	@Override
+	@Transactional
+	public List<crosswalkData> getCrosswalkDataByCWId(Integer cwId)
+			throws Exception {
+		return dataElementDAO.getCrosswalkDataByCWId(cwId);
+	}
  }
