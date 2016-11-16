@@ -36,24 +36,42 @@
                                     </label>
                                 </div>
                             </div>
-                        <spring:bind path="cwIdCol">
+                            <spring:bind path="labelRow">
                             <div class="form-group ${status.error ? 'has-error' : '' }">
-                                <label class="control-label" for="cwIdCol">Row Crosswalk *</label>
-                                <form:select id="cwIdCol" path="cwIdCol" cssClass="form-control half">
-                                        <option value="" label=" - Select - " ></option>
-                                         <form:options items="${crosswalks}" itemValue="id" itemLabel="name"/>
-                                    </form:select><form:errors path="cwIdCol" cssClass="control-label" element="label" />
+                                <label class="control-label" for="labelRow">Total Label for Rows</label>
+                                <form:input path="labelRow" id="labelRow" class="form-control" type="text" maxLength="45" />
+                                <form:errors path="labelRow" cssClass="control-label" element="label" />
                             </div>
-                        </spring:bind>   
+                        </spring:bind>
                         <spring:bind path="cwIdRow">
                             <div class="form-group ${status.error ? 'has-error' : '' }">
-                                <label class="control-label" for="cwIdRow">Column Crosswalk *</label>
+                                <label class="control-label" for="cwIdRow">Row Crosswalk *</label>
                                 <form:select id="cwIdRow" path="cwIdRow" cssClass="form-control half">
                                         <option value="" label=" - Select - " ></option>
                                        <form:options items="${crosswalks}" itemValue="id" itemLabel="name"/>
                                     </form:select><form:errors path="cwIdRow" cssClass="control-label" element="label" />
                             </div>
-                        </spring:bind>   
+                        </spring:bind> 
+                         
+                        <spring:bind path="labelCol">
+                            <div class="form-group ${status.error ? 'has-error' : '' }">
+                                <label class="control-label" for="labelCol">Total Label for Column</label>
+                                <form:input path="labelCol" id="labelCol" class="form-control" type="text" maxLength="45" />
+                                <form:errors path="labelCol" cssClass="control-label" element="label" />
+                            </div>
+                        </spring:bind> 
+                        <spring:bind path="cwIdCol">
+                            <div class="form-group ${status.error ? 'has-error' : '' }">
+                                <label class="control-label" for="cwIdCol">Column Crosswalk *</label>
+                                <form:select id="cwIdCol" path="cwIdCol" cssClass="form-control half">
+                                        <option value="" label=" - Select - " ></option>
+                                         <form:options items="${crosswalks}" itemValue="id" itemLabel="name"/>
+                                    </form:select><form:errors path="cwIdCol" cssClass="control-label" element="label" />
+                            </div>
+                        </spring:bind> 
+                        
+                        
+                          
                         <div class="form-group">
                             <input type="button" id="submitButton" rel1="${details.id}" rel="${btnValue}" role="button" class="btn btn-primary" value="${btnValue}"/>
                         </div>

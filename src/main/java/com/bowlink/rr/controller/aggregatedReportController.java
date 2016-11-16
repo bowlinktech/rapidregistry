@@ -15,7 +15,6 @@ import com.bowlink.rr.service.orgHierarchyManager;
 import com.bowlink.rr.service.programManager;
 import com.bowlink.rr.service.reportManager;
 import com.bowlink.rr.service.userManager;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Arrays;
 import java.util.List;

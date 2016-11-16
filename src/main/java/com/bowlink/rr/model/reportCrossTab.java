@@ -52,6 +52,13 @@ public class reportCrossTab {
     @NotEmpty
     @Column(name = "tableTitle", nullable = false)
     private String tableTitle;
+    
+    @Column(name = "labelRow", nullable = false)
+    private String labelRow;
+    
+    @Column(name = "labelCol", nullable = false)
+    private String labelCol;
+    
 
 	public List<reportCrossTabCWData> getCombineCWDataList() {
 		return combineCWDataList;
@@ -140,4 +147,21 @@ public class reportCrossTab {
 	public void setCombineCWDataStringList(List<String> combineCWDataStringList) {
 		this.combineCWDataStringList = combineCWDataStringList;
 	}
+
+	public String getLabelRow() {
+		return labelRow;
+	}
+
+	public void setLabelRow(String labelRow) {
+		this.labelRow = labelRow;
+	}
+
+	public String getLabelCol() {
+		return labelCol;
+	}
+
+	public void setLabelCol(String labelCol) {
+		this.labelCol = labelCol;
+	}
+
 }
