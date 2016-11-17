@@ -39,11 +39,11 @@ public interface reportManager {
     
     List<reportType> getAllReportTypes() throws Exception;
     
-    List<reportDetails> getAllForReportType(Integer programId, Integer reportTypeId) throws Exception;
+    List<reportDetails> getAggregateReportForReportType(Integer programId, Integer reportTypeId) throws Exception;
     
     reportType getReportTypeById(Integer reportTypeId) throws Exception;
     
-    reportDetails getReportDetailsById(Integer reportId, boolean aggregated) throws Exception;
+    reportDetails getReportDetailsById(Integer reportId) throws Exception;
     
     List <reportCrossTab> getCrossTabsByReportId (Integer reportId, List<Integer> statusIds) throws Exception;
     

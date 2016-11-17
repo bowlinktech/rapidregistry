@@ -53,9 +53,11 @@
       <div class="col-md-12">
           <section class="panel panel-default">
               <div class="panel-heading">
+              <%--
                 <div class="pull-right">
                     <a href="#reportModal" data-toggle="modal" class="btn btn-primary btn-xs btn-action" id="createNewReport"  title="Add New Aggregated Report">Add New Aggregated Report</a>
                 </div>
+                 --%>
                 <h3 class="panel-title" rel="${selRepType}" id="reportTypeTitle"><c:if test="${not empty rtDetails}">${rtDetails.reportType}</c:if><c:if test="${empty rtDetails}">All Aggregated Reports</c:if></h3>
             </div>
               <div class="panel-body">

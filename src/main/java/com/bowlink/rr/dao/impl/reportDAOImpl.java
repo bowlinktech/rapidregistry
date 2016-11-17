@@ -168,17 +168,27 @@ public class reportDAOImpl implements reportDAO {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<reportDetails> getAllForReportType(Integer programId,
+	public List<reportDetails> getAggregateReportForReportType(Integer programId,
 			Integer reportTypeId) throws Exception {
 		
-		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(reportDetails.class);
-		criteria.add(Restrictions.eq("programId", programId));
-		criteria.add(Restrictions.eq("aggregatedReport", true));
-		if (reportTypeId != 0) {
-			criteria.add(Restrictions.eq("reportTypeId", reportTypeId));
-		}
-		criteria.addOrder( Order.asc("reportName"));
-		List <reportDetails> reportList = criteria.list();
+		String sql = ("SELECT reportdetails.* FROM reportaggregatedetails, reportdetails  "
+				+ " where programId = :programId "
+				+ " and reportaggregatedetails.reportId = reportDetails.id ");
+		
+		if (reportTypeId > 0) {
+        	sql = sql  + " and reportTypeId = :reportTypeId";
+        }
+		
+		sql = sql + " order by reportName";
+		
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sql)
+                .setResultTransformer(
+                        Transformers.aliasToBean(reportDetails.class))
+                .setParameter("programId", programId);
+        if (reportTypeId > 0) {
+        	query.setParameter("reportTypeId", reportTypeId);
+        }
+		List <reportDetails> reportList = query.list();
         return reportList;
 		
 	}
@@ -198,15 +208,11 @@ public class reportDAOImpl implements reportDAO {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public reportDetails getReportDetailsById(Integer reportId, boolean aggregated)
+	public reportDetails getReportDetailsById(Integer reportId)
 			throws Exception {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(reportDetails.class);
 		criteria.add(Restrictions.eq("id", reportId));
-        //we ignore false
-		if (aggregated == true) {
-        	criteria.add(Restrictions.eq("aggregatedReport", true));
-        }
-		List <reportDetails> repList = criteria.list();
+        List <reportDetails> repList = criteria.list();
 		
         if (repList.size() > 0) {
         	return repList.get(0);

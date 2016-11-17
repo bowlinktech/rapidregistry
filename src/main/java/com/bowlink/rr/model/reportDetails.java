@@ -77,9 +77,6 @@ public class reportDetails {
     @Column(name = "reportLevel", nullable = false)
     private Integer reportLevel = 3;
     
-    @Column(name = "aggregatedReport", nullable = false)
-    private boolean aggregatedReport = true;
-
 	public reportType getReportType() {
 		return reportType;
 	}
@@ -225,12 +222,5 @@ public class reportDetails {
 		this.reportLevel = reportLevel;
 	}
 
-	public boolean isAggregatedReport() {
-		return aggregatedReport;
-	}
-
-	public void setAggregatedReport(boolean aggregatedReport) {
-		this.aggregatedReport = aggregatedReport;
-	}
 
 }

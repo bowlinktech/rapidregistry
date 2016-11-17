@@ -86,7 +86,7 @@ public class aggregatedReportController {
         	mav.addObject("rtDetails", rtDetails);	
         }
         
-        List<reportDetails> repList = reportmanager.getAllForReportType(programDetails.getId(), reportTypeId);
+        List<reportDetails> repList = reportmanager.getAggregateReportForReportType(programDetails.getId(), reportTypeId);
     	
         mav.addObject("repList", repList);	
         mav.addObject("allAggRepTypes", rtTypes);
@@ -108,7 +108,7 @@ public class aggregatedReportController {
         program programDetails = programmanager.getProgramById(programId);
         mav.addObject("programDetails", programDetails);
         //we get report details
-        reportDetails details = reportmanager.getReportDetailsById(reportId, true);
+        reportDetails details = reportmanager.getReportDetailsById(reportId);
         //we get crosstab details
         List <reportCrossTab> ctList = reportmanager.getCrossTabsByReportId(reportId, Arrays.asList(1,2));
         for (reportCrossTab crossTab : ctList)
@@ -151,7 +151,7 @@ public class aggregatedReportController {
     public @ResponseBody String savePageTitle(@RequestParam(value = "reportId", required = true) Integer reportId, @RequestParam(value = "reportTitle", required = true) String reportTitle, HttpSession session) throws Exception {
 
         //get page info
-        reportDetails report = reportmanager.getReportDetailsById(reportId, false);
+        reportDetails report = reportmanager.getReportDetailsById(reportId);
         report.setReportName(reportTitle);
 
         // update 

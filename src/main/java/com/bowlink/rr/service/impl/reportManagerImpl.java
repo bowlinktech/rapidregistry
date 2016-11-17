@@ -85,9 +85,9 @@ public class reportManagerImpl implements reportManager {
 
 	@Override
 	@Transactional
-	public List<reportDetails> getAllForReportType(Integer programId,
+	public List<reportDetails> getAggregateReportForReportType(Integer programId,
 			Integer reportTypeId) throws Exception {
-		return reportDAO.getAllForReportType(programId, reportTypeId);	
+		return reportDAO.getAggregateReportForReportType(programId, reportTypeId);	
 		}
 
 
@@ -100,9 +100,9 @@ public class reportManagerImpl implements reportManager {
 
 	@Override
 	@Transactional
-	public reportDetails getReportDetailsById(Integer reportId, boolean aggregated)
+	public reportDetails getReportDetailsById(Integer reportId)
 			throws Exception {
-		return reportDAO.getReportDetailsById(reportId, aggregated);
+		return reportDAO.getReportDetailsById(reportId);
 	}
 
 
