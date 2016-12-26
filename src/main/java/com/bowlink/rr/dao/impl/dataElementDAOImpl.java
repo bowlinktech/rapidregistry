@@ -55,6 +55,17 @@ public class dataElementDAOImpl implements dataElementDAO {
 
     }
     
+    @Override
+    public List<dataElements> getActiveDataElements() throws Exception {
+
+        Query query = sessionFactory.getCurrentSession().createQuery("from dataElements where status = 1 order by elementName asc");
+
+        List<dataElements> fieldList = query.list();
+
+        return fieldList;
+
+    }
+    
     /**
      * The 'getCrosswalks' function will return the list of available crosswalks to associate a message types to. This function will only return crosswalks not associated to a specific organization.
      *

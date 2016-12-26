@@ -231,7 +231,7 @@ public class programImports {
         /**
          * Get a list of all available demographic fields *
          */
-        List<dataElements> dataElements = dataelementmanager.getdataElements();
+        List<dataElements> dataElements = dataelementmanager.getActiveDataElements();
         mav.addObject("availableFields", dataElements);
 
         //Return a list of validation types

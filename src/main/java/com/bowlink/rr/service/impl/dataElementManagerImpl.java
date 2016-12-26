@@ -53,6 +53,12 @@ public class dataElementManagerImpl implements dataElementManager {
     
     @Override
     @Transactional
+    public List<dataElements> getActiveDataElements() throws Exception {
+        return dataElementDAO.getActiveDataElements();
+    }
+    
+    @Override
+    @Transactional
     public List<crosswalks> getCrosswalks(int page, int maxResults, int programId) {
         return dataElementDAO.getCrosswalks(page, maxResults, programId);
     }

@@ -21,6 +21,8 @@ public interface dataElementManager {
     
     List<dataElements> getdataElements() throws Exception;
     
+    List<dataElements> getActiveDataElements() throws Exception;
+    
     List<crosswalks> getCrosswalks(int page, int maxResults, int programId);
     
     Integer createCrosswalk(crosswalks crosswalkDetails);
