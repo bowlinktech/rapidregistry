@@ -102,6 +102,12 @@ public class programEngagementFields {
     
     @Column(name = "MAXFIELDVALUE", nullable = false)
     private int maxFieldValue = 0;
+    
+    @Column(name = "FIELDTAG", nullable = true)
+    private String fieldTag = "";
+    
+    @Column(name = "summaryFieldDisplayName", nullable = true)
+    private String summaryFieldDisplayName = "";
 
     public int getId() {
         return id;
@@ -302,5 +308,23 @@ public class programEngagementFields {
     public void setDefaultValues(Map<String, String> defaultValues) {
         this.defaultValues = defaultValues;
     }
+
+    public String getFieldTag() {
+        return fieldTag;
+    }
+
+    public void setFieldTag(String fieldTag) {
+        this.fieldTag = fieldTag;
+    }
+
+    public String getSummaryFieldDisplayName() {
+        return summaryFieldDisplayName;
+    }
+
+    public void setSummaryFieldDisplayName(String summaryFieldDisplayName) {
+        this.summaryFieldDisplayName = summaryFieldDisplayName;
+    }
+    
+    
     
 }

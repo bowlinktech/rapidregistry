@@ -6,9 +6,11 @@
 
 package com.bowlink.rr.dao;
 
+import com.bowlink.rr.model.crosswalkData;
 import com.bowlink.rr.model.crosswalks;
 import com.bowlink.rr.model.customProgramFields;
 import com.bowlink.rr.model.dataElements;
+
 import java.util.List;
 
 /**
@@ -18,6 +20,8 @@ import java.util.List;
 public interface dataElementDAO {
     
     List<dataElements> getdataElements() throws Exception;
+    
+    List<dataElements> getActiveDataElements() throws Exception;
     
     List<crosswalks> getCrosswalks(int page, int maxResults, int programId);
     
@@ -85,4 +89,7 @@ public interface dataElementDAO {
     void saveCustomField(customProgramFields customField) throws Exception;
     
     void updateCrosswalk(crosswalks crosswalkDetails);
+    
+    List <crosswalkData> getCrosswalkDataByCWId (Integer cwId) throws Exception;
+    
 }
