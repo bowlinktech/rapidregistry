@@ -55,6 +55,9 @@ public class fileSystem {
                     directory.mkdir();
                     new File(directoryPath + dirName + "\\crosswalks").mkdirs();
                     new File(directoryPath + dirName + "\\importFiles").mkdirs();
+                    new File(directoryPath + dirName + "\\archivesIn").mkdirs();
+                    new File(directoryPath + dirName + "\\loadFiles").mkdirs();
+                    new File(directoryPath + dirName + "\\processFiles").mkdirs();
                     new File(directoryPath + dirName + "\\exportFiles").mkdirs();
                     new File(directoryPath + dirName + "\\calendarUploadedFiles").mkdirs();
                     new File(directoryPath + dirName + "\\forumUploadedFiles").mkdirs();
@@ -75,6 +78,9 @@ public class fileSystem {
                     directory.mkdir();
                     new File(directoryPath + dirName + "/crosswalks").mkdirs();
                     new File(directoryPath + dirName + "/importFiles").mkdirs();
+                    new File(directoryPath + dirName + "/archivesIn").mkdirs();
+                    new File(directoryPath + dirName + "/loadFiles").mkdirs();
+                    new File(directoryPath + dirName + "/processFiles").mkdirs();
                     new File(directoryPath + dirName + "/exportFiles").mkdirs();
                     new File(directoryPath + dirName + "/calendarUploadedFiles").mkdirs();
                     new File(directoryPath + dirName + "/forumUploadedFiles").mkdirs();
@@ -94,6 +100,9 @@ public class fileSystem {
                     directory.mkdir();
                     new File(directoryPath + dirName + "/crosswalks").mkdirs();
                     new File(directoryPath + dirName + "/importFiles").mkdirs();
+                    new File(directoryPath + dirName + "/archivesIn").mkdirs();
+                    new File(directoryPath + dirName + "/loadFiles").mkdirs();
+                    new File(directoryPath + dirName + "/processFiles").mkdirs();
                     new File(directoryPath + dirName + "/exportFiles").mkdirs();
                     new File(directoryPath + dirName + "/calendarUploadedFiles").mkdirs();
                     new File(directoryPath + dirName + "/forumUploadedFiles").mkdirs();
