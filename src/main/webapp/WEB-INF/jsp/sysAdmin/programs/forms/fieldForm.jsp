@@ -34,6 +34,12 @@
                          <form:input path="fieldDisplayname" id="fieldDisplayName" class="form-control"  maxLength="255" />
                         <span id="fieldDisplayMsg" class="control-label"></span>
                     </div>
+                    <c:if test="${section == 'programProfile'}">
+                        <div id="fieldHelpDiv" class="form-group">
+                            <label class="control-label" for="fieldHelp">Field Help</label>
+                            <form:textarea path="fieldHelp" class="form-control" rows="8" />
+                        </div>
+                    </c:if>
                     <div id="crosswalkDiv" class="form-group">
                         <label class="control-label" for="Crosswalk">Field Crosswalk</label>
                         <form:select path="crosswalkId" id="crosswalk" class="form-control half">

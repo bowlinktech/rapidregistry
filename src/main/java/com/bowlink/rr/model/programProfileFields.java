@@ -89,6 +89,9 @@ public class programProfileFields {
     @Column(name = "summaryFieldDisplayName", nullable = true)
     private String summaryFieldDisplayName = "";
     
+    @Column(name = "fieldHelp", nullable = true)
+    private String fieldHelp = "";
+    
     public int getId() {
         return id;
     }
@@ -304,5 +307,14 @@ public class programProfileFields {
     public void setSummaryFieldDisplayName(String summaryFieldDisplayName) {
         this.summaryFieldDisplayName = summaryFieldDisplayName;
     }
+
+    public String getFieldHelp() {
+        return fieldHelp;
+    }
+
+    public void setFieldHelp(String fieldHelp) {
+        this.fieldHelp = fieldHelp;
+    }
+    
     
 }
