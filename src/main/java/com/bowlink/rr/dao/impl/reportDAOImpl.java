@@ -13,10 +13,12 @@ import com.bowlink.rr.model.reportCrossTab;
 import com.bowlink.rr.model.reportCrossTabCWData;
 import com.bowlink.rr.model.reportCrossTabEntity;
 import com.bowlink.rr.model.reportDetails;
+import com.bowlink.rr.model.reportRequest;
 import com.bowlink.rr.model.reportType;
 import com.bowlink.rr.model.reports;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -28,6 +30,7 @@ import org.hibernate.transform.Transformers;
 import org.hibernate.type.StandardBasicTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -359,6 +362,21 @@ public class reportDAOImpl implements reportDAO {
         		.setParameter("crossTabId", crossTabId);
         
         return query.list();
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	@Transactional
+	public List<reportRequest> getReportDetailsByStatus(List<Integer> statusList)
+			throws Exception {
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.HOUR_OF_DAY, 3);
+
+		Query q = sessionFactory.getCurrentSession().createQuery("from reportRequest where startProcessTime < :date and statusId in (:statusList) order by startProcessTime ");
+		q.setCalendarDate("date", cal);
+		q.setParameterList("statusList", statusList);
+		
+		return q.list();
 	}
 
 }
