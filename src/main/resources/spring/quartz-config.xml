@@ -65,4 +65,21 @@
         </trigger>
     </schedule>  
     -->
+    <schedule>
+        <job>
+            <name>checkReportStatusJob</name>
+            <group>processGroup</group>
+            <description>This will move the files from HEL output folder to RR process folder</description>
+            <job-class>com.bowlink.rr.jobs.reportMonitoringJob</job-class>
+        </job>
+ 
+        <trigger>
+            <cron>
+                <name>checkReportStatusJobTrigger</name>
+                <job-name>checkReportStatusJob</job-name>
+                <job-group>processGroup</job-group>
+                <cron-expression>0 0/15 * * * ?</cron-expression>
+            </cron>
+        </trigger>
+    </schedule> 
 </job-scheduling-data>

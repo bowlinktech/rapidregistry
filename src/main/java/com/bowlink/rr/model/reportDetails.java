@@ -17,16 +17,18 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Entity
 @Table(name = "reportDetails")
 public class reportDetails {
+
+	@Transient
+    private reportType reportTypeObj;
 	
 	@Transient
-    private reportType reportType;
+    private String reportType;
 	
 	@Transient
     private List <reportCrossTab> reportCrossTabs;
 	
 	@Transient
     private List <reportCrossTabEntity> reportCrossTabEntities;
-	
 	
 
     @Id
@@ -67,7 +69,7 @@ public class reportDetails {
     @Column(name = "cssFile", nullable = true)
     private String cssFile = null;
 
-    @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
+    @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     @Column(name = "dateCreated", nullable = true)
     private Date dateCreated = new Date();
 
@@ -77,11 +79,25 @@ public class reportDetails {
     @Column(name = "reportLevel", nullable = false)
     private Integer reportLevel = 3;
     
-	public reportType getReportType() {
+    @Column(name = "dspPos", nullable = false)
+    private Integer dspPos = 1;
+    
+    @Column(name = "reportDisplayText", nullable = true)
+    private String reportDisplayText = null;
+
+	public reportType getReportTypeObj() {
+		return reportTypeObj;
+	}
+
+	public void setReportTypeObj(reportType reportTypeObj) {
+		this.reportTypeObj = reportTypeObj;
+	}
+
+	public String getReportType() {
 		return reportType;
 	}
 
-	public void setReportType(reportType reportType) {
+	public void setReportType(String reportType) {
 		this.reportType = reportType;
 	}
 
@@ -222,5 +238,20 @@ public class reportDetails {
 		this.reportLevel = reportLevel;
 	}
 
+	public Integer getDspPos() {
+		return dspPos;
+	}
+
+	public void setDspPos(Integer dspPos) {
+		this.dspPos = dspPos;
+	}
+
+	public String getReportDisplayText() {
+		return reportDisplayText;
+	}
+
+	public void setReportDisplayText(String reportDisplayText) {
+		this.reportDisplayText = reportDisplayText;
+	}
 
 }

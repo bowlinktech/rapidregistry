@@ -12,6 +12,7 @@ import com.bowlink.rr.model.reportCrossTab;
 import com.bowlink.rr.model.reportCrossTabCWData;
 import com.bowlink.rr.model.reportCrossTabEntity;
 import com.bowlink.rr.model.reportDetails;
+import com.bowlink.rr.model.reportRequest;
 import com.bowlink.rr.model.reportType;
 import com.bowlink.rr.model.reports;
 
@@ -74,5 +75,7 @@ public interface reportDAO {
     
     List <String> getCombineCWDataByCTId (Integer crossTabId) throws Exception;
 
+    List<reportRequest> getReportDetailsByStatus (List<Integer> statusList)  throws Exception;
+    
 }
 
