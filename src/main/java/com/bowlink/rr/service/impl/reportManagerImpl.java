@@ -7,17 +7,24 @@
 package com.bowlink.rr.service.impl;
 
 import com.bowlink.rr.dao.reportDAO;
+import com.bowlink.rr.model.mailMessage;
 import com.bowlink.rr.model.programOrgHierarchyDetails;
 import com.bowlink.rr.model.programReports;
 import com.bowlink.rr.model.reportCrossTab;
 import com.bowlink.rr.model.reportCrossTabCWData;
 import com.bowlink.rr.model.reportCrossTabEntity;
 import com.bowlink.rr.model.reportDetails;
+import com.bowlink.rr.model.reportRequest;
 import com.bowlink.rr.model.reportType;
 import com.bowlink.rr.model.reports;
+import com.bowlink.rr.service.emailMessageManager;
 import com.bowlink.rr.service.reportManager;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Properties;
+
+import javax.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,10 +33,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class reportManagerImpl implements reportManager {
-    
-    @Autowired
+	
+	@Resource(name = "myProps")
+    private Properties myProps;
+
+	@Autowired
     reportDAO reportDAO;
     
+	@Autowired
+    private emailMessageManager emailMessageManager;
+	
     @Override
     @Transactional
     public Integer createReport(reports report) throws Exception {
@@ -209,5 +222,49 @@ public class reportManagerImpl implements reportManager {
 		return reportDAO.getCombineCWDataByCTId(crossTabId);
 		
 	}
+
+
+	@Override
+	public void reportStatusMonitoring(List<Integer> statusList) throws Exception {
+		// 1. first we grab all reportRequest with status of 2
+		List <reportRequest> reportList = getReportRequestsByStatus(statusList);
+		if (reportList.size() > 0) {
+			String messageBody = "<br/><br/>There are " + reportList.size() + " with status of " + statusList;
+			messageBody = messageBody + "<br/>" + "The time stamp for the first report is " + reportList.get(0).getStartProcessTime() + ".";
+			messageBody = messageBody + "<br/>" + "The programId for the first report is " + reportList.get(0).getProgramId() + ".";
+			messageBody = messageBody + "<br/><br/>Please login and run sql to view details. - select * from reportrequests order by id;";
+			sendReportErrorEmail((reportList.size()  + " reports are with status of " + statusList), messageBody);
+		}
+		
+	}
+
+
+	@Override
+	public List<reportRequest> getReportRequestsByStatus(List<Integer> statusList)
+			throws Exception {
+		return reportDAO.getReportDetailsByStatus(statusList);
+	}
+	
+	
+	@Override
+    public void sendReportErrorEmail(String subject, String messageBody) throws Exception {
+        // send email with error
+        mailMessage messageDetails = new mailMessage();
+        messageDetails.settoEmailAddress("support@health-e-link.net");
+        messageDetails.setfromEmailAddress("gchan@health-e-link.net");
+        messageDetails.setmessageSubject(subject + " " + myProps.getProperty("server.identity"));
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(new Date().toString() + "<br/>");
+        sb.append(messageBody);
+        messageDetails.setmessageBody(sb.toString());
+        try {
+            emailMessageManager.sendEmail(messageDetails);
+        } catch (Exception e) {
+            System.err.println("sendReportErrorEmail Error");
+            e.printStackTrace();
+        }
+
+    }
 
 }

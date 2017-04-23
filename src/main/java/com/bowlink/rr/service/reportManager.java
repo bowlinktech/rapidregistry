@@ -12,6 +12,7 @@ import com.bowlink.rr.model.reportCrossTab;
 import com.bowlink.rr.model.reportCrossTabCWData;
 import com.bowlink.rr.model.reportCrossTabEntity;
 import com.bowlink.rr.model.reportDetails;
+import com.bowlink.rr.model.reportRequest;
 import com.bowlink.rr.model.reportType;
 import com.bowlink.rr.model.reports;
 
@@ -70,5 +71,10 @@ public interface reportManager {
     void createReportCrossTabCWData (reportCrossTabCWData crossTabCWData) throws Exception;
     
     List <String> getCombineCWDataByCTId (Integer crossTabId) throws Exception;
-
+    
+    void reportStatusMonitoring (List<Integer> statusList) throws Exception;
+    
+    List<reportRequest> getReportRequestsByStatus (List<Integer> statusList)  throws Exception;
+    
+    void sendReportErrorEmail(String subject, String messageBody) throws Exception;
 }
