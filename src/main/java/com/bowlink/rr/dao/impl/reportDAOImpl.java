@@ -18,7 +18,6 @@ import com.bowlink.rr.model.reportType;
 import com.bowlink.rr.model.reports;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -369,12 +368,9 @@ public class reportDAOImpl implements reportDAO {
 	@Transactional
 	public List<reportRequest> getReportDetailsByStatus(List<Integer> statusList)
 			throws Exception {
-		Calendar cal = Calendar.getInstance();
-		cal.add(Calendar.HOUR_OF_DAY, 3);
-
-		Query q = sessionFactory.getCurrentSession().createQuery("from reportRequest where startProcessTime < :date and statusId in (:statusList) order by startProcessTime ");
-		q.setCalendarDate("date", cal);
-		q.setParameterList("statusList", statusList);
+		Query q = sessionFactory.getCurrentSession().createSQLQuery("select id, startProcessTime, programId from reportRequests where DATE_SUB(startProcessTime, INTERVAL 3 minute) and statusId in (:statusList) order by startProcessTime ").setResultTransformer(
+                Transformers.aliasToBean(reportRequest.class));
+                q.setParameterList("statusList", statusList);
 		
 		return q.list();
 	}

@@ -232,6 +232,7 @@ public class reportManagerImpl implements reportManager {
 			String messageBody = "<br/><br/>There are " + reportList.size() + " with status of " + statusList;
 			messageBody = messageBody + "<br/>" + "The time stamp for the first report is " + reportList.get(0).getStartProcessTime() + ".";
 			messageBody = messageBody + "<br/>" + "The programId for the first report is " + reportList.get(0).getProgramId() + ".";
+			messageBody = messageBody + "<br/>" + "The Id for the first report is " + reportList.get(0).getId() + ".";
 			messageBody = messageBody + "<br/><br/>Please login and run sql to view details. - select * from reportrequests order by id;";
 			sendReportErrorEmail((reportList.size()  + " reports are with status of " + statusList), messageBody);
 		}
