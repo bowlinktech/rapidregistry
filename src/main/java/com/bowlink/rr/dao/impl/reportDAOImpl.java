@@ -13,6 +13,7 @@ import com.bowlink.rr.model.reportCrossTab;
 import com.bowlink.rr.model.reportCrossTabCWData;
 import com.bowlink.rr.model.reportCrossTabEntity;
 import com.bowlink.rr.model.reportDetails;
+import com.bowlink.rr.model.reportRequest;
 import com.bowlink.rr.model.reportType;
 import com.bowlink.rr.model.reports;
 
@@ -28,6 +29,7 @@ import org.hibernate.transform.Transformers;
 import org.hibernate.type.StandardBasicTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -359,6 +361,18 @@ public class reportDAOImpl implements reportDAO {
         		.setParameter("crossTabId", crossTabId);
         
         return query.list();
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	@Transactional
+	public List<reportRequest> getReportDetailsByStatus(List<Integer> statusList)
+			throws Exception {
+		Query q = sessionFactory.getCurrentSession().createSQLQuery("select id, startProcessTime, programId from reportRequests where DATE_SUB(startProcessTime, INTERVAL 3 minute) and statusId in (:statusList) order by startProcessTime ").setResultTransformer(
+                Transformers.aliasToBean(reportRequest.class));
+                q.setParameterList("statusList", statusList);
+		
+		return q.list();
 	}
 
 }
