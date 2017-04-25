@@ -17,6 +17,11 @@
               <icon class="glyphicon glyphicon-edit"></icon> Edit
           </a>
       </li>
+      <li class="paneTabLi helpPaneTab" rel="help">
+          <a href="#help" role="tab" data-toggle="tab" class="paneTab">
+            <icon class="glyphicon glyphicon-question-sign"></icon> Help Text
+          </a>
+      </li>
       <li class="paneTabLi optionsPaneTab" rel="options">
           <a href="#options" role="tab" data-toggle="tab" class="paneTab">
             <icon class="glyphicon glyphicon-cog"></icon> Options
@@ -48,6 +53,7 @@
         <form:hidden path="answerTypeId" />
         <form:hidden path="questionNum" />
         <form:hidden path="dateCreated" />
+        <form:hidden path="questionHelp" id="questionHelpVal" />
         <!-- Tab panes -->
         <div class="tab-content">
             <div class="tab-pane tab-pane-question fade active in editPane" id="edit">
@@ -169,6 +175,15 @@
                     </div>
                 </div>
             </div>
+            <%-- Question Help Text Div --%>
+            <div class="tab-pane tab-pane-question fade helpPane" id="help">
+                 <div class="form-group">
+                    <label class="control-label" for="pageTitle">Question Help Text</label>
+                </div>
+                <div class="form-group" style="background-color:#fff">
+                    <div id="helpText">${surveyQuestion.questionHelp}</div>
+                </div>
+            </div>                
             <%-- Question Options Div --%>
             <div class="tab-pane tab-pane-question fade optionsPane" id="options">
                 <div class="well well-xsm" style="background-color:#ffffff; margin-bottom: 2px">
@@ -321,3 +336,6 @@
         </div> 
    </form:form>            
 </div>
+<script>
+    $('#helpText').summernote({ height: 150}); 
+</script>

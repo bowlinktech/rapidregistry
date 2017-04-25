@@ -121,5 +121,5 @@
 </div>
 
 <script>
-    $('#question').summernote(); 
+    $('#question').summernote({ height: 150}); 
 </script>

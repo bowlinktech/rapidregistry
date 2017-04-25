@@ -132,6 +132,9 @@ public class SurveyQuestions {
     @Column(name = "summaryColName", nullable = true)
     private String summaryColName = "";
     
+    @Column(name = "questionHelp", nullable = true)
+    private String questionHelp = "";
+    
     public int getId() {
         return id;
     }
@@ -402,6 +405,14 @@ public class SurveyQuestions {
 
     public void setSummaryColName(String summaryColName) {
         this.summaryColName = summaryColName;
+    }
+
+    public String getQuestionHelp() {
+        return questionHelp;
+    }
+
+    public void setQuestionHelp(String questionHelp) {
+        this.questionHelp = questionHelp;
     }
     
 }
