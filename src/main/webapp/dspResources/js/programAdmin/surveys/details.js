@@ -795,6 +795,16 @@ require(['./main'], function () {
                 $('#questionVal').val(sHTML);
             }
             
+            if ($(this).attr('rel') != 'displayText') {
+                var helpTextHTML = $('#helpText').code();
+                console.log(helpTextHTML);
+
+                if(helpTextHTML !== "") {
+                    $('#questionHelpVal').val(helpTextHTML);
+                }
+            }
+            
+            
             var questionTag = $('#questionTag').val();
             
             var errorFound = 0;

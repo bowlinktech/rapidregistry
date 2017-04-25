@@ -1,61 +1,7 @@
-/** grace 05042016  on dev only**/
-ALTER TABLE `rapidregistrydev`.`patientengagements` 
-CHANGE COLUMN `status` `status` BIT(1) NOT NULL DEFAULT b'1' ,
-ADD COLUMN `MCIReview` BIT(1) NOT NULL DEFAULT 0 AFTER `status`;
 
-/** start of aggregated report tables **/
-CREATE TABLE `rapidregistrydev`.`reportcrosstabtable` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `reportId` INT NOT NULL,
-  `cwIdCol` INT NOT NULL DEFAULT 0,
-  `cwIdRow` INT NOT NULL DEFAULT 0,
-  `dspPos` INT NOT NULL DEFAULT 1,
-  `tableTitle` VARCHAR(100) NULL,
-  PRIMARY KEY (`id`));
-
-ALTER TABLE `rapidregistrydev`.`reportcrosstab` 
-ADD INDEX `repId_idx` (`reportId` ASC);
-ALTER TABLE `rapidregistrydev`.`reportcrosstab` 
-ADD CONSTRAINT `repId`
-  FOREIGN KEY (`reportId`)
-  REFERENCES `rapidregistrydev`.`reportdetails` (`id`)
-  ON DELETE NO ACTION
-  ON UPDATE NO ACTION;
-  
-  INSERT INTO `rapidregistrydev`.`reportcrosstab` (`reportId`, `cwIdCol`, `cwIdRow`, `dspPos`, `tableTitle`) VALUES ('41', '85', '84', '1', 'Unduplicated Number of Female Family Planning Users by Ethnicity and Race');
-  
-  
-  CREATE TABLE `rapidregistrydev`.`reportcrosstabentity` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `reportId` INT NOT NULL,
-  `entity1Id` INT NOT NULL,
-  `entity2Id` INT NOT NULL DEFAULT 0,
-  `entity3Id` INT NOT NULL DEFAULT 0,
-  PRIMARY KEY (`id`));
-  
-  
-  ALTER TABLE `rapidregistrydev`.`reportcrosstabentity` 
-ADD INDEX `repCTEntity_idx` (`reportId` ASC);
-ALTER TABLE `rapidregistrydev`.`reportcrosstabentity` 
-ADD CONSTRAINT `repCTEntity`
-  FOREIGN KEY (`reportId`)
-  REFERENCES `rapidregistrydev`.`reportdetails` (`id`)
-  ON DELETE NO ACTION
-  ON UPDATE NO ACTION;
-  
-  ALTER TABLE `rapidregistrydev`.`reportdetails` 
-ADD COLUMN `aggregatedReport` BIT(1) NULL DEFAULT 0 AFTER `reportLevel`;
-
-CREATE TABLE `rapidregistrydev`.`reportcrosstabcwdata` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `reportCrossTabId` INT NOT NULL,
-  `combineCWDataId` VARCHAR(15) NOT NULL,
-  PRIMARY KEY (`id`));
-
-
-ALTER TABLE `rapidregistrydev`.`reportcrosstab` 
-CHANGE COLUMN `tableTitle` `tableTitle` VARCHAR(100) NOT NULL ,
-ADD COLUMN `statusId` INT NOT NULL DEFAULT 1 COMMENT '1 - active\n2 - inactive\n3 - deleted' AFTER `tableTitle`;
+/** Chad 04252017  on dev only**/
+ALTER TABLE `rapidregistrydev`.`survey_questions` 
+ADD COLUMN `questionHelp` TEXT NULL AFTER `summaryColName`;
 
   
   
