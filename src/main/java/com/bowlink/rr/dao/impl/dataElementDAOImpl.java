@@ -10,6 +10,7 @@ import com.bowlink.rr.model.crosswalkData;
 import com.bowlink.rr.model.crosswalks;
 import com.bowlink.rr.model.customProgramFields;
 import com.bowlink.rr.model.dataElements;
+import com.bowlink.rr.model.environmentalstrategyquestions;
 import com.bowlink.rr.model.reportCrossTabCWData;
 
 import java.util.List;
@@ -32,7 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Repository
 public class dataElementDAOImpl implements dataElementDAO {
-    
+
     @Resource(name = "myProps")
     private Properties myProps;
 
@@ -54,7 +55,7 @@ public class dataElementDAOImpl implements dataElementDAO {
         return fieldList;
 
     }
-    
+
     @Override
     public List<dataElements> getActiveDataElements() throws Exception {
 
@@ -65,7 +66,7 @@ public class dataElementDAOImpl implements dataElementDAO {
         return fieldList;
 
     }
-    
+
     /**
      * The 'getCrosswalks' function will return the list of available crosswalks to associate a message types to. This function will only return crosswalks not associated to a specific organization.
      *
@@ -138,7 +139,7 @@ public class dataElementDAOImpl implements dataElementDAO {
 
         return fieldName;
     }
-    
+
     /**
      * The 'getCrosswalkName' function will return the name of a crosswalk based on the id passed in.
      *
@@ -165,10 +166,8 @@ public class dataElementDAOImpl implements dataElementDAO {
         return cwName;
     }
 
-    
     /**
-     * The 'getValidationName' function will return the name of the selected validation passed in. 
-     * This is used for display purposes to show the actual validation name instead.
+     * The 'getValidationName' function will return the name of the selected validation passed in. This is used for display purposes to show the actual validation name instead.
      *
      * @param validationId	This will hold the id of the validation type to retrieve
      *
@@ -184,7 +183,7 @@ public class dataElementDAOImpl implements dataElementDAO {
 
         return validationName;
     }
-    
+
     /**
      * The 'findTotalCrosswalks' function will return the total number of generic crosswalks in the system
      *
@@ -202,20 +201,19 @@ public class dataElementDAOImpl implements dataElementDAO {
 
         if (programId == 0) {
             criteria.add(Restrictions.eq("programId", 0));
-        }
-        else {
-           Disjunction or = Restrictions.disjunction();
-           or.add(Restrictions.eq("programId", 0));
-           or.add(Restrictions.eq("programId", programId));
-           criteria.add(or);
-            
+        } else {
+            Disjunction or = Restrictions.disjunction();
+            or.add(Restrictions.eq("programId", 0));
+            or.add(Restrictions.eq("programId", programId));
+            criteria.add(or);
+
         }
 
         double totalCrosswalks = (double) criteria.list().size();
 
         return totalCrosswalks;
     }
-    
+
     /**
      * The 'getDelimiters' function will return a list of available file delimiters
      *
@@ -245,7 +243,7 @@ public class dataElementDAOImpl implements dataElementDAO {
 
         return delimChar;
     }
-    
+
     /**
      *
      */
@@ -286,7 +284,7 @@ public class dataElementDAOImpl implements dataElementDAO {
 
         return lastId;
     }
-    
+
     /**
      * The 'updateCrosswalk" function will update the existing crosswalk
      *
@@ -331,7 +329,7 @@ public class dataElementDAOImpl implements dataElementDAO {
 
         return query.list();
     }
-    
+
     /**
      * The 'getInformationTables' function will return a list of all available information tables where we can associate fields to an actual table and column.
      */
@@ -339,11 +337,11 @@ public class dataElementDAOImpl implements dataElementDAO {
     @SuppressWarnings("rawtypes")
     @Transactional
     public List getInformationTables() {
-        Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT distinct table_name FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '"+ myProps.getProperty("schemaName") +"' and (TABLE_NAME = 'programpatiententities' or TABLE_NAME = 'submittedsurveys' OR TABLE_NAME = 'programprofiles' OR TABLE_NAME LIKE 'storage\\_%')");
+        Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT distinct table_name FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" + myProps.getProperty("schemaName") + "' and (TABLE_NAME = 'programpatiententities' or TABLE_NAME = 'submittedsurveys' OR TABLE_NAME = 'programprofiles' OR TABLE_NAME LIKE 'storage\\_%')");
 
         return query.list();
     }
-    
+
     /**
      * The 'getAllTables' function will return a list of all available tables where we can associate fields to an actual table and column.
      */
@@ -351,11 +349,11 @@ public class dataElementDAOImpl implements dataElementDAO {
     @SuppressWarnings("rawtypes")
     @Transactional
     public List getAllTables() {
-        Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT distinct table_name FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '"+ myProps.getProperty("schemaName") +"' ");
+        Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT distinct table_name FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" + myProps.getProperty("schemaName") + "' ");
 
         return query.list();
     }
-    
+
     /**
      * The 'getTableColumns' function will return a list of columns from the passed in table name
      *
@@ -364,36 +362,35 @@ public class dataElementDAOImpl implements dataElementDAO {
     @SuppressWarnings("rawtypes")
     @Transactional
     public List getTableColumns(String tableName) {
-        Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '"+ myProps.getProperty("schemaName") +"' AND TABLE_NAME = :tableName and COLUMN_NAME not in ('id', 'dateCreated') order by COLUMN_NAME")
+        Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" + myProps.getProperty("schemaName") + "' AND TABLE_NAME = :tableName and COLUMN_NAME not in ('id', 'dateCreated') order by COLUMN_NAME")
                 .setParameter("tableName", tableName);
 
         return query.list();
     }
-    
+
     /**
      * The 'saveField' function will save the new data element
+     *
      * @param formField The object holding the data element object
-     * @throws Exception 
+     * @throws Exception
      */
     @Override
     public void saveField(dataElements formField) throws Exception {
         sessionFactory.getCurrentSession().saveOrUpdate(formField);
     }
-    
-    
+
     /**
-     * The 'getFieldDetails' function will return the details of the selected
-     * data element.
-     * 
+     * The 'getFieldDetails' function will return the details of the selected data element.
+     *
      * @param fieldId The id of the selected field
      * @return
-     * @throws Exception 
+     * @throws Exception
      */
     @Override
     public dataElements getFieldDetails(Integer fieldId) throws Exception {
-        return (dataElements) sessionFactory.getCurrentSession().get(dataElements.class, fieldId); 
+        return (dataElements) sessionFactory.getCurrentSession().get(dataElements.class, fieldId);
     }
-    
+
     /**
      * The 'getAnswerTypes' function will return a list of available field types
      *
@@ -406,8 +403,7 @@ public class dataElementDAOImpl implements dataElementDAO {
 
         return query.list();
     }
-    
-    
+
     /**
      * The 'getLookUpTables' function will return a list of all available look up tables where we can associate a data element to.
      */
@@ -415,63 +411,59 @@ public class dataElementDAOImpl implements dataElementDAO {
     @SuppressWarnings("rawtypes")
     @Transactional
     public List getLookUpTables() {
-        Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT distinct table_name FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '"+ myProps.getProperty("schemaName") +"' and TABLE_NAME LIKE 'lu\\_%'");
+        Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT distinct table_name FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" + myProps.getProperty("schemaName") + "' and TABLE_NAME LIKE 'lu\\_%'");
 
         return query.list();
     }
-    
+
     @Override
     @SuppressWarnings("rawtypes")
     @Transactional
     public List getLookupTableValues(Integer fieldId) throws Exception {
         dataElements fieldDetails = getFieldDetails(fieldId);
-        
+
         Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT id, displayText from " + fieldDetails.getPopulateFromTable() + " where status = 1 order by displayText asc");
 
         return query.list();
     }
-    
+
     @Override
     @SuppressWarnings("rawtypes")
     @Transactional
     public List getLookupTableValues(String tableName) throws Exception {
-        
+
         Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT id, displayText from " + tableName + " where status = 1 order by displayText asc");
 
         return query.list();
     }
-    
+
     @Override
     @SuppressWarnings("rawtypes")
     @Transactional
     public List getLookupTableValues(String tableName, Integer programId) throws Exception {
-        
-        if("programs".equals(tableName)) {
+
+        if ("programs".equals(tableName)) {
             Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT id, programName from " + tableName + " where status = 1 order by programName asc");
             return query.list();
-        }
-        else if("lu_programmodules".equals(tableName)) {
+        } else if ("lu_programmodules".equals(tableName)) {
             Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT id, displayName from " + tableName + " order by displayName asc");
             return query.list();
-        }
-        else {
+        } else {
             try {
                 Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT id, displayText from " + tableName + " where status = 1 order by displayText asc");
 
                 return query.list();
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 try {
                     Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT id, name from " + tableName + " where programId = " + programId + " order by name asc");
                     return query.list();
-                }
-                catch(Exception ex) {
+                } catch (Exception ex) {
                     return null;
                 }
             }
         }
     }
-    
+
     /**
      * The 'getCustomFields' function will return the list of available custom program fields
      *
@@ -514,11 +506,11 @@ public class dataElementDAOImpl implements dataElementDAO {
         return query.list();
 
     }
-    
+
     /**
      * The 'findTotalCustomFields' function will return the total number of custom fields in the system
      *
-     * @param programId Will pass the programId 
+     * @param programId Will pass the programId
      *
      * @Table	crosswalks
      *
@@ -532,20 +524,19 @@ public class dataElementDAOImpl implements dataElementDAO {
 
         if (programId == 0) {
             criteria.add(Restrictions.eq("programId", 0));
-        }
-        else {
-           Disjunction or = Restrictions.disjunction();
-           or.add(Restrictions.eq("programId", 0));
-           or.add(Restrictions.eq("programId", programId));
-           criteria.add(or);
-            
+        } else {
+            Disjunction or = Restrictions.disjunction();
+            or.add(Restrictions.eq("programId", 0));
+            or.add(Restrictions.eq("programId", programId));
+            criteria.add(or);
+
         }
 
         double totalCustomFields = (double) criteria.list().size();
 
         return totalCustomFields;
     }
-    
+
     /**
      * The 'getCrosswalk' function will return the details for the passed in custom field.
      *
@@ -557,7 +548,7 @@ public class dataElementDAOImpl implements dataElementDAO {
     public customProgramFields getCustomField(int fieldId) {
         return (customProgramFields) sessionFactory.getCurrentSession().get(customProgramFields.class, fieldId);
     }
-    
+
     /**
      *
      */
@@ -567,12 +558,12 @@ public class dataElementDAOImpl implements dataElementDAO {
         query.setParameter("name", name);
         query.setParameter("programId", programId);
         query.setParameter("fieldId", fieldId);
-        
+
         Long fieldNameId = (Long) query.uniqueResult();
 
         return fieldNameId;
     }
-    
+
     /**
      * The 'saveCustomField" function will create/edit the custom field
      *
@@ -586,13 +577,83 @@ public class dataElementDAOImpl implements dataElementDAO {
         sessionFactory.getCurrentSession().saveOrUpdate(customField);
     }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<crosswalkData> getCrosswalkDataByCWId(Integer cwId)
-			throws Exception {
-		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(crosswalkData.class);
-		criteria.add(Restrictions.eq("crosswalkId", cwId));
-		List <crosswalkData> dataList = criteria.list();
-		return dataList;
-	}
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<crosswalkData> getCrosswalkDataByCWId(Integer cwId)
+            throws Exception {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(crosswalkData.class);
+        criteria.add(Restrictions.eq("crosswalkId", cwId));
+        List<crosswalkData> dataList = criteria.list();
+        return dataList;
+    }
+    
+    /**
+     * The 'getEnvironmentalStrategies' function will return a list of environmental strategies from the passed in 
+     * crosswalkId.
+     * @param crosswalkId
+     * @param programId
+     * @return
+     * @throws Exception 
+     */
+    @Override
+    public List<String> getEnvironmentalStrategies(Integer crosswalkId, Integer programId) throws Exception {
+        
+        Query query = sessionFactory.getCurrentSession().createSQLQuery("select targetValue from rel_crosswalkdata where crosswalkId = :crosswalkId and (sourceValue = 'Environmental' or sourceValue = 'Information Dissemination') order by id asc");
+        query.setParameter("crosswalkId", crosswalkId);
+        
+        List<String> environmentalStrategies = query.list();
+        
+        return environmentalStrategies;
+        
+    }
+    
+    /**
+     * The 'environmentalstrategyquestions' function will return a list of questions associated to the selected environmental
+     * strategy.
+     * @param code
+     * @return
+     * @throws Exception 
+     */
+    @Override
+    public List<environmentalstrategyquestions> getEnvironmentalStrategyQuestions(String code) throws Exception {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(environmentalstrategyquestions.class);
+        criteria.add(Restrictions.eq("environmentalStrategy", code));
+        List<environmentalstrategyquestions> environmentalstrategyquestions = criteria.list();
+        return environmentalstrategyquestions;
+    }
+    
+    /**
+     * THe 'getEnvironmentalStrategyQuestion' function will return the details of the selected environmental strategy question.
+     * @param qId
+     * @return
+     * @throws Exception 
+     */
+    @Override
+    public environmentalstrategyquestions getEnvironmentalStrategyQuestion(Integer qId) throws Exception {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(environmentalstrategyquestions.class);
+        criteria.add(Restrictions.eq("id", qId));
+        return (environmentalstrategyquestions) criteria.uniqueResult();
+    }
+    
+    /**
+     * The 'saveEnvironmentalStrategyQuestion' function will save the new question or update an existing question.
+     * @param question
+     * @return
+     * @throws Exception 
+     */
+     @Override
+    public Integer saveEnvironmentalStrategyQuestion(environmentalstrategyquestions question) throws Exception {
+        Integer lastId = 0;
+        
+        if(question.getId() > 0) {
+            lastId = question.getId();
+            sessionFactory.getCurrentSession().update(question);
+        }
+        else {
+            lastId = (Integer) sessionFactory.getCurrentSession().save(question);
+        }
+
+
+        return lastId;
+    }
 }

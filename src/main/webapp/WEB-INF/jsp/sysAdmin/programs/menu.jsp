@@ -15,6 +15,9 @@
             <li role="menuitem" ${param['page'] == 'imports' ? 'class="active"' : ''} ${id > 0 ? '' : 'class="disabled"'}><a href="/sysAdmin/programs/${sessionScope.programName}/imports" title="Imports">Imports</a></li>
             <li role="menuitem" ${param['page'] == 'admins' ? 'class="active"' : ''} ${id > 0 ? '' : 'class="disabled"'}><a href="/sysAdmin/programs/${sessionScope.programName}/program-admins" title="Program Admins">Program Admins</a></li>
             <li role="menuitem" ${param['page'] == 'crosswalks' ? 'class="active"' : ''} ${id > 0 ? '' : 'class="disabled"'}><a href="/sysAdmin/programs/${sessionScope.programName}/crosswalks" title="crosswalks">Crosswalks</a></li>
+            <c:if test="${sessionScope.programId == 13}">
+                <li role="menuitem" ${param['page'] == 'environmentalStrategies' ? 'class="active"' : ''} ${id > 0 ? '' : 'class="disabled"'}><a href="/sysAdmin/programs/${sessionScope.programName}/environmentalStrategies" title="Environmental Strategies">Environmental Strategies</a></li>
+            </c:if>
         </ul>
     </nav>
 </aside>

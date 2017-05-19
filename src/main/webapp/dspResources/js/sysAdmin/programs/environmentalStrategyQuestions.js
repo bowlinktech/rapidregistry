@@ -13,106 +13,97 @@ require(['./main'], function () {
         if ($('.alert').length > 0) {
             $('.alert').delay(2000).fadeOut(1000);
         }
-
-        $("input:text,form").attr("autocomplete", "off");
         
-        //This function will launch the crosswalk overlay with the selected
-        //crosswalk details
-        $(document).on('click', '.viewCrosswalk', function() {
-            $.ajax({
-                url: '/sysAdmin/data-elements/viewCrosswalk' + $(this).attr('rel'),
-                type: "GET",
-                success: function(data) {
-                    $("#crosswalkModal").html(data);
-                }
-            });
-        });
-
-
         //This function will launch the new crosswalk overlay with a blank form
-        $(document).on('click', '#createNewCrosswalk', function() {
-            var orgId = $('#orgId').val();
+        $(document).on('click', '.questionDetails', function() {
+            var code = $(this).attr('rel');
+            var qId = $(this).attr('id');
                
             $.ajax({
-                url: '/sysAdmin/data-elements/newCrosswalk',
-                data: {'frompage': ""},
+                url: 'environmentalStrategyQuestion',
+                data: {
+                    'qId': qId,
+                    'code': code
+                },
                 type: "GET",
                 success: function(data) {
-                    $("#crosswalkModal").html(data);
+                    $("#questionModal").html(data);
                 }
             });
         });
+        
+        //The function to submit the new Question
+        $(document).on('click', '#submitQuestionButton', function(event) {
 
-        //The function to submit the new crosswalk
-        $(document).on('click', '#submitCrosswalkButton', function(event) {
-
-            $('#crosswalkNameDiv').removeClass("has-error");
-            $('#crosswalkNameMsg').removeClass("has-error");
-            $('#crosswalkNameMsg').html('');
-            $('#crosswalkDelimDiv').removeClass("has-error");
-            $('#crosswalkDelimMsg').removeClass("has-error");
-            $('#crosswalkDelimMsg').html('');
-            $('#crosswalkFileDiv').removeClass("has-error");
-            $('#crosswalkFileMsg').removeClass("has-error");
-            $('#crosswalkFileMsg').html('');
+            $('#questionMsgDiv').removeClass("has-error");
+            $('#questionMsgMsg').removeClass("has-error");
+            $('#questionMsgMsg').html('');
+            $('#defaultValueDiv').removeClass("has-error");
+            $('#defaultValueMsg').removeClass("has-error");
+            $('#defaultValueMsg').html('');
+            $('#qTagDiv').removeClass("has-error");
+            $('#qTagMsg').removeClass("has-error");
+            $('#qTagMsg').html('');
+            $('#maxCharactersAllowedDiv').removeClass("has-error");
+            $('#maxCharactersAllowedMsg').removeClass("has-error");
+            $('#maxCharactersAllowedMsg').html('');
+            $('#maxValueDiv').removeClass("has-error");
+            $('#maxValueMsg').removeClass("has-error");
+            $('#maxValueMsg').html('');
 
             var errorFound = 0;
             var actionValue = $(this).attr('rel').toLowerCase();
 
-            //Make sure a title is entered
-            if ($('#name').val() == '') {
-                $('#crosswalkNameDiv').addClass("has-error");
-                $('#crosswalkNameMsg').addClass("has-error");
-                $('#crosswalkNameMsg').html('The crosswalk name is a required field!');
+            //Make sure a question is entered
+            if ($('#question').val() == '') {
+                $('#questionMsgDiv').addClass("has-error");
+                $('#questionMsgMsg').addClass("has-error");
+                $('#questionMsgMsg').html('The question is a required field!');
                 errorFound = 1;
             }
-
-            //Need to make sure the crosswalk name doesn't already exist.
-            var orgId = $('#orgId').val();
             
-            if(actionValue === "create") {
-                $.ajax({
-                    url: '/sysAdmin/data-elements/checkCrosswalkName.do',
-                    type: "POST",
-                    async: false,
-                    data: {'name': $('#name').val(), 'orgId': orgId},
-                    success: function(data) {
-                        if (data == 1) {
-                            $('#crosswalkNameDiv').addClass("has-error");
-                            $('#crosswalkNameMsg').addClass("has-error");
-                            $('#crosswalkNameMsg').html('The name entered is already associated with another crosswalk in the system!');
-                            errorFound = 1;
-                        }
-                    }
-                });
-            }
-
-            //Make sure a delimiter is selected
-            if ($('#delimiter').val() == '') {
-                $('#crosswalkDelimDiv').addClass("has-error");
-                $('#crosswalkDelimMsg').addClass("has-error");
-                $('#crosswalkDelimMsg').html('The file delimiter is a required field!');
+            //Make sure a qTag is entered
+            if ($('#defaultValue').val() == '') {
+                $('#defaultValueDiv').addClass("has-error");
+                $('#defaultValueMsg').addClass("has-error");
+                $('#defaultValueMsg').html('The default value is a required field!');
                 errorFound = 1;
             }
 
-            //Make sure a file is selected and is a text file
-            if ($('#crosswalkFile').val() == '' || $('#crosswalkFile').val().indexOf('.txt') == -1) {
-                $('#crosswalkFileDiv').addClass("has-error");
-                $('#crosswalkFileMsg').addClass("has-error");
-                $('#crosswalkFileMsg').html('The crosswalk file must be a text file!');
+            //Make sure a qTag is entered
+            if ($('#qTag').val() == '') {
+                $('#qTagDiv').addClass("has-error");
+                $('#qTagMsg').addClass("has-error");
+                $('#qTagMsg').html('The question tag is a required field!');
                 errorFound = 1;
             }
+            
+            //Make sure a max value is entered
+            if ($('#maxValue').val() == '') {
+                $('#maxValueDiv').addClass("has-error");
+                $('#maxValueMsg').addClass("has-error");
+                $('#maxValueMsg').html('The max field value is a required field!');
+                errorFound = 1;
+            }
+            
+            //Make sure a max Characters Allowed is entered
+            if ($('#maxCharactersAllowed').val() == '') {
+                $('#maxCharactersAllowedDiv').addClass("has-error");
+                $('#maxCharactersAllowedMsg').addClass("has-error");
+                $('#maxCharactersAllowedMsg').html('The max number of characters allowed is a required field!');
+                errorFound = 1;
+            }
+
 
             if (errorFound == 1) {
                 event.preventDefault();
                 return false;
             }
             
-            $('#crosswalkdetailsform').attr('action', '/sysAdmin/data-elements/' + actionValue + 'Crosswalk');
-            $('#crosswalkdetailsform').submit();
+            $('#questionform').submit();
 
         });
-        
+
         
     });
 });

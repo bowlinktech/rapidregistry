@@ -6,51 +6,64 @@
 
 package com.bowlink.rr.model;
 
-import com.bowlink.rr.validator.NoHtml;
-import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Transient;
-import org.hibernate.validator.constraints.NotEmpty;
-import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  *
  * @author chadmccue
  */
 @Entity
-@Table(name = "LU_ACTIVITYCODES")
-public class activityCodes {
+@Table(name = "environmentalstrategyquestions")
+public class environmentalstrategyquestions {
    
-    @Transient
-    private boolean selected = false;
-    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "ID", nullable = false)
+    @Column(name = "id", nullable = false)
     private int id;
     
-    @NotEmpty
-    @NoHtml
-    @Column(name = "CODE", nullable = false)
-    private String code;
+    @Column(name = "programId", nullable = false)
+    private int programId;
     
-    @NotEmpty
-    @NoHtml
-    @Column(name = "CODEDESC", nullable = false)
-    private String codeDesc;
+    @Column(name = "environmentalStrategy", nullable = false)
+    private String environmentalStrategy;
     
-    @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
-    @Column(name = "DATECREATED", nullable = true)
-    private Date dateCreated = new Date();
+    @Column(name = "question", nullable = false)
+    private String question;
     
-    @NoHtml
-    @Column(name = "DISPLAYTEXT", nullable = true)
-    private String displayText;
+    @Column(name = "required", nullable = false)
+    private boolean required = false;
+    
+    @Column(name = "validationId", nullable = false)
+    private int validationId;
+    
+    @Column(name = "copyToReach", nullable = false)
+    private boolean copyToReach = false;
+    
+    @Column(name = "copyToCount", nullable = false)
+    private boolean copyToCount = false;
+    
+    @Column(name = "defaultValue", nullable = true)
+    private String defaultValue = "";
+    
+    @Column(name = "qTag", nullable = true)
+    private String qTag  = "";
+    
+    @Column(name = "sumForCount", nullable = false)
+    private boolean sumForCount = false;
+    
+    @Column(name = "sumForReach", nullable = false)
+    private boolean sumForReach = false;
+    
+    @Column(name = "maxFieldValue", nullable = false)
+    private int maxFieldValue = 0;
+     
+    @Column(name = "maxCharactersAllowed", nullable = false)
+    private int maxCharactersAllowed = 0;
 
     public int getId() {
         return id;
@@ -60,44 +73,110 @@ public class activityCodes {
         this.id = id;
     }
 
-    public String getCode() {
-        return code;
+    public int getProgramId() {
+        return programId;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setProgramId(int programId) {
+        this.programId = programId;
     }
 
-    public String getCodeDesc() {
-        return codeDesc;
+    public String getEnvironmentalStrategy() {
+        return environmentalStrategy;
     }
 
-    public void setCodeDesc(String codeDesc) {
-        this.codeDesc = codeDesc;
+    public void setEnvironmentalStrategy(String environmentalStrategy) {
+        this.environmentalStrategy = environmentalStrategy;
     }
 
-    public Date getDateCreated() {
-        return dateCreated;
+    public String getQuestion() {
+        return question;
     }
 
-    public void setDateCreated(Date dateCreated) {
-        this.dateCreated = dateCreated;
+    public void setQuestion(String question) {
+        this.question = question;
     }
 
-    public boolean getSelected() {
-        return selected;
+    public boolean isRequired() {
+        return required;
     }
 
-    public void setSelected(boolean selected) {
-        this.selected = selected;
+    public void setRequired(boolean required) {
+        this.required = required;
     }
 
-    public String getDisplayText() {
-        return displayText;
+    public int getValidationId() {
+        return validationId;
     }
 
-    public void setDisplayText(String displayText) {
-        this.displayText = displayText;
+    public void setValidationId(int validationId) {
+        this.validationId = validationId;
     }
+
+    public boolean isCopyToReach() {
+        return copyToReach;
+    }
+
+    public void setCopyToReach(boolean copyToReach) {
+        this.copyToReach = copyToReach;
+    }
+
+    public boolean isCopyToCount() {
+        return copyToCount;
+    }
+
+    public void setCopyToCount(boolean copyToCount) {
+        this.copyToCount = copyToCount;
+    }
+
+    public String getDefaultValue() {
+        return defaultValue;
+    }
+
+    public void setDefaultValue(String defaultValue) {
+        this.defaultValue = defaultValue;
+    }
+
+    public String getqTag() {
+        return qTag;
+    }
+
+    public void setqTag(String qTag) {
+        this.qTag = qTag;
+    }
+
+    public boolean isSumForCount() {
+        return sumForCount;
+    }
+
+    public void setSumForCount(boolean sumForCount) {
+        this.sumForCount = sumForCount;
+    }
+
+    public boolean isSumForReach() {
+        return sumForReach;
+    }
+
+    public void setSumForReach(boolean sumForReach) {
+        this.sumForReach = sumForReach;
+    }
+
+    public int getMaxFieldValue() {
+        return maxFieldValue;
+    }
+
+    public void setMaxFieldValue(int maxFieldValue) {
+        this.maxFieldValue = maxFieldValue;
+    }
+
+    public int getMaxCharactersAllowed() {
+        return maxCharactersAllowed;
+    }
+
+    public void setMaxCharactersAllowed(int maxCharactersAllowed) {
+        this.maxCharactersAllowed = maxCharactersAllowed;
+    }
+    
+    
     
 }

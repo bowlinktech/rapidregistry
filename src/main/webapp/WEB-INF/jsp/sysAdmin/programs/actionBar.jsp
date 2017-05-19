@@ -54,7 +54,13 @@
                     </c:when>
                     <c:when test="${param['page'] == 'crosswalks'}">
                         <a href="javascript:void(0);" title="Program Crosswalks" class="unstyled-link">Program Crosswalks</a>
-                    </c:when>    
+                    </c:when> 
+                    <c:when test="${param['page'] == 'environmentalStrategies'}">
+                        <a href="javascript:void(0);" title="Environmental Strategies" class="unstyled-link">Environmental Strategies</a>
+                    </c:when>  
+                    <c:when test="${param['page'] == 'environmentalStrategyQuestions'}">
+                        <a href="javascript:void(0);" title="Environmental Strategy Questions" class="unstyled-link">Environmental Strategy Questions</a>
+                    </c:when>      
                 </c:choose>
             </h1>
         </div>

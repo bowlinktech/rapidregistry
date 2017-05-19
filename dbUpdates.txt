@@ -1,9 +1,5 @@
 
 /** Chad 04252017  on dev only**/
-ALTER TABLE `rapidregistrydev`.`survey_questions` 
+ALTER TABLE `rapidregistry`.`survey_questions` 
 ADD COLUMN `questionHelp` TEXT NULL AFTER `summaryColName`;
 
-  
-  
-  
-  

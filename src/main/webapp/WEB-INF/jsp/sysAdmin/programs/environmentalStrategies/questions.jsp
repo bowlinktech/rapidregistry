@@ -10,11 +10,12 @@
     <div class="row-fluid">
         <div class="col-md-12">
             <c:choose>
-                <c:when test="${not empty param.msg}" >
+                <c:when test="${not empty savedStatus}" >
                     <div class="alert alert-success">
                         <strong>Success!</strong> 
                         <c:choose>
-                            <c:when test="${param.msg == 'created'}">The crosswalk has been successfully added!</c:when>
+                            <c:when test="${savedStatus == 'created'}">The question has been successfully added!</c:when>
+                            <c:when test="${savedStatus == 'updated'}">The question has been successfully updated!</c:when>
                         </c:choose>
                     </div>
                 </c:when>
@@ -26,40 +27,38 @@
             <section class="panel panel-default">
                 <div class="panel-heading">
                     <div class="pull-right">
-                        <a href="#crosswalkModal" data-toggle="modal" class="btn btn-primary btn-xs btn-action" id="createNewCrosswalk" title="Add New Crosswalk">Add New Crosswalk</a>
+                        <a href="#questionModal" data-toggle="modal" rel="${code}" id="0" class="btn btn-primary btn-xs btn-action questionDetails" title="Add New Question">Add New Question</a>
                     </div>
-                    <h3 class="panel-title">Crosswalks</h3>
+                    <h3 class="panel-title">Environmental Strategy Questions</h3>
                 </div>
                 <div class="panel-body">
                     <div class="form-container scrollable"><br />
-                        <table class="table table-striped table-hover table-default" <c:if test="${not empty crosswalks}">id="dataTable"</c:if>>
+                        <table class="table table-striped table-hover table-default" <c:if test="${not empty environmentalstrategyquestions}">id="dataTable"</c:if>>
                                 <thead>
                                     <tr>
-                                        <th scope="col">Name</th>
-                                        <th scope="col" class="center-text">Date Created</th>
+                                        <th scope="col">Question</th>
                                         <th scope="col"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                 <c:choose>
-                                    <c:when test="${not empty crosswalks}">
-                                        <c:forEach items="${crosswalks}" var="crosswalk" varStatus="pStatus">
+                                    <c:when test="${not empty environmentalstrategyquestions}">
+                                        <c:forEach items="${environmentalstrategyquestions}" var="environmentalstrategyquestion">
                                             <tr>
                                                 <td scope="row">
-                                                    ${crosswalks[pStatus.index].name} <c:choose><c:when test="${crosswalks[pStatus.index].programId == 0}"> (generic)</c:when><c:otherwise> (Program Specific)</c:otherwise></c:choose>
+                                                    ${environmentalstrategyquestion.question}
                                                 </td>
-                                                <td class="center-text"><fmt:formatDate value="${crosswalks[pStatus.index].dateCreated}" type="date" pattern="M/dd/yyyy" /></td>
                                                 <td class="center-text">
-                                                    <a href="#crosswalkModal" data-toggle="modal" class="btn btn-link viewCrosswalk" rel="?i=${crosswalks[pStatus.index].id}" title="View this Crosswalk">
+                                                    <a href="#questionModal" data-toggle="modal" id="${environmentalstrategyquestion.id}" class="btn btn-link questionDetails" title="View this Question">
                                                         <span class="glyphicon glyphicon-edit"></span>
-                                                        View
+                                                        Edit
                                                     </a>
                                                 </td>
                                             </tr>
                                         </c:forEach>
                                     </c:when>
                                     <c:otherwise>
-                                        <tr><td colspan="7" class="center-text">There are currently no crosswalks set up for this registry.</td></tr>
+                                        <tr><td colspan="7" class="center-text">There are currently no questions set up for this environmental strategy.</td></tr>
                                     </c:otherwise>
                                 </c:choose>
                             </tbody>
@@ -68,8 +67,7 @@
                 </div>
             </section>
         </div>
-
     </div>
 </div>
-<div class="modal fade" id="crosswalkModal" role="dialog" tabindex="-1" aria-labeledby="Message Crosswalks" aria-hidden="true" aria-describedby="Message Crosswalks"></div>
+<div class="modal fade" id="questionModal" role="dialog" tabindex="-1" aria-labeledby="Environmental Strategy Question" aria-hidden="true" aria-describedby="Environmental Strategy Question"></div>
 

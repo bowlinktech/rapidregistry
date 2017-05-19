@@ -10,6 +10,7 @@ import com.bowlink.rr.model.crosswalkData;
 import com.bowlink.rr.model.crosswalks;
 import com.bowlink.rr.model.customProgramFields;
 import com.bowlink.rr.model.dataElements;
+import com.bowlink.rr.model.environmentalstrategyquestions;
 
 import java.util.List;
 
@@ -92,4 +93,11 @@ public interface dataElementDAO {
     
     List <crosswalkData> getCrosswalkDataByCWId (Integer cwId) throws Exception;
     
+    List<String> getEnvironmentalStrategies(Integer crosswalkId, Integer programId) throws Exception;
+    
+    List<environmentalstrategyquestions> getEnvironmentalStrategyQuestions(String code) throws Exception;
+    
+    environmentalstrategyquestions getEnvironmentalStrategyQuestion(Integer qId) throws Exception;
+    
+    Integer saveEnvironmentalStrategyQuestion(environmentalstrategyquestions question) throws Exception;
 }
