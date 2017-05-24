@@ -49,7 +49,7 @@
                                                     ${environmentalstrategyquestion.question}
                                                 </td>
                                                 <td class="center-text">
-                                                    <a href="#questionModal" data-toggle="modal" id="${environmentalstrategyquestion.id}" class="btn btn-link questionDetails" title="View this Question">
+                                                    <a href="#questionModal" data-toggle="modal" rel="${code}" id="${environmentalstrategyquestion.id}" class="btn btn-link questionDetails" title="View this Question">
                                                         <span class="glyphicon glyphicon-edit"></span>
                                                         Edit
                                                     </a>
