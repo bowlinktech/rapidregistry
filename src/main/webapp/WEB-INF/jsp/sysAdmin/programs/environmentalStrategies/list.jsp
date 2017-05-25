@@ -40,13 +40,14 @@
                                 <c:choose>
                                     <c:when test="${not empty environmentalStrategies}">
                                         <c:forEach items="${environmentalStrategies}" var="environmentalStrategy">
-                                            <c:set var="code" value="${fn:split(environmentalStrategy, ' -- ')}" />
+                                            <c:set var="codeUpdated" value="${fn:replace(environmentalStrategy, '--', '|')}" />
+                                            <c:set var="code" value="${fn:split(codeUpdated,' | ')}" />
                                             <tr>
                                                 <td scope="row">
                                                     ${environmentalStrategy}
                                                 </td>
                                                 <td class="center-text">
-                                                    <a href="environmentalStrategies/${code[0]}" data-toggle="modal" class="btn btn-link"  title="View Questions">
+                                                   <a href="environmentalStrategies/${code[0]}" data-toggle="modal" class="btn btn-link"  title="View Questions">
                                                         <span class="glyphicon glyphicon-edit"></span>
                                                         View Questions
                                                     </a>
