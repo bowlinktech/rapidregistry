@@ -2,6 +2,7 @@ package com.bowlink.rr.controller;
 
 import com.bowlink.rr.model.User;
 import com.bowlink.rr.model.crosswalks;
+import com.bowlink.rr.model.environmentalstrategyquestions;
 import com.bowlink.rr.model.program;
 import com.bowlink.rr.model.programAdmin;
 import com.bowlink.rr.model.programAvailableTables;
@@ -689,5 +690,148 @@ public class programController {
         return mav;
 
     }
+    
+    /**
+     * The '/{programName}/environmentalStrategyForms' GET request will display the clicked program list of environmental strategies.
+     *
+     * @param programName   The {programName} will be the program name with spaces removed.
+     *
+     * @return	Will return the program details page.
+     *
+     * @throws Exception
+     *
+     */
+    @RequestMapping(value = "/{programName}/environmentalStrategies", method = RequestMethod.GET)
+    public ModelAndView viewProgramEnvironmentalStrategies(@PathVariable String programName, HttpSession session) throws Exception {
+
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/environmentalStrategies");
+        
+        //get the list of crosswalks
+        List<crosswalks> crosswalks = dataelementmanager.getCrosswalks(0, 0, (Integer) session.getAttribute("programId"));
+        
+        Integer crosswalkId = 0;
+        List<String> environmentalStrategies = null;
+        
+        if(crosswalks != null) {
+            if(crosswalks.size() > 0) {
+                for(crosswalks crosswalk : crosswalks) {
+                    if("CSAPSubcategory".equals(crosswalk.getName())) {
+                        crosswalkId = crosswalk.getId();
+                        break;
+                    }
+                }
+            }
+        }
+        
+        if(crosswalkId > 0) {
+            environmentalStrategies = dataelementmanager.getEnvironmentalStrategies(crosswalkId, (Integer) session.getAttribute("programId"));
+        }
+        
+        mav.addObject("id", session.getAttribute("programId"));
+        mav.addObject("environmentalStrategies", environmentalStrategies);
+        
+        return mav;
+
+    }
+    
+    /**
+     * The '/{programName}/environmentalStrategyForms' GET request will display the clicked program list of environmental strategies.
+     *
+     * @param programName   The {programName} will be the program name with spaces removed.
+     *
+     * @return	Will return the program details page.
+     *
+     * @throws Exception
+     *
+     */
+    @RequestMapping(value = "/{programName}/environmentalStrategies/{code}", method = RequestMethod.GET)
+    public ModelAndView viewProgramEnvironmentalStrategyQuestions(@PathVariable String code, HttpSession session) throws Exception {
+
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/environmentalStrategies/questions");
+        
+        List<environmentalstrategyquestions> environmentalstrategyquestions = dataelementmanager.getEnvironmentalStrategyQuestions(code);
+        
+        mav.addObject("environmentalstrategyquestions", environmentalstrategyquestions);
+        mav.addObject("code", code);
+        
+        return mav;
+
+    }
+    
+    /**
+     * The '/newCrosswalk' GET request will be used to return a blank crosswalk form.
+     *
+     *
+     * @return	The crosswalk details page
+     *
+     * @Objects	(1) An object that will hold all the details of the clicked crosswalk
+     *
+     */
+    @RequestMapping(value = "/{programName}/environmentalStrategies/environmentalStrategyQuestion", method = RequestMethod.GET)
+    public @ResponseBody
+    ModelAndView newEnvironmentalStrategyQuestion(HttpSession session, 
+            @PathVariable String programName,
+            @RequestParam Integer qId, @RequestParam String code) throws Exception {
+
+        int programId = 0;
+
+        if (null != session.getAttribute("programId")) {
+            programId = (Integer) session.getAttribute("programId");
+        }
+
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/sysAdmin/programs/environmentalStrategies/questionDetails");
+        
+        environmentalstrategyquestions question;
+        
+        if(qId == 0) {
+            question = new environmentalstrategyquestions();
+            question.setProgramId(programId);
+            question.setEnvironmentalStrategy(code);
+            mav.addObject("btnValue", "Create");
+            mav.addObject("actionValue", "Create");
+        }
+        else {
+            question = dataelementmanager.getEnvironmentalStrategyQuestion(qId);
+            mav.addObject("btnValue", "Save");
+            mav.addObject("actionValue", "Edit");
+        }
+        
+        mav.addObject("question", question);
+        mav.addObject("programName", programName);
+
+        //Get the list of available file validations
+        @SuppressWarnings("rawtypes")
+        List validations = dataelementmanager.getValidationTypes();
+        mav.addObject("validations", validations);
+
+        return mav;
+    }
+    
+    /**
+     * The '/environmentalStrategyQuestion' POST function will be used to create a new crosswalk
+     *
+     * @Return The function will either return the crosswalk form on error or redirect to the data translation page.
+     */
+    @RequestMapping(value = "/{programName}/environmentalStrategies/environmentalStrategyQuestion", method = RequestMethod.POST)
+    public @ResponseBody
+    ModelAndView saveenvironmentalStrategyQuestion(@ModelAttribute(value = "question") environmentalstrategyquestions question,
+           BindingResult result, RedirectAttributes redirectAttr, HttpSession session) throws Exception {
+
+        int qId = dataelementmanager.saveEnvironmentalStrategyQuestion(question);
+
+        if (qId == 0) {
+            redirectAttr.addFlashAttribute("savedStatus", "created");
+        } else {
+            redirectAttr.addFlashAttribute("savedStatus", "updated");
+        }
+        String programName = programmanager.getProgramById(question.getProgramId()).getProgramName().replace(" ", "-").toLowerCase();
+        ModelAndView mav;
+        mav = new ModelAndView(new RedirectView("/sysAdmin/programs/"+programName+"/environmentalStrategies/"+question.getEnvironmentalStrategy()));
+        return mav;
+    }
+    
     
 }

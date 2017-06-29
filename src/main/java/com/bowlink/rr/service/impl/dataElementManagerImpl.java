@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.bowlink.rr.service.impl;
 
 import com.bowlink.rr.dao.dataElementDAO;
@@ -11,6 +10,7 @@ import com.bowlink.rr.model.crosswalkData;
 import com.bowlink.rr.model.crosswalks;
 import com.bowlink.rr.model.customProgramFields;
 import com.bowlink.rr.model.dataElements;
+import com.bowlink.rr.model.environmentalstrategyquestions;
 import com.bowlink.rr.reference.fileSystem;
 import com.bowlink.rr.service.dataElementManager;
 
@@ -38,67 +38,67 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @Service
 public class dataElementManagerImpl implements dataElementManager {
-    
+
     @Autowired
     dataElementDAO dataElementDAO;
-    
+
     @Autowired
     private SessionFactory sessionFactory;
-    
+
     @Override
     @Transactional
     public List<dataElements> getdataElements() throws Exception {
         return dataElementDAO.getdataElements();
     }
-    
+
     @Override
     @Transactional
     public List<dataElements> getActiveDataElements() throws Exception {
         return dataElementDAO.getActiveDataElements();
     }
-    
+
     @Override
     @Transactional
     public List<crosswalks> getCrosswalks(int page, int maxResults, int programId) {
         return dataElementDAO.getCrosswalks(page, maxResults, programId);
     }
-    
+
     @Override
     @Transactional
     public List getValidationTypes() {
         return dataElementDAO.getValidationTypes();
     }
-    
+
     @Override
     @Transactional
     public String getfieldName(int fieldId) {
         return dataElementDAO.getfieldName(fieldId);
     }
-    
+
     @Override
     @Transactional
     public String getCrosswalkName(int cwId) {
         return dataElementDAO.getCrosswalkName(cwId);
     }
-    
+
     @Override
     @Transactional
     public String getValidationName(int validationId) {
         return dataElementDAO.getValidationName(validationId);
     }
-    
+
     @Override
     @Transactional
     public double findTotalCrosswalks(int programId) {
         return dataElementDAO.findTotalCrosswalks(programId);
     }
-    
+
     @Override
     @Transactional
     public Long checkCrosswalkName(String name, int orgId) {
         return dataElementDAO.checkCrosswalkName(name, orgId);
     }
-    
+
     @SuppressWarnings("rawtypes")
     @Override
     @Transactional
@@ -119,7 +119,7 @@ public class dataElementManagerImpl implements dataElementManager {
         fileSystem dir = new fileSystem();
 
         dir.setDirByName("crosswalks/");
-        
+
         File newFile = null;
         newFile = new File(dir.getDir() + fileName);
 
@@ -175,7 +175,7 @@ public class dataElementManagerImpl implements dataElementManager {
     public crosswalks getCrosswalk(int cwId) {
         return dataElementDAO.getCrosswalk(cwId);
     }
-    
+
     /**
      * The 'loadCrosswalkContents' will take the contents of the uploaded text template file and populate the rel_crosswalkData table.
      *
@@ -190,7 +190,7 @@ public class dataElementManagerImpl implements dataElementManager {
         fileSystem dir = new fileSystem();
 
         dir.setDirByName("crosswalks/");
-       
+
         FileInputStream file = null;
         String[] lineValue = null;
         try {
@@ -208,7 +208,7 @@ public class dataElementManagerImpl implements dataElementManager {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            
+
             Query deleteExistingCrosswalks = sessionFactory.getCurrentSession().createSQLQuery("delete from rel_crosswalkData where crosswalkId = :crosswalkId");
             deleteExistingCrosswalks.setParameter("crosswalkId", id);
             deleteExistingCrosswalks.executeUpdate();
@@ -224,7 +224,6 @@ public class dataElementManagerImpl implements dataElementManager {
                 String sourceValue = lineValue[0];
                 String targetValue = lineValue[1];
                 String descVal = lineValue[2];
-                
 
                 //Need to insert all the fields into the crosswalk data Fields table
                 Query query = sessionFactory.getCurrentSession().createSQLQuery("INSERT INTO rel_crosswalkData (crosswalkId, sourceValue, targetValue, descValue)"
@@ -251,113 +250,112 @@ public class dataElementManagerImpl implements dataElementManager {
             }
         }
     }
-    
+
     @SuppressWarnings("rawtypes")
     @Override
     @Transactional
     public List getDelimiters() {
         return dataElementDAO.getDelimiters();
     }
-    
+
     @SuppressWarnings("rawtypes")
     @Override
     @Transactional
     public List getInformationTables() {
         return dataElementDAO.getInformationTables();
     }
-    
+
     @SuppressWarnings("rawtypes")
     @Override
     @Transactional
     public List getAllTables() {
         return dataElementDAO.getAllTables();
     }
-    
+
     @SuppressWarnings("rawtypes")
     @Override
     @Transactional
     public List getTableColumns(String tableName) {
         return dataElementDAO.getTableColumns(tableName);
     }
-    
+
     @Override
     @Transactional
     public void saveField(dataElements formField) throws Exception {
         dataElementDAO.saveField(formField);
     }
-    
-    
+
     @Override
     @Transactional
     public dataElements getFieldDetails(Integer fieldId) throws Exception {
         return dataElementDAO.getFieldDetails(fieldId);
     }
-    
+
     @SuppressWarnings("rawtypes")
     @Override
     @Transactional
     public List getAnswerTypes() {
         return dataElementDAO.getAnswerTypes();
     }
-    
+
     @SuppressWarnings("rawtypes")
     @Override
     @Transactional
     public List getLookUpTables() {
         return dataElementDAO.getLookUpTables();
     }
-    
+
     @SuppressWarnings("rawtypes")
     @Override
     @Transactional
     public List getLookupTableValues(Integer fieldId) throws Exception {
         return dataElementDAO.getLookupTableValues(fieldId);
     }
-    
+
     @SuppressWarnings("rawtypes")
     @Override
     @Transactional
     public List getLookupTableValues(String tableName) throws Exception {
         return dataElementDAO.getLookupTableValues(tableName);
     }
-    
+
     @SuppressWarnings("rawtypes")
     @Override
     @Transactional
     public List getLookupTableValues(String tableName, Integer programId) throws Exception {
-        return dataElementDAO.getLookupTableValues(tableName,programId);
+        return dataElementDAO.getLookupTableValues(tableName, programId);
     }
-    
+
     @Override
     @Transactional
     public List<customProgramFields> getCustomFields(int page, int maxResults, int programId) throws Exception {
         return dataElementDAO.getCustomFields(page, maxResults, programId);
     }
-    
+
     @Override
     @Transactional
     public double findTotalCustomFields(int programId) {
         return dataElementDAO.findTotalCustomFields(programId);
     }
-    
+
     @Override
     @Transactional
     public customProgramFields getCustomField(int fieldId) throws Exception {
         return dataElementDAO.getCustomField(fieldId);
     }
-    
+
     @Override
     @Transactional
     public Long checkCustomFieldName(String name, int programId, int fieldId) {
         return dataElementDAO.checkCustomFieldName(name, programId, fieldId);
     }
-    
+
     @Override
     @Transactional
     public void saveCustomField(customProgramFields customField) throws Exception {
         dataElementDAO.saveCustomField(customField);
     }
-    
+
     @Override
     @Transactional
     public Integer uploadNewFileForCrosswalk(crosswalks crosswalkDetails) {
@@ -369,7 +367,7 @@ public class dataElementManagerImpl implements dataElementManager {
         fileSystem dir = new fileSystem();
 
         dir.setDirByName("crosswalks/");
-        
+
         File newFile = null;
         newFile = new File(dir.getDir() + fileName);
 
@@ -420,10 +418,35 @@ public class dataElementManagerImpl implements dataElementManager {
         }
     }
 
-	@Override
-	@Transactional
-	public List<crosswalkData> getCrosswalkDataByCWId(Integer cwId)
-			throws Exception {
-		return dataElementDAO.getCrosswalkDataByCWId(cwId);
-	}
- }
+    @Override
+    @Transactional
+    public List<crosswalkData> getCrosswalkDataByCWId(Integer cwId)
+            throws Exception {
+        return dataElementDAO.getCrosswalkDataByCWId(cwId);
+    }
+    
+    @Override
+    @Transactional
+    public List<String> getEnvironmentalStrategies(Integer crosswalkId, Integer programId) throws Exception {
+         return dataElementDAO.getEnvironmentalStrategies(crosswalkId,programId);
+    }
+    
+    @Override
+    @Transactional
+    public List<environmentalstrategyquestions> getEnvironmentalStrategyQuestions(String code) throws Exception {
+        return dataElementDAO.getEnvironmentalStrategyQuestions(code);
+    }
+    
+    @Override
+    @Transactional
+    public environmentalstrategyquestions getEnvironmentalStrategyQuestion(Integer qId) throws Exception {
+        return dataElementDAO.getEnvironmentalStrategyQuestion(qId);
+    }
+    
+    @Override
+    @Transactional
+    public Integer saveEnvironmentalStrategyQuestion(environmentalstrategyquestions question) throws Exception {
+        return dataElementDAO.saveEnvironmentalStrategyQuestion(question);
+    }
+    
+}
