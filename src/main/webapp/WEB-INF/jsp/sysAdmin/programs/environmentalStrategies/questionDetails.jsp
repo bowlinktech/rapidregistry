@@ -14,7 +14,15 @@
                 <form:hidden path="id" id="id" />
                 <form:hidden path="programId" />
                 <form:hidden path="environmentalStrategy" />
+                <form:hidden path="dspPos" />
                 <div class="form-container">
+                    <spring:bind path="header">
+                        <div id="headerDiv" class="form-group ${status.error ? 'has-error' : '' }">
+                            <label class="control-label" for="header">Header</label>
+                            <form:input path="header" id="header" class="form-control"  maxlength="100" />
+                            <span id="headerMsg" class="control-label"></span>
+                        </div>
+                    </spring:bind>
                     <spring:bind path="question">
                         <div id="questionDiv" class="form-group ${status.error ? 'has-error' : '' }">
                             <label class="control-label" for="question">Question *</label>

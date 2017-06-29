@@ -64,6 +64,12 @@ public class environmentalstrategyquestions {
      
     @Column(name = "maxCharactersAllowed", nullable = false)
     private int maxCharactersAllowed = 0;
+    
+    @Column(name = "header", nullable = true)
+    private String header  = "";
+    
+    @Column(name = "dspPos", nullable = false)
+    private int dspPos = 0;
 
     public int getId() {
         return id;
@@ -176,7 +182,21 @@ public class environmentalstrategyquestions {
     public void setMaxCharactersAllowed(int maxCharactersAllowed) {
         this.maxCharactersAllowed = maxCharactersAllowed;
     }
-    
-    
+
+    public String getHeader() {
+        return header;
+    }
+
+    public void setHeader(String header) {
+        this.header = header;
+    }
+
+    public int getDspPos() {
+        return dspPos;
+    }
+
+    public void setDspPos(int dspPos) {
+        this.dspPos = dspPos;
+    }
     
 }
