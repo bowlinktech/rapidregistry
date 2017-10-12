@@ -33,7 +33,6 @@
         <log4j.version>2.0-beta8</log4j.version>
         <quartz.version>2.2.1</quartz.version>
         <commons-validator.version>1.4.0</commons-validator.version>
-        <tomcat-jdbc.version>7.0.47</tomcat-jdbc.version>
         <sax.version>2.0.1</sax.version>
     </properties>
   
@@ -137,12 +136,7 @@
         </dependency>
        
         <!-- JDBC -->
-        <dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>tomcat-jdbc</artifactId>
-            <version>${tomcat-jdbc.version}</version>
-        </dependency>
-       
+        
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
