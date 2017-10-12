@@ -121,6 +121,13 @@
                                 <h6>(This will be the URL to connect to this program)</h6>
                             </div>
                         </spring:bind>
+			<spring:bind path="knowledgebaseurl">
+                            <div class="form-group ${status.error ? 'has-error' : '' }">
+                                <label class="control-label" for="knowledgebaseurl">Knowledge Base URL</label>
+                                <form:input path="knowledgebaseurl" id="knowledgebaseurl" class="form-control" type="text" maxLength="255" />
+                                <form:errors path="knowledgebaseurl" cssClass="control-label" element="label" />
+                            </div>
+                        </spring:bind>
                     </form:form>
                 </div>
             </div>
