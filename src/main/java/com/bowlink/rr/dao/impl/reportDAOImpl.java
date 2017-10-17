@@ -368,7 +368,7 @@ public class reportDAOImpl implements reportDAO {
 	@Transactional
 	public List<reportRequest> getReportDetailsByStatus(List<Integer> statusList)
 			throws Exception {
-		Query q = sessionFactory.getCurrentSession().createSQLQuery("select id, startProcessTime, programId from reportRequests where DATE_SUB(startProcessTime, INTERVAL 3 minute) and statusId in (:statusList) order by startProcessTime ").setResultTransformer(
+		Query q = sessionFactory.getCurrentSession().createSQLQuery("select id, startProcessTime, programId from reportRequests where DATE_ADD(startProcessTime, INTERVAL 3 minute) < now() and statusId in (:statusList) order by startProcessTime ").setResultTransformer(
                 Transformers.aliasToBean(reportRequest.class));
                 q.setParameterList("statusList", statusList);
 		
