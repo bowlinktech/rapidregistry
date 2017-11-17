@@ -301,6 +301,6 @@
                 </configuration>
             </plugin>
         </plugins>
-        <finalName>RapidRegistry</finalName>
+        <finalName>ROOT</finalName>
     </build>
 </project>
