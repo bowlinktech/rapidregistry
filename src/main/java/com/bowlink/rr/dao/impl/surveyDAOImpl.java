@@ -353,9 +353,16 @@ public class surveyDAOImpl implements surveyDAO {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SurveyQuestions.class);
         criteria.add(Restrictions.eq("surveyId", surveyId));
         criteria.add(Restrictions.eq("questionTag", questionTag));
+	criteria.add(Restrictions.ne("deleted", true));
         criteria.add(Restrictions.ne("id", questionId));
+	
+	System.out.println(surveyId);
+	System.out.println(questionTag);
+	
         
         List<SurveyQuestions> SurveyQuestions = criteria.list();
+	
+	System.out.println(SurveyQuestions.size());
         
         if(SurveyQuestions != null && SurveyQuestions.size() > 0) {
             return false;
