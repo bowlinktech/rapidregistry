@@ -20,6 +20,7 @@
     <!--  Set the default timeout setting for a logged in user/admin -->
     <session-config>  
         <session-timeout>30</session-timeout>  
+	<tracking-mode>COOKIE</tracking-mode>
     </session-config>  
 
     <servlet>
