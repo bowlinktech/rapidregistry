@@ -532,7 +532,7 @@ public class programImports {
             
             return mav;
         }
-        
+        fieldDetails.setFormFieldStatus("k");
         importManager.saveImportField(fieldDetails);
 
         ModelAndView mav = new ModelAndView();
