@@ -8,5 +8,5 @@
 				<option value="${user.encryptedUserName}">&#160;${user.firstName}&#160;${user.lastName}&#160;(${user.username})</option>
 		</c:forEach>	
 </select>
-<input type="hidden" value="https://${programURL}/j_spring_security_check" name="programURL" id="programURL"/>	
+<input type="hidden" value="https://${programURL}/login" name="programURL" id="programURL"/>	
 </c:if>
