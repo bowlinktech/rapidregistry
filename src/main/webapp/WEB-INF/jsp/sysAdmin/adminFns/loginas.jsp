@@ -14,12 +14,12 @@
             <fieldset name="login-fields" form="form-admin-login" class="basic-clearfix">           
                 <div id="userNameDiv" class="form-group">
                     <label class="control-label" for="userName">Please confirm your user name</label>
-                    <input id="userName" name='j_username' class="form-control" type="text" value=""  autocomplete="off" />
+                    <input id="userName" name='username' class="form-control" type="text" value=""  autocomplete="off" />
                 	<span id="userNameMsg" class="control-label"></span>
                 </div>
                 <div id="passwordDiv" class="form-group">
                     <label class="control-label" for="password">Please enter your password</label>
-                    <input id="password" name='j_password' class="form-control" type="password" value=""  autocomplete="off" />
+                    <input id="password" name='password' class="form-control" type="password" value=""  autocomplete="off" />
                 	<span id="passwordMsg" class="control-label"></span>
                 </div>
                 <div id="loginAsProgramDiv" class="form-group">
