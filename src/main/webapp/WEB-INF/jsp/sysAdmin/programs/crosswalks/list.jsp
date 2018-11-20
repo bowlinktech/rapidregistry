@@ -34,7 +34,7 @@
                     <div class="form-container scrollable"><br />
                         <table class="table table-striped table-hover table-default" <c:if test="${not empty crosswalks}">id="dataTable"</c:if>>
                                 <thead>
-                                    <tr>
+                                    <tr><th scope="col">Id</th>
                                         <th scope="col">Name</th>
                                         <th scope="col" class="center-text">Date Created</th>
                                         <th scope="col"></th>
@@ -45,6 +45,9 @@
                                     <c:when test="${not empty crosswalks}">
                                         <c:forEach items="${crosswalks}" var="crosswalk" varStatus="pStatus">
                                             <tr>
+                                             	<td scope="row">
+                                                    ${crosswalks[pStatus.index].id}
+                                                </td>
                                                 <td scope="row">
                                                     ${crosswalks[pStatus.index].name} <c:choose><c:when test="${crosswalks[pStatus.index].programId == 0}"> (generic)</c:when><c:otherwise> (Program Specific)</c:otherwise></c:choose>
                                                 </td>
