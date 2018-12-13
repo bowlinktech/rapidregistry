@@ -1,0 +1,2 @@
+/** 12.11.18 gc **/
+INSERT INTO `rapidregistry`.`lu_reportstatuses` (`id`, `statusForAdmin`, `statusDisplay`) VALUES ('7', 'Hung and Emailed', 'Requested');

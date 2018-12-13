@@ -77,5 +77,6 @@ public interface reportDAO {
 
     List<reportRequest> getReportDetailsByStatus (List<Integer> statusList)  throws Exception;
     
+    void updateReportRequestStatus(Integer reportRequestId, Integer statusId) throws Exception;
 }
 

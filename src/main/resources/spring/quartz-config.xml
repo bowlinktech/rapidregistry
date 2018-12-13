@@ -69,7 +69,7 @@
         <job>
             <name>checkReportStatusJob</name>
             <group>processGroup</group>
-            <description>This will move the files from HEL output folder to RR process folder</description>
+            <description>This checks the reports table and sends out alerts if there are reports that is taking more than 15 mins long</description>
             <job-class>com.bowlink.rr.jobs.reportMonitoringJob</job-class>
         </job>
  
