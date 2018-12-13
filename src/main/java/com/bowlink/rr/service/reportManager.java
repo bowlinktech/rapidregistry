@@ -77,4 +77,6 @@ public interface reportManager {
     List<reportRequest> getReportRequestsByStatus (List<Integer> statusList)  throws Exception;
     
     void sendReportErrorEmail(String subject, String messageBody) throws Exception;
+    
+    void updateReportRequestStatus(Integer reportRequestId, Integer statusId) throws Exception;
 }

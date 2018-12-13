@@ -375,4 +375,14 @@ public class reportDAOImpl implements reportDAO {
 		return q.list();
 	}
 
+	@Override
+	@Transactional
+	public void updateReportRequestStatus(Integer reportRequestId, Integer statusId) throws Exception {
+		Query q1 = sessionFactory.getCurrentSession().createSQLQuery("update reportRequests set statusId = :statusId where "
+				+ " id = :reportRequestId");
+        q1.setParameter("reportRequestId", reportRequestId);
+        q1.setParameter("statusId", statusId);
+        q1.executeUpdate();
+	}
+
 }

@@ -235,6 +235,8 @@ public class reportManagerImpl implements reportManager {
 			messageBody = messageBody + "<br/>" + "The Id for the first report is " + reportList.get(0).getId() + ".";
 			messageBody = messageBody + "<br/><br/>Please login and run sql to view details. - select * from reportrequests order by id;";
 			sendReportErrorEmail((reportList.size() + " report(s) with status of " + statusList), messageBody);
+			//update the first report to 7 so it won't email admin again
+			updateReportRequestStatus(reportList.get(0).getId(), 7);
 		}
 		
 	}
@@ -267,5 +269,11 @@ public class reportManagerImpl implements reportManager {
         }
 
     }
+
+
+	@Override
+	public void updateReportRequestStatus(Integer reportRequestId, Integer statusId) throws Exception {
+		reportDAO.updateReportRequestStatus(reportRequestId, statusId);
+	}
 
 }
