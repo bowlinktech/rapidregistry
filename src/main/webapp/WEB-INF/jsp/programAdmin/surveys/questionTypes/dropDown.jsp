@@ -57,6 +57,10 @@
         <!-- Tab panes -->
         <div class="tab-content">
             <div class="tab-pane tab-pane-question fade active in editPane" id="edit">
+		<div class="form-group">
+                    <label class="control-label" for="pageTitle">Customer Question Number</label>
+                    <form:input path="customerQNum" placeholder="Customer Question Number" id="customerQNum" class="form-control" type="text" />
+                </div>
                 <div class="form-group">
                     <label class="control-label" for="pageTitle">Question</label>
                     <form:input path="question" placeholder="Enter your Question" id="question" class="form-control" type="text" />
@@ -111,11 +115,13 @@
                     <div class="panel" id="questionChoiceDiv" style="margin-bottom: 2px">
                         <div class="panel-body" style="overflow:auto; height:300px;">
                             <table class="table choiceTable" border="0">
-                                <thead>
+				<thead>
                                     <tr>
+					<th style="width:2%">Number</th>
                                         <th>Answers</th>
-                                        <th class="center-text"></th>
-                                        <th class="center-text">Default</th>
+                                        <th style="width:7%" class="center-text"></th>
+					<th style="width:6%" class="center-text">Score</th>
+                                        <th style="width:7%" class="center-text">Default</th>
                                         <th>Associated Activity Code</th>
                                     </tr>
                                 </thead>
@@ -128,12 +134,18 @@
                                         <input type="hidden" id="skipToQuestionId_${choice.index}" name="questionChoices[${choice.index}].skipToQuestionId" value="${choiceDetails.skipToQuestionId}" />
                                         <input type="hidden" id="skipToEnd_${choice.index}" name="questionChoices[${choice.index}].skipToEnd" value="${choiceDetails.skipToEnd}" />
                                         <tr rel="${choice.index}">
+					    <td>
+                                                <input type="text" id="answerNum" name="questionChoices[${choice.index}].answerNum" value="${choiceDetails.answerNum == 0 ? choice.index+1 : choiceDetails.answerNum}" class="form-control formField" maxlength="3" />
+                                            </td>
                                             <td>
                                                 <input type="text" name="questionChoices[${choice.index}].choiceText"  value="${choiceDetails.choiceText}" rel="${choice.index}" class="form-control fieldLabel formField" />
                                             </td>
                                             <td style="vertical-align:top;">
                                                 <c:if test="${empty surveyQuestion.populateFromTable}"><i class="glyphicon glyphicon-plus-sign addChoice" style="font-size:1.7em; cursor: pointer"></i>&nbsp;</c:if>
                                                 <i class="glyphicon glyphicon-minus-sign removeChoice" style="font-size:1.7em; cursor: pointer"></i>
+                                            </td>
+					    <td>
+                                                <input type="text" id="answerScore" name="questionChoices[${choice.index}].answerScore"  value="${choiceDetails.answerScore == 0 ? choice.index+1 : choiceDetails.answerScore}" class="form-control formField" maxlength="3" />
                                             </td>
                                             <td class="center-text">
                                                 <input type="radio" class="defAnswer" name="questionChoices[${choice.index}].defAnswer" value="1" <c:if test="${choiceDetails.defAnswer == true}">checked</c:if> />

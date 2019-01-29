@@ -231,6 +231,11 @@ public class surveyController {
         }
 
         //insert survey into db
+	
+	if(survey.getCustomerSurveyTag().equals("")) {
+	    survey.setCustomerSurveyTag(survey.getSurveyTag());
+	}
+	
         Integer surveyId = surveymanager.saveSurvey(survey);
         
         //we automatically add page 1
@@ -364,7 +369,7 @@ public class surveyController {
     @RequestMapping(value = "/details", method = RequestMethod.POST)
     public ModelAndView editSurvey(@Valid @ModelAttribute(value = "survey") surveys survey,BindingResult result,@RequestParam String action,HttpSession session, RedirectAttributes redirectAttr) throws Exception {
 
-        ModelAndView mav = new ModelAndView();
+	ModelAndView mav = new ModelAndView();
         mav.addObject("edit", "edit");
 
         if (result.hasErrors()) {
@@ -381,6 +386,11 @@ public class surveyController {
             Date date = new Date();
             Timestamp timestamp = new Timestamp(date.getTime());
             survey.setDateModified(timestamp);
+	    
+	    if("".equals(survey.getCustomerSurveyTag())){
+		survey.setCustomerSurveyTag(survey.getSurveyTag());
+	    }
+	    
             surveymanager.updateSurvey(survey);
         } else {
             mav = new ModelAndView(new RedirectView("/programAdmin/details"));
@@ -1993,6 +2003,9 @@ public class surveyController {
         }
 
         // update 
+	if(surveyNew.getCustomerSurveyTag().equals("")) {
+	    surveyNew.setCustomerSurveyTag(surveyNew.getSurveyTag());
+	}
         surveymanager.updateSurvey(surveyNew);
         mav.addObject("updated", "updated");
 

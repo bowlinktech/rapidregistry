@@ -135,6 +135,9 @@ public class SurveyQuestions {
     @Column(name = "questionHelp", nullable = true)
     private String questionHelp = "";
     
+    @Column(name = "customerQNum", nullable = false)
+    private int customerQNum = 1;
+    
     public int getId() {
         return id;
     }
@@ -414,5 +417,14 @@ public class SurveyQuestions {
     public void setQuestionHelp(String questionHelp) {
         this.questionHelp = questionHelp;
     }
+
+    public int getCustomerQNum() {
+	return customerQNum;
+    }
+
+    public void setCustomerQNum(int customerQNum) {
+	this.customerQNum = customerQNum;
+    }
+    
     
 }

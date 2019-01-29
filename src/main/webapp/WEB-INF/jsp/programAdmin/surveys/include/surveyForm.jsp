@@ -38,6 +38,16 @@
                                     </div> 
                             </spring:bind> 
                         </div>
+			<div class="form-group">
+                            <spring:bind path="customerSurveyTag">
+                                <div id="surveyTagDiv" class="form-group ${status.error ? 'has-error' : '' } ${not empty existingsurveyTag ? 'has-error' : ''}">
+                                    <label class="control-label" for="customerSurveyTag">Customer Survey Identifier</label>
+                                    <form:input path="customerSurveyTag" id="customerSurveyTag" class="form-control" type="text"  maxLength="255" />
+                                    <form:errors path="customerSurveyTag" cssClass="control-label" element="label" />
+                                    <c:if test="${not empty existingsurveyTag}"><label id="surveyTag.errors" class="control-label">${existingsurveyTag}</label></c:if>
+                                    </div> 
+                            </spring:bind> 
+                        </div>
                         <div class="row">                           
                             <div class="form-group col-md-4">
                                 <label for="status">Status *</label>
