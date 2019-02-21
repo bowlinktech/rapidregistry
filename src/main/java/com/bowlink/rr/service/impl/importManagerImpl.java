@@ -102,9 +102,9 @@ public class importManagerImpl implements importManager {
     //files that are ready to be loaded in RR are kept here
     private String loadPath = rootPath + "loadFiles/";
 
-    private String importErrorToEmail = "gchan123@yahoo.com";
+    private String importErrorToEmail = "gchan@health-e-link.net";
 
-    private String importErrorFromEmail = "information@health-e-link.com";
+    private String importErrorFromEmail = "support@health-e-link.com";
 
     @Override
     @Transactional
