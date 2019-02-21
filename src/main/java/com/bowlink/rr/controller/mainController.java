@@ -174,7 +174,7 @@ public class mainController {
         sb.append("<a href='" + resetURL + randomCode + "'>Click here to reset your password.</a>");
 
         messageDetails.setmessageBody(sb.toString());
-        messageDetails.setfromEmailAddress("information@health-e-link.com");
+        messageDetails.setfromEmailAddress("support@health-e-link.com");
 
         emailMessageManager.sendEmail(messageDetails);
 

@@ -253,8 +253,8 @@ public class reportManagerImpl implements reportManager {
     public void sendReportErrorEmail(String subject, String messageBody) throws Exception {
         // send email with error
         mailMessage messageDetails = new mailMessage();
-        messageDetails.settoEmailAddress("support@health-e-link.net");
-        messageDetails.setfromEmailAddress("gchan@health-e-link.net");
+        messageDetails.settoEmailAddress("monitor@health-e-link.net");
+        messageDetails.setfromEmailAddress("support@health-e-link.net");
         messageDetails.setmessageSubject(subject + " " + myProps.getProperty("server.identity"));
 
         StringBuilder sb = new StringBuilder();
