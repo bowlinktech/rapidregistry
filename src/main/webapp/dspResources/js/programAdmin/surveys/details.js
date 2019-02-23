@@ -531,7 +531,7 @@ require(['./main'], function () {
         /** Function to add a new question choice **/
         $(document).on('click', '.addChoice', function () {
             var newIndexVal = (($('.choiceTable tr:last').attr('rel') * 1) + 1);
-
+	    
             $('.choiceTable').append($('.choiceTable tr:last').clone());
 
             $('.choiceTable tr:last').attr("rel", newIndexVal);
@@ -550,7 +550,15 @@ require(['./main'], function () {
                 $(this).val(0);
                 $(this).attr("name", 'questionChoices[' + newIndexVal + '].activityCodeId');
             });
-
+	    
+	    $('.choiceTable tr:last').find('#answerNum').each(function () {
+                $(this).val((newIndexVal*1)+1);
+            });
+	    
+	    $('.choiceTable tr:last').find('#answerScore').each(function () {
+                $(this).val((newIndexVal*1)+1);
+            });
+	    
         });
 
         /** Function to add a remove question choice **/

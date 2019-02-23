@@ -111,6 +111,10 @@ public class surveys {
     
     @Column(name = "showInLeftCol", nullable = false)
     private boolean showInLeftCol = true;
+    
+    @Column(name = "customerSurveyTag", nullable = false)
+    private String customerSurveyTag = "";
+    
 
     public int getId() {
         return id;
@@ -302,6 +306,14 @@ public class surveys {
 
     public void setShowInLeftCol(boolean showInLeftCol) {
         this.showInLeftCol = showInLeftCol;
+    }
+
+    public String getCustomerSurveyTag() {
+	return customerSurveyTag;
+    }
+
+    public void setCustomerSurveyTag(String customerSurveyTag) {
+	this.customerSurveyTag = customerSurveyTag;
     }
     
     

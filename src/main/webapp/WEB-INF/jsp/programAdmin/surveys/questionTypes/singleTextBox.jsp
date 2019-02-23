@@ -52,6 +52,10 @@
         <!-- Tab panes -->
         <div class="tab-content">
             <div class="tab-pane tab-pane-question fade active in editPane" id="edit">
+		<div class="form-group">
+                    <label class="control-label" for="pageTitle">Customer Question Number</label>
+                    <form:input path="customerQNum" placeholder="Customer Question Number" id="customerQNum" class="form-control" type="text" />
+                </div>
                 <div class="form-group">
                     <label class="control-label" for="pageTitle">Question</label>
                     <form:input path="question" placeholder="Enter your Question" id="question" class="form-control" type="text" />

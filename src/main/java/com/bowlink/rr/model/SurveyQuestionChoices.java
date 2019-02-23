@@ -46,6 +46,12 @@ public class SurveyQuestionChoices {
     
     @Column(name = "skipToEnd", nullable = false)
     private boolean skipToEnd = false;
+    
+    @Column(name = "answerNum", nullable = false)
+    private int answerNum = 0;
+    
+    @Column(name = "answerScore", nullable = false)
+    private int answerScore = 0;
 
     public int getId() {
         return id;
@@ -118,5 +124,22 @@ public class SurveyQuestionChoices {
     public void setSkipToEnd(boolean skipToEnd) {
         this.skipToEnd = skipToEnd;
     }
+
+    public int getAnswerNum() {
+	return answerNum;
+    }
+
+    public void setAnswerNum(int answerNum) {
+	this.answerNum = answerNum;
+    }
+
+    public int getAnswerScore() {
+	return answerScore;
+    }
+
+    public void setAnswerScore(int answerScore) {
+	this.answerScore = answerScore;
+    }
+    
     
 }
