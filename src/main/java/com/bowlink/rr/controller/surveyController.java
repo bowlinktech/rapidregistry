@@ -950,6 +950,10 @@ public class surveyController {
                     if(questionChoice.getChoiceText() != null && !"".equals(questionChoice.getChoiceText())) {
                      
                         questionChoice.setQuestionId(questionId);
+			
+			if("".equals(questionChoice.getAnswerScore())) {
+			    questionChoice.setAnswerScore(0);
+			}
 
                         surveymanager.saveQuestionChoice(questionChoice);
                     }
