@@ -805,8 +805,7 @@ require(['./main'], function () {
             
             if ($(this).attr('rel') != 'displayText') {
                 var helpTextHTML = $('#helpText').code();
-                console.log(helpTextHTML);
-
+               
                 if(helpTextHTML !== "") {
                     $('#questionHelpVal').val(helpTextHTML);
                 }
@@ -826,11 +825,17 @@ require(['./main'], function () {
                     $('#questionTagMsg').show();
                 }
             }
+	    
+	    $('.answerScore').each(function() {
+		if($(this).val() === "") {
+		    $(this).val(0);
+		}
+	    });
             
             if(errorFound == 0) {
                 var formData = $("#surveyquestion").serialize();
             
-                $.ajax({
+               $.ajax({
                     url: "submitSurveyQuestion.do",
                     data: formData,
                     type: "POST",

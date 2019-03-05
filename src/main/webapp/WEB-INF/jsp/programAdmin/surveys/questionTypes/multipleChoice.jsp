@@ -120,7 +120,7 @@
 					<th style="width:2%">Number</th>
                                         <th>Answers</th>
                                         <th style="width:7%" class="center-text"></th>
-					<th style="width:6%" class="center-text">Score</th>
+					<th style="width:7%" class="center-text">Score</th>
                                         <th style="width:7%" class="center-text">Default</th>
                                         <th>Associated Activity Code</th>
                                     </tr>
@@ -145,7 +145,7 @@
                                                 <i class="glyphicon glyphicon-minus-sign removeChoice" style="font-size:1.7em; cursor: pointer"></i>
                                             </td>
 					    <td>
-                                                <input type="text" id="answerScore" name="questionChoices[${choice.index}].answerScore"  value="${choiceDetails.answerScore == 0 ? choice.index+1 : choiceDetails.answerScore}" class="form-control formField" maxlength="3" />
+                                                <input type="text" id="answerScore" name="questionChoices[${choice.index}].answerScore"  value="${choiceDetails.answerScore}" class="form-control formField answerScore" maxlength="3" />
                                             </td>
                                             <td class="center-text">
                                                 <input type="radio" class="defAnswer" name="questionChoices[${choice.index}].defAnswer" value="1" <c:if test="${choiceDetails.defAnswer == true}">checked</c:if> />
