@@ -12,6 +12,7 @@
                         <strong>Success!</strong> 
                         <c:choose>
                             <c:when test="${param.msg == 'importTypesaved'}">The import type has been successfully saved!</c:when>
+                            <c:when test="${param.msg == 'sftpSaved'}">The SFTP information has been successfully saved!</c:when>
                             <c:when test="${param.msg == 'fieldssaved'}">The import type fields have been successfully saved!</c:when>
                         </c:choose>
                     </div>
@@ -75,6 +76,10 @@
                                                 <a href="#importModal" data-toggle="modal" class="btn btn-link editImportType" rel="${importType.id}" title="Edit this import type">
                                                     <span class="glyphicon glyphicon-edit"></span>
                                                     Edit
+                                                </a>
+                                                <a href="#importModal" data-toggle="modal" class="btn btn-link editSFTPInfo" rel="${importType.id}" rel1="${importType.programId}"  title="Add /Edit SFTP Info">
+                                                    <span class="glyphicon glyphicon-edit"></span>
+                                                    SFTP Info
                                                 </a>
                                                 <c:if test="${importType.parentProgramUploadTypeId == 0}">
 	                                                <a href="/sysAdmin/programs/${programName}/imports/fields?s=${importType.id}"  class="btn btn-link" title="View importable fields for this import type.">

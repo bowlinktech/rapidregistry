@@ -8,6 +8,7 @@ package com.bowlink.rr.controller;
 import com.bowlink.rr.model.dataElements;
 import com.bowlink.rr.model.fileTypes;
 import com.bowlink.rr.model.program;
+import com.bowlink.rr.model.programUploadTypeSFTPInfo;
 import com.bowlink.rr.model.programUploadTypes;
 import com.bowlink.rr.model.programUploadTypesFormFields;
 import com.bowlink.rr.reference.fileSystem;
@@ -19,8 +20,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -54,6 +57,9 @@ public class programImports {
     dataElementManager dataelementmanager;
     
     private static List<programUploadTypesFormFields> importFields = null;
+    
+    @Resource(name = "myProps")
+    private Properties myProps;
     
     
     /**
@@ -543,5 +549,77 @@ public class programImports {
         return mav;
 
     }
+    
+    
+    /**
+     * The '/importTypeForm' request will display the form to create/edit a program import type.
+     *
+     * @param session
+     * @param redirectAttr
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/sftpForm", method = RequestMethod.GET)
+    public @ResponseBody ModelAndView sftpForm(@RequestParam Integer programUploadTypeId, 
+    		@RequestParam Integer programId, 
+    		HttpSession session, RedirectAttributes redirectAttr) throws Exception {
+        
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/sysAdmin/programs/imports/sftpForm");
+        
+        /**
+         * If there are no sftp associated with the import type, we get programId and pull any for the 
+         * program so we can pre-populate the user name, etc
+         */
+       mav.addObject("programName", session.getAttribute("programName"));
+       programUploadTypeSFTPInfo putSFTPInfo = importManager.getSFTPInfoByPUTId(programUploadTypeId);
+        
+        
+        if(putSFTPInfo.getId() > 0) {
+        	mav.addObject("modalTitle", "Modify SFTP Info");
+        } else {
+            mav.addObject("modalTitle", "Add SFTP Info");
+            putSFTPInfo.setProgramUploadTypeId(programUploadTypeId); 
+            putSFTPInfo.setProgramId(programId);
+        }
+        
+        mav.addObject("sftpDetails", putSFTPInfo);
+        
+
+        return mav;
+    } 
+    
+    @RequestMapping(value = "/saveSFTP", method = RequestMethod.POST)
+    public @ResponseBody ModelAndView saveSFTPInfo(@Valid @ModelAttribute(value = "sftpDetails") programUploadTypeSFTPInfo sftpDetails,
+    		BindingResult result, @RequestParam String action, HttpSession session) throws Exception {
+    	
+    	ModelAndView mav = new ModelAndView();
+    	programUploadTypeSFTPInfo putSFTPInfo = importManager.getSFTPInfoByPUTId(sftpDetails.getProgramUploadTypeId());
+    	mav.setViewName("/sysAdmin/programs/imports/sftpForm");
+    	mav.addObject("programName", session.getAttribute("programName"));
+    	
+    	if (result.hasErrors()) {
+        	if(putSFTPInfo.getId() > 0) {
+            	mav.addObject("modalTitle", "Modify SFTP Info");   	
+            }
+            else {
+                mav.addObject("modalTitle", "Add SFTP Info");
+            }
+            
+            return mav;
+        }
+        if (sftpDetails.getId() == 0) {
+        	importManager.saveSFTPInfo(sftpDetails);
+        } else  {
+        	importManager.updateSFTPInfo(sftpDetails);
+        }
+        
+    	mav.addObject("sftpDetails", putSFTPInfo);
+        mav.addObject("success", "sftpSaved");
+        
+        return mav;
+
+    }
+    
     
 }
