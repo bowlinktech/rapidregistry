@@ -20,7 +20,21 @@ require(['./main'], function () {
             	$('#parentConfig').show();
             }
         });
-
+        
+        //Open up the modal to display the sftp info form
+        $(document).on('click', '.editSFTPInfo', function() {
+            $.ajax({
+                url: 'sftpForm',
+                data: {'programUploadTypeId':$(this).attr('rel'),
+                	'programId':$(this).attr('rel1'),
+                },
+                type: "GET",
+                success: function(data) {
+                    $("#importModal").html(data);
+                }
+            });
+        });
+        
         //Open up the modal to display the import type form
         $(document).on('click', '#createNewImportType', function() {
             $.ajax({
@@ -144,6 +158,29 @@ require(['./main'], function () {
             }
             
         });
+        
+        
+        $(document).on('click', '#submitSFTPForm', function(event) {
+        	
+        	var formData = $("#sftpForm").serialize();
+        	
+        	$.ajax({
+                url: 'saveSFTP',
+                data: formData,
+                type: "POST",
+                async: false,
+                success: function(data) {
+
+                    if (data.indexOf('sftpSaved') != -1) {
+                       window.location.href = "/sysAdmin/programs/"+$('#progamNameURL').val()+"/imports?msg=sftpSaved";
+                    }
+                    else {
+                        $("#importModal").html(data);
+                    }
+                }
+            });
+        });
+        
         
     });
 });

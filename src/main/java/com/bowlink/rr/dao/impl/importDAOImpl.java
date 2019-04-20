@@ -14,6 +14,7 @@ import com.bowlink.rr.model.errorCodes;
 import com.bowlink.rr.model.fieldsAndCols;
 import com.bowlink.rr.model.fileTypes;
 import com.bowlink.rr.model.programUploadRecordValues;
+import com.bowlink.rr.model.programUploadTypeSFTPInfo;
 import com.bowlink.rr.model.programUploadTypes;
 import com.bowlink.rr.model.programUploadTypesFormFields;
 import com.bowlink.rr.model.programUpload_Errors;
@@ -1776,5 +1777,53 @@ public class importDAOImpl implements importDAO {
 
         return programUploadTypeList;
 	}
+
+	@Override
+	@Transactional
+	public void saveSFTPInfo(programUploadTypeSFTPInfo sftpInfo)
+			throws Exception {
+		sessionFactory.getCurrentSession().save(sftpInfo);
+		
+	}
+
+	@Override
+	@Transactional
+	public void updateSFTPInfo(programUploadTypeSFTPInfo sftpInfo)
+			throws Exception {
+		sessionFactory.getCurrentSession().update(sftpInfo);
+	}
+
+	@Override
+	@Transactional
+	@SuppressWarnings("unchecked")
+	public programUploadTypeSFTPInfo getSFTPInfoById(Integer sftpId)
+			throws Exception {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(programUploadTypeSFTPInfo.class);
+        criteria.add(Restrictions.eq("id", sftpId));
+
+        List<programUploadTypeSFTPInfo> sftpList = criteria.list();
+        if (sftpList.size() >= 1) {
+        	return sftpList.get(0);
+        } else {
+        	return new programUploadTypeSFTPInfo();
+        }
+	}
+
+	@Override
+	@Transactional
+	@SuppressWarnings("unchecked")
+	public programUploadTypeSFTPInfo getSFTPInfoByPUTId(
+			Integer programUploadTypeId) throws Exception {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(programUploadTypeSFTPInfo.class);
+        criteria.add(Restrictions.eq("programUploadTypeId", programUploadTypeId));
+        List<programUploadTypeSFTPInfo> sftpList = criteria.list();
+        if (sftpList.size() >= 1) {
+        	return sftpList.get(0);
+        } else {
+        	return new programUploadTypeSFTPInfo();
+        }
+	}
+	
+	
 
 }

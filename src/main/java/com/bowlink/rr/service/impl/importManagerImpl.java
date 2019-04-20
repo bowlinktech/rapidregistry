@@ -20,6 +20,7 @@ import com.bowlink.rr.model.programOrgHierarchy;
 import com.bowlink.rr.model.programUploadRecordValues;
 import com.bowlink.rr.model.programUploadTypeAlgorithm;
 import com.bowlink.rr.model.programUploadTypeAlgorithmFields;
+import com.bowlink.rr.model.programUploadTypeSFTPInfo;
 import com.bowlink.rr.model.programUploadTypes;
 import com.bowlink.rr.model.programUploadTypesFormFields;
 import com.bowlink.rr.model.programUpload_Errors;
@@ -1883,5 +1884,31 @@ public class importManagerImpl implements importManager {
     public List<programUploadTypes> getParentUploadTypes(Integer programId) throws Exception {
         return importDAO.getParentUploadTypes(programId);
     }
+
+	@Override
+	public void saveSFTPInfo(programUploadTypeSFTPInfo sftpInfo)
+			throws Exception {
+		importDAO.saveSFTPInfo(sftpInfo);
+		
+	}
+
+	@Override
+	public void updateSFTPInfo(programUploadTypeSFTPInfo sftpInfo)
+			throws Exception {
+		importDAO.updateSFTPInfo(sftpInfo);
+		
+	}
+
+	@Override
+	public programUploadTypeSFTPInfo getSFTPInfoById(Integer sftpId)
+			throws Exception {
+		return importDAO.getSFTPInfoById(sftpId);
+	}
+
+	@Override
+	public programUploadTypeSFTPInfo getSFTPInfoByPUTId(
+			Integer programUploadTypeId) throws Exception {
+		return importDAO.getSFTPInfoByPUTId(programUploadTypeId);
+	}
 
 }

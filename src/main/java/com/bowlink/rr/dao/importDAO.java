@@ -13,12 +13,11 @@ import com.bowlink.rr.model.errorCodes;
 import com.bowlink.rr.model.fieldsAndCols;
 import com.bowlink.rr.model.fileTypes;
 import com.bowlink.rr.model.programUploadRecordValues;
+import com.bowlink.rr.model.programUploadTypeSFTPInfo;
 import com.bowlink.rr.model.programUploadTypes;
 import com.bowlink.rr.model.programUploadTypesFormFields;
 import com.bowlink.rr.model.programUpload_Errors;
 import com.bowlink.rr.model.programUploads;
-import com.bowlink.rr.model.putHELConfig;
-
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
@@ -169,6 +168,15 @@ public interface importDAO {
     List<configuration> getHELConfigs(Integer orgId) throws Exception;
     
     List<programUploadTypes> getParentUploadTypes(Integer programId) throws Exception;
+    
+    void saveSFTPInfo (programUploadTypeSFTPInfo sftpInfo) throws Exception;
+    
+    void updateSFTPInfo (programUploadTypeSFTPInfo sftpInfo) throws Exception;
+    
+    programUploadTypeSFTPInfo getSFTPInfoById (Integer sftpId) throws Exception;
+    
+    programUploadTypeSFTPInfo getSFTPInfoByPUTId (Integer programUploadTypeId) throws Exception;
+    
 }
 
 
