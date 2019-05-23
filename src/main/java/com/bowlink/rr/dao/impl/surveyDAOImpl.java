@@ -223,7 +223,18 @@ public class surveyDAOImpl implements surveyDAO {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SurveyQuestions.class);
         criteria.add(Restrictions.eq("id", questionId));
         List<SurveyQuestions> question = criteria.list();
-        return question.get(0);
+	
+	if(question != null) {
+	    if(!question.isEmpty()) {
+		return question.get(0);
+	    }
+	    else {
+		return null;
+	    }
+	}
+	else {
+	    return null;
+	}
     }
 
     @Override

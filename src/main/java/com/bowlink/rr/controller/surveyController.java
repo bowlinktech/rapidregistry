@@ -1152,7 +1152,6 @@ public class surveyController {
      * @param v The encrypted encryption key for
      * @param pageId    The id of the current page
      * @param questionId    The id of the selected question
-     * @param tableName The selected table
      * @param session
      * @return
      * @throws Exception 
