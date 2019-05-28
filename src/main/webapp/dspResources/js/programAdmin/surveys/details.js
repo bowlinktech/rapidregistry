@@ -315,6 +315,10 @@ require(['./main'], function () {
                     $('.' + pane + 'Tab').addClass("active");
                     $('.' + pane).addClass("active");
                     $('.' + pane).addClass("in");
+		    
+		    if($(data).find('#selectedSurvey').val() > 0) {
+			populateSelectedSurveyQuestions($(data).find('#selectedSurvey').val());
+		    }
 
                     /* Set the question number */
                     //$('.qNum').html("Q"+qNum);
@@ -444,6 +448,26 @@ require(['./main'], function () {
             }
 
         });
+	
+	/** Function to show the auto populate table list **/
+        $(document).on('change', '#populatefromsurvey', function () {
+            $('#questionChoiceDiv').hide();
+            $('#populateFromSurvey').val("");
+            if ($(this).is(':checked')) {
+                $('#manual').prop('checked', false);
+                $('#populatefromsurveyDiv').show();
+            }
+            else {
+                $('#populatefromsurveyDiv').hide();
+            }
+        });
+	
+	$(document).on('change', '#selectedSurvey', function() {
+	    
+	    var surveyId = $(this).val();
+	    populateSelectedSurveyQuestions(surveyId);
+	    
+	});
 
         /** Function to show the auto populate table list **/
         $(document).on('change', '#populate', function () {
@@ -946,6 +970,37 @@ require(['./main'], function () {
 
     });
 });
+
+function populateSelectedSurveyQuestions(surveyId) {
+    var selValue = $('#populateFromSurveyQuestion').attr('rel');
+	   
+    $.getJSON('getQuestionsForSelectedSurvey.do', {
+	surveyId: surveyId,
+	ajax: true
+    }, 
+    function (data) {
+
+	var len = data.length;
+
+	var html = '<option value="0">- Select Survey Question -</option>';
+
+	if (len > 0) {
+	    for (var i = 0; i < len; i++) {
+		if(selValue == data[i][0]) {
+		    html += '<option value="' + data[i][0] + '" selected>' + data[i][2] + '. ' + data[i][1] + '</option>';
+		}
+		else {
+		    html += '<option value="' + data[i][0] + '">' + data[i][2] + '. ' + data[i][1] + '</option>';
+		}
+
+	    }
+	    $('#populateFromSurveyQuestion').html(html);
+	}
+	else {
+	    $('#populateFromSurveyQuestion').html(html);
+	}
+    });
+}
 
 function checkForDuplicateQuestionTag(surveyId, questionId, questionTag) {
     

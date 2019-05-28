@@ -48,9 +48,6 @@
                     <li role="menuitem"><a href="javascript:void(0);" id="saveCloseDetails" title="Save &amp; Close" role="button"><span class="glyphicon glyphicon-floppy-disk icon-stacked"></span> Save &amp; Close</a></li>
                     <li role="menuitem"><a href="/programAdmin/staff" title="Save &amp; Close" role="button"><span class="glyphicon glyphicon-ban-circle icon-stacked"></span> Cancel</a></li>
                 </c:when>
-                <c:when test="${param['page'] == 'surveys'}">
-                    <li role="menuitem"><a href="/programAdmin/surveys/create" id="createSurvey" title="Create New Survey" role="button"><span class="glyphicon glyphicon-plus-sign icon-stacked"></span> Create New Survey </a></li>
-                </c:when>
                 <c:when test="${param['page'] == 'createSurvey'}">
                     <li role="menuitem"><a href="javascript:void(0);" id="saveNewSurvey" title="Save Form" role="button"><span class="glyphicon glyphicon-ok icon-stacked"></span> Next </a></li>
                     <li role="menuitem"><a href="javascript:void(0);" id="saveNextNewSurvey" title="Save &amp; Close" role="button"><span class="glyphicon glyphicon-floppy-disk icon-stacked"></span>Save &amp; Close</a></li>

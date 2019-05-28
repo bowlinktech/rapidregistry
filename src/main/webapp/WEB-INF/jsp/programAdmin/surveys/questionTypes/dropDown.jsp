@@ -84,7 +84,31 @@
                             <form:input path="summaryColName" placeholder="Enter Summary Column Name" id="summaryColName" class="form-control" type="text"  maxLength="45" />
                         </div>
                     </div>
-                </div>    
+                </div>  
+		<c:if test="${not empty availableSurveys}">
+		    <div class="well well-xsm" style="background-color:#ffffff; margin-bottom: 2px">
+			<input type="checkbox" id="populatefromsurvey" <c:if test="${surveyQuestion.populateFromSurvey > 0}">checked="checked"</c:if> />&nbsp;<label class="control-label" for="populateFromSurveyQuestion">Populate choices from another submitted survey question</label>
+		    </div>
+		    <div class="panel" id="populatefromsurveyDiv" style="margin-bottom: 2px; ${surveyQuestion.populateFromSurvey > 0 ? 'display:block;' : 'display:none;'}">
+			<div class="panel-body" style="overflow:auto; height:150px;">
+			    <div class="form-group">
+				<label class="control-label" for="selectedSurvey">Available Surveys</label>
+				<form:select path="populateFromSurvey" id="selectedSurvey" class="form-control half sm-input">
+				    <option value="0">- Select Survey -</option>
+				    <c:forEach items="${availableSurveys}" var="survey" >
+					<option value="${survey.id}" <c:if test="${surveyQuestion.populateFromSurvey == survey.id}">selected</c:if>>${survey.title}</option>
+				    </c:forEach>
+				</form:select>
+			     </div>
+			    <div class="form-group">
+				<label class="control-label" for="populateFromSurveyQuestion">Available Survey Questions</label>
+				<form:select path="populateFromSurveyQuestion" id="populateFromSurveyQuestion" class="form-control half sm-input" rel="${surveyQuestion.populateFromSurveyQuestion}">
+				    <option value="">- Select Survey -</option>
+				</form:select>
+			     </div>
+			</div>
+		    </div>	
+		</c:if>	
                 <c:if test="${not empty availableTables || not empty availableCW}">
                     <div class="well well-xsm" style="background-color:#ffffff; margin-bottom: 2px">
                         <input type="checkbox" id="populate" <c:if test="${not empty surveyQuestion.populateFromTable || surveyQuestion.populateFromCW > 0}">checked="checked"</c:if> />&nbsp;<label class="control-label" for="populateFromTable">Populate choices from an existing table</label>

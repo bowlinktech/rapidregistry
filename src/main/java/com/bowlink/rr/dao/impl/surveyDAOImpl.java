@@ -7,6 +7,8 @@ package com.bowlink.rr.dao.impl;
 
 import com.bowlink.rr.dao.surveyDAO;
 import com.bowlink.rr.model.AnswerTypes;
+import com.bowlink.rr.model.SurveyCategories;
+import com.bowlink.rr.model.SurveyCategoryAssociation;
 import com.bowlink.rr.model.SurveyQuestionChoices;
 import com.bowlink.rr.model.SurveyChangeLogs;
 import com.bowlink.rr.model.SurveyPages;
@@ -24,6 +26,7 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -375,5 +378,143 @@ public class surveyDAOImpl implements surveyDAO {
         else {
             return true;
         }
+    }
+    
+    /**
+     * The 'getProgramSurveyCategories' method will return the list of available survey categories for the passed in programId.
+     * 
+     * @param programId
+     * @return
+     * @throws Exception 
+     */
+    @Override
+    public List<SurveyCategories> getProgramSurveyCategories(Integer programId) throws Exception {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SurveyCategories.class);
+        criteria.add(Restrictions.eq("programId", programId));
+	
+        List<SurveyCategories> SurveyCategories = criteria.list();
+	
+        return SurveyCategories;
+    }
+    
+    /**
+     * The 'getProgramSurveyCategory' method will return the survey/category association for the passed in surveyId and programId.
+     * 
+     * @param programId
+     * @param surveyId
+     * @return
+     * @throws Exception 
+     */
+    @Override
+    public SurveyCategoryAssociation getProgramSurveyCategory(Integer programId, Integer surveyId) throws Exception {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SurveyCategoryAssociation.class);
+        criteria.add(Restrictions.eq("programId", programId));
+	criteria.add(Restrictions.eq("surveyId", surveyId));
+	
+        List<SurveyCategoryAssociation> SurveyCategoryAssociations = criteria.list();
+	
+	if(SurveyCategoryAssociations.size() > 1) {
+	    return (SurveyCategoryAssociation) SurveyCategoryAssociations.get(0);
+	}
+	else {
+	    return (SurveyCategoryAssociation) criteria.uniqueResult();
+	}
+    }
+    
+    /**
+     * The 'saveProgramSurveyCategoryAssociation' method will save the connection between a survey and a survey category.
+     * 
+     * @param surveycategoryassociation
+     * @throws Exception 
+     */
+    @Override
+    public void saveProgramSurveyCategoryAssociation(SurveyCategoryAssociation surveycategoryassociation) throws Exception {
+        sessionFactory.getCurrentSession().saveOrUpdate(surveycategoryassociation);
+    }
+    
+    /**
+     * The 'removeProgramSurveyCategory' method will remove the connection between a survey and a survey category.
+     * @param programId
+     * @param surveyId
+     * @throws Exception 
+     */
+    @Override
+    public void removeProgramSurveyCategory(Integer programId, Integer surveyId) throws Exception {
+        Query deleteSurveyCategoryAssociation = sessionFactory.getCurrentSession().createQuery("delete from SurveyCategoryAssociation where programId = :programId and surveyId = :surveyId");
+        deleteSurveyCategoryAssociation.setParameter("programId", programId);
+	deleteSurveyCategoryAssociation.setParameter("surveyId", surveyId);
+        deleteSurveyCategoryAssociation.executeUpdate();
+    }
+    
+    /**
+     * 
+     * @param surveyCategoryId
+     * @return 
+     */
+    @Override
+    public SurveyCategories getProgramSurveyCategoryById(Integer surveyCategoryId) {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SurveyCategories.class);
+        criteria.add(Restrictions.eq("id", surveyCategoryId));
+	
+        List<SurveyCategories> surveycategoryList = criteria.list();
+	
+        if (surveycategoryList.size() == 0) {
+            return null;
+        } else {
+            return surveycategoryList.get(0);
+        }
+    }
+    
+    /**
+     * The 'saveProgramSurveyCategory' method will save the survey category details.
+     * 
+     * @param surveyCategoryDetails
+     * @throws Exception 
+     */
+    @Override
+    public void saveProgramSurveyCategory(SurveyCategories surveyCategoryDetails) throws Exception {
+        sessionFactory.getCurrentSession().saveOrUpdate(surveyCategoryDetails);
+    }
+    
+    /**
+     * The 'deleteProgramSurveyCategoryAssociation' method will remove all connections for the passed in programId and selected survey category Id
+     * @param programId
+     * @param surveyCategoryId 
+     */
+    @Override
+    public void deleteProgramSurveyCategoryAssociation(Integer programId, Integer surveyCategoryId) {
+	Query deleteSurveyCategoryAssociation = sessionFactory.getCurrentSession().createQuery("delete from SurveyCategoryAssociation where programId = :programId and categoryId = :surveyCategoryId");
+        deleteSurveyCategoryAssociation.setParameter("programId", programId);
+	deleteSurveyCategoryAssociation.setParameter("surveyCategoryId", surveyCategoryId);
+        deleteSurveyCategoryAssociation.executeUpdate();
+    }
+	
+    /**
+     * The 'deleteProgramSurveyCategory' method will remove survey category
+     * @param programId
+     * @param surveyCategoryId 
+     */
+    @Override
+    public void deleteProgramSurveyCategory(Integer programId, Integer surveyCategoryId) {
+	Query deleteSurveyCategory = sessionFactory.getCurrentSession().createQuery("delete from SurveyCategories where id = :surveyCategoryId and programId = :programId");
+        deleteSurveyCategory.setParameter("programId", programId);
+	deleteSurveyCategory.setParameter("surveyCategoryId", surveyCategoryId);
+        deleteSurveyCategory.executeUpdate();
+    }
+    
+    /**
+     * The 'getQuestionsForSelectedSurvey' function will return the list of questions for the passed in
+     * survey.
+     * 
+     * @param surveyId        The id of the selected survey
+     * @return
+     * @throws Exception 
+     */
+    @Override
+    public List getQuestionsForSelectedSurvey(Integer surveyId) throws Exception {
+        Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT id, question, questionNum FROM survey_questions where surveyId = :surveyId and deleted = false and answerTypeId in (1,2,3) order by questionNum asc")
+	    .setParameter("surveyId", surveyId);
+
+        return query.list();
     }
 }
