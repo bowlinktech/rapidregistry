@@ -13,6 +13,8 @@ import com.bowlink.rr.model.User;
 import com.bowlink.rr.model.activityCodes;
 import com.bowlink.rr.model.surveys;
 import com.bowlink.rr.model.Log_userSurveyActivity;
+import com.bowlink.rr.model.SurveyCategories;
+import com.bowlink.rr.model.SurveyCategoryAssociation;
 import com.bowlink.rr.model.SurveyQuestionChoices;
 import com.bowlink.rr.model.crosswalks;
 import com.bowlink.rr.model.programAvailableTables;
@@ -26,12 +28,15 @@ import com.bowlink.rr.service.surveyManager;
 import com.bowlink.rr.service.userManager;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -102,6 +107,10 @@ public class surveyController {
 
         ModelAndView mav = new ModelAndView();
         mav.setViewName("/surveys");
+	
+	//Get a list of added survey categories
+	List<SurveyCategories> surveyCategories = surveymanager.getProgramSurveyCategories((Integer) session.getAttribute("selprogramId"));
+	mav.addObject("surveyCategories", surveyCategories);
 
         /* Get the list of programs in the system */
         List<surveys> surveys = surveymanager.getProgramSurveys((Integer) session.getAttribute("selprogramId"));
@@ -158,6 +167,10 @@ public class surveyController {
         mav.addObject("create", "create");
         
         mav.addObject("survey", new surveys());
+	
+	//Get a list of added survey categories
+	List<SurveyCategories> surveyCategories = surveymanager.getProgramSurveyCategories((Integer) session.getAttribute("selprogramId"));
+	mav.addObject("surveyCategories", surveyCategories);
         
         /* Get the list of programs in the system */
         List<activityCodes> activityCodes = activitycodemanager.getActivityCodesByProgram((Integer) session.getAttribute("selprogramId"));
@@ -185,13 +198,17 @@ public class surveyController {
     /**
      * The create will start a blank page for surveys
      *
-     * @param request
-     * @param response
+     * @param survey
+     * @param result
+     * @param action
+     * @param redirectAttr
+     * @param session
      * @return	page 1 of the survey
      * @throws Exception
      */
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public ModelAndView createSurvey(@Valid @ModelAttribute(value = "survey") surveys survey, BindingResult result, @RequestParam String action, HttpSession session, RedirectAttributes redirectAttr) throws Exception {
+    public ModelAndView createSurvey(@Valid @ModelAttribute(value = "survey") surveys survey, @RequestParam(value = "surveyCategory", required = false) Integer surveyCategory,
+	    BindingResult result, @RequestParam String action, HttpSession session, RedirectAttributes redirectAttr) throws Exception {
 
         ModelAndView mav = new ModelAndView();
 
@@ -237,6 +254,17 @@ public class surveyController {
 	}
 	
         Integer surveyId = surveymanager.saveSurvey(survey);
+	
+	if(surveyCategory != null) {
+	    if(surveyCategory != 0) {
+		SurveyCategoryAssociation assocCategory = new SurveyCategoryAssociation();
+		assocCategory.setProgramId((Integer) session.getAttribute("selprogramId"));
+		assocCategory.setCategoryId(surveyCategory);
+		assocCategory.setSurveyId(surveyId);
+		
+		surveymanager.saveProgramSurveyCategoryAssociation(assocCategory);
+	    }
+	}
         
         //we automatically add page 1
         SurveyPages sp = new SurveyPages();
@@ -307,7 +335,12 @@ public class surveyController {
         String[] result = obj.toString().split((","));
         
         int surveyId = Integer.parseInt(result[0].substring(4));
-        
+	
+	//Get a list of added survey categories
+	List<SurveyCategories> surveyCategories = surveymanager.getProgramSurveyCategories((Integer) session.getAttribute("selprogramId"));
+	mav.addObject("surveyCategories", surveyCategories);
+	
+	
         //s - survey Id       
         surveys survey = checkSurveyPermission(session, surveyId, "/details");
 
@@ -614,6 +647,8 @@ public class surveyController {
      * 
      * @param s
      * @param v
+     * @param pageId
+     * @param questionType
      * @param session
      * @return
      * @throws Exception 
@@ -622,7 +657,16 @@ public class surveyController {
     public @ResponseBody ModelAndView addNewPageQuestion(@RequestParam String s, @RequestParam String v, @RequestParam Integer pageId, @RequestParam Integer questionType, HttpSession session) throws Exception {
         
         ModelAndView mav = new ModelAndView();
+	
+	/* Decrypt the url */
+        decryptObject decrypt = new decryptObject();
         
+        Object obj = decrypt.decryptObject(s, v);
+        
+        String[] result = obj.toString().split((","));
+        
+        int surveyId = Integer.parseInt(result[0].substring(4));
+	
         /** Multiple Choice **/
         if(questionType == 1) {
             mav.setViewName("/programAdmin/surveys/questionTypes/multipleChoice");
@@ -634,6 +678,21 @@ public class surveyController {
             /** Get a list of available crosswalks to auto-populate from **/
             List<crosswalks> availableCW = dataelementmanager.getCrosswalks(0, 0, (Integer) session.getAttribute("selprogramId"));
             mav.addObject("availableCW", availableCW);
+	    
+	    // Get the list of programs in the system
+	    List<surveys> surveys = surveymanager.getProgramSurveys((Integer) session.getAttribute("selprogramId"));
+
+	    if(!surveys.isEmpty()) {
+		List<surveys> availableSurveys = new ArrayList<>();
+		for(surveys survey: surveys) {
+		    if(survey.getId() != surveyId && survey.getStatus() == true) {
+			availableSurveys.add(survey);
+		    }
+		}
+
+		mav.addObject("availableSurveys", availableSurveys);
+	    }
+
         }
         
         /** Drop down (select box) **/
@@ -647,6 +706,21 @@ public class surveyController {
             /** Get a list of available crosswalks to auto-populate from **/
             List<crosswalks> availableCW = dataelementmanager.getCrosswalks(0, 0, (Integer) session.getAttribute("selprogramId"));
             mav.addObject("availableCW", availableCW);
+	    
+	    // Get the list of programs in the system 
+	    List<surveys> surveys = surveymanager.getProgramSurveys((Integer) session.getAttribute("selprogramId"));
+
+	    if(!surveys.isEmpty()) {
+		List<surveys> availableSurveys = new ArrayList<>();
+		for(surveys survey: surveys) {
+		    if(survey.getId() != surveyId && survey.getStatus() == true) {
+			availableSurveys.add(survey);
+		    }
+		}
+
+		mav.addObject("availableSurveys", availableSurveys);
+	    }
+
         }
         
         /** Single text box **/
@@ -678,14 +752,6 @@ public class surveyController {
             mav.setViewName("/programAdmin/surveys/questionTypes/displayText");
         }
       
-        /* Decrypt the url */
-        decryptObject decrypt = new decryptObject();
-        
-        Object obj = decrypt.decryptObject(s, v);
-        
-        String[] result = obj.toString().split((","));
-        
-        int surveyId = Integer.parseInt(result[0].substring(4));
         
         List<SurveyQuestions> surveypagequestions = surveymanager.getSurveyQuestions(pageId);
         
@@ -771,6 +837,15 @@ public class surveyController {
     public @ResponseBody ModelAndView editPageQuestion(@RequestParam String s, @RequestParam String v, @RequestParam Integer pageId, @RequestParam Integer questionId, HttpSession session) throws Exception {
         
         ModelAndView mav = new ModelAndView();
+	
+	/* Decrypt the url */
+        decryptObject decrypt = new decryptObject();
+        
+        Object obj = decrypt.decryptObject(s, v);
+        
+        String[] result = obj.toString().split((","));
+        
+        int surveyId = Integer.parseInt(result[0].substring(4));
         
         SurveyQuestions questionDetails = surveymanager.getSurveyQuestionById(questionId);
         mav.addObject("qnum", questionDetails.getQuestionNum());
@@ -798,6 +873,20 @@ public class surveyController {
             /** Get a list of available crosswalks to auto-populate from **/
             List<crosswalks> availableCW = dataelementmanager.getCrosswalks(0, 0, (Integer) session.getAttribute("selprogramId"));
             mav.addObject("availableCW", availableCW);
+	    
+	    // Get the list of programs in the system 
+	    List<surveys> surveys = surveymanager.getProgramSurveys((Integer) session.getAttribute("selprogramId"));
+
+	    if(!surveys.isEmpty()) {
+		List<surveys> availableSurveys = new ArrayList<>();
+		for(surveys survey: surveys) {
+		    if(survey.getId() != surveyId && survey.getStatus() == true) {
+			availableSurveys.add(survey);
+		    }
+		}
+
+		mav.addObject("availableSurveys", availableSurveys);
+	    }
         }
         
         /** Drop down (select box) **/
@@ -811,6 +900,20 @@ public class surveyController {
             /** Get a list of available crosswalks to auto-populate from **/
             List<crosswalks> availableCW = dataelementmanager.getCrosswalks(0, 0, (Integer) session.getAttribute("selprogramId"));
             mav.addObject("availableCW", availableCW);
+	    
+	    // Get the list of programs in the system 
+	    List<surveys> surveys = surveymanager.getProgramSurveys((Integer) session.getAttribute("selprogramId"));
+
+	    if(!surveys.isEmpty()) {
+		List<surveys> availableSurveys = new ArrayList<>();
+		for(surveys survey: surveys) {
+		    if(survey.getId() != surveyId && survey.getStatus() == true) {
+			availableSurveys.add(survey);
+		    }
+		}
+
+		mav.addObject("availableSurveys", availableSurveys);
+	    }
         }
         
         /** Single text box **/
@@ -842,15 +945,6 @@ public class surveyController {
             mav.setViewName("/programAdmin/surveys/questionTypes/displayText");
         }
         
-        
-        /* Decrypt the url */
-        decryptObject decrypt = new decryptObject();
-        
-        Object obj = decrypt.decryptObject(s, v);
-        
-        String[] result = obj.toString().split((","));
-        
-        int surveyId = Integer.parseInt(result[0].substring(4));
         
         mav.addObject("s",s);
         mav.addObject("v",v);
@@ -1162,15 +1256,17 @@ public class surveyController {
         ModelAndView mav = new ModelAndView();
         
         SurveyQuestions questionDetails = surveymanager.getSurveyQuestionById(questionId);
+	
+	if(questionDetails != null) {
+	    if(questionDetails.getPopulateFromTable() != null && !"".equals(questionDetails.getPopulateFromTable())) { 
+		/* Delete current options */
+		surveymanager.removeQuestionChoices(questionId);
+	    }  
+	    questionDetails.setPopulateFromTable("");
+	    questionDetails.setPopulateFromCW(0);
+	    surveymanager.saveSurveyQuestion(questionDetails);
+	} 
         
-        if(questionDetails.getPopulateFromTable() != null && !"".equals(questionDetails.getPopulateFromTable())) { 
-            /* Delete current options */
-            surveymanager.removeQuestionChoices(questionId);
-        }       
-        
-        questionDetails.setPopulateFromTable("");
-        questionDetails.setPopulateFromCW(0);
-        surveymanager.saveSurveyQuestion(questionDetails);
         
         List<SurveyQuestionChoices> currentquestionChoices = surveymanager.getQuestionChoices(questionId);
         mav.addObject("qnum", questionDetails.getQuestionNum());
@@ -1626,6 +1722,7 @@ public class surveyController {
      * @param newPage   The page the question is going to be placed
      * @param position  The position the question will be placed
      * @param selQuestionId The id of the selected question to place the question before or after
+     * @param session
      * @return
      * @throws Exception 
      */
@@ -1665,6 +1762,31 @@ public class surveyController {
         Integer newQuestionId = surveymanager.saveNewSurveyQuestion(newQuestion);
         
         SurveyQuestions newQuestionDetails = surveymanager.getSurveyQuestionById(newQuestionId);
+	
+	//See if any survey answers need to be copied
+	List<SurveyQuestionChoices> copiedQuestionSurveyAnswers = surveymanager.getQuestionChoices(curQuestionId);
+	
+	if(!copiedQuestionSurveyAnswers.isEmpty()) {
+	    copiedQuestionSurveyAnswers.forEach(surveyQuestionChoice -> {
+		SurveyQuestionChoices newQuestionChoice = new SurveyQuestionChoices();
+		newQuestionChoice.setQuestionId(newQuestionId);
+		newQuestionChoice.setSkipToPageId(surveyQuestionChoice.getSkipToPageId());
+		newQuestionChoice.setSkipToQuestionId(surveyQuestionChoice.getSkipToQuestionId());
+		newQuestionChoice.setChoiceText(surveyQuestionChoice.getChoiceText());
+		newQuestionChoice.setActivityCodeId(surveyQuestionChoice.getActivityCodeId());
+		newQuestionChoice.setAnswerNum(surveyQuestionChoice.getAnswerNum());
+		newQuestionChoice.setDefAnswer(surveyQuestionChoice.isDefAnswer());
+		newQuestionChoice.setChoiceValue(surveyQuestionChoice.getChoiceValue());
+		newQuestionChoice.setAnswerScore(surveyQuestionChoice.getAnswerScore());
+		newQuestionChoice.setSkipToEnd(surveyQuestionChoice.isSkipToEnd());
+		
+		try {
+		    surveymanager.saveQuestionChoice(newQuestionChoice);
+		} catch (Exception ex) {
+		    Logger.getLogger(surveyController.class.getName()).log(Level.SEVERE, null, ex);
+		}
+	    });
+	}
         
         /* Update all other survey page numbers */
         List<SurveyQuestions> currsurveyquestions = surveymanager.getAllSurveyQuestions(curQuestionDetails.getSurveyId());
@@ -1902,6 +2024,7 @@ public class surveyController {
      *
      * @param session
      * @param s = surveyId
+     * @param v
      * @return
      * @throws Exception
      */
@@ -1916,9 +2039,16 @@ public class surveyController {
         String[] result = obj.toString().split((","));
         
         int surveyId = Integer.parseInt(result[0].substring(4));
-        
-        
+	
         ModelAndView mav = new ModelAndView();
+	
+	//Get a list of added survey categories
+	List<SurveyCategories> surveyCategories = surveymanager.getProgramSurveyCategories((Integer) session.getAttribute("selprogramId"));
+	mav.addObject("surveyCategories", surveyCategories);
+        
+	//Check to see if the survey is attached to a category
+	SurveyCategoryAssociation assocCategory = surveymanager.getProgramSurveyCategory((Integer) session.getAttribute("selprogramId"), surveyId);
+	mav.addObject("assocCategory", assocCategory);
 
         surveys survey = checkSurveyPermission(session, surveyId, "getSurveyForm.do");
         if (survey == null) {
@@ -1956,13 +2086,14 @@ public class surveyController {
      * @param surveyNew
      * @param result
      * @param session
+     * @param surveyCategory
      * @return
      * @throws Exception
      */
     @RequestMapping(value = "saveSurveyForm.do", method = RequestMethod.POST)
     public @ResponseBody
     ModelAndView saveSurveyTitleForm(@Valid @ModelAttribute(value = "survey") surveys surveyNew,
-            BindingResult result, HttpSession session) throws Exception {
+            BindingResult result, HttpSession session, @RequestParam(value = "surveyCategory", required = false) Integer surveyCategory) throws Exception {
 
         ModelAndView mav = new ModelAndView();
         List<activityCodes> activityCodes = activitycodemanager.getActivityCodes(0, 0);
@@ -2010,6 +2141,29 @@ public class surveyController {
 	    surveyNew.setCustomerSurveyTag(surveyNew.getSurveyTag());
 	}
         surveymanager.updateSurvey(surveyNew);
+	
+	if(surveyCategory != null) {
+	    if(surveyCategory == 0) {
+		surveymanager.removeProgramSurveyCategory((Integer) session.getAttribute("selprogramId"), surveyNew.getId());
+	    }
+	    else {
+		SurveyCategoryAssociation assocCategory = surveymanager.getProgramSurveyCategory((Integer) session.getAttribute("selprogramId"), surveyNew.getId());
+	
+		if(assocCategory != null) {
+		    assocCategory.setCategoryId(surveyCategory);
+		}
+		else {
+		    assocCategory = new SurveyCategoryAssociation();
+		    assocCategory.setProgramId((Integer) session.getAttribute("selprogramId"));
+		    assocCategory.setCategoryId(surveyCategory);
+		    assocCategory.setSurveyId(surveyNew.getId());
+		}
+
+		surveymanager.saveProgramSurveyCategoryAssociation(assocCategory);
+	    }
+	}
+	
+	
         mav.addObject("updated", "updated");
 
         /**
@@ -2173,6 +2327,108 @@ public class surveyController {
         else {
             return "1";
         }
+    }
+    
+    
+    /**
+     * This method returns the form to create/edit survey category
+     *
+     * @param session
+     * @param surveyCategoryId
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "getSurveyCategoryForm", method = RequestMethod.GET)
+    public @ResponseBody ModelAndView getSurveyCategoryForm(HttpSession session, @RequestParam(value = "surveyCategoryId", required = false) Integer surveyCategoryId) throws Exception {
+        
+	
+        ModelAndView mav = new ModelAndView();
+	
+	SurveyCategories surveyCategoryDetails;
+	
+	if(surveyCategoryId != null) {
+	    if(surveyCategoryId > 0) {
+		surveyCategoryDetails = surveymanager.getProgramSurveyCategoryById(surveyCategoryId);
+	    }
+	    else {
+		surveyCategoryDetails = new SurveyCategories();
+		surveyCategoryDetails.setProgramId((Integer) session.getAttribute("selprogramId"));
+	    }
+	}
+	else {
+	    surveyCategoryDetails = new SurveyCategories();
+	    surveyCategoryDetails.setProgramId((Integer) session.getAttribute("selprogramId"));
+	}
+	
+	mav.addObject("surveyCategoryDetails", surveyCategoryDetails);
+	
+        mav.setViewName("/programAdmin/surveys/surveyCategoryForm");
+        /**
+         * log user *
+         */
+        try {
+            Log_userSurveyActivity ua = new Log_userSurveyActivity();
+            ua.setActivityDesc("Access Survey Category Form");
+            ua.setController(controllerName);
+            ua.setPageAccessed("getSurveyForm.do");
+            ua.setProgramId((Integer) session.getAttribute("selprogramId"));
+            User userDetails = (User) session.getAttribute("userDetails");
+            ua.setSystemUserId(userDetails.getId());
+            usermanager.insertUserLog(ua);
+        } catch (Exception ex1) {
+            ex1.printStackTrace();
+        }
+
+        return mav;
+    }
+    
+    /**
+     * The 'submitSurveyCategoryForm' POST request will submit the changes to the selected survey category or new category
+     * 
+     * @param surveyCategoryDetails
+     * @param session
+     * @return
+     * @throws Exception 
+     */
+    @RequestMapping(value = "submitSurveyCategoryForm", method = RequestMethod.POST)
+    public @ResponseBody Integer submitSurveyCategoryForm(@ModelAttribute(value = "surveyCategoryDetails") SurveyCategories surveyCategoryDetails, HttpSession session) throws Exception {
+        
+	surveymanager.saveProgramSurveyCategory(surveyCategoryDetails);
+        
+        return 1;
+    }
+
+    /**
+     * The 'deleteSurveyCategory' POST request will HIDE the question from the survey. 
+     * 
+     * @param surveyCategoryId   The id of the selected survey category
+     * @param session
+     * @return
+     * @throws Exception 
+     */
+    @RequestMapping(value = "deleteSurveyCategory.do", method = RequestMethod.POST)
+    public @ResponseBody Integer deleteSurveyCategory(@RequestParam Integer surveyCategoryId, HttpSession session) throws Exception {
+        
+        surveymanager.deleteProgramSurveyCategoryAssociation((Integer) session.getAttribute("selprogramId"), surveyCategoryId);
+	
+	surveymanager.deleteProgramSurveyCategory((Integer) session.getAttribute("selprogramId"), surveyCategoryId);
+	
+        return 1;
+    }
+    
+    /**
+     * The 'getQuestionsForSelectedSurvey' GET request will return a list of questions for selected survey
+     * 
+     * @param surveyId        The id of the selected page
+     * @return
+     * @throws Exception 
+     */
+    @SuppressWarnings("rawtypes")
+    @RequestMapping(value = "/getQuestionsForSelectedSurvey.do", method = RequestMethod.GET)
+    public @ResponseBody List getQuestionsForSelectedSurvey(@RequestParam(value = "surveyId", required = true) Integer surveyId) throws Exception {
+
+        List questions = surveymanager.getQuestionsForSelectedSurvey(surveyId);
+        return questions;
     }
     
 }

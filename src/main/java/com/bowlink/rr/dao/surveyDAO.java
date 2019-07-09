@@ -6,6 +6,8 @@
 package com.bowlink.rr.dao;
 
 import com.bowlink.rr.model.AnswerTypes;
+import com.bowlink.rr.model.SurveyCategories;
+import com.bowlink.rr.model.SurveyCategoryAssociation;
 import com.bowlink.rr.model.SurveyQuestionChoices;
 import com.bowlink.rr.model.SurveyChangeLogs;
 import com.bowlink.rr.model.SurveyPages;
@@ -77,4 +79,21 @@ public interface surveyDAO {
     
     boolean checkForDuplicateQuestionTag(Integer surveyId, Integer questionId, String questionTag) throws Exception;
     
+    List<SurveyCategories> getProgramSurveyCategories(Integer programId) throws Exception;
+    
+    SurveyCategoryAssociation getProgramSurveyCategory(Integer programId, Integer surveyId) throws Exception;
+    
+    void saveProgramSurveyCategoryAssociation(SurveyCategoryAssociation surveycategoryassociation) throws Exception;
+    
+    void removeProgramSurveyCategory(Integer programId, Integer surveyId) throws Exception;
+    
+    SurveyCategories getProgramSurveyCategoryById(Integer surveyCategoryId) throws Exception;
+    
+    void saveProgramSurveyCategory(SurveyCategories surveyCategoryDetails) throws Exception;
+    
+    void deleteProgramSurveyCategoryAssociation(Integer programId, Integer surveyCategoryId);
+	
+    void deleteProgramSurveyCategory(Integer programId, Integer surveyCategoryId);
+    
+    List getQuestionsForSelectedSurvey(Integer surveyId) throws Exception;
 }
