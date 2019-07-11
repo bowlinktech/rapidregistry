@@ -20,8 +20,8 @@
             </div>
             <div class="pull-right">
                 <select rel="${page.id}" class="pageLogic form-control">
-                    <option value="">Page Logic</option>
-                    <option value="Page Skip Logic">Page Skip Logic</option>
+                    <option value="" <c:if test="${page.skipToPage == 0}">selected="selected"</c:if>>Page Logic</option>
+                    <option value="Page Skip Logic" <c:if test="${page.skipToPage != 0}">selected="selected"</c:if>>Page Skip Logic</option>
                 </select>
             </div>
         </div>
@@ -38,7 +38,7 @@
             </div>
         </div>
     </div>
-    <div class="row" id="pageLogic_${page.id}" style="display:none">
+    <div class="row" id="pageLogic_${page.id}" style="${page.skipToPage != 0 ? 'display:block':'display:none'}">
         <div class="panel panel-default">
             <div class="panel-heading clearfix" style="background-color: #4B7C88">
                 <div class="pull-left">

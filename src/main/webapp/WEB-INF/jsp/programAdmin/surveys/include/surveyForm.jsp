@@ -28,6 +28,17 @@
                                     </div> 
                             </spring:bind> 
                         </div>
+			<c:if test="${not empty surveyCategories}">
+			    <div class="form-group">
+				<label class="control-label" for="surveyCategory">Associated Survey Category</label>
+				<select name="surveyCategory" id="surveyCategory" class="form-control">
+				    <option value="0" label=" - Select - " >- Select -</option>
+				    <c:forEach var="category" items="${surveyCategories}">
+					<option value="${category.id}" <c:if test="${not empty assocCategory and assocCategory.categoryId == category.id}">selected</c:if>>${category.categoryName}</option>
+				    </c:forEach>
+				</select>
+			    </div>
+			</c:if>
                         <div class="form-group">
                             <spring:bind path="surveyTag">
                                 <div id="surveyTagDiv" class="form-group ${status.error ? 'has-error' : '' } ${not empty existingsurveyTag ? 'has-error' : ''}">

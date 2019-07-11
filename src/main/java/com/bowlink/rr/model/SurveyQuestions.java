@@ -138,6 +138,12 @@ public class SurveyQuestions {
     @Column(name = "customerQNum", nullable = false)
     private String customerQNum = "1";
     
+    @Column(name = "populateFromSurvey", nullable = true)
+    private Integer populateFromSurvey = 0;
+     
+    @Column(name = "populateFromSurveyQuestion", nullable = true)
+    private Integer populateFromSurveyQuestion = 0;
+    
     public int getId() {
         return id;
     }
@@ -418,12 +424,30 @@ public class SurveyQuestions {
         this.questionHelp = questionHelp;
     }
 
-	public String getCustomerQNum() {
-		return customerQNum;
-	}
+    public String getCustomerQNum() {
+	    return customerQNum;
+    }
 
-	public void setCustomerQNum(String customerQNum) {
-		this.customerQNum = customerQNum;
-	}
+    public void setCustomerQNum(String customerQNum) {
+	    this.customerQNum = customerQNum;
+    }
+
+    public Integer getPopulateFromSurvey() {
+	return populateFromSurvey;
+    }
+
+    public void setPopulateFromSurvey(Integer populateFromSurvey) {
+	this.populateFromSurvey = populateFromSurvey;
+    }
+
+    public Integer getPopulateFromSurveyQuestion() {
+	return populateFromSurveyQuestion;
+    }
+
+    public void setPopulateFromSurveyQuestion(Integer populateFromSurveyQuestion) {
+	this.populateFromSurveyQuestion = populateFromSurveyQuestion;
+    }
+    
+    
  
 }

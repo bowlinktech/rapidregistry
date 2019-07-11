@@ -7,6 +7,8 @@ package com.bowlink.rr.service.impl;
 
 import com.bowlink.rr.dao.surveyDAO;
 import com.bowlink.rr.model.AnswerTypes;
+import com.bowlink.rr.model.SurveyCategories;
+import com.bowlink.rr.model.SurveyCategoryAssociation;
 import com.bowlink.rr.model.SurveyQuestionChoices;
 import com.bowlink.rr.model.SurveyChangeLogs;
 import com.bowlink.rr.model.SurveyPages;
@@ -319,6 +321,60 @@ public class surveyManagerImpl implements surveyManager {
     @Transactional
     public boolean checkForDuplicateQuestionTag(Integer surveyId, Integer questionId, String questionTag) throws Exception {
         return surveyDAO.checkForDuplicateQuestionTag(surveyId, questionId, questionTag);
+    }
+    
+    @Override
+    @Transactional
+    public List<SurveyCategories> getProgramSurveyCategories(Integer programId) throws Exception {
+        return surveyDAO.getProgramSurveyCategories(programId);
+    }
+    
+    @Override
+    @Transactional
+    public SurveyCategoryAssociation getProgramSurveyCategory(Integer programId, Integer surveyId) throws Exception {
+        return surveyDAO.getProgramSurveyCategory(programId,surveyId);
+    }
+    
+    @Override
+    @Transactional
+    public void saveProgramSurveyCategoryAssociation(SurveyCategoryAssociation surveycategoryassociation) throws Exception {
+        surveyDAO.saveProgramSurveyCategoryAssociation(surveycategoryassociation);
+    }
+    
+    @Override
+    @Transactional
+    public void removeProgramSurveyCategory(Integer programId, Integer surveyId) throws Exception {
+        surveyDAO.removeProgramSurveyCategory(programId,surveyId);
+    }
+    
+    @Override
+    @Transactional
+    public SurveyCategories getProgramSurveyCategoryById(Integer surveyCategoryId) throws Exception {
+	 return surveyDAO.getProgramSurveyCategoryById(surveyCategoryId);
+    }
+    
+    @Override
+    @Transactional
+    public void saveProgramSurveyCategory(SurveyCategories surveyCategoryDetails) throws Exception {
+	 surveyDAO.saveProgramSurveyCategory(surveyCategoryDetails);
+    }
+    
+    @Override
+    @Transactional
+    public void deleteProgramSurveyCategoryAssociation(Integer programId, Integer surveyCategoryId) {
+	 surveyDAO.deleteProgramSurveyCategoryAssociation(programId,surveyCategoryId);
+    }
+	
+    @Override
+    @Transactional
+    public void deleteProgramSurveyCategory(Integer programId, Integer surveyCategoryId) {
+	 surveyDAO.deleteProgramSurveyCategory(programId,surveyCategoryId);
+    }
+    
+    @Override
+    @Transactional
+    public List getQuestionsForSelectedSurvey(Integer surveyId) throws Exception {
+        return surveyDAO.getQuestionsForSelectedSurvey(surveyId);
     }
 }
 
