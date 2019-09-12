@@ -336,7 +336,9 @@ public class orgHierarchyDAOImpl implements orgHierarchyDAO {
         
         Query query;
         
-        /** See if the selected entity is associated to any other entity **/
+        /** See if the selected entity is associated to any other entity, 
+         *  we do not delete if entity is a parent, we delete if entity is a child
+         *  **/
         query = sessionFactory.getCurrentSession().createQuery(
                 "from programOrgHierarchyAssoc where associatedWith = :itemId");
         query.setParameter("itemId", itemId);
@@ -407,9 +409,14 @@ public class orgHierarchyDAOImpl implements orgHierarchyDAO {
         
         /** Not in use, delete **/
         if(canDelete == true) {
-           Query deleteEntity = sessionFactory.getCurrentSession().createQuery("delete from programOrgHierarchyDetails where id = :itemId");
-           deleteEntity.setParameter("itemId", itemId);
-           deleteEntity.executeUpdate();
+        	//delete parent association first. 
+        	Query deleteEntity1 = sessionFactory.getCurrentSession().createQuery("delete from programOrgHierarchyAssoc where programHierarchyId = :itemId");
+            deleteEntity1.setParameter("itemId", itemId);
+            deleteEntity1.executeUpdate();
+        	
+            Query deleteEntity = sessionFactory.getCurrentSession().createQuery("delete from programOrgHierarchyDetails where id = :itemId");
+            deleteEntity.setParameter("itemId", itemId);
+            deleteEntity.executeUpdate();
         }
         
         return sb.toString();
