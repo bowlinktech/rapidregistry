@@ -40,6 +40,9 @@ public class User {
 
     @Transient
     private String password;
+    
+    @Column(name = "passwordCreated", nullable = true)
+    private Date passwordCreated;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -307,7 +310,21 @@ public class User {
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
-	
-	
-	
+
+	public Date getPasswordCreated() {
+		return passwordCreated;
+	}
+
+	public void setPasswordCreated(Date passwordCreated) {
+		this.passwordCreated = passwordCreated;
+	}
+
+	public boolean isPrivateProfile() {
+		return privateProfile;
+	}
+
+	public void setPrivateProfile(boolean privateProfile) {
+		this.privateProfile = privateProfile;
+	}
+
 }
