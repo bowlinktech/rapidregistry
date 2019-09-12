@@ -11,3 +11,4 @@ context.xml
 
 src/main/webapp/dspResources/.DS_Store
 src/main/resources/rebel.xml
+/.settings/org.eclipse.jdt.core.prefs
